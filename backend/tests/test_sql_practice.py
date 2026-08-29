@@ -315,3 +315,35 @@ async def test_live_runner_permissions():
         "WITH x AS (DELETE FROM t RETURNING *) SELECT * FROM x", tables
     )
     assert bad.error is not None
+
+
+def test_runner_dsn_derives_when_admin_credentials_shared(monkeypatch):
+    """Railway: admin and runner URLs identical → derive restricted role DSN."""
+    from app.core.config import settings
+    from app.services.sql_execution.pools import runner_dsn, with_role_password
+
+    shared = "postgresql://postgres:secret@sql.internal:5432/railway"
+    monkeypatch.setattr(settings, "sql_sandbox_admin_database_url", shared)
+    monkeypatch.setattr(settings, "sql_sandbox_runner_database_url", shared)
+    monkeypatch.setattr(settings, "sql_sandbox_database_url", shared)
+    monkeypatch.setattr(settings, "sql_sandbox_runner_role", "jobready_sql_runner")
+    monkeypatch.setattr(settings, "sql_sandbox_runner_password", "runner-pass")
+
+    dsn = runner_dsn()
+    assert dsn == with_role_password(shared, "jobready_sql_runner", "runner-pass")
+    assert "jobready_sql_runner" in dsn
+    assert "runner-pass" in dsn
+    assert "postgres:secret" not in dsn
+
+
+def test_runner_dsn_keeps_explicit_local_url(monkeypatch):
+    from app.core.config import settings
+    from app.services.sql_execution.pools import runner_dsn, to_asyncpg_dsn
+
+    admin = "postgresql://jobready_sql_admin:admin@localhost:5433/jobready_sql_sandbox"
+    runner = "postgresql://jobready_sql_runner:dev@localhost:5433/jobready_sql_sandbox"
+    monkeypatch.setattr(settings, "sql_sandbox_admin_database_url", admin)
+    monkeypatch.setattr(settings, "sql_sandbox_runner_database_url", runner)
+    monkeypatch.setattr(settings, "sql_sandbox_database_url", runner)
+
+    assert runner_dsn() == to_asyncpg_dsn(runner)

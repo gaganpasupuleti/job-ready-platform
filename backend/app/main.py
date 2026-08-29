@@ -29,8 +29,21 @@ async def lifespan(app: FastAPI):
     else:
         logger.warning("Redis connection failed — caching features unavailable")
 
+    if settings.sql_execution_enabled:
+        try:
+            from app.services.sql_execution.roles import ensure_sandbox_roles
+
+            await ensure_sandbox_roles()
+        except Exception:
+            logger.exception(
+                "SQL sandbox role bootstrap failed — SQL practice may be unavailable"
+            )
+
     yield
 
+    from app.services.sql_execution.pools import close_sandbox_pools
+
+    await close_sandbox_pools()
     await close_redis()
     await engine.dispose()
 

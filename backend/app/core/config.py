@@ -51,6 +51,8 @@ class Settings(BaseSettings):
         "postgresql+asyncpg://jobready_sql_runner:jobready_sql_dev@localhost:5433/jobready_sql_sandbox"
     )
     sql_sandbox_runner_role: str = "jobready_sql_runner"
+    # Used when deriving runner DSN from admin URL (Railway) and for role bootstrap
+    sql_sandbox_runner_password: str = "jobready_sql_dev"
     sql_execution_enabled: bool = True
     sql_query_timeout_ms: int = 3000
     sql_max_rows: int = 500

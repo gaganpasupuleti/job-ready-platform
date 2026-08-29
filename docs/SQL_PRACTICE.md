@@ -84,6 +84,7 @@ SQL_SANDBOX_RUNNER_DATABASE_URL=postgresql+asyncpg://jobready_sql_runner:jobread
 SQL_SANDBOX_DATABASE_URL=…  # alias for runner (backward compatible)
 
 SQL_SANDBOX_RUNNER_ROLE=jobready_sql_runner
+SQL_SANDBOX_RUNNER_PASSWORD=jobready_sql_dev
 SQL_EXECUTION_ENABLED=true
 SQL_QUERY_TIMEOUT_MS=3000
 SQL_MAX_ROWS=500
@@ -91,6 +92,8 @@ SQL_SUBMIT_MAX_ROWS=10000
 ```
 
 Docker Compose service `postgres_sql_sandbox` (host port **5433**) initializes both roles via `infra/docker/init-sql-sandbox.sh`.
+
+On **Railway** (managed Postgres, no init script): the backend bootstraps `jobready_sql_runner` at startup (`ensure_sandbox_roles`). When admin and runner URLs share the same credentials, the runner DSN is derived from `SQL_SANDBOX_ADMIN_DATABASE_URL` + `SQL_SANDBOX_RUNNER_ROLE` + `SQL_SANDBOX_RUNNER_PASSWORD`.
 
 **Note:** If the sandbox volume was created before Build 4.1, recreate it so the init script runs:
 
