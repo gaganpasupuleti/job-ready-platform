@@ -9,10 +9,12 @@ from app.models.user import User
 from app.schemas.practice import (
     AnswerRequest,
     AnswerResponse,
+    AutosaveRequest,
     CatalogResponse,
     CreateSessionRequest,
     HistoryResponse,
     SessionDetailResponse,
+    SessionNavigatorResponse,
     SessionQuestionResponse,
     SessionResultsResponse,
 )
@@ -101,6 +103,36 @@ async def get_history(
     db: AsyncSession = Depends(get_db),
 ) -> HistoryResponse:
     return await PracticeService(db).get_history(current_user)
+
+
+@router.get("/sessions/{session_id}/navigator", response_model=SessionNavigatorResponse)
+async def get_session_navigator(
+    session_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> SessionNavigatorResponse:
+    return await PracticeService(db).get_navigator(current_user, session_id)
+
+
+@router.post("/sessions/{session_id}/questions/{question_number}/autosave")
+async def autosave_answer(
+    session_id: UUID,
+    question_number: int,
+    payload: AutosaveRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, bool]:
+    return await PracticeService(db).autosave_answer(
+        current_user, session_id, question_number, payload
+    )
+
+
+@router.get("/bookmarks")
+async def list_bookmarks(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[dict]:
+    return await PracticeService(db).list_bookmarks(current_user)
 
 
 @router.post("/questions/{question_id}/bookmark")

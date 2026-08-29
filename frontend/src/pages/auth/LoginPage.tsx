@@ -10,8 +10,8 @@ export function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [email, setEmail] = useState<string>(DEV_AUTO_LOGIN.email)
-  const [password, setPassword] = useState<string>(DEV_AUTO_LOGIN.password)
+  const [email, setEmail] = useState(DEV_AUTO_LOGIN?.email ?? '')
+  const [password, setPassword] = useState(DEV_AUTO_LOGIN?.password ?? '')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -22,10 +22,9 @@ export function LoginPage() {
     setLoading(true)
     setError(null)
     try {
-      // TEMP: auto-login with dev admin if fields are empty
       const credentials = {
-        email: email.trim() || DEV_AUTO_LOGIN.email,
-        password: password || DEV_AUTO_LOGIN.password,
+        email: email.trim() || DEV_AUTO_LOGIN?.email || '',
+        password: password || DEV_AUTO_LOGIN?.password || '',
       }
       await login(credentials)
       navigate(from, { replace: true })
@@ -43,9 +42,11 @@ export function LoginPage() {
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
           Access your Job Ready Platform account
         </p>
-        <p className="mt-2 rounded-md border border-dashed border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-xs text-[var(--color-text-subtle)]">
-          Dev mode: credentials pre-filled — click Sign in to auto-login.
-        </p>
+        {DEV_AUTO_LOGIN && (
+          <p className="mt-2 rounded-md border border-dashed border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-xs text-[var(--color-text-subtle)]">
+            Dev mode: credentials pre-filled — click Sign in to auto-login.
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
             <label className="mb-1 block text-xs font-medium text-[var(--color-text-muted)]">

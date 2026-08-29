@@ -45,6 +45,8 @@ class PracticeSession(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    duration_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     questions: Mapped[list["PracticeSessionQuestion"]] = relationship(
         back_populates="session", cascade="all, delete-orphan", order_by="PracticeSessionQuestion.question_number"
@@ -81,6 +83,7 @@ class PracticeAnswer(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     is_correct: Mapped[bool | None] = mapped_column(nullable=True)
     marks_awarded: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     time_spent_seconds: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    marked_for_review: Mapped[bool] = mapped_column(default=False, nullable=False)
     answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     session: Mapped["PracticeSession"] = relationship(back_populates="answers")
@@ -88,11 +91,16 @@ class PracticeAnswer(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
 class Bookmark(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "bookmarks"
-    __table_args__ = (UniqueConstraint("user_id", "question_id", name="uq_user_question_bookmark"),)
 
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
-    question_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("questions.id", ondelete="CASCADE"), index=True
+    question_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("questions.id", ondelete="CASCADE"), nullable=True
+    )
+    problem_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("coding_problems.id", ondelete="CASCADE"), nullable=True
+    )
+    sql_problem_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("sql_problems.id", ondelete="CASCADE"), nullable=True
     )

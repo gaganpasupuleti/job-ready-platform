@@ -32,6 +32,30 @@ class Settings(BaseSettings):
 
     judge0_url: str = "http://localhost:2358"
     judge0_api_key: str = ""
+    judge0_enabled: bool = True
+    judge0_timeout_seconds: int = 30
+
+    max_source_code_length: int = 65536
+    default_exam_duration_minutes: int = 30
+
+    # SQL practice sandbox (isolated from application DB)
+    # Admin: schema create/seed/drop only. Runner: read-only student queries only.
+    sql_sandbox_admin_database_url: str = (
+        "postgresql+asyncpg://jobready_sql_admin:jobready_sql_admin_dev@localhost:5433/jobready_sql_sandbox"
+    )
+    sql_sandbox_runner_database_url: str = (
+        "postgresql+asyncpg://jobready_sql_runner:jobready_sql_dev@localhost:5433/jobready_sql_sandbox"
+    )
+    # Backward-compatible alias (treated as runner URL if runner URL unset)
+    sql_sandbox_database_url: str = (
+        "postgresql+asyncpg://jobready_sql_runner:jobready_sql_dev@localhost:5433/jobready_sql_sandbox"
+    )
+    sql_sandbox_runner_role: str = "jobready_sql_runner"
+    sql_execution_enabled: bool = True
+    sql_query_timeout_ms: int = 3000
+    sql_max_rows: int = 500
+    sql_submit_max_rows: int = 10000
+    sql_max_query_length: int = 20000
 
     jwt_secret_key: str = "change-me-in-production-use-long-random-secret"
     jwt_access_token_expire_minutes: int = 60 * 24

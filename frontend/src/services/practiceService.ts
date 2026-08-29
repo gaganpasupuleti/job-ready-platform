@@ -5,7 +5,9 @@ import type {
   CatalogResponse,
   CreateSessionPayload,
   HistoryResponse,
+  PracticeBookmarkItem,
   SessionDetail,
+  SessionOverviewResponse,
   SessionQuestionResponse,
   SessionResultsResponse,
 } from '@/types/practice'
@@ -70,6 +72,36 @@ export async function fetchHistory(): Promise<HistoryResponse> {
 export async function toggleBookmark(questionId: string): Promise<{ bookmarked: boolean }> {
   const { data } = await apiClient.post<{ bookmarked: boolean }>(
     apiEndpoints.practice.bookmark(questionId),
+  )
+  return data
+}
+
+export async function fetchPracticeBookmarks(): Promise<PracticeBookmarkItem[]> {
+  const { data } = await apiClient.get<PracticeBookmarkItem[]>(apiEndpoints.practice.bookmarks)
+  return data
+}
+
+export async function fetchSessionOverview(sessionId: string): Promise<SessionOverviewResponse> {
+  const { data } = await apiClient.get<{ items: SessionOverviewResponse['questions'] }>(
+    apiEndpoints.practice.navigator(sessionId),
+  )
+  return { questions: data.items }
+}
+
+export async function autosaveAnswer(
+  sessionId: string,
+  questionNumber: number,
+  selectedOptionIds: string[],
+  markedForReview: boolean,
+  timeSpentSeconds: number,
+): Promise<{ saved: boolean }> {
+  const { data } = await apiClient.post<{ saved: boolean }>(
+    apiEndpoints.practice.autosave(sessionId, questionNumber),
+    {
+      selected_option_ids: selectedOptionIds,
+      marked_for_review: markedForReview,
+      time_spent_seconds: timeSpentSeconds,
+    },
   )
   return data
 }

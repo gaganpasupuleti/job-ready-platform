@@ -434,10 +434,24 @@ async def seed_all() -> None:
         print("Seed completed successfully.")
 
 
+async def seed_coding_problems() -> None:
+    from app.seed.coding_data import seed_coding_problems as _seed_coding
+
+    await _seed_coding()
+
+
+async def seed_sql_problems() -> None:
+    from app.seed.sql_data import seed_sql_problems as _seed_sql
+
+    await _seed_sql()
+
+
 def run_seed() -> None:
     asyncio.run(_run())
 
 
 async def _run() -> None:
     await seed_all()
+    await seed_coding_problems()
+    await seed_sql_problems()
     await engine.dispose()

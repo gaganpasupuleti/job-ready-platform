@@ -58,6 +58,28 @@ export interface SessionDetail extends SessionSummary {
   topic_id?: string | null
   difficulty?: Difficulty | null
   answered_count: number
+  expires_at?: string | null
+  remaining_seconds?: number | null
+  duration_minutes?: number | null
+}
+
+export interface SessionQuestionOverview {
+  question_number: number
+  answered: boolean
+  marked_for_review: boolean
+}
+
+export interface SessionOverviewResponse {
+  questions: SessionQuestionOverview[]
+}
+
+export interface PracticeBookmarkItem {
+  id: string
+  title?: string | null
+  question_text: string
+  difficulty: Difficulty
+  topic_name?: string | null
+  bookmarked_at?: string
 }
 
 export interface QuestionOptionPublic {
@@ -86,6 +108,8 @@ export interface SessionQuestionResponse {
   question: QuestionPublic
   answered: boolean
   bookmarked: boolean
+  marked_for_review?: boolean
+  selected_option_ids?: string[]
 }
 
 export interface AnswerFeedback {

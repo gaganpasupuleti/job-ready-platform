@@ -11,7 +11,7 @@ python-dotenv==1.0.1
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.20
-email-validator==2.2.0
+sqlglot==26.16.2
 
 # Dev / test
 pytest==8.3.4

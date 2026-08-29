@@ -1,15 +1,35 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
 import { apiClient } from '@/api/client'
 import { apiEndpoints } from '@/api/config'
-import type { CatalogResponse } from '@/types/practice'
+import type { CatalogResponse, Difficulty } from '@/types/practice'
+
+interface AdminQuestionDetail {
+  id: string
+  question_type: string
+  title: string | null
+  question_text: string
+  explanation: string | null
+  difficulty: Difficulty
+  domain_id: string
+  category_id: string
+  topic_id: string
+  marks: number
+  negative_marks: number
+  estimated_time_seconds: number
+  is_active: boolean
+  options: Array<{ id?: string; option_text: string; is_correct: boolean; sort_order: number }>
+}
 
 export function AdminQuestionFormPage() {
+  const { questionId } = useParams()
+  const isEdit = Boolean(questionId)
   const navigate = useNavigate()
+
   const { data: catalog } = useQuery({
     queryKey: ['admin-taxonomy'],
     queryFn: async () => {
@@ -18,12 +38,24 @@ export function AdminQuestionFormPage() {
     },
   })
 
+  const { data: existing } = useQuery({
+    queryKey: ['admin-question', questionId],
+    queryFn: async () => {
+      const { data } = await apiClient.get<AdminQuestionDetail>(
+        apiEndpoints.admin.question(questionId!),
+      )
+      return data
+    },
+    enabled: isEdit,
+  })
+
   const [domainId, setDomainId] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [topicId, setTopicId] = useState('')
   const [questionText, setQuestionText] = useState('')
   const [explanation, setExplanation] = useState('')
-  const [difficulty, setDifficulty] = useState('medium')
+  const [difficulty, setDifficulty] = useState<Difficulty>('medium')
+  const [isActive, setIsActive] = useState(true)
   const [options, setOptions] = useState([
     { option_text: '', is_correct: true, sort_order: 0 },
     { option_text: '', is_correct: false, sort_order: 1 },
@@ -33,6 +65,25 @@ export function AdminQuestionFormPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    if (!existing) return
+    setDomainId(existing.domain_id)
+    setCategoryId(existing.category_id)
+    setTopicId(existing.topic_id)
+    setQuestionText(existing.question_text)
+    setExplanation(existing.explanation ?? '')
+    setDifficulty(existing.difficulty)
+    setIsActive(existing.is_active)
+    setOptions(
+      existing.options.map((opt, index) => ({
+        id: opt.id,
+        option_text: opt.option_text,
+        is_correct: opt.is_correct,
+        sort_order: opt.sort_order ?? index,
+      })),
+    )
+  }, [existing])
+
   const selectedDomain = catalog?.domains.find((d) => d.id === domainId)
   const selectedCategory = selectedDomain?.categories.find((c) => c.id === categoryId)
 
@@ -41,7 +92,7 @@ export function AdminQuestionFormPage() {
     setLoading(true)
     setError(null)
     try {
-      await apiClient.post(apiEndpoints.admin.questions, {
+      const payload = {
         question_type: 'single_choice',
         question_text: questionText,
         explanation,
@@ -49,15 +100,20 @@ export function AdminQuestionFormPage() {
         domain_id: domainId,
         category_id: categoryId,
         topic_id: topicId,
-        marks: 1,
-        negative_marks: 0.25,
-        estimated_time_seconds: 60,
-        is_active: true,
+        marks: existing?.marks ?? 1,
+        negative_marks: existing?.negative_marks ?? 0.25,
+        estimated_time_seconds: existing?.estimated_time_seconds ?? 60,
+        is_active: isActive,
         options,
-      })
+      }
+      if (isEdit) {
+        await apiClient.put(apiEndpoints.admin.question(questionId!), payload)
+      } else {
+        await apiClient.post(apiEndpoints.admin.questions, payload)
+      }
       navigate('/admin/questions')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create question')
+      setError(err instanceof Error ? err.message : 'Failed to save question')
     } finally {
       setLoading(false)
     }
@@ -66,7 +122,9 @@ export function AdminQuestionFormPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">New Question</h2>
+        <h2 className="text-lg font-semibold text-[var(--color-text)]">
+          {isEdit ? 'Edit Question' : 'New Question'}
+        </h2>
         <Link to="/admin/questions">
           <Button variant="secondary">Back</Button>
         </Link>
@@ -136,15 +194,25 @@ export function AdminQuestionFormPage() {
             onChange={(e) => setExplanation(e.target.value)}
             className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"
           />
-          <select
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
-            className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"
-          >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+              className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+              />
+              Active
+            </label>
+          </div>
           <CardHeader title="Options" description="Mark one option as correct" />
           {options.map((option, index) => (
             <div key={index} className="flex gap-2">
@@ -176,7 +244,7 @@ export function AdminQuestionFormPage() {
           ))}
           {error && <p className="text-xs text-[var(--color-danger)]">{error}</p>}
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Saving...' : 'Create Question'}
+            {loading ? 'Saving...' : isEdit ? 'Update Question' : 'Create Question'}
           </Button>
         </form>
       </Card>

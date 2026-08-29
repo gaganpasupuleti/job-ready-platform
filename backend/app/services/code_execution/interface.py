@@ -2,8 +2,6 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from app.core.config import settings
-
 logger = logging.getLogger(__name__)
 
 
@@ -12,6 +10,8 @@ class ExecutionRequest:
     source_code: str
     language_id: int
     stdin: str = ""
+    expected_output: str | None = None
+    stdout_override: str | None = None
 
 
 @dataclass
@@ -35,19 +35,11 @@ class CodeExecutionService(ABC):
         ...
 
 
-class Judge0CodeExecutionService(CodeExecutionService):
-    """Placeholder for future Judge0 integration."""
-
-    def __init__(self, base_url: str | None = None, api_key: str | None = None):
-        self.base_url = base_url or settings.judge0_url
-        self.api_key = api_key or settings.judge0_api_key
-
-    async def execute(self, request: ExecutionRequest) -> ExecutionResult:
-        raise NotImplementedError(
-            "Judge0 integration is not available in Build 1. "
-            "Configure JUDGE0_URL and deploy Judge0 before enabling code execution."
-        )
-
-
 def get_code_execution_service() -> CodeExecutionService:
+    from app.core.config import settings
+    from app.services.code_execution.disabled import DisabledCodeExecutionService
+    from app.services.code_execution.judge0 import Judge0CodeExecutionService
+
+    if not settings.judge0_enabled:
+        return DisabledCodeExecutionService()
     return Judge0CodeExecutionService()

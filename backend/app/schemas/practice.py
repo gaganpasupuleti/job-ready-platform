@@ -42,6 +42,7 @@ class CreateSessionRequest(BaseModel):
     difficulty: Difficulty | None = None
     question_count: int = Field(default=10, ge=1, le=50)
     mode: PracticeMode = PracticeMode.PRACTICE
+    duration_minutes: int | None = Field(default=None, ge=1, le=180)
 
 
 class SessionSummary(BaseModel):
@@ -55,6 +56,9 @@ class SessionSummary(BaseModel):
     unanswered_count: int
     started_at: str
     completed_at: str | None = None
+    duration_minutes: int | None = None
+    expires_at: str | None = None
+    remaining_seconds: int | None = None
 
 
 class SessionDetailResponse(SessionSummary):
@@ -90,6 +94,25 @@ class SessionQuestionResponse(BaseModel):
     question: QuestionPublic
     answered: bool = False
     bookmarked: bool = False
+    marked_for_review: bool = False
+    selected_option_ids: list[UUID] = Field(default_factory=list)
+
+
+class AutosaveRequest(BaseModel):
+    selected_option_ids: list[UUID] = Field(default_factory=list)
+    marked_for_review: bool = False
+    time_spent_seconds: int = Field(default=0, ge=0)
+
+
+class NavigatorItem(BaseModel):
+    question_number: int
+    answered: bool
+    marked_for_review: bool
+
+
+class SessionNavigatorResponse(BaseModel):
+    current_question: int
+    items: list[NavigatorItem]
 
 
 class AnswerRequest(BaseModel):

@@ -71,6 +71,26 @@ class PracticeRepository(BaseRepository):
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none() is not None
 
+    async def list_question_bookmarks(self, user_id: UUID) -> list[dict]:
+        from app.models.question import Question
+
+        stmt = (
+            select(Question, Bookmark)
+            .join(Bookmark, Bookmark.question_id == Question.id)
+            .where(Bookmark.user_id == user_id)
+            .order_by(Bookmark.created_at.desc())
+        )
+        result = await self.db.execute(stmt)
+        rows = result.all()
+        return [
+            {
+                "id": str(question.id),
+                "question_text": question.question_text,
+                "difficulty": question.difficulty.value,
+            }
+            for question, _bookmark in rows
+        ]
+
     async def toggle_bookmark(self, user_id: UUID, question_id: UUID) -> bool:
         stmt = select(Bookmark).where(
             Bookmark.user_id == user_id, Bookmark.question_id == question_id

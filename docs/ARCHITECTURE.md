@@ -20,11 +20,35 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 │  Primary data  │            │  Cache / queues │
 └────────────────┘            └─────────────────┘
 
-Future (not in Build 1):
-┌────────────────┐            ┌─────────────────┐
-│    Judge0      │            │  LLM Providers  │
-│ Code execution │            │  Eval / agents  │
-└────────────────┘            └─────────────────┘
+## SQL Practice Engine (Build 4 / 4.1)
+
+- **Models:** `SqlProblem`, tables/columns/seed rows, expected results, submissions, progress
+- **Sandbox boundaries:** Application DB ≠ Sandbox Admin ≠ Sandbox Runner (separate credentials/pools)
+- **Validation:** sqlglot AST (rejects mutating CTEs); DB read-only transaction + role permissions
+- **Student API:** `/api/v1/sql/*`
+- **Admin API:** `/api/v1/admin/sql/*`
+- Docs: [SQL_PRACTICE.md](SQL_PRACTICE.md)
+
+## Coding Practice Engine (Build 3 / 3.1)
+
+- **Models:** `CodingProblem`, `CodingTestCase`, `CodingSubmission`, progress and bookmarks
+- **Execution:** Judge0 HTTP client with mock/disabled fallbacks; never runs student code in FastAPI
+- **Security:** Run uses public tests only; submit hides hidden test I/O from responses
+- **Languages:** Centralized in `app/services/code_execution/languages.py` (71 Python, 62 Java, 54 C++, 63 JS)
+- **Student API:** `/api/v1/coding/*` — problems, run/submit, submissions, progress, bookmarks, execution status
+- **Admin API:** `/api/v1/admin/coding/*` — CRUD for problems and test cases
+
+## MCQ Practice & Exam Mode (Build 3.1)
+
+- **Practice sessions** with feedback; **exam sessions** with duration, expiry, autosave, navigator
+- **Bookmarks** for MCQ questions and coding problems (polymorphic `bookmarks` table)
+- **Admin MCQ edit** via `PUT /api/v1/admin/questions/{id}`
+
+## Judge0 Integration
+
+- Configuration: `JUDGE0_URL`, `JUDGE0_API_KEY`, `JUDGE0_ENABLED`, `JUDGE0_TIMEOUT_SECONDS`
+- Service: `app/services/code_execution/` — interface, Judge0 client, mock, disabled
+- **Critical rule:** Student code MUST NEVER execute inside the FastAPI container
 ```
 
 ## Frontend

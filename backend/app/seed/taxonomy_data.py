@@ -43,7 +43,19 @@ TAXONOMY = [
         "slug": "technical",
         "categories": [
             {"name": "Python", "slug": "python", "topics": [{"name": "Fundamentals", "slug": "fundamentals"}]},
-            {"name": "SQL", "slug": "sql", "topics": [{"name": "Queries", "slug": "queries"}]},
+            {"name": "SQL", "slug": "sql", "topics": [
+                {"name": "SQL Fundamentals", "slug": "sql-fundamentals"},
+                {"name": "Aggregations", "slug": "aggregations"},
+                {"name": "Joins", "slug": "joins"},
+                {"name": "Subqueries", "slug": "subqueries"},
+                {"name": "CTE", "slug": "cte"},
+                {"name": "Window Functions", "slug": "window-functions"},
+                {"name": "Conditional Logic", "slug": "conditional-logic"},
+                {"name": "Date Functions", "slug": "date-functions"},
+                {"name": "String Functions", "slug": "string-functions"},
+                {"name": "Advanced SQL", "slug": "advanced-sql"},
+                {"name": "Queries", "slug": "queries"},
+            ]},
             {"name": "DBMS", "slug": "dbms", "topics": [{"name": "Concepts", "slug": "concepts"}]},
             {"name": "Operating Systems", "slug": "operating-systems", "topics": [{"name": "Core Concepts", "slug": "core-concepts"}]},
             {"name": "Computer Networks", "slug": "computer-networks", "topics": [{"name": "Fundamentals", "slug": "fundamentals"}]},
@@ -52,6 +64,15 @@ TAXONOMY = [
             {"name": "Linux", "slug": "linux", "topics": [{"name": "Commands", "slug": "commands"}]},
             {"name": "Data Analytics", "slug": "data-analytics", "topics": [{"name": "Fundamentals", "slug": "fundamentals"}]},
             {"name": "Machine Learning", "slug": "machine-learning", "topics": [{"name": "Fundamentals", "slug": "fundamentals"}]},
+            {
+                "name": "DSA",
+                "slug": "dsa",
+                "topics": [
+                    {"name": "Basics", "slug": "basics"},
+                    {"name": "Arrays", "slug": "arrays"},
+                    {"name": "Strings", "slug": "strings"},
+                ],
+            },
         ],
     },
     {

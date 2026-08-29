@@ -1,8 +1,9 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.core.exceptions import AppException
 from app.models.enums import PracticeMode, SessionStatus
 from app.models.practice import PracticeAnswer, PracticeSession, PracticeSessionQuestion
@@ -14,13 +15,16 @@ from app.schemas.practice import (
     AnswerOptionFeedback,
     AnswerRequest,
     AnswerResponse,
+    AutosaveRequest,
     CreateSessionRequest,
     HistoryItem,
     HistoryResponse,
+    NavigatorItem,
     QuestionOptionPublic,
     QuestionPublic,
     QuestionReviewItem,
     SessionDetailResponse,
+    SessionNavigatorResponse,
     SessionQuestionResponse,
     SessionResultsResponse,
     SessionSummary,
@@ -66,6 +70,10 @@ class PracticeService:
             status=SessionStatus.ACTIVE,
             unanswered_count=len(questions),
         )
+        if payload.mode == PracticeMode.EXAM:
+            duration = payload.duration_minutes or settings.default_exam_duration_minutes
+            session.duration_minutes = duration
+            session.expires_at = datetime.now(UTC) + timedelta(minutes=duration)
         session = await self.practice_repo.create_session(session)
 
         session_questions = [
@@ -81,13 +89,46 @@ class PracticeService:
 
     async def get_session(self, user: User, session_id: UUID) -> SessionDetailResponse:
         session = await self._get_owned_session(user.id, session_id)
+        await self._maybe_expire_exam(user, session)
         answered_count = len([a for a in session.answers if a.answered_at is not None])
         return self._session_detail(session, answered_count=answered_count)
+
+    async def get_navigator(self, user: User, session_id: UUID) -> SessionNavigatorResponse:
+        session = await self._get_owned_session(user.id, session_id)
+        await self._maybe_expire_exam(user, session)
+        items: list[NavigatorItem] = []
+        for sq in sorted(session.questions, key=lambda q: q.question_number):
+            answer = await self.practice_repo.get_answer(session.id, sq.question_id)
+            items.append(
+                NavigatorItem(
+                    question_number=sq.question_number,
+                    answered=bool(answer and answer.answered_at is not None),
+                    marked_for_review=bool(answer and answer.marked_for_review),
+                )
+            )
+        return SessionNavigatorResponse(current_question=1, items=items)
+
+    async def autosave_answer(
+        self, user: User, session_id: UUID, question_number: int, payload: AutosaveRequest
+    ) -> dict[str, bool]:
+        session = await self._get_owned_session(user.id, session_id)
+        await self._maybe_expire_exam(user, session)
+        if session.status != SessionStatus.ACTIVE:
+            raise AppException("Session is not active", status_code=400)
+        sq = self._get_session_question(session, question_number)
+        existing = await self.practice_repo.get_answer(session.id, sq.question_id)
+        answer = existing or PracticeAnswer(session_id=session.id, question_id=sq.question_id)
+        answer.selected_option_ids = [str(x) for x in payload.selected_option_ids]
+        answer.marked_for_review = payload.marked_for_review
+        answer.time_spent_seconds = payload.time_spent_seconds
+        await self.practice_repo.save_answer(answer)
+        return {"saved": True}
 
     async def get_question(
         self, user: User, session_id: UUID, question_number: int
     ) -> SessionQuestionResponse:
         session = await self._get_owned_session(user.id, session_id)
+        await self._maybe_expire_exam(user, session)
         sq = self._get_session_question(session, question_number)
         question = await self.question_repo.get_by_id(sq.question_id)
         if question is None:
@@ -97,6 +138,11 @@ class PracticeService:
         skills = await self.question_repo.get_skill_names(question.id)
         answered = await self.practice_repo.get_answer(session.id, question.id)
         bookmarked = await self.practice_repo.is_bookmarked(user.id, question.id)
+        selected_ids = []
+        marked = False
+        if answered:
+            selected_ids = [UUID(v) for v in answered.selected_option_ids or []]
+            marked = answered.marked_for_review
 
         return SessionQuestionResponse(
             question_number=question_number,
@@ -104,6 +150,8 @@ class PracticeService:
             question=self._public_question(question, topic_name, skills),
             answered=answered is not None and answered.answered_at is not None,
             bookmarked=bookmarked,
+            marked_for_review=marked,
+            selected_option_ids=selected_ids,
         )
 
     async def submit_answer(
@@ -114,6 +162,7 @@ class PracticeService:
         payload: AnswerRequest,
     ) -> AnswerResponse:
         session = await self._get_owned_session(user.id, session_id)
+        await self._maybe_expire_exam(user, session)
         if session.status != SessionStatus.ACTIVE:
             raise AppException("Session is not active", status_code=400)
 
@@ -123,7 +172,7 @@ class PracticeService:
             raise AppException("Question not found", status_code=404)
 
         existing = await self.practice_repo.get_answer(session.id, question.id)
-        if existing and existing.answered_at is not None:
+        if existing and existing.answered_at is not None and session.mode == PracticeMode.PRACTICE:
             raise AppException("Question already answered", status_code=400)
 
         selected_ids = [str(option_id) for option_id in payload.selected_option_ids]
@@ -349,6 +398,21 @@ class PracticeService:
         session.score = sum(a.marks_awarded for a in answers)
         await self.practice_repo.save_session(session)
 
+    async def list_bookmarks(self, user: User) -> list[dict]:
+        return await self.practice_repo.list_question_bookmarks(user.id)
+
+    async def _maybe_expire_exam(self, user: User, session: PracticeSession) -> None:
+        if session.mode != PracticeMode.EXAM or session.status != SessionStatus.ACTIVE:
+            return
+        if session.expires_at and datetime.now(UTC) >= session.expires_at:
+            await self.complete_session(user, session.id)
+
+    def _remaining_seconds(self, session: PracticeSession) -> int | None:
+        if session.expires_at is None:
+            return None
+        delta = session.expires_at - datetime.now(UTC)
+        return max(0, int(delta.total_seconds()))
+
     def _session_summary(self, session: PracticeSession) -> SessionSummary:
         return SessionSummary(
             id=session.id,
@@ -361,6 +425,9 @@ class PracticeService:
             unanswered_count=session.unanswered_count,
             started_at=session.started_at.isoformat(),
             completed_at=session.completed_at.isoformat() if session.completed_at else None,
+            duration_minutes=session.duration_minutes,
+            expires_at=session.expires_at.isoformat() if session.expires_at else None,
+            remaining_seconds=self._remaining_seconds(session),
         )
 
     def _session_detail(self, session: PracticeSession, answered_count: int) -> SessionDetailResponse:

@@ -26,6 +26,22 @@ from app.models import (  # noqa: F401
     Topic,
     User,
 )
+from app.models.coding import (  # noqa: F401
+    CodingProblem,
+    CodingProblemProgress,
+    CodingSubmission,
+    CodingSubmissionResult,
+    CodingTestCase,
+)
+from app.models.sql_practice import (  # noqa: F401
+    SqlExpectedResult,
+    SqlProblem,
+    SqlProblemColumn,
+    SqlProblemProgress,
+    SqlProblemSeedRow,
+    SqlProblemTable,
+    SqlSubmission,
+)
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.database_url)

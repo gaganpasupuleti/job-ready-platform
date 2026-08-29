@@ -91,6 +91,53 @@ job-ready-platform/
 | GET | `/api/v1/health` | Service health check |
 | GET | `/api/v1/modules` | Enabled platform modules |
 
+## Build 4 — SQL Practice Engine
+
+Dedicated SQL practice module (separate from Judge0 coding):
+
+- Isolated sandbox database (`jobready_sql_sandbox`) — student SQL never hits the app DB
+- ~30 original PostgreSQL challenges with schema explorer, Monaco editor, run/submit, progress, bookmarks
+- Read-only SELECT/CTE validation, query timeout, row limits
+- Admin authoring + validation at `/admin/sql`
+
+See [SQL Practice](docs/SQL_PRACTICE.md) for sandbox setup and security details.
+
+### Seed SQL problems (after migrations)
+
+```bash
+cd backend
+alembic upgrade head
+python -c "import asyncio; from app.seed.sql_data import seed_sql_problems; asyncio.run(seed_sql_problems())"
+```
+
+## Build 3.1 — Coding Practice (Complete)
+
+Build 3.1 completes the coding practice engine before SQL Practice / Build 4:
+
+- **20 seeded DSA problems** (10 easy, 7 medium, 3 hard) with multi-language starters, tags, and hidden tests
+- **Languages:** Python, Java, C++, JavaScript (centralized Judge0 IDs)
+- **Student routes:** `/practice/dsa`, `/practice/coding`, `/submissions`, `/bookmarks`
+- **Problem workspace:** drafts in `localStorage`, bookmarks, submissions tab, execution-unavailable banner
+- **Exam mode:** timer, navigator, mark-for-review, autosave, auto-submit on expiry
+- **Admin:** MCQ edit (`/admin/questions/:id/edit`), enhanced coding problem form
+- **Judge0 toggle:** set `JUDGE0_ENABLED=false` for clean 503 when execution is unavailable
+
+### Seed coding problems (after migrations)
+
+```bash
+cd backend
+alembic upgrade head
+python -c "import asyncio; from app.seed.coding_data import seed_coding_problems; asyncio.run(seed_coding_problems())"
+```
+
+### Environment (Build 3.1)
+
+| Variable | Description |
+|----------|-------------|
+| `JUDGE0_ENABLED` | Enable/disable remote code execution (default `true`) |
+| `JUDGE0_TIMEOUT_SECONDS` | Judge0 request timeout |
+| `VITE_ENABLE_DEV_LOGIN` | Gate dev login mock in frontend (default `true` in dev) |
+
 ## Running Tests
 
 ```bash
