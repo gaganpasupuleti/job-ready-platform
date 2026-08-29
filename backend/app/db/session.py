@@ -10,8 +10,17 @@ class Base(DeclarativeBase):
     pass
 
 
+def sqlalchemy_async_url(url: str) -> str:
+    """Normalize Railway/postgres DSNs to SQLAlchemy asyncpg form."""
+    if url.startswith("postgres://"):
+        url = "postgresql://" + url[len("postgres://") :]
+    if url.startswith("postgresql://"):
+        url = "postgresql+asyncpg://" + url[len("postgresql://") :]
+    return url
+
+
 engine = create_async_engine(
-    settings.database_url,
+    sqlalchemy_async_url(settings.database_url),
     echo=settings.debug,
     pool_pre_ping=True,
 )
