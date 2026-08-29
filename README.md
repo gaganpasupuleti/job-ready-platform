@@ -134,8 +134,13 @@ python -c "import asyncio; from app.seed.coding_data import seed_coding_problems
 
 | Variable | Description |
 |----------|-------------|
-| `JUDGE0_ENABLED` | Enable/disable remote code execution (default `true`) |
-| `JUDGE0_TIMEOUT_SECONDS` | Judge0 request timeout |
+| `JUDGE0_ENABLED` | Enable remote Judge0 execution (default `false` in `.env.example` for safe local) |
+| `JUDGE0_URL` | Judge0 API base URL |
+| `JUDGE0_AUTH_HEADER` / `JUDGE0_AUTH_TOKEN` | Auth header sent only from FastAPI |
+| `JUDGE0_TIMEOUT_SECONDS` | HTTP client timeout to Judge0 |
+| `CODING_*` | Source/stdin limits and per-user rate/concurrency |
+
+Judge0 hosting: [docs/JUDGE0_DEPLOYMENT.md](docs/JUDGE0_DEPLOYMENT.md) · compose: `infra/judge0/` (pinned `judge0/judge0:1.13.1`).
 | `VITE_ENABLE_DEV_LOGIN` | Gate dev login mock in frontend (default `true` in dev) |
 
 ## Running Tests

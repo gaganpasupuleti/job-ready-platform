@@ -62,8 +62,11 @@ class CodingProgressSummary(BaseModel):
 
 
 class ExecutionStatusResponse(BaseModel):
+    enabled: bool = False
     available: bool
+    provider: str = "none"
     message: str | None = None
+    languages: list[dict] = Field(default_factory=list)
 
 
 class BookmarkedProblemItem(CodingProblemListItem):

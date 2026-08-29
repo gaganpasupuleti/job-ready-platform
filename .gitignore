@@ -20,6 +20,8 @@ build/
 .env
 .env.local
 .env.*.local
+infra/judge0/.env
+infra/judge0/judge0.conf
 
 # IDE
 .idea/

@@ -19,6 +19,7 @@ from app.schemas.coding import (
 )
 from app.services.code_execution.interface import CodeExecutionService, get_code_execution_service
 from app.services.code_execution.languages import list_languages
+from app.services.code_execution.health import get_execution_health
 from app.services.coding_service import CodingService
 
 router = APIRouter(prefix="/coding")
@@ -35,12 +36,31 @@ def _coding_service(
 async def execution_status(
     service: CodingService = Depends(_coding_service),
 ) -> ExecutionStatusResponse:
-    return service.get_execution_status()
+    return await service.get_execution_status()
 
 
 @router.get("/languages")
 async def get_languages() -> list[dict]:
-    return [{"id": lang.id, "name": lang.name} for lang in list_languages()]
+    snap = await get_execution_health()
+    if snap.languages:
+        return [
+            {
+                "id": lang["id"],
+                "name": lang["name"],
+                "key": lang.get("key"),
+                "available": bool(lang.get("available", True)),
+            }
+            for lang in snap.languages
+        ]
+    return [
+        {
+            "id": lang.id,
+            "name": lang.name,
+            "key": lang.key,
+            "available": lang.available,
+        }
+        for lang in list_languages()
+    ]
 
 
 @router.get("/problems", response_model=CodingProblemListResponse)

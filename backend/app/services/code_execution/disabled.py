@@ -14,3 +14,6 @@ class DisabledCodeExecutionService(CodeExecutionService):
             stderr="Code execution is currently unavailable",
             status="service_unavailable",
         )
+
+    async def health_check(self) -> bool:
+        return False

@@ -25,11 +25,10 @@ export type SubmissionStatus =
 
 
 export interface LanguageInfo {
-
   id: number
-
   name: string
-
+  key?: string
+  available?: boolean
 }
 
 
@@ -259,11 +258,11 @@ export interface CodingProgressSummary {
 
 
 export interface ExecutionStatusResponse {
-
+  enabled?: boolean
   available: boolean
-
+  provider?: string
   message?: string | null
-
+  languages?: LanguageInfo[]
 }
 
 

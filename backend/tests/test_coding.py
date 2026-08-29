@@ -244,3 +244,27 @@ async def test_judge0_disabled_returns_503(client, student_auth, coding_problem_
     assert run.status_code == 503
 
     app.dependency_overrides[get_code_execution_service] = lambda: MockCodeExecutionService()
+
+
+@pytest.mark.asyncio
+async def test_source_too_long_rejected(client, student_auth, coding_problem_id, monkeypatch):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "coding_max_source_chars", 20)
+    monkeypatch.setattr(settings, "max_source_code_length", 20)
+    run = await client.post(
+        f"/api/v1/coding/problems/{coding_problem_id}/run",
+        headers=_headers(student_auth),
+        json={"source_code": "print(1)\n" * 20, "language_id": 71},
+    )
+    assert run.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_unknown_language_rejected(client, student_auth, coding_problem_id):
+    run = await client.post(
+        f"/api/v1/coding/problems/{coding_problem_id}/run",
+        headers=_headers(student_auth),
+        json={"source_code": "print(1)", "language_id": 99999},
+    )
+    assert run.status_code == 400

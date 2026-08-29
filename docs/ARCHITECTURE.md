@@ -46,8 +46,11 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 
 ## Judge0 Integration
 
-- Configuration: `JUDGE0_URL`, `JUDGE0_API_KEY`, `JUDGE0_ENABLED`, `JUDGE0_TIMEOUT_SECONDS`
-- Service: `app/services/code_execution/` — interface, Judge0 client, mock, disabled
+- Configuration: `JUDGE0_URL`, `JUDGE0_AUTH_HEADER`, `JUDGE0_AUTH_TOKEN`, polling + platform max limits
+- Service: `app/services/code_execution/` — interface, Judge0 HTTP client (batch/poll), mock, disabled
+- Student code **never** runs inside FastAPI; only Judge0 workers execute untrusted code
+- Host Judge0 on a privileged Linux VM (`infra/judge0/`, image `judge0/judge0:1.13.1`) — see [JUDGE0_DEPLOYMENT.md](JUDGE0_DEPLOYMENT.md)
+- Job Ready Redis is used only for rate/concurrency coordination — not Judge0's Redis
 - **Critical rule:** Student code MUST NEVER execute inside the FastAPI container
 ```
 

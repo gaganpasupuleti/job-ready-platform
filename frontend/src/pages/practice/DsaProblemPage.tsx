@@ -96,7 +96,9 @@ export function DsaProblemPage() {
     return <p className="text-sm text-[var(--color-text-muted)]">Loading problem...</p>
   }
 
-  const langOptions = languages ?? problem.supported_languages
+  const langOptions = (languages ?? problem.supported_languages).filter(
+    (lang) => lang.available !== false,
+  )
 
   return (
     <div className="flex h-[calc(100vh-8rem)] flex-col gap-4">

@@ -31,11 +31,29 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
 
     judge0_url: str = "http://localhost:2358"
+    # Prefer JUDGE0_AUTH_TOKEN; JUDGE0_API_KEY kept for backward compatibility
     judge0_api_key: str = ""
+    judge0_auth_header: str = "X-Auth-Token"
+    judge0_auth_token: str = ""
     judge0_enabled: bool = True
     judge0_timeout_seconds: int = 30
+    judge0_poll_interval_ms: int = 500
+    judge0_max_poll_seconds: int = 45
+    judge0_max_cpu_time_seconds: float = 15.0
+    judge0_max_wall_time_seconds: float = 20.0
+    judge0_max_memory_kb: int = 256000
+    judge0_health_cache_seconds: int = 30
+    judge0_retry_count: int = 2
+    judge0_batch_size: int = 20
 
+    # Coding limits / rate control (aliases coding_max_source_chars → max_source_code_length)
     max_source_code_length: int = 65536
+    coding_max_source_chars: int = 65536
+    coding_max_stdin_chars: int = 100_000
+    coding_runs_per_minute: int = 20
+    coding_submits_per_minute: int = 10
+    coding_max_concurrent_executions_per_user: int = 2
+
     default_exam_duration_minutes: int = 30
 
     # SQL practice sandbox (isolated from application DB)

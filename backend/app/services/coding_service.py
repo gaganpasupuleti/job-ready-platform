@@ -47,6 +47,9 @@ from app.services.code_execution.languages import (
     list_languages,
 )
 from app.services.code_execution.disabled import DisabledCodeExecutionService
+from app.services.code_execution.health import get_execution_health
+from app.services.code_execution.rate_limit import concurrency_slot, enforce_rate_limit
+from app.services.code_execution.sanitize import sanitize_execution_message
 
 STATUS_PRIORITY = [
     SubmissionStatus.COMPILATION_ERROR,
@@ -95,23 +98,44 @@ class CodingService:
             return False
         return not isinstance(self.executor, DisabledCodeExecutionService)
 
-    def get_execution_status(self) -> ExecutionStatusResponse:
-        if self.is_execution_available():
-            return ExecutionStatusResponse(available=True)
+    async def get_execution_status(self) -> ExecutionStatusResponse:
+        snap = await get_execution_health()
         return ExecutionStatusResponse(
-            available=False,
-            message="Code execution is currently unavailable.",
+            enabled=snap.enabled,
+            available=snap.available and self.is_execution_available(),
+            provider=snap.provider,
+            message=snap.message,
+            languages=snap.languages,
         )
 
     def _validate_language(self, language_id: int) -> str:
-        name = get_language_name(language_id)
-        if not name:
-            raise AppException("Unsupported language", status_code=400)
-        return name
+        from app.services.code_execution.languages import validate_language_id
+
+        try:
+            lang = validate_language_id(language_id)
+        except ValueError as exc:
+            raise AppException(str(exc), status_code=400) from exc
+        return get_language_name(language_id) or lang.name
 
     def _validate_source_code(self, source_code: str) -> None:
-        if len(source_code) > settings.max_source_code_length:
+        max_chars = min(settings.max_source_code_length, settings.coding_max_source_chars)
+        if len(source_code) > max_chars:
             raise AppException("Source code exceeds maximum allowed length", status_code=400)
+
+    def _validate_stdin(self, stdin: str) -> None:
+        if len(stdin) > settings.coding_max_stdin_chars:
+            raise AppException("Test input exceeds maximum allowed length", status_code=400)
+
+    def _cpu_time_limit(self, problem: CodingProblem) -> float:
+        seconds = max(0.1, problem.time_limit_ms / 1000.0)
+        return min(seconds, float(settings.judge0_max_cpu_time_seconds))
+
+    def _wall_time_limit(self, problem: CodingProblem) -> float:
+        cpu = self._cpu_time_limit(problem)
+        return min(cpu + 2.0, float(settings.judge0_max_wall_time_seconds))
+
+    def _memory_limit_kb(self, problem: CodingProblem) -> int:
+        return min(int(problem.memory_limit_kb), int(settings.judge0_max_memory_kb))
 
     def _ensure_execution_available(self) -> None:
         if not self.is_execution_available():
@@ -203,7 +227,6 @@ class CodingService:
 
         progress = await self.repo.get_progress(user.id, problem.id)
         bookmarked = await self.repo.is_problem_bookmarked(user.id, problem.id)
-        lang_ids = problem.supported_language_ids or list(SUPPORTED_LANGUAGES.keys())
         starter = {k: str(v) for k, v in (problem.starter_code or {}).items()}
         samples = [
             SampleTestCasePublic(
@@ -274,6 +297,45 @@ class CodingService:
         if not test_cases:
             raise AppException("No test cases available", status_code=400)
 
+        for tc in test_cases:
+            self._validate_stdin(tc.input or "")
+
+        kind = "run" if submission_type == SubmissionType.RUN else "submit"
+        await enforce_rate_limit(user.id, kind=kind)
+
+        cpu = self._cpu_time_limit(problem)
+        wall = self._wall_time_limit(problem)
+        mem = self._memory_limit_kb(problem)
+
+        logger = __import__("logging").getLogger(__name__)
+        started = __import__("time").perf_counter()
+        logger.info(
+            "coding_execution_start user=%s problem=%s type=%s language_id=%s tests=%s",
+            user.id,
+            problem.id,
+            submission_type.value,
+            payload.language_id,
+            len(test_cases),
+        )
+
+        async with concurrency_slot(user.id):
+            requests = [
+                ExecutionRequest(
+                    source_code=payload.source_code,
+                    language_id=payload.language_id,
+                    stdin=test_case.input or "",
+                    expected_output=test_case.expected_output,
+                    cpu_time_limit=cpu,
+                    wall_time_limit=wall,
+                    memory_limit_kb=mem,
+                )
+                for test_case in test_cases
+            ]
+            if hasattr(self.executor, "execute_many"):
+                exec_results = await self.executor.execute_many(requests)
+            else:
+                exec_results = [await self.executor.execute(req) for req in requests]
+
         submission = CodingSubmission(
             user_id=user.id,
             problem_id=problem.id,
@@ -292,15 +354,9 @@ class CodingService:
         max_memory: int | None = None
         passed = 0
 
-        for index, test_case in enumerate(test_cases, start=1):
-            exec_result = await self.executor.execute(
-                ExecutionRequest(
-                    source_code=payload.source_code,
-                    language_id=payload.language_id,
-                    stdin=test_case.input,
-                    expected_output=test_case.expected_output,
-                )
-            )
+        for index, (test_case, exec_result) in enumerate(
+            zip(test_cases, exec_results, strict=True), start=1
+        ):
             if exec_result.status == "service_unavailable":
                 raise AppException(
                     "Code execution is currently unavailable.",
@@ -312,9 +368,22 @@ class CodingService:
                 passed += 1
 
             if exec_result.time is not None:
-                max_time = max(max_time or 0, exec_result.time) * 1000
+                time_ms = exec_result.time * 1000
+                max_time = max(max_time or 0, time_ms)
             if exec_result.memory is not None:
                 max_memory = max(max_memory or 0, exec_result.memory)
+
+            stderr = sanitize_execution_message(exec_result.stderr)
+            if submission_type == SubmissionType.SUBMIT and test_case.is_hidden:
+                # Hide detailed stderr for hidden cases on submit
+                if status not in {
+                    SubmissionStatus.COMPILATION_ERROR,
+                    SubmissionStatus.RUNTIME_ERROR,
+                }:
+                    stderr = None
+                elif stderr:
+                    # Keep short class of error only
+                    stderr = stderr.splitlines()[0][:200] if stderr else None
 
             results.append(
                 CodingSubmissionResult(
@@ -322,8 +391,8 @@ class CodingService:
                     test_number=index,
                     is_hidden=test_case.is_hidden,
                     status=status,
-                    stdout=exec_result.stdout,
-                    stderr=exec_result.stderr,
+                    stdout=exec_result.stdout if not test_case.is_hidden else None,
+                    stderr=stderr,
                     execution_time_ms=exec_result.time * 1000 if exec_result.time else None,
                     memory_kb=exec_result.memory,
                 )
@@ -339,11 +408,17 @@ class CodingService:
         if submission_type == SubmissionType.SUBMIT:
             await self._update_progress(user.id, problem, submission)
 
-        public_results = [
-            self._public_result(r, test_cases) for r in results
-        ]
+        public_results = [self._public_result(r, test_cases) for r in results]
 
         await self.db.flush()
+        logger.info(
+            "coding_execution_done user=%s problem=%s type=%s status=%s duration_ms=%.1f",
+            user.id,
+            problem.id,
+            submission_type.value,
+            submission.status.value,
+            (__import__("time").perf_counter() - started) * 1000,
+        )
         return ExecutionResponse(
             submission_id=submission.id,
             submission_type=submission_type,

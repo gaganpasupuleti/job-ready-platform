@@ -39,6 +39,14 @@ async def lifespan(app: FastAPI):
                 "SQL sandbox role bootstrap failed — SQL practice may be unavailable"
             )
 
+    if settings.judge0_enabled:
+        try:
+            from app.services.code_execution.health import get_execution_health
+
+            await get_execution_health(force=True)
+        except Exception:
+            logger.warning("Judge0 health/language discovery failed at startup", exc_info=True)
+
     yield
 
     from app.services.sql_execution.pools import close_sandbox_pools

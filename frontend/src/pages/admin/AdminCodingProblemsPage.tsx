@@ -4,12 +4,18 @@ import { useQuery } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
-import { fetchAdminCodingProblems } from '@/services/codingService'
+import { fetchAdminCodingProblems, fetchExecutionStatus } from '@/services/codingService'
 
 export function AdminCodingProblemsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin-coding-problems'],
     queryFn: fetchAdminCodingProblems,
+  })
+
+  const { data: executionStatus } = useQuery({
+    queryKey: ['coding-execution-status'],
+    queryFn: fetchExecutionStatus,
+    refetchInterval: 30000,
   })
 
   return (
@@ -25,6 +31,29 @@ export function AdminCodingProblemsPage() {
           <Button variant="primary">New Problem</Button>
         </Link>
       </div>
+
+      {executionStatus && (
+        <Card padding="md">
+          <p className="text-sm text-[var(--color-text)]">
+            Execution service:{' '}
+            <span className="font-medium">
+              {executionStatus.available ? 'Available' : 'Unavailable'}
+            </span>
+            {executionStatus.provider ? ` (${executionStatus.provider})` : null}
+          </p>
+          {executionStatus.languages && executionStatus.languages.length > 0 && (
+            <ul className="mt-2 flex flex-wrap gap-2 text-xs">
+              {executionStatus.languages.map((lang) => (
+                <li key={lang.id}>
+                  <Badge variant={lang.available === false ? 'warning' : 'success'}>
+                    {lang.name} {lang.available === false ? '✕' : '✓'}
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      )}
 
       <Card>
         <CardHeader title={`Problems (${data?.total ?? 0})`} />
