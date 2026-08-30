@@ -49,6 +49,10 @@ export function PracticeResultsPage() {
           <p className="text-2xl font-semibold">{data.session.incorrect_count}</p>
         </Card>
         <Card padding="sm">
+          <p className="text-xs text-[var(--color-text-muted)]">Unanswered</p>
+          <p className="text-2xl font-semibold">{data.session.unanswered_count}</p>
+        </Card>
+        <Card padding="sm">
           <p className="text-xs text-[var(--color-text-muted)]">Time Taken</p>
           <p className="text-2xl font-semibold">{formatDuration(data.time_taken_seconds)}</p>
         </Card>
@@ -105,6 +109,9 @@ export function PracticeResultsPage() {
         </div>
       </Card>
 
+      <p className="text-xs text-[var(--color-text-subtle)]">
+        Retry Incorrect is planned for a later practice build.
+      </p>
       <Link to="/">
         <Button variant="secondary">Back to Dashboard</Button>
       </Link>

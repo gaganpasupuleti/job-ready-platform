@@ -55,6 +55,8 @@ export interface PracticePathDetail {
       title: string | null
       href: string | null
       sort_order: number
+      completed?: boolean
+      coding_problem_id?: string | null
     }>
   }>
 }
@@ -132,7 +134,13 @@ export interface LessonDetail {
   prev_href: string | null
   next_href: string | null
   course_slug: string
+  course_title?: string | null
   module_slug: string
+  module_title?: string | null
+  course_percent?: number
+  lesson_index?: number
+  lesson_total?: number
+  primary_language_key?: string | null
   completion_requires_submit: boolean
   can_mark_complete: boolean
 }
@@ -185,10 +193,32 @@ export interface ProjectDetail {
       task_type: string
       status: string
       href: string | null
-      checklist_json: string[]
+      engine_href?: string | null
+      workspace_href?: string | null
+      coding_problem_id?: string | null
+      sql_problem_id?: string | null
+      topic_id?: string | null
+      scenario_slug?: string | null
+      checklist_json: unknown[]
+      checklist_state?: Record<string, boolean>
       body_json: Record<string, unknown>
+      estimated_minutes?: number | null
     }>
   }>
+}
+
+export interface ProjectTaskPage {
+  project_id: string
+  project_slug: string
+  project_title: string
+  project_percent: number
+  project_completed: boolean
+  skills: string[]
+  estimated_minutes: number | null
+  completed_at: string | null
+  prev_task_id: string | null
+  next_task_id: string | null
+  task: ProjectDetail['modules'][0]['tasks'][0]
 }
 
 export async function fetchPracticeHub() {
@@ -260,12 +290,24 @@ export async function fetchProject(slug: string) {
 }
 
 export async function startProject(id: string) {
-  const { data } = await apiClient.post(apiEndpoints.learn.projectStart(id))
+  const { data } = await apiClient.post<{ status: string; percent: number; href: string }>(
+    apiEndpoints.learn.projectStart(id),
+  )
   return data
 }
 
 export async function completeProjectTask(projectId: string, taskId: string) {
   const { data } = await apiClient.post(apiEndpoints.learn.projectTaskComplete(projectId, taskId))
+  return data
+}
+
+export async function fetchProjectTask(slug: string, taskId: string) {
+  const { data } = await apiClient.get<ProjectTaskPage>(apiEndpoints.learn.projectTask(slug, taskId))
+  return data
+}
+
+export async function updateProjectTaskChecklist(projectId: string, taskId: string, checked: Record<string, boolean>) {
+  const { data } = await apiClient.patch(apiEndpoints.learn.projectTaskChecklist(projectId, taskId), { checked })
   return data
 }
 

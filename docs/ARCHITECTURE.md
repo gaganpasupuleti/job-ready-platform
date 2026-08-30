@@ -61,7 +61,8 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 - **Student API:** `/api/v1/practice-hub`, `/paths`, `/courses`, `/lessons/*`, `/projects`, `/learning/continue`, `/practice/search`
 - **Admin API:** `/api/v1/admin/practice-paths`, `/admin/courses`, modules, lessons
 - **Frontend:** `/practice` hub, `/practice/paths/:slug`, `/learn/*` lesson workspace, `/practice/projects`, admin pages
-- Docs: [PRACTICE_HUB.md](PRACTICE_HUB.md), [INTERACTIVE_LEARNING.md](INTERACTIVE_LEARNING.md), [PROJECTS.md](PROJECTS.md)
+- Docs: [PRACTICE_HUB.md](PRACTICE_HUB.md), [INTERACTIVE_LEARNING.md](INTERACTIVE_LEARNING.md), [PROJECTS.md](PROJECTS.md), [PRACTICE_WORKSPACES.md](PRACTICE_WORKSPACES.md)
+- **Build 7.1:** Shared student workspaces; `010_build71` (`user_practice_path_item_progress`, project `checklist_state`, optional coding hints/solution JSON); SQL/coding navigation endpoints; linked project task auto-complete
 
 ## AI Practice (Build 6)
 

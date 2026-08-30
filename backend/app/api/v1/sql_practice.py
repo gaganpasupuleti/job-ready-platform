@@ -71,6 +71,15 @@ async def get_problem(
     return await service.get_problem(current_user, slug_or_id)
 
 
+@router.get("/problems/{slug_or_id}/navigation")
+async def get_problem_navigation(
+    slug_or_id: str,
+    current_user: User = Depends(get_current_user),
+    service: SqlPracticeService = Depends(_sql_service),
+):
+    return await service.get_navigation(current_user, slug_or_id)
+
+
 @router.get("/problems/{problem_id}/schema", response_model=list[SqlTableSchemaPublic])
 async def get_schema(
     problem_id: UUID,

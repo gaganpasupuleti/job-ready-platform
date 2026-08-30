@@ -34,6 +34,7 @@ import { PracticeHubPage } from '@/pages/practice/PracticeHubPage'
 import { PracticePathPage } from '@/pages/practice/PracticePathPage'
 import { ProjectsPage } from '@/pages/practice/ProjectsPage'
 import { ProjectDetailPage } from '@/pages/practice/ProjectDetailPage'
+import { ProjectTaskPage } from '@/pages/practice/ProjectTaskPage'
 import { CourseListPage } from '@/pages/learn/CourseListPage'
 import { CourseDetailPage } from '@/pages/learn/CourseDetailPage'
 import { LessonWorkspacePage } from '@/pages/learn/LessonWorkspacePage'
@@ -70,7 +71,6 @@ const placeholderRoutes = moduleRoutes.filter(
       'bookmarks',
       'interviews',
       'ai',
-      'ai/ml',
       'ai/genai',
       'ai/prompt-engineering',
       'ai/agents',
@@ -112,6 +112,7 @@ export function AppRoutes() {
         <Route path="practice/paths/:slug" element={<PracticePathPage />} />
         <Route path="practice/projects" element={<ProjectsPage />} />
         <Route path="practice/projects/:slug" element={<ProjectDetailPage />} />
+        <Route path="projects/:slug/tasks/:taskId" element={<ProjectTaskPage />} />
         <Route path="projects/:slug" element={<ProjectDetailPage />} />
         <Route path="learn" element={<CourseListPage />} />
         <Route path="learn/courses/:slug" element={<CourseDetailPage />} />

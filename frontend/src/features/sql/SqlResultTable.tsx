@@ -46,9 +46,22 @@ export function SqlResultTable({
                 <tr key={rowIndex} className="border-t border-[var(--color-border)]">
                   {columns.map((_, cellIndex) => {
                     const cell = row[cellIndex]
+                    const formatted =
+                      cell == null
+                        ? 'NULL'
+                        : typeof cell === 'boolean'
+                          ? cell
+                            ? 'true'
+                            : 'false'
+                          : String(cell)
+                    const truncated = formatted.length > 80
                     return (
-                      <td key={cellIndex} className="whitespace-nowrap px-3 py-2 font-mono">
-                        {cell == null ? 'NULL' : String(cell)}
+                      <td
+                        key={cellIndex}
+                        className="max-w-[22rem] truncate whitespace-nowrap px-3 py-2 font-mono"
+                        title={formatted}
+                      >
+                        {truncated ? `${formatted.slice(0, 80)}…` : formatted}
                       </td>
                     )
                   })}

@@ -108,11 +108,19 @@ export async function fetchCodingProblems(params?: CodingProblemsParams) {
 
 
 export async function fetchCodingProblem(problemId: string) {
-
   const { data } = await apiClient.get<CodingProblemDetail>(apiEndpoints.coding.problem(problemId))
-
   return data
+}
 
+export async function fetchCodingNavigation(problemId: string) {
+  const { data } = await apiClient.get<{
+    previous: { id: string; slug: string; title: string; status?: string | null; href: string } | null
+    next: { id: string; slug: string; title: string; status?: string | null; href: string } | null
+    position: number
+    total: number
+    items: Array<{ id: string; slug: string; title: string; status?: string | null; href: string }>
+  }>(apiEndpoints.coding.navigation(problemId))
+  return data
 }
 
 

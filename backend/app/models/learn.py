@@ -157,6 +157,27 @@ class UserPracticePathProgress(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class UserPracticePathItemProgress(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+    __tablename__ = "user_practice_path_item_progress"
+    __table_args__ = (UniqueConstraint("user_id", "item_id", name="uq_user_path_item_progress"),)
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    item_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("practice_path_items.id", ondelete="CASCADE"), index=True
+    )
+    path_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("practice_paths.id", ondelete="CASCADE"), index=True
+    )
+    status: Mapped[ProgressStatus] = mapped_column(
+        Enum(ProgressStatus, name="learn_progress_status", native_enum=False, create_constraint=False),
+        default=ProgressStatus.COMPLETED,
+        nullable=False,
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class Course(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "courses"
 
@@ -497,6 +518,7 @@ class ProjectTask(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     checklist_json: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
     reference_json: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     estimated_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    scenario_slug: Mapped[str | None] = mapped_column(String(180), nullable=True)
 
     module: Mapped[ProjectModule] = relationship(back_populates="tasks")
 
@@ -551,3 +573,4 @@ class UserProjectTaskProgress(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     )
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     last_activity_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    checklist_state: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)

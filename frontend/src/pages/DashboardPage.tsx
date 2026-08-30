@@ -2,31 +2,66 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
 import { Card, CardHeader } from '@/components/common/Card'
+import { EmptyState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
 import { StatCard } from '@/features/dashboard/StatCard'
-import {
-  mockDashboardCards,
-  mockUpcomingAssessments,
-  mockWeakSkills,
-} from '@/mocks/dev-data'
-import { fetchContinueLearning } from '@/services/learnService'
-import { formatPercent } from '@/utils/cn'
+import { fetchAiHome } from '@/services/aiService'
+import { fetchCodingProgress } from '@/services/codingService'
+import { fetchContinueLearning, fetchProjects } from '@/services/learnService'
+import { fetchSqlProgress } from '@/services/sqlService'
+import type { DashboardCard } from '@/types'
 
 export function DashboardPage() {
-  const { data: continueItems } = useQuery({
+  const { data: continueItems, isLoading: continueLoading } = useQuery({
     queryKey: ['continue-learning'],
     queryFn: fetchContinueLearning,
   })
+  const { data: coding } = useQuery({ queryKey: ['coding-progress'], queryFn: fetchCodingProgress })
+  const { data: sql } = useQuery({ queryKey: ['sql-progress'], queryFn: fetchSqlProgress })
+  const { data: ai } = useQuery({ queryKey: ['ai-home'], queryFn: fetchAiHome })
+  const { data: projects } = useQuery({ queryKey: ['projects'], queryFn: fetchProjects })
+
+  const cards: DashboardCard[] = [
+    {
+      id: 'coding-progress',
+      title: 'Coding Progress',
+      value: coding ? `${coding.solved_count} / ${coding.total_problems}` : '—',
+      subtitle: coding ? 'problems solved' : 'No coding progress yet',
+    },
+    {
+      id: 'sql-progress',
+      title: 'SQL Progress',
+      value: sql ? `${sql.solved_count} / ${sql.total_problems}` : '—',
+      subtitle: sql ? 'problems solved' : 'No SQL progress yet',
+    },
+    {
+      id: 'ai-progress',
+      title: 'AI Progress',
+      value: ai
+        ? `${ai.prompt_progress.mastered} mastered`
+        : '—',
+      subtitle: ai ? `${ai.prompt_progress.attempted} prompt challenges attempted` : 'No AI practice yet',
+    },
+    {
+      id: 'project-progress',
+      title: 'Project Progress',
+      value:
+        projects && projects.length
+          ? `${Math.round(projects.reduce((sum, p) => sum + p.progress_percent, 0) / projects.length)}%`
+          : '—',
+      subtitle: projects?.length ? `${projects.length} projects` : 'No project progress yet',
+    },
+  ]
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">Welcome back</h2>
+        <h1 className="text-lg font-semibold text-[var(--color-text)]">Welcome back</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Your job preparation overview. Continue Learning uses live course progress; other cards may still use
-          sample data.
+          Continue Learning, coding, SQL, AI, and project stats use live progress. Global readiness is not in this build.
         </p>
       </div>
 
+      {continueLoading && <LoadingState label="Loading continue learning" />}
       {(continueItems?.length ?? 0) > 0 && (
         <Card>
           <CardHeader title="Continue Learning" description="Pick up where you left off" />
@@ -47,67 +82,15 @@ export function DashboardPage() {
           </div>
         </Card>
       )}
+      {!continueLoading && (continueItems?.length ?? 0) === 0 && (
+        <EmptyState title="No recent learning activity" description="Start a course, project, or practice path to see it here." />
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {mockDashboardCards.map((card) => (
+        {cards.map((card) => (
           <StatCard key={card.id} card={card} />
         ))}
       </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader
-            title="Weak Skills"
-            description="Focus areas based on recent practice performance"
-          />
-          <ul className="space-y-3">
-            {mockWeakSkills.map((item) => (
-              <li key={item.skill}>
-                <div className="mb-1 flex items-center justify-between text-sm">
-                  <span className="text-[var(--color-text)]">{item.skill}</span>
-                  <span className="text-[var(--color-text-muted)]">
-                    {formatPercent(item.score)}
-                  </span>
-                </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-[var(--color-surface-muted)]">
-                  <div
-                    className="h-full rounded-full bg-[var(--color-accent)]"
-                    style={{ width: `${item.score}%` }}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Card>
-
-        <Card>
-          <CardHeader title="Upcoming Assessments" description="Scheduled tests and contests" />
-          <ul className="divide-y divide-[var(--color-border)]">
-            {mockUpcomingAssessments.map((assessment) => (
-              <li
-                key={assessment.id}
-                className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
-              >
-                <div>
-                  <p className="text-sm font-medium text-[var(--color-text)]">
-                    {assessment.title}
-                  </p>
-                  <p className="text-xs text-[var(--color-text-muted)]">{assessment.type}</p>
-                </div>
-                <span className="shrink-0 text-xs text-[var(--color-text-subtle)]">
-                  {assessment.date}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </div>
-
-      <p className="text-sm">
-        <Link to="/practice" className="text-[var(--color-accent)] hover:underline">
-          Open Practice Hub →
-        </Link>
-      </p>
     </div>
   )
 }

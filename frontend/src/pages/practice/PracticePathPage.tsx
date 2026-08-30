@@ -76,7 +76,10 @@ export function PracticePathPage() {
                 key={item.id}
                 className="flex items-center justify-between gap-2 border-t border-[var(--color-border)] py-2 text-sm"
               >
-                <span>{item.title ?? item.item_type}</span>
+                <span>
+                  {item.completed ? '✓ ' : '○ '}
+                  {item.title ?? item.item_type}
+                </span>
                 <div className="flex items-center gap-3">
                   {item.href ? (
                     <Link to={item.href} className="text-[var(--color-accent)] hover:underline">
@@ -89,9 +92,9 @@ export function PracticePathPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => complete.mutate(item.id)}
-                    disabled={complete.isPending}
+                    disabled={complete.isPending || item.completed}
                   >
-                    Done
+                    {item.completed ? 'Completed' : 'Done'}
                   </Button>
                 </div>
               </li>

@@ -101,7 +101,7 @@ async def test_sql_project_links_engine(client, student_auth, learn_seed):
     headers = _headers(student_auth)
     detail = await client.get("/api/v1/projects/sql-ecommerce-analytics", headers=headers)
     assert detail.status_code == 200
-    hrefs = [t.get("href") for m in detail.json()["modules"] for t in m["tasks"]]
+    hrefs = [t.get("engine_href") or t.get("href") for m in detail.json()["modules"] for t in m["tasks"]]
     assert any(h and str(h).startswith("/practice/sql") for h in hrefs)
 
 

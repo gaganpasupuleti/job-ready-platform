@@ -53,6 +53,7 @@ class PracticePathItemOut(BaseModel):
     title: str | None = None
     sort_order: int
     href: str | None = None
+    completed: bool = False
     coding_problem_id: UUID | None = None
     course_id: UUID | None = None
     lesson_id: UUID | None = None
@@ -184,7 +185,13 @@ class LessonDetail(BaseModel):
     prev_href: str | None = None
     next_href: str | None = None
     course_slug: str
+    course_title: str | None = None
     module_slug: str
+    module_title: str | None = None
+    course_percent: int = 0
+    lesson_index: int = 1
+    lesson_total: int = 1
+    primary_language_key: str | None = None
     completion_requires_submit: bool = False
     can_mark_complete: bool = True
 
@@ -218,12 +225,16 @@ class ProjectTaskOut(BaseModel):
     task_type: str = "concept"
     status: str = "not_started"
     href: str | None = None
+    engine_href: str | None = None
+    workspace_href: str | None = None
     lesson_id: UUID | None = None
     coding_problem_id: UUID | None = None
     sql_problem_id: UUID | None = None
     topic_id: UUID | None = None
+    scenario_slug: str | None = None
     body_json: dict[str, Any] = Field(default_factory=dict)
     checklist_json: list[Any] = Field(default_factory=list)
+    checklist_state: dict[str, Any] = Field(default_factory=dict)
     reference_json: dict[str, Any] | None = None
     estimated_minutes: int | None = None
 
@@ -260,6 +271,24 @@ class ProjectDetail(BaseModel):
     last_activity_at: datetime | None = None
     completed_at: datetime | None = None
     modules: list[ProjectModuleOut] = Field(default_factory=list)
+
+
+class ProjectTaskPageOut(BaseModel):
+    project_id: UUID
+    project_slug: str
+    project_title: str
+    project_percent: int = 0
+    project_completed: bool = False
+    skills: list[str] = Field(default_factory=list)
+    estimated_minutes: int | None = None
+    completed_at: datetime | None = None
+    prev_task_id: UUID | None = None
+    next_task_id: UUID | None = None
+    task: ProjectTaskOut
+
+
+class ChecklistUpdateIn(BaseModel):
+    checked: dict[str, bool] = Field(default_factory=dict)
 
 
 class SearchHit(BaseModel):

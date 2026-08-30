@@ -12,7 +12,9 @@ Supporting tables: steps, hints (progressive reveal), doubts (FAQ), resources, a
 
 ## Lesson workspace
 
-Desktop: progress sidebar + tabbed content. Mobile: stacked tabs.
+Desktop: progress sidebar + statement/editor split for interactive-code lessons. Mobile: stacked tabs plus an outline drawer.
+
+Interactive lessons save practice attempts without pretending execution passed while Judge0 is off. See `docs/PRACTICE_WORKSPACES.md`.
 
 Tabs:
 

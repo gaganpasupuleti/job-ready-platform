@@ -222,6 +222,10 @@ class ScenarioService:
                 )
             )
         await self._touch_progress(user.id, challenge, score, mastered)
+        if mastered:
+            from app.services.project_sync import complete_linked_project_tasks
+
+            await complete_linked_project_tasks(self.db, user.id, scenario_slug=challenge.slug)
         await self.db.commit()
         return ScenarioSubmitResponse(
             overall_score=score,

@@ -32,6 +32,7 @@ from app.schemas.sql_practice import (
     SqlTableSchemaPublic,
     TopicBreakdown,
 )
+from app.schemas.workspace import WorkspaceNavItem, WorkspaceNavigation
 from app.services.sql_execution import (
     compare_results,
     get_sql_executor,
@@ -110,6 +111,42 @@ class SqlPracticeService:
         if not problem or not problem.is_active:
             raise AppException("SQL problem not found", status_code=404)
         return await self._to_public_detail(user, problem)
+
+    async def get_navigation(self, user: User, slug_or_id: str) -> WorkspaceNavigation:
+        problem = await self._resolve_problem(slug_or_id, load_dataset=False)
+        if not problem or not problem.is_active:
+            raise AppException("SQL problem not found", status_code=404)
+        listing = await self.list_problems(user, skip=0, limit=100)
+        items = listing["items"]
+        index = next((i for i, item in enumerate(items) if item.id == problem.id), -1)
+        if index < 0:
+            items = list(items) + [
+                SqlProblemListItem(
+                    id=problem.id,
+                    slug=problem.slug,
+                    title=problem.title,
+                    difficulty=problem.difficulty,
+                    topic_id=problem.topic_id,
+                )
+            ]
+            index = len(items) - 1
+        nav_items = [
+            WorkspaceNavItem(
+                id=item.id,
+                slug=item.slug,
+                title=item.title,
+                status=item.progress_status.value if getattr(item, "progress_status", None) else None,
+                href=f"/practice/sql/{item.slug}",
+            )
+            for item in items
+        ]
+        return WorkspaceNavigation(
+            previous=nav_items[index - 1] if index > 0 else None,
+            next=nav_items[index + 1] if index + 1 < len(nav_items) else None,
+            position=index + 1,
+            total=listing.get("total", len(nav_items)),
+            items=nav_items,
+        )
 
     async def get_schema(self, user: User, problem_id: UUID) -> list[SqlTableSchemaPublic]:
         problem = await self.repo.get_by_id(problem_id, load_dataset=True)
@@ -264,6 +301,10 @@ class SqlPracticeService:
             if status == SqlSubmissionStatus.ACCEPTED
             else None,
         )
+        if status == SqlSubmissionStatus.ACCEPTED:
+            from app.services.project_sync import complete_linked_project_tasks
+
+            await complete_linked_project_tasks(self.db, user.id, sql_problem_id=problem.id)
         await self.db.commit()
 
         return SqlSubmitResponse(

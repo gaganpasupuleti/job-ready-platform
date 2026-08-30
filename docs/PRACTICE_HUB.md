@@ -16,6 +16,8 @@ Student-facing catalog for guided practice paths, courses, and projects. Origina
 
 Existing engines stay at `/practice/dsa`, `/practice/sql`, `/practice/mcq`, `/ai`, `/cloud`, `/devops`, `/cybersecurity`.
 
+See `docs/PRACTICE_WORKSPACES.md` for the shared student workspace shell, path item idempotency, and execution-disabled coding behavior.
+
 ## Student API
 
 | Method | Path |

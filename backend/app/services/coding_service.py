@@ -40,6 +40,7 @@ from app.schemas.coding import (
     TestResultPublic,
     TopicBreakdown,
 )
+from app.schemas.workspace import WorkspaceNavItem, WorkspaceNavigation
 from app.services.code_execution.interface import CodeExecutionService, ExecutionRequest
 from app.services.code_execution.languages import (
     SUPPORTED_LANGUAGES,
@@ -257,6 +258,54 @@ class CodingService:
             progress_status=progress.status if progress else None,
             bookmarked=bookmarked,
             execution_available=self.is_execution_available(),
+            hints=[str(h) for h in (problem.hints_json or []) if str(h).strip()],
+            solution_unlocked=bool(
+                progress and progress.status == ProblemProgressStatus.SOLVED
+            ),
+            solution=(problem.solution_json or None)
+            if progress and progress.status == ProblemProgressStatus.SOLVED
+            else None,
+        )
+
+    async def get_navigation(self, user: User, problem_id: UUID) -> WorkspaceNavigation:
+        problem = await self.repo.get_problem_by_id(problem_id)
+        if problem is None or not problem.is_active:
+            raise AppException("Problem not found", status_code=404)
+        listing = await self.list_problems(user, topic_id=problem.topic_id, skip=0, limit=100)
+        items = listing.items
+        index = next((i for i, item in enumerate(items) if item.id == problem.id), -1)
+        if index < 0:
+            items = list(items)
+            items.append(
+                CodingProblemListItem(
+                    id=problem.id,
+                    slug=problem.slug,
+                    title=problem.title,
+                    difficulty=problem.difficulty,
+                    domain_id=problem.domain_id,
+                    category_id=problem.category_id,
+                    topic_id=problem.topic_id,
+                    tags=list(problem.tags or []),
+                    progress_status=None,
+                )
+            )
+            index = len(items) - 1
+        nav_items = [
+            WorkspaceNavItem(
+                id=item.id,
+                slug=item.slug,
+                title=item.title,
+                status=item.progress_status.value if getattr(item, "progress_status", None) else None,
+                href=f"/practice/dsa/{item.id}",
+            )
+            for item in items
+        ]
+        return WorkspaceNavigation(
+            previous=nav_items[index - 1] if index > 0 else None,
+            next=nav_items[index + 1] if index + 1 < len(nav_items) else None,
+            position=index + 1,
+            total=listing.total,
+            items=nav_items,
         )
 
     async def run_code(
@@ -407,6 +456,10 @@ class CodingService:
 
         if submission_type == SubmissionType.SUBMIT:
             await self._update_progress(user.id, problem, submission)
+            if submission.status == SubmissionStatus.ACCEPTED:
+                from app.services.project_sync import complete_linked_project_tasks
+
+                await complete_linked_project_tasks(self.db, user.id, coding_problem_id=problem.id)
 
         public_results = [self._public_result(r, test_cases) for r in results]
 

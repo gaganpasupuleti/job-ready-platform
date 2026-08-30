@@ -58,6 +58,19 @@ export async function fetchSqlProblem(slugOrId: string) {
   return data
 }
 
+export interface WorkspaceNavigation {
+  previous: { id: string; slug: string; title: string; status?: string | null; href: string } | null
+  next: { id: string; slug: string; title: string; status?: string | null; href: string } | null
+  position: number
+  total: number
+  items: Array<{ id: string; slug: string; title: string; status?: string | null; href: string }>
+}
+
+export async function fetchSqlNavigation(slugOrId: string) {
+  const { data } = await apiClient.get<WorkspaceNavigation>(apiEndpoints.sql.navigation(slugOrId))
+  return data
+}
+
 export async function fetchSqlSchema(problemId: string) {
   const { data } = await apiClient.get<SqlTableSchemaPublic[]>(apiEndpoints.sql.schema(problemId))
   return data

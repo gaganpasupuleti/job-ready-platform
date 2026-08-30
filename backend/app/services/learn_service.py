@@ -29,6 +29,7 @@ from app.models.learn import (
     ProjectTask,
     UserCourseProgress,
     UserLessonProgress,
+    UserPracticePathItemProgress,
     UserPracticePathProgress,
     UserProjectProgress,
     UserProjectTaskProgress,
@@ -80,6 +81,7 @@ from app.schemas.learn import (
     ProjectModuleOut,
     ProjectTaskAdminIn,
     ProjectTaskOut,
+    ProjectTaskPageOut,
     SearchHit,
     SearchResponse,
 )
@@ -126,6 +128,35 @@ def path_href(path: PracticePath) -> str:
 
 def project_href(project_slug: str) -> str:
     return f"/projects/{project_slug}"
+
+
+def _scenario_slug_from_task(task: ProjectTask) -> str | None:
+    if task.scenario_slug:
+        return task.scenario_slug
+    for text in (task.title or "", task.summary or ""):
+        lower = text.lower()
+        marker = "linked scenario:"
+        if marker in lower:
+            return text[lower.index(marker) + len(marker) :].strip().split()[0].strip(".,")
+    return None
+
+
+def _normalize_checklist(raw: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for index, entry in enumerate(raw):
+        if isinstance(entry, str):
+            items.append({"id": str(index), "label": entry, "required": True})
+        elif isinstance(entry, dict):
+            items.append(
+                {
+                    "id": str(entry.get("id", index)),
+                    "label": str(
+                        entry.get("label") or entry.get("text") or entry.get("title") or f"Item {index + 1}"
+                    ),
+                    "required": bool(entry.get("required", True)),
+                }
+            )
+    return items
 
 
 class LearnService:
@@ -198,6 +229,7 @@ class LearnService:
         items = [item for section in path.sections for item in section.items]
         hrefs = await self._item_hrefs(items)
         progress = await self._path_progress_map(user.id)
+        completed_ids = await self._completed_path_item_ids(user.id, [i.id for i in items])
 
         return PracticePathDetail(
             id=path.id,
@@ -225,6 +257,7 @@ class LearnService:
                             title=item.title,
                             sort_order=item.sort_order,
                             href=hrefs.get(item.id),
+                            completed=item.id in completed_ids,
                             coding_problem_id=item.coding_problem_id,
                             course_id=item.course_id,
                             lesson_id=item.lesson_id,
@@ -435,7 +468,13 @@ class LearnService:
             prev_href=prev_href,
             next_href=next_href,
             course_slug=course.slug,
+            course_title=course.title,
             module_slug=module.slug,
+            module_title=module.title,
+            course_percent=await self._course_percent(user.id, [lsn.id for _, lsn in ordered]),
+            lesson_index=index + 1,
+            lesson_total=len(ordered),
+            primary_language_key=course.primary_language_key,
             completion_requires_submit=lesson.completion_requires_submit,
             can_mark_complete=can_mark_complete,
         )
@@ -715,12 +754,16 @@ class LearnService:
 
         ordered_tasks = [task for module in project.modules for task in module.tasks]
         completed_ids = await self._completed_task_ids(user.id, [t.id for t in ordered_tasks])
-        hrefs = await self._project_task_hrefs(ordered_tasks)
+        hrefs = await self._project_task_hrefs(ordered_tasks, project.slug)
         current_task = next((t for t in ordered_tasks if t.id not in completed_ids), None)
         completed_count = len(completed_ids)
         total = len(ordered_tasks)
         percent = progress.percent if progress else (int(round(completed_count * 100 / total)) if total else 0)
         status = _enum_value(progress.status) if progress else ProgressStatus.NOT_STARTED.value
+        workspace = (
+            f"/projects/{project.slug}/tasks/{current_task.id}" if current_task else project_href(project.slug)
+        )
+        checklist_map = await self._task_checklist_states(user.id, [t.id for t in ordered_tasks])
 
         return ProjectDetail(
             id=project.id,
@@ -742,8 +785,8 @@ class LearnService:
             completed_task_count=completed_count,
             task_count=total,
             current_task_id=current_task.id if current_task else None,
-            current_task_href=hrefs.get(current_task.id) if current_task else None,
-            continue_href=project_href(project.slug),
+            current_task_href=workspace,
+            continue_href=workspace,
             last_activity_at=progress.last_activity_at if progress else None,
             completed_at=progress.completed_at if progress else None,
             modules=[
@@ -759,13 +802,17 @@ class LearnService:
                             summary=task.summary,
                             task_type=_enum_value(task.task_type),
                             status="completed" if task.id in completed_ids else "not_started",
-                            href=hrefs.get(task.id),
+                            href=f"/projects/{project.slug}/tasks/{task.id}",
+                            engine_href=hrefs.get(task.id),
+                            workspace_href=f"/projects/{project.slug}/tasks/{task.id}",
                             lesson_id=task.lesson_id,
                             coding_problem_id=task.coding_problem_id,
                             sql_problem_id=task.sql_problem_id,
                             topic_id=task.topic_id,
+                            scenario_slug=task.scenario_slug or _scenario_slug_from_task(task),
                             body_json=task.body_json or {},
                             checklist_json=list(task.checklist_json or []),
+                            checklist_state=checklist_map.get(task.id, {}),
                             reference_json=task.reference_json,
                             estimated_minutes=task.estimated_minutes,
                         )
@@ -777,19 +824,94 @@ class LearnService:
         )
 
     async def start_project(self, project_id: UUID, user: User) -> dict:
-        project = await self.db.get(Project, project_id)
-        if project is None or not project.is_published:
+        project = (
+            await self.db.execute(
+                select(Project)
+                .options(selectinload(Project.modules).selectinload(ProjectModule.tasks))
+                .where(Project.id == project_id, Project.is_published.is_(True))
+            )
+        ).scalar_one_or_none()
+        if project is None:
             raise AppException("Project not found", status_code=404)
         progress = await self._ensure_project_progress(user.id, project.id)
         if progress.status == ProgressStatus.NOT_STARTED:
             progress.status = ProgressStatus.IN_PROGRESS
         progress.last_activity_at = _now()
+        ordered = [task for module in project.modules for task in module.tasks]
+        completed_ids = await self._completed_task_ids(user.id, [t.id for t in ordered])
+        current = next((t for t in ordered if t.id not in completed_ids), None)
+        href = (
+            f"/projects/{project.slug}/tasks/{current.id}" if current else project_href(project.slug)
+        )
         await self.db.commit()
         return {
             "status": progress.status.value,
             "percent": progress.percent,
-            "href": project_href(project.slug),
+            "href": href,
         }
+
+    async def get_project_task(self, slug: str, task_id: UUID, user: User) -> ProjectTaskPageOut:
+        detail = await self.get_project(slug, user)
+        tasks = [t for m in detail.modules for t in m.tasks]
+        task = next((t for t in tasks if t.id == task_id), None)
+        if task is None:
+            raise AppException("Task not found on this project", status_code=404)
+        index = next(i for i, t in enumerate(tasks) if t.id == task_id)
+        return ProjectTaskPageOut(
+            project_id=detail.id,
+            project_slug=detail.slug,
+            project_title=detail.title,
+            project_percent=detail.progress_percent,
+            project_completed=detail.status == ProgressStatus.COMPLETED.value or detail.progress_percent >= 100,
+            skills=detail.skills,
+            estimated_minutes=detail.estimated_minutes,
+            completed_at=detail.completed_at,
+            prev_task_id=tasks[index - 1].id if index > 0 else None,
+            next_task_id=tasks[index + 1].id if index + 1 < len(tasks) else None,
+            task=task,
+        )
+
+    async def update_task_checklist(
+        self, project_id: UUID, task_id: UUID, user: User, checked: dict[str, bool]
+    ) -> dict:
+        project = (
+            await self.db.execute(
+                select(Project)
+                .options(selectinload(Project.modules).selectinload(ProjectModule.tasks))
+                .where(Project.id == project_id, Project.is_published.is_(True))
+            )
+        ).scalar_one_or_none()
+        if project is None:
+            raise AppException("Project not found", status_code=404)
+        ordered = [task for module in project.modules for task in module.tasks]
+        task = next((t for t in ordered if t.id == task_id), None)
+        if task is None:
+            raise AppException("Task not found on this project", status_code=404)
+        row = (
+            await self.db.execute(
+                select(UserProjectTaskProgress).where(
+                    UserProjectTaskProgress.user_id == user.id,
+                    UserProjectTaskProgress.task_id == task_id,
+                )
+            )
+        ).scalar_one_or_none()
+        if row is None:
+            row = UserProjectTaskProgress(user_id=user.id, task_id=task_id)
+            self.db.add(row)
+        state = dict(row.checklist_state or {})
+        state.update({str(k): bool(v) for k, v in checked.items()})
+        row.checklist_state = state
+        row.last_activity_at = _now()
+        if row.status == ProgressStatus.NOT_STARTED:
+            row.status = ProgressStatus.IN_PROGRESS
+        items = _normalize_checklist(task.checklist_json or [])
+        required = [item for item in items if item.get("required", True)]
+        all_done = bool(required) and all(state.get(str(item["id"])) for item in required)
+        if all_done and _enum_value(task.task_type) in {"checklist", "review", "implementation", "concept"}:
+            await self.db.flush()
+            return await self.complete_project_task(project_id, task_id, user)
+        await self.db.commit()
+        return {"checklist_state": state, "completed": False}
 
     async def complete_project_task(self, project_id: UUID, task_id: UUID, user: User) -> dict:
         project = (
@@ -863,17 +985,47 @@ class LearnService:
         items = [item for section in path.sections for item in section.items]
         if not any(item.id == item_id for item in items):
             raise AppException("Path item not found", status_code=404)
-        # Approximate progress by counting completed-looking items via percent steps.
-        progress = await self._ensure_path_progress(user.id, path.id)
+        row = (
+            await self.db.execute(
+                select(UserPracticePathItemProgress).where(
+                    UserPracticePathItemProgress.user_id == user.id,
+                    UserPracticePathItemProgress.item_id == item_id,
+                )
+            )
+        ).scalar_one_or_none()
+        created = False
+        if row is None:
+            row = UserPracticePathItemProgress(
+                user_id=user.id,
+                item_id=item_id,
+                path_id=path_id,
+                status=ProgressStatus.COMPLETED,
+                completed_at=_now(),
+            )
+            self.db.add(row)
+            created = True
+        elif row.status != ProgressStatus.COMPLETED:
+            row.status = ProgressStatus.COMPLETED
+            row.completed_at = row.completed_at or _now()
+            created = True
+        completed_ids = await self._completed_path_item_ids(user.id, [i.id for i in items])
+        if created:
+            completed_ids.add(item_id)
         total = max(len(items), 1)
-        step = max(int(round(100 / total)), 1)
-        progress.percent = min(100, (progress.percent or 0) + step)
-        progress.status = ProgressStatus.COMPLETED if progress.percent >= 100 else ProgressStatus.IN_PROGRESS
+        percent = int(round(len(completed_ids) * 100 / total))
+        progress = await self._ensure_path_progress(user.id, path.id)
+        progress.percent = percent
+        progress.status = ProgressStatus.COMPLETED if percent >= 100 else ProgressStatus.IN_PROGRESS
         progress.last_activity_at = _now()
-        if progress.percent >= 100:
+        if percent >= 100:
             progress.completed_at = progress.completed_at or _now()
         await self.db.commit()
-        return {"status": progress.status.value, "percent": progress.percent, "href": path_href(path)}
+        return {
+            "status": progress.status.value,
+            "percent": progress.percent,
+            "href": path_href(path),
+            "already_completed": not created,
+        }
 
     async def _ensure_project_progress(self, user_id: UUID, project_id: UUID) -> UserProjectProgress:
         progress = (
@@ -919,7 +1071,34 @@ class LearnService:
         ).scalars().all()
         return set(rows)
 
-    async def _project_task_hrefs(self, tasks: list[ProjectTask]) -> dict[UUID, str | None]:
+    async def _completed_path_item_ids(self, user_id: UUID, item_ids: list[UUID]) -> set[UUID]:
+        if not item_ids:
+            return set()
+        rows = (
+            await self.db.execute(
+                select(UserPracticePathItemProgress.item_id).where(
+                    UserPracticePathItemProgress.user_id == user_id,
+                    UserPracticePathItemProgress.item_id.in_(item_ids),
+                    UserPracticePathItemProgress.status == ProgressStatus.COMPLETED,
+                )
+            )
+        ).scalars().all()
+        return set(rows)
+
+    async def _task_checklist_states(self, user_id: UUID, task_ids: list[UUID]) -> dict[UUID, dict]:
+        if not task_ids:
+            return {}
+        rows = (
+            await self.db.execute(
+                select(UserProjectTaskProgress).where(
+                    UserProjectTaskProgress.user_id == user_id,
+                    UserProjectTaskProgress.task_id.in_(task_ids),
+                )
+            )
+        ).scalars().all()
+        return {row.task_id: dict(row.checklist_state or {}) for row in rows}
+
+    async def _project_task_hrefs(self, tasks: list[ProjectTask], project_slug: str | None = None) -> dict[UUID, str | None]:
         coding_ids = [t.coding_problem_id for t in tasks if t.coding_problem_id]
         sql_ids = [t.sql_problem_id for t in tasks if t.sql_problem_id]
         topic_ids = [t.topic_id for t in tasks if t.topic_id]
@@ -953,6 +1132,8 @@ class LearnService:
                 href = f"/practice/mcq?topic={topic_slugs[task.topic_id]}"
             elif task.lesson_id and task.lesson_id in lesson_paths:
                 href = lesson_paths[task.lesson_id]
+            elif slug := (task.scenario_slug or _scenario_slug_from_task(task)):
+                href = f"/scenarios/{slug}"
             elif _enum_value(task.task_type) == "sql":
                 href = "/practice/sql"
             elif _enum_value(task.task_type) == "coding":

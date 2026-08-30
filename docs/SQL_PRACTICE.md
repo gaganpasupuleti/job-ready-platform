@@ -4,7 +4,7 @@
 
 The SQL Practice module is a dedicated domain separate from MCQ practice and Judge0 coding execution.
 
-Students browse PostgreSQL challenges, inspect schemas and sample data, write SELECT/CTE queries in Monaco, run them against an **isolated sandbox database**, submit for result comparison, and unlock solutions after Accepted.
+See `docs/PRACTICE_WORKSPACES.md` for the student SQL workspace (navigator, Run vs Submit, stuck Running... prevention, solution tab).
 
 ## Three security boundaries
 

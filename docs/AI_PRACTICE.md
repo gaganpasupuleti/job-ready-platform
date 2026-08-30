@@ -14,6 +14,8 @@ Job-ready GenAI practice **without any external LLM API**. There is no OpenAI, G
 
 Practice Hub paths (`path_type=ai`) reuse the existing path engine: Generative AI, RAG, Prompt Engineering, AI Agents, MCP, AI Security.
 
+The prompt workspace uses the shared practice shell (tabs, rubric visualization, next challenge). See `docs/PRACTICE_WORKSPACES.md`. `/ai/ml` is a Coming Soon placeholder until a dedicated ML track exists.
+
 ## What this build does not do
 
 - No conversational chatbot or mock-interview LLM judge

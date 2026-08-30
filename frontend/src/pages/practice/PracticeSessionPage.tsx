@@ -84,6 +84,7 @@ export function PracticeSessionPage() {
       queryClient.invalidateQueries({ queryKey: ['practice-session', sessionId] })
       queryClient.invalidateQueries({ queryKey: ['practice-navigator', sessionId] })
     },
+    onError: () => setFeedback(null),
   })
 
   const autosaveMutation = useMutation({
@@ -198,6 +199,11 @@ export function PracticeSessionPage() {
 
           {feedback && isPractice && <AnswerExplanation feedback={feedback} />}
 
+          {answerMutation.isError && (
+            <p className="mt-3 text-sm text-[var(--color-danger)]">
+              {answerMutation.error instanceof Error ? answerMutation.error.message : 'Could not submit answer.'}
+            </p>
+          )}
           <div className="mt-6 flex flex-wrap items-center gap-2">
             <Button
               variant="ghost"
@@ -232,6 +238,19 @@ export function PracticeSessionPage() {
             </Button>
 
             <div className="flex gap-2">
+              {selectedOptionId && (
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setSelectedOptionId(null)
+                    if (isExam) {
+                      autosaveMutation.mutate({ selectedOptionIds: [], markedForReview })
+                    }
+                  }}
+                >
+                  Clear Selection
+                </Button>
+              )}
               {isExam ? (
                 <>
                   {!isLast && (
@@ -243,9 +262,13 @@ export function PracticeSessionPage() {
                     <Button
                       variant="primary"
                       disabled={completeMutation.isPending}
-                      onClick={() => completeMutation.mutate()}
+                      onClick={() => {
+                        if (window.confirm('Submit this exam? You cannot change answers after submitting.')) {
+                          completeMutation.mutate()
+                        }
+                      }}
                     >
-                      Submit Exam
+                      {completeMutation.isPending ? 'Submitting...' : 'Submit Exam'}
                     </Button>
                   )}
                 </>
@@ -302,6 +325,7 @@ export function PracticeSessionPage() {
                     type="button"
                     className={cls}
                     onClick={() => setQuestionNumber(item.question_number)}
+                    aria-label={`Question ${item.question_number}${item.answered ? ', answered' : ', unanswered'}${item.question_number === questionNumber ? ', current' : ''}`}
                   >
                     {item.question_number}
                   </button>

@@ -102,6 +102,15 @@ async def get_problem(
     return await service.get_problem(user, problem_id)
 
 
+@router.get("/problems/{problem_id}/navigation")
+async def get_problem_navigation(
+    problem_id: UUID,
+    user: User = Depends(get_current_user),
+    service: CodingService = Depends(_coding_service),
+):
+    return await service.get_navigation(user, problem_id)
+
+
 @router.post("/problems/{problem_id}/run", response_model=ExecutionResponse)
 async def run_code(
     problem_id: UUID,

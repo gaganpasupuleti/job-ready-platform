@@ -5,6 +5,15 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
+import {
+  apiErrorMessage,
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  PracticeProgress,
+  PracticeStatusBadge,
+  WorkspaceSplit,
+} from '@/components/practice-workspace/PracticeWorkspace'
 import { CodeEditor } from '@/features/dsa/CodeEditor'
 import {
   completeLesson,
@@ -15,6 +24,23 @@ import {
 } from '@/services/learnService'
 
 type WorkspaceTab = 'statement' | 'editor' | 'submissions' | 'solution' | 'hints' | 'help'
+
+const LANG_MONACO: Record<string, string> = {
+  python: 'python',
+  java: 'java',
+  cpp: 'cpp',
+  cplusplus: 'cpp',
+  javascript: 'javascript',
+  js: 'javascript',
+}
+
+function starterLanguage(starter: Record<string, string>, courseLang?: string | null) {
+  const keys = Object.keys(starter || {})
+  if (courseLang && starter[courseLang]) return courseLang
+  if (courseLang && LANG_MONACO[courseLang] && keys.includes(courseLang)) return courseLang
+  if (keys.length === 1) return keys[0]
+  return keys.includes('python') ? 'python' : keys[0] ?? 'python'
+}
 
 const TAB_LABELS: Record<WorkspaceTab, string> = {
   statement: 'Statement',
@@ -82,6 +108,9 @@ export function LessonWorkspacePage() {
   const queryClient = useQueryClient()
   const [tab, setTab] = useState<WorkspaceTab>('statement')
   const [code, setCode] = useState('')
+  const [languageKey, setLanguageKey] = useState('python')
+  const [outlineOpen, setOutlineOpen] = useState(false)
+  const [mobileTab, setMobileTab] = useState<'problem' | 'code' | 'output'>('problem')
   const [hintIndex, setHintIndex] = useState(0)
   const [localAttempts, setLocalAttempts] = useState<
     Array<{ at: string; note: string; codeSnippet: string }>
@@ -97,9 +126,11 @@ export function LessonWorkspacePage() {
 
   useEffect(() => {
     if (!data) return
+    const lang = starterLanguage(data.starter_code ?? {}, data.primary_language_key)
+    setLanguageKey(lang)
     const starter =
+      data.starter_code?.[lang] ??
       data.starter_code?.python ??
-      data.starter_code?.javascript ??
       Object.values(data.starter_code ?? {})[0] ??
       ''
     setCode(starter)
@@ -125,28 +156,30 @@ export function LessonWorkspacePage() {
     mutationFn: () =>
       recordLessonAttempt(data!.id, {
         code,
-        language: 'python',
+        language: languageKey,
         is_correct: false,
-        note: 'Local practice attempt (Judge0 optional)',
+        note: 'Practice attempt saved (execution unavailable)',
       }),
     onSuccess: () => {
       setLocalAttempts((prev) => [
         {
           at: new Date().toISOString(),
-          note: 'Practice run recorded',
+          note: 'Practice attempt saved',
           codeSnippet: code.slice(0, 120),
         },
         ...prev,
       ])
-      setMessage('Attempt recorded. Use Mark Complete when you are ready (Judge0 not required for this course).')
+      setMessage('Practice attempt saved. This does not mark the solution as passed.')
       setTab('submissions')
     },
+    onError: (err) => setMessage(apiErrorMessage(err, 'Could not save attempt.')),
   })
 
   const feedbackMutation = useMutation({
     mutationFn: (payload: { vote?: string; report_issue?: boolean; note?: string }) =>
       sendLessonFeedback(data!.id, payload),
     onSuccess: () => setMessage('Thanks for the feedback.'),
+    onError: (err) => setMessage(apiErrorMessage(err, 'Could not send feedback.')),
   })
 
   const tabs = useMemo(() => {
@@ -158,16 +191,12 @@ export function LessonWorkspacePage() {
     return base
   }, [data?.lesson_type])
 
-  if (isLoading) {
-    return <p className="text-sm text-[var(--color-text-muted)]">Loading lesson...</p>
-  }
+  if (isLoading) return <LoadingState label="Loading lesson" />
 
   if (error || !data) {
     return (
       <Card>
-        <p className="text-sm text-[var(--color-text-muted)]">
-          Lesson unavailable or locked. Complete previous lessons first.
-        </p>
+        <ErrorState message="Lesson unavailable or locked. Complete previous lessons first." />
         <Link to={`/learn/courses/${courseSlug}`} className="mt-2 inline-block text-sm text-[var(--color-accent)]">
           Back to course
         </Link>
@@ -199,11 +228,15 @@ export function LessonWorkspacePage() {
       {tab === 'editor' && (
         <div className="space-y-3">
           <div className="h-[360px] overflow-hidden rounded-md border border-[var(--color-border)]">
-            <CodeEditor value={code} language="python" onChange={setCode} height="360px" />
+            <CodeEditor
+              value={code}
+              language={LANG_MONACO[languageKey] ?? 'python'}
+              onChange={setCode}
+              height="360px"
+            />
           </div>
           <p className="text-xs text-[var(--color-text-muted)]">
-            Interactive practice uses Monaco here. Full Judge0 grading is available on linked DSA problems when
-            configured; this lesson can be completed without execution.
+            Execution is currently unavailable. Saving an attempt stores your code and language without pretending it passed.
           </p>
           <div className="flex flex-wrap gap-2">
             <Button
@@ -211,11 +244,11 @@ export function LessonWorkspacePage() {
               onClick={() => attemptMutation.mutate()}
               disabled={attemptMutation.isPending}
             >
-              Record attempt
+              {attemptMutation.isPending ? 'Saving...' : 'Save Practice Attempt'}
             </Button>
-            {data.coding_problem_slug && (
-              <Link to={`/practice/dsa/${data.coding_problem_slug}`}>
-                <Button variant="ghost">Open linked DSA problem</Button>
+            {data.coding_problem_id && (
+              <Link to={`/practice/dsa/${data.coding_problem_id}`}>
+                <Button variant="ghost">Open Graded Challenge</Button>
               </Link>
             )}
           </div>
@@ -228,7 +261,7 @@ export function LessonWorkspacePage() {
             Attempts: {data.attempts + localAttempts.length} (server + this session)
           </p>
           {localAttempts.length === 0 ? (
-            <p className="text-[var(--color-text-muted)]">No local attempts yet.</p>
+            <EmptyState title="No attempts yet" description="Save a practice attempt from the editor." />
           ) : (
             localAttempts.map((a, i) => (
               <div key={i} className="rounded-md border border-[var(--color-border)] p-3">
@@ -353,12 +386,23 @@ export function LessonWorkspacePage() {
             ← {courseSlug}
           </Link>
           <h2 className="mt-1 text-lg font-semibold text-[var(--color-text)]">{data.title}</h2>
+          <p className="text-sm text-[var(--color-text-muted)]">
+            {data.course_title ?? courseSlug}
+            {data.module_title ? ` · ${data.module_title}` : ''}
+            {data.lesson_index && data.lesson_total ? ` · Lesson ${data.lesson_index} of ${data.lesson_total}` : ''}
+          </p>
+          <div className="mt-2 max-w-sm">
+            <PracticeProgress percent={data.course_percent ?? 0} label={`${data.course_percent ?? 0}%`} />
+          </div>
           <div className="mt-1 flex flex-wrap gap-2">
             <Badge>{data.lesson_type}</Badge>
-            <Badge>{data.status}</Badge>
+            <PracticeStatusBadge status={data.status} />
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button variant="ghost" className="lg:hidden" onClick={() => setOutlineOpen(true)}>
+            Course outline
+          </Button>
           {data.prev_href && (
             <Link to={data.prev_href}>
               <Button variant="ghost">Previous</Button>
@@ -381,6 +425,26 @@ export function LessonWorkspacePage() {
         </div>
       </div>
 
+      {outlineOpen && (
+        <div className="fixed inset-0 z-40 bg-black/40 p-4 lg:hidden" role="dialog" aria-label="Course outline">
+          <div className="max-h-[80vh] overflow-auto rounded-md bg-[var(--color-surface)] p-4">
+            <Button variant="ghost" size="sm" onClick={() => setOutlineOpen(false)}>
+              Close
+            </Button>
+            {data.progress_blocks.map((item) => (
+              <Link
+                key={item.id}
+                to={`/learn/courses/${courseSlug}/${item.module_slug}/${item.slug}`}
+                className="mt-2 block text-sm"
+                onClick={() => setOutlineOpen(false)}
+              >
+                {item.title}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {message && <p className="text-sm text-[var(--color-accent)]">{message}</p>}
 
       <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
@@ -402,12 +466,51 @@ export function LessonWorkspacePage() {
                 }`}
                 onClick={(e) => item.status === 'locked' && e.preventDefault()}
               >
+                {item.status === 'completed' ? '✓ ' : item.status === 'locked' ? '🔒 ' : active ? '● ' : '○ '}
                 {item.title}
               </Link>
             )
           })}
         </aside>
 
+        {data.lesson_type === 'interactive_code' || data.lesson_type === 'practice' ? (
+          <div className="min-h-[32rem]">
+            <WorkspaceSplit
+              storageKey="learn-split"
+              left={
+                <Card className="h-full overflow-auto" padding="md">
+                  <div className="mb-3 flex gap-1 overflow-x-auto">
+                    {tabs.filter((t) => t !== 'editor').map((t) => (
+                      <button key={t} type="button" className="px-2 py-1 text-xs" onClick={() => setTab(t)}>
+                        {TAB_LABELS[t]}
+                      </button>
+                    ))}
+                  </div>
+                  {tab === 'editor' ? <StatementBlocks blocks={data.statement_json?.blocks} /> : panel}
+                </Card>
+              }
+              right={
+                <Card className="h-full overflow-hidden p-0">
+                  <CodeEditor
+                    value={code}
+                    language={LANG_MONACO[languageKey] ?? 'python'}
+                    onChange={setCode}
+                    height="100%"
+                  />
+                </Card>
+              }
+              bottom={
+                <Card padding="md">
+                  <Button onClick={() => attemptMutation.mutate()} disabled={attemptMutation.isPending}>
+                    {attemptMutation.isPending ? 'Saving...' : 'Save Practice Attempt'}
+                  </Button>
+                </Card>
+              }
+              mobileTab={mobileTab}
+              onMobileTab={setMobileTab}
+            />
+          </div>
+        ) : (
         <Card className="min-h-[420px]">
           <div className="mb-4 flex gap-1 overflow-x-auto border-b border-[var(--color-border)] pb-2">
             {tabs.map((t) => (
@@ -427,6 +530,7 @@ export function LessonWorkspacePage() {
           </div>
           {panel}
         </Card>
+        )}
       </div>
     </div>
   )

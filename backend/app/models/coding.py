@@ -38,6 +38,8 @@ class CodingProblem(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     time_limit_ms: Mapped[int] = mapped_column(Integer, default=2000, nullable=False)
     memory_limit_kb: Mapped[int] = mapped_column(Integer, default=262144, nullable=False)
     starter_code: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
+    hints_json: Mapped[list] = mapped_column(JSONB, default=list, nullable=False)
+    solution_json: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_sample: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_by: Mapped[uuid.UUID | None] = mapped_column(

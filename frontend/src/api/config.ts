@@ -86,6 +86,7 @@ export const apiEndpoints = {
     progress: '/api/v1/coding/progress',
     languages: '/api/v1/coding/languages',
     executionStatus: '/api/v1/coding/execution-status',
+    navigation: (id: string) => `/api/v1/coding/problems/${id}/navigation`,
     bookmarks: '/api/v1/coding/bookmarks',
   },
   sql: {
@@ -104,6 +105,7 @@ export const apiEndpoints = {
     bookmarks: '/api/v1/sql/bookmarks',
     solution: (id: string) => `/api/v1/sql/problems/${id}/solution`,
     executionStatus: '/api/v1/sql/execution-status',
+    navigation: (id: string) => `/api/v1/sql/problems/${id}/navigation`,
   },
   interview: {
     questions: '/api/v1/interview/questions',
@@ -127,6 +129,9 @@ export const apiEndpoints = {
     projectStart: (id: string) => `/api/v1/projects/${id}/start`,
     projectTaskComplete: (projectId: string, taskId: string) =>
       `/api/v1/projects/${projectId}/tasks/${taskId}/complete`,
+    projectTask: (slug: string, taskId: string) => `/api/v1/projects/${slug}/tasks/${taskId}`,
+    projectTaskChecklist: (projectId: string, taskId: string) =>
+      `/api/v1/projects/${projectId}/tasks/${taskId}/checklist`,
     pathStart: (id: string) => `/api/v1/paths/${id}/start`,
     pathItemComplete: (pathId: string, itemId: string) =>
       `/api/v1/paths/${pathId}/items/${itemId}/complete`,

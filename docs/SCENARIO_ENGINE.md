@@ -12,6 +12,8 @@ One **deterministic** scenario engine is shared by Cloud, DevOps, and Cybersecur
 
 Types: `architecture`, `troubleshooting`, `incident_response`, `security_review`, `deployment`, `observability`, `decision_tree`.
 
+Student UI: `/scenarios/:slug` renders evidence as metric/log cards (not raw JSON), step-by-step confirm, score, retry, next scenario. See `docs/PRACTICE_WORKSPACES.md`.
+
 ## Scoring
 
 Weighted share of correct steps (0–100). Each missed **critical** step subtracts 10 (floor 0). Mastery default 80. Response includes score, correct decision count, missed critical prompts, and per-step explanations.

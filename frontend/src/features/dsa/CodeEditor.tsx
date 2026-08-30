@@ -6,6 +6,8 @@ interface CodeEditorProps {
   onChange: (value: string) => void
   height?: string
   readOnly?: boolean
+  fontSize?: number
+  wordWrap?: 'on' | 'off'
 }
 
 export function CodeEditor({
@@ -14,6 +16,8 @@ export function CodeEditor({
   onChange,
   height = '100%',
   readOnly = false,
+  fontSize = 14,
+  wordWrap = 'on',
 }: CodeEditorProps) {
   return (
     <Editor
@@ -24,7 +28,8 @@ export function CodeEditor({
       theme="vs-dark"
       options={{
         minimap: { enabled: false },
-        fontSize: 14,
+        fontSize,
+        wordWrap,
         scrollBeyondLastLine: false,
         readOnly,
         automaticLayout: true,

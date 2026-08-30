@@ -10,6 +10,7 @@ from app.core.deps import get_current_user
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.learn import (
+    ChecklistUpdateIn,
     ContinueLearningItem,
     CourseDetail,
     CourseListItem,
@@ -20,6 +21,7 @@ from app.schemas.learn import (
     PracticePathDetail,
     ProjectCard,
     ProjectDetail,
+    ProjectTaskPageOut,
     SearchResponse,
 )
 from app.services.learn_service import LearnService
@@ -141,6 +143,16 @@ async def get_project(
     return await LearnService(db).get_project(slug, user)
 
 
+@router.get("/projects/{slug}/tasks/{task_id}", response_model=ProjectTaskPageOut, tags=["learn"])
+async def get_project_task(
+    slug: str,
+    task_id: UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ProjectTaskPageOut:
+    return await LearnService(db).get_project_task(slug, task_id, user)
+
+
 @router.post("/projects/{project_id}/start", tags=["learn"])
 async def start_project(
     project_id: UUID,
@@ -158,6 +170,17 @@ async def complete_project_task(
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     return await LearnService(db).complete_project_task(project_id, task_id, user)
+
+
+@router.patch("/projects/{project_id}/tasks/{task_id}/checklist", tags=["learn"])
+async def update_project_task_checklist(
+    project_id: UUID,
+    task_id: UUID,
+    payload: ChecklistUpdateIn,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    return await LearnService(db).update_task_checklist(project_id, task_id, user, payload.checked)
 
 
 @router.post("/paths/{path_id}/start", tags=["learn"])

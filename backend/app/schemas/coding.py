@@ -96,6 +96,9 @@ class CodingProblemDetail(BaseModel):
     progress_status: ProblemProgressStatus | None = None
     bookmarked: bool = False
     execution_available: bool = True
+    hints: list[str] = Field(default_factory=list)
+    solution_unlocked: bool = False
+    solution: dict | None = None
 
 
 class RunSubmitRequest(BaseModel):

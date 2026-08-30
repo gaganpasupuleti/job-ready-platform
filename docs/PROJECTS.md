@@ -13,7 +13,11 @@ Project
 - **coding** tasks link `coding_problem_id` → `/practice/dsa/{slug}`
 - **sql** tasks link `sql_problem_id` → `/practice/sql/{slug}`
 - **mcq** tasks link `topic_id` → `/practice/mcq?topic=`
-- concept / checklist / implementation / review stay on the project page
+- concept / checklist / implementation / review use `/projects/:slug/tasks/:taskId`
+- Linked coding/SQL/MCQ/scenario tasks auto-complete when the engine challenge is solved
+- Continue Project opens the first incomplete task workspace
+
+See `docs/PRACTICE_WORKSPACES.md`.
 
 ## Student routes
 

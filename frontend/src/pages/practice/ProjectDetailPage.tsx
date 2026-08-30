@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
@@ -8,6 +8,7 @@ import { completeProjectTask, fetchProject, startProject } from '@/services/lear
 
 export function ProjectDetailPage() {
   const { slug = '' } = useParams()
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { data, isLoading } = useQuery({
     queryKey: ['project', slug],
@@ -17,7 +18,10 @@ export function ProjectDetailPage() {
 
   const start = useMutation({
     mutationFn: () => startProject(data!.id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['project', slug] }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['project', slug] })
+      if (res?.href) navigate(res.href)
+    },
   })
 
   const complete = useMutation({
@@ -128,7 +132,10 @@ export function ProjectDetailPage() {
               <li key={task.id} className="border-t border-[var(--color-border)] py-3">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
-                    <p className="font-medium">{task.title}</p>
+                    <p className="font-medium">
+                      {task.status === 'completed' ? '✓ ' : data.current_task_id === task.id ? '● ' : '○ '}
+                      {task.title}
+                    </p>
                     <p className="text-xs text-[var(--color-text-subtle)]">
                       {task.task_type} · {task.status}
                     </p>
@@ -138,18 +145,19 @@ export function ProjectDetailPage() {
                     {task.checklist_json?.length > 0 && (
                       <ul className="mt-2 list-disc pl-5 text-[var(--color-text-muted)]">
                         {task.checklist_json.map((item) => (
-                          <li key={item}>{item}</li>
+                          <li key={String(item)}>{typeof item === 'string' ? item : JSON.stringify(item)}</li>
                         ))}
                       </ul>
                     )}
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {task.href && (
-                      <Link to={task.href} className="text-[var(--color-accent)] hover:underline">
-                        Open engine
+                      <Link to={task.href}>
+                        <Button size="sm">{task.status === 'completed' ? 'Review' : 'Continue'}</Button>
                       </Link>
                     )}
-                    {task.status !== 'completed' && (
+                    {task.status !== 'completed' &&
+                      !['coding', 'sql', 'mcq', 'scenario'].includes(task.task_type) && (
                       <Button
                         variant="secondary"
                         size="sm"

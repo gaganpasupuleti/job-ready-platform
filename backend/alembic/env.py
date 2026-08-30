@@ -89,7 +89,9 @@ from app.models.learn import (  # noqa: F401
     ProjectTask,
     UserCourseProgress,
     UserLessonProgress,
+    UserPracticePathItemProgress,
     UserPracticePathProgress,
+    UserPracticePathItemProgress,
     UserProjectProgress,
     UserProjectTaskProgress,
 )

@@ -227,6 +227,10 @@ class PracticeService:
         session.completed_at = datetime.now(UTC)
         await self._refresh_session_counts(session)
         await self.practice_repo.save_session(session)
+        if session.topic_id:
+            from app.services.project_sync import complete_linked_project_tasks
+
+            await complete_linked_project_tasks(self.db, user.id, topic_id=session.topic_id)
         return await self.get_results(user, session_id)
 
     async def get_results(self, user: User, session_id: UUID) -> SessionResultsResponse:

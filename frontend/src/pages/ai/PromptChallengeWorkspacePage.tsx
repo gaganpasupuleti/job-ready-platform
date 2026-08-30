@@ -5,9 +5,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import {
+  apiErrorMessage,
+  ErrorState,
+  HintPanel,
+  LoadingState,
+  PracticeProgress,
+  PracticeStatusBadge,
+  useWorkspaceShortcuts,
+} from '@/components/practice-workspace/PracticeWorkspace'
 import { useAuth } from '@/hooks/useAuth'
 import {
   fetchPromptChallenge,
+  fetchPromptChallenges,
   submitPrompt,
   testPrompt,
   togglePromptBookmark,
@@ -27,8 +37,13 @@ export function PromptChallengeWorkspacePage() {
     queryFn: () => fetchPromptChallenge(slug),
     enabled: Boolean(slug),
   })
+  const [revealedHints, setRevealedHints] = useState(0)
   const [prompt, setPrompt] = useState('')
   const [result, setResult] = useState<PromptEvaluateResponse | null>(null)
+  const { data: siblings } = useQuery({
+    queryKey: ['prompt-challenges'],
+    queryFn: () => fetchPromptChallenges(),
+  })
 
   useEffect(() => {
     if (!data || !user) return
@@ -61,24 +76,38 @@ export function PromptChallengeWorkspacePage() {
       queryClient.invalidateQueries({ queryKey: ['prompt-challenge', slug] })
     },
   })
+  useWorkspaceShortcuts({
+    enabled: Boolean(data) && !testMutation.isPending && !submitMutation.isPending,
+    run: () => testMutation.mutate(),
+    submit: () => submitMutation.mutate(),
+  })
   const bookmarkMutation = useMutation({
     mutationFn: () => togglePromptBookmark(data!.id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['prompt-challenge', slug] }),
   })
 
   if (isLoading || !data) {
-    return <p className="text-sm text-[var(--color-text-muted)]">Loading challenge...</p>
+    return <LoadingState label="Loading prompt challenge" />
   }
+  const nextChallenge = (Array.isArray(siblings) ? siblings : []).find(
+    (_item, index, arr) => arr[index - 1]?.slug === data.slug,
+  )
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-text)]">{data.title}</h2>
+          <div className="mt-2 max-w-sm">
+            <PracticeProgress
+              percent={Math.min(100, Math.round((data.best_score / Math.max(data.mastery_threshold, 1)) * 100))}
+              label={`Best ${data.best_score} / mastery ${data.mastery_threshold}`}
+            />
+          </div>
           <div className="mt-1 flex gap-2">
             <Badge>{data.difficulty}</Badge>
             <Badge>{data.task_type}</Badge>
-            {data.status && <Badge>{data.status}</Badge>}
+            <PracticeStatusBadge status={data.status} />
           </div>
         </div>
         <div className="flex gap-2">
@@ -117,11 +146,7 @@ export function PromptChallengeWorkspacePage() {
             <CardHeader title="Evaluation" />
             <p className="text-sm">{data.evaluation_criteria_summary}</p>
             {data.hints.length > 0 && (
-              <ul className="mt-2 list-disc pl-5 text-sm">
-                {data.hints.map((hint) => (
-                  <li key={hint}>{hint}</li>
-                ))}
-              </ul>
+              <HintPanel hints={data.hints} revealed={revealedHints} onReveal={() => setRevealedHints((n) => n + 1)} />
             )}
             {data.common_mistakes.length > 0 && (
               <p className="mt-2 text-xs text-[var(--color-text-muted)]">
@@ -145,10 +170,10 @@ export function PromptChallengeWorkspacePage() {
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Button onClick={() => testMutation.mutate()} disabled={testMutation.isPending}>
-                Test Prompt
+                {testMutation.isPending ? 'Testing...' : 'Test Prompt'}
               </Button>
               <Button variant="primary" onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
-                Submit Prompt
+                {submitMutation.isPending ? 'Submitting...' : 'Submit Prompt'}
               </Button>
               <Button variant="secondary" onClick={() => setPrompt(data.starter_prompt ?? '')}>
                 Reset
@@ -190,6 +215,16 @@ export function PromptChallengeWorkspacePage() {
               </div>
             ))}
           </div>
+          {(testMutation.isError || submitMutation.isError) && (
+            <ErrorState
+              message={apiErrorMessage(testMutation.error || submitMutation.error, 'Prompt evaluation failed.')}
+            />
+          )}
+          {nextChallenge && (
+            <Link to={`/ai/prompt-engineering/challenges/${nextChallenge.slug}`} className="mt-2 inline-block text-sm">
+              Next Challenge
+            </Link>
+          )}
           {result.submission_id && !result.is_test && (
             <Link
               to={`/ai/prompt-engineering/submissions/${result.submission_id}`}

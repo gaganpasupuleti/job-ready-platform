@@ -118,7 +118,14 @@ export interface CodingProblemDetail {
   bookmarked?: boolean
 
   execution_available?: boolean
-
+  hints?: string[]
+  solution_unlocked?: boolean
+  solution?: {
+    explanation?: string
+    approach?: string
+    code?: string
+    complexity?: string
+  } | null
 }
 
 
