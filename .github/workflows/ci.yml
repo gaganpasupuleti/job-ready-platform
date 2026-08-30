@@ -1,0 +1,251 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jobready
+          POSTGRES_PASSWORD: jobready_dev
+          POSTGRES_DB: jobready_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jobready -d jobready_db"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      postgres_sql_sandbox:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jobready_sql_admin
+          POSTGRES_PASSWORD: jobready_sql_admin_dev
+          POSTGRES_DB: jobready_sql_sandbox
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U jobready_sql_admin -d jobready_sql_sandbox"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://jobready:jobready_dev@localhost:5432/jobready_db
+      REDIS_URL: redis://localhost:6379/0
+      SQL_SANDBOX_ADMIN_DATABASE_URL: postgresql+asyncpg://jobready_sql_admin:jobready_sql_admin_dev@localhost:5433/jobready_sql_sandbox
+      SQL_SANDBOX_RUNNER_DATABASE_URL: postgresql+asyncpg://jobready_sql_runner:jobready_sql_dev@localhost:5433/jobready_sql_sandbox
+      SQL_SANDBOX_DATABASE_URL: postgresql+asyncpg://jobready_sql_runner:jobready_sql_dev@localhost:5433/jobready_sql_sandbox
+      SQL_EXECUTION_ENABLED: "true"
+      # Unit tests mock Judge0; leave enabled so coding API paths are exercised.
+      JUDGE0_ENABLED: "true"
+      JWT_SECRET_KEY: ci-test-secret-not-for-production-use-only
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Bootstrap SQL sandbox runner role
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client
+          PGPASSWORD=jobready_sql_admin_dev psql -h localhost -p 5433 -U jobready_sql_admin -d jobready_sql_sandbox -v ON_ERROR_STOP=1 <<'SQL'
+          DO $$
+          BEGIN
+            IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'jobready_sql_runner') THEN
+              CREATE ROLE jobready_sql_runner LOGIN PASSWORD 'jobready_sql_dev'
+                NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
+            END IF;
+          END$$;
+          GRANT CONNECT ON DATABASE jobready_sql_sandbox TO jobready_sql_runner;
+          REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+          REVOKE CREATE ON SCHEMA public FROM jobready_sql_runner;
+          GRANT USAGE ON SCHEMA public TO jobready_sql_runner;
+          REVOKE CREATE ON DATABASE jobready_sql_sandbox FROM PUBLIC;
+          REVOKE CREATE ON DATABASE jobready_sql_sandbox FROM jobready_sql_runner;
+          SQL
+      - name: Migrate
+        run: alembic upgrade head
+      - name: Seed
+        run: python -m app.seed
+      - name: Pytest
+        run: pytest -q
+
+  frontend:
+    name: Frontend (lint + build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: http://localhost:8000
+          VITE_ENABLE_DEV_LOGIN: "false"
+
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: [backend, frontend]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jobready
+          POSTGRES_PASSWORD: jobready_dev
+          POSTGRES_DB: jobready_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jobready -d jobready_db"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      postgres_sql_sandbox:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: jobready_sql_admin
+          POSTGRES_PASSWORD: jobready_sql_admin_dev
+          POSTGRES_DB: jobready_sql_sandbox
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U jobready_sql_admin -d jobready_sql_sandbox"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      APP_ENV: test
+      E2E_ALLOW_SEED: "1"
+      DATABASE_URL: postgresql+asyncpg://jobready:jobready_dev@localhost:5432/jobready_db
+      REDIS_URL: redis://localhost:6379/0
+      SQL_SANDBOX_ADMIN_DATABASE_URL: postgresql+asyncpg://jobready_sql_admin:jobready_sql_admin_dev@localhost:5433/jobready_sql_sandbox
+      SQL_SANDBOX_RUNNER_DATABASE_URL: postgresql+asyncpg://jobready_sql_runner:jobready_sql_dev@localhost:5433/jobready_sql_sandbox
+      SQL_SANDBOX_DATABASE_URL: postgresql+asyncpg://jobready_sql_runner:jobready_sql_dev@localhost:5433/jobready_sql_sandbox
+      SQL_EXECUTION_ENABLED: "true"
+      JUDGE0_ENABLED: "false"
+      JWT_SECRET_KEY: ci-test-secret-not-for-production-use-only
+      E2E_BASE_URL: http://127.0.0.1:5173
+      E2E_API_URL: http://127.0.0.1:8000
+      VITE_API_BASE_URL: http://127.0.0.1:8000
+      VITE_ENABLE_DEV_LOGIN: "false"
+      E2E_MANIFEST_PATH: frontend/e2e/fixtures/manifest.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install backend
+        working-directory: backend
+        run: pip install -r requirements.txt
+      - name: Bootstrap SQL sandbox runner role
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client
+          PGPASSWORD=jobready_sql_admin_dev psql -h localhost -p 5433 -U jobready_sql_admin -d jobready_sql_sandbox -v ON_ERROR_STOP=1 <<'SQL'
+          DO $$
+          BEGIN
+            IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'jobready_sql_runner') THEN
+              CREATE ROLE jobready_sql_runner LOGIN PASSWORD 'jobready_sql_dev'
+                NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
+            END IF;
+          END$$;
+          GRANT CONNECT ON DATABASE jobready_sql_sandbox TO jobready_sql_runner;
+          REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+          REVOKE CREATE ON SCHEMA public FROM jobready_sql_runner;
+          GRANT USAGE ON SCHEMA public TO jobready_sql_runner;
+          REVOKE CREATE ON DATABASE jobready_sql_sandbox FROM PUBLIC;
+          REVOKE CREATE ON DATABASE jobready_sql_sandbox FROM jobready_sql_runner;
+          SQL
+      - name: Migrate + E2E seed
+        working-directory: backend
+        run: |
+          alembic upgrade head
+          python -m app.seed.e2e ../frontend/e2e/fixtures/manifest.json
+      - name: Install frontend
+        working-directory: frontend
+        run: npm ci
+      - name: Install Playwright Chromium
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+      - name: Start backend
+        working-directory: backend
+        run: |
+          nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/backend.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:8000/api/v1/health && break
+            sleep 2
+          done
+          curl -sf http://127.0.0.1:8000/api/v1/health
+      - name: Run Playwright
+        working-directory: frontend
+        run: npx playwright test --project=desktop
+        env:
+          E2E_SKIP_WEBSERVER: ""
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            frontend/playwright-report
+            frontend/test-results
+          retention-days: 7

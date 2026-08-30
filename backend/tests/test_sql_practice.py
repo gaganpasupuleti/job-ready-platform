@@ -151,7 +151,11 @@ async def test_sql_list_requires_auth(client):
 async def test_sql_execution_status(client, student_auth):
     response = await client.get("/api/v1/sql/execution-status", headers=_headers(student_auth))
     assert response.status_code == 200
-    assert "available" in response.json()
+    body = response.json()
+    assert "available" in body
+    assert body["status"] in {"available", "disabled", "sandbox_unavailable"}
+    assert "password" not in str(body).lower()
+    assert "postgresql://" not in str(body).lower()
 
 
 @pytest.mark.asyncio

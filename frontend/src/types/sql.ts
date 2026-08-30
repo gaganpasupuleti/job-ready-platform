@@ -159,6 +159,7 @@ export interface SqlSolutionResponse {
 
 export interface SqlExecutionStatus {
   available: boolean
+  status?: 'available' | 'disabled' | 'sandbox_unavailable' | string
   dialect?: string
   message?: string | null
   timeout_ms?: number | null

@@ -10,8 +10,8 @@ import {
   LoadingState,
   PracticeProgress,
   PracticeStatusBadge,
-  apiErrorMessage,
 } from '@/components/practice-workspace/PracticeWorkspace'
+import { apiErrorMessage } from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { fetchScenario, fetchScenarios, submitScenario, type ScenarioSubmitResponse } from '@/services/infraService'
 
 function EvidenceCards({ evidence }: { evidence: Record<string, unknown> }) {

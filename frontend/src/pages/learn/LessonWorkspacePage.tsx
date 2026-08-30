@@ -6,7 +6,6 @@ import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import {
-  apiErrorMessage,
   EmptyState,
   ErrorState,
   LoadingState,
@@ -14,6 +13,7 @@ import {
   PracticeStatusBadge,
   WorkspaceSplit,
 } from '@/components/practice-workspace/PracticeWorkspace'
+import { apiErrorMessage } from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { CodeEditor } from '@/features/dsa/CodeEditor'
 import {
   completeLesson,

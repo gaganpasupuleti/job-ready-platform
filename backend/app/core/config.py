@@ -1,4 +1,10 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import logging
+import warnings
+
+logger = logging.getLogger(__name__)
+
+_UNSAFE_JWT_DEFAULT = "change-me-in-production-use-long-random-secret"
 
 
 class Settings(BaseSettings):
@@ -77,7 +83,7 @@ class Settings(BaseSettings):
     sql_submit_max_rows: int = 10000
     sql_max_query_length: int = 20000
 
-    jwt_secret_key: str = "change-me-in-production-use-long-random-secret"
+    jwt_secret_key: str = _UNSAFE_JWT_DEFAULT
     jwt_access_token_expire_minutes: int = 60 * 24
 
     practice_catalog_cache_ttl_seconds: int = 300
@@ -93,5 +99,20 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5173",
     ]
 
+    def validate_runtime_safety(self) -> None:
+        """Fail on unsafe production configuration. Does not print secrets."""
+        is_prod = self.app_env.lower() in {"production", "prod"}
+        if not is_prod:
+            return
+        if self.jwt_secret_key in {_UNSAFE_JWT_DEFAULT, "", "secret", "changeme"}:
+            raise RuntimeError(
+                "Unsafe JWT_SECRET_KEY in production. Set a long random JWT_SECRET_KEY."
+            )
+        if not self.database_url:
+            raise RuntimeError("DATABASE_URL is required in production.")
+        if self.debug:
+            warnings.warn("DEBUG=true in production is discouraged.", UserWarning, stacklevel=2)
+
 
 settings = Settings()
+settings.validate_runtime_safety()

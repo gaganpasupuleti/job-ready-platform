@@ -48,14 +48,44 @@ class SqlPracticeService:
         self.executor = executor or get_sql_executor()
 
     def execution_status(self) -> SqlExecutionStatusResponse:
-        available = self.executor.is_available()
+        if not settings.sql_execution_enabled:
+            return SqlExecutionStatusResponse(
+                available=False,
+                status="disabled",
+                dialect="postgresql",
+                message="SQL execution is currently unavailable.",
+                timeout_ms=settings.sql_query_timeout_ms,
+                max_rows=settings.sql_max_rows,
+            )
         return SqlExecutionStatusResponse(
-            available=available,
+            available=True,
+            status="available",
             dialect="postgresql",
-            message=None if available else "SQL execution is currently unavailable.",
+            message=None,
             timeout_ms=settings.sql_query_timeout_ms,
             max_rows=settings.sql_max_rows,
         )
+
+    async def execution_status_async(self) -> SqlExecutionStatusResponse:
+        base = self.execution_status()
+        if not base.available:
+            return base
+        try:
+            from app.services.sql_execution.pools import get_runner_pool
+
+            pool = await get_runner_pool()
+            async with pool.acquire() as conn:
+                await conn.fetchval("SELECT 1")
+            return base
+        except Exception:
+            return SqlExecutionStatusResponse(
+                available=False,
+                status="sandbox_unavailable",
+                dialect="postgresql",
+                message="SQL sandbox is unavailable. Please try again later.",
+                timeout_ms=settings.sql_query_timeout_ms,
+                max_rows=settings.sql_max_rows,
+            )
 
     async def list_problems(
         self,

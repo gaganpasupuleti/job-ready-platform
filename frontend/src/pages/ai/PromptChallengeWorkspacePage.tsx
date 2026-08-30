@@ -6,14 +6,16 @@ import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
 import {
-  apiErrorMessage,
   ErrorState,
   HintPanel,
   LoadingState,
   PracticeProgress,
   PracticeStatusBadge,
-  useWorkspaceShortcuts,
 } from '@/components/practice-workspace/PracticeWorkspace'
+import {
+  apiErrorMessage,
+  useWorkspaceShortcuts,
+} from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { useAuth } from '@/hooks/useAuth'
 import {
   fetchPromptChallenge,

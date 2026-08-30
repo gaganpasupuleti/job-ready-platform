@@ -16,8 +16,17 @@ async def test_health_endpoint(client):
     response = await client.get("/api/v1/health")
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "ok"
+    assert data["status"] in {"ok", "degraded"}
     assert data["service"] == "job-ready-platform-api"
+    assert "checks" in data
+    assert "database" in data["checks"]
+    assert "sql_sandbox" in data["checks"]
+    assert "judge0" in data["checks"]
+    # Public health must not leak connection strings
+    blob = str(data).lower()
+    assert "password" not in blob
+    assert "postgresql://" not in blob
+    assert "@localhost" not in blob
 
 
 @pytest.mark.asyncio

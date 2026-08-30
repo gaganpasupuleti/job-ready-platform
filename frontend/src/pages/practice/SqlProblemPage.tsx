@@ -7,7 +7,6 @@ import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import {
-  apiErrorMessage,
   EmptyState,
   ErrorState,
   HintPanel,
@@ -17,9 +16,12 @@ import {
   PracticeTabs,
   ProblemNavigator,
   SuccessState,
-  useWorkspaceShortcuts,
   WorkspaceSplit,
 } from '@/components/practice-workspace/PracticeWorkspace'
+import {
+  apiErrorMessage,
+  useWorkspaceShortcuts,
+} from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { SqlEditor } from '@/features/sql/SqlEditor'
 import { SqlResultTable } from '@/features/sql/SqlResultTable'
 import { SqlSchemaExplorer } from '@/features/sql/SqlSchemaExplorer'

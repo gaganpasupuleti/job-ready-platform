@@ -159,6 +159,7 @@ class SqlSolutionResponse(BaseModel):
 
 class SqlExecutionStatusResponse(BaseModel):
     available: bool
+    status: str = "available"  # available | disabled | sandbox_unavailable
     dialect: str = "postgresql"
     message: str | None = None
     timeout_ms: int | None = None

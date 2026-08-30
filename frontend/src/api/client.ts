@@ -19,6 +19,21 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    const status = error.response?.status
+    const requestUrl = String(error.config?.url ?? '')
+    const isAuthEndpoint = /\/auth\/(login|register)\b/.test(requestUrl)
+
+    if (status === 401 && !isAuthEndpoint) {
+      localStorage.removeItem(AUTH_TOKEN_KEY)
+      if (typeof window !== 'undefined') {
+        const path = window.location.pathname
+        if (!path.startsWith('/login') && !path.startsWith('/register')) {
+          const from = encodeURIComponent(path + window.location.search)
+          window.location.assign(`/login?from=${from}`)
+        }
+      }
+    }
+
     const message =
       error.response?.data?.detail ?? error.message ?? 'An unexpected error occurred'
     return Promise.reject(new Error(typeof message === 'string' ? message : 'Request failed'))

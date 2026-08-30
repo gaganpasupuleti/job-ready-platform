@@ -15,7 +15,11 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const from = (location.state as { from?: string } | null)?.from ?? '/'
+  const fromQuery = new URLSearchParams(location.search).get('from')
+  const from =
+    (location.state as { from?: string } | null)?.from ??
+    (fromQuery && fromQuery.startsWith('/') ? fromQuery : null) ??
+    '/'
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -49,24 +53,28 @@ export function LoginPage() {
         )}
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="mb-1 block text-xs font-medium text-[var(--color-text-muted)]">
+            <label htmlFor="login-email" className="mb-1 block text-xs font-medium text-[var(--color-text-muted)]">
               Email
             </label>
             <input
+              id="login-email"
               type="email"
               required
+              autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-[var(--color-text-muted)]">
+            <label htmlFor="login-password" className="mb-1 block text-xs font-medium text-[var(--color-text-muted)]">
               Password
             </label>
             <input
+              id="login-password"
               type="password"
               required
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"

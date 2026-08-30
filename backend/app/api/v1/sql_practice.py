@@ -35,7 +35,7 @@ def _sql_service(
 async def execution_status(
     service: SqlPracticeService = Depends(_sql_service),
 ) -> SqlExecutionStatusResponse:
-    return service.execution_status()
+    return await service.execution_status_async()
 
 
 @router.get("/problems")

@@ -14,8 +14,8 @@ import {
   PracticeProgress,
   PracticeStatusBadge,
   SuccessState,
-  apiErrorMessage,
 } from '@/components/practice-workspace/PracticeWorkspace'
+import { apiErrorMessage } from '@/components/practice-workspace/practiceWorkspaceUtils'
 import {
   completeProjectTask,
   fetchProjectTask,

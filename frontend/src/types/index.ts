@@ -1,6 +1,14 @@
+export interface HealthChecks {
+  database?: string
+  redis?: string
+  sql_sandbox?: string
+  judge0?: string
+}
+
 export interface HealthResponse {
   status: string
   service: string
+  checks?: HealthChecks
 }
 
 export interface PlatformModule {

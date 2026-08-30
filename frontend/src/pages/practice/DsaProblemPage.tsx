@@ -7,7 +7,6 @@ import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import {
-  apiErrorMessage,
   EmptyState,
   ErrorState,
   HintPanel,
@@ -17,9 +16,12 @@ import {
   PracticeTabs,
   ProblemNavigator,
   SuccessState,
-  useWorkspaceShortcuts,
   WorkspaceSplit,
 } from '@/components/practice-workspace/PracticeWorkspace'
+import {
+  apiErrorMessage,
+  useWorkspaceShortcuts,
+} from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { getMonacoLanguage } from '@/constants/languages'
 import { CodeEditor } from '@/features/dsa/CodeEditor'
 import { ExecutionResults } from '@/features/dsa/ExecutionResults'

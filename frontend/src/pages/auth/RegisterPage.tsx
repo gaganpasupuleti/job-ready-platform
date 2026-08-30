@@ -5,6 +5,13 @@ import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import { useAuth } from '@/hooks/useAuth'
 
+const FIELD_META = {
+  email: { label: 'Email', type: 'email', required: true, autoComplete: 'email' },
+  username: { label: 'Username', type: 'text', required: true, autoComplete: 'username' },
+  full_name: { label: 'Full name', type: 'text', required: false, autoComplete: 'name' },
+  password: { label: 'Password', type: 'password', required: true, autoComplete: 'new-password' },
+} as const
+
 export function RegisterPage() {
   const { register } = useAuth()
   const navigate = useNavigate()
@@ -37,20 +44,26 @@ export function RegisterPage() {
         <h1 className="text-xl font-semibold text-[var(--color-text)]">Create account</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">Start your job preparation journey</p>
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          {(['email', 'username', 'full_name', 'password'] as const).map((field) => (
-            <div key={field}>
-              <label className="mb-1 block text-xs font-medium capitalize text-[var(--color-text-muted)]">
-                {field.replace('_', ' ')}
-              </label>
-              <input
-                type={field === 'password' ? 'password' : field === 'email' ? 'email' : 'text'}
-                required={field !== 'full_name'}
-                value={form[field]}
-                onChange={(e) => setForm((prev) => ({ ...prev, [field]: e.target.value }))}
-                className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"
-              />
-            </div>
-          ))}
+          {(Object.keys(FIELD_META) as Array<keyof typeof FIELD_META>).map((field) => {
+            const meta = FIELD_META[field]
+            const id = `register-${field}`
+            return (
+              <div key={field}>
+                <label htmlFor={id} className="mb-1 block text-xs font-medium text-[var(--color-text-muted)]">
+                  {meta.label}
+                </label>
+                <input
+                  id={id}
+                  type={meta.type}
+                  required={meta.required}
+                  autoComplete={meta.autoComplete}
+                  value={form[field]}
+                  onChange={(e) => setForm((prev) => ({ ...prev, [field]: e.target.value }))}
+                  className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"
+                />
+              </div>
+            )
+          })}
           {error && <p className="text-xs text-[var(--color-danger)]">{error}</p>}
           <Button type="submit" variant="primary" className="w-full" disabled={loading}>
             {loading ? 'Creating account...' : 'Register'}

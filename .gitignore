@@ -44,6 +44,11 @@ htmlcov/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+frontend/playwright-report/
+frontend/test-results/
+frontend/blob-report/
+backend/e2e-manifest.json
+frontend/e2e/fixtures/manifest.json
 
 # Docker
 *.pid

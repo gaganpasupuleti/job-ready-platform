@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 import { AdminRoute, GuestRoute, ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { PlaceholderPage } from '@/components/common/PlaceholderPage'
@@ -15,6 +15,7 @@ import { AdminContentPage } from '@/pages/admin/AdminContentPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { DashboardPage } from '@/pages/DashboardPage'
+import { NotFoundPage } from '@/pages/NotFoundPage'
 import { AptitudePage } from '@/pages/practice/AptitudePage'
 import { BookmarksPage } from '@/pages/bookmarks/BookmarksPage'
 import { SubmissionDetailPage } from '@/pages/submissions/SubmissionDetailPage'
@@ -422,7 +423,7 @@ export function AppRoutes() {
           }
         />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   )

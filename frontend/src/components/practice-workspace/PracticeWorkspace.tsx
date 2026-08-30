@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
+import { statusLabel } from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { cn } from '@/utils/cn'
 
 export type PracticeStatus =
@@ -15,22 +16,6 @@ export type PracticeStatus =
   | 'mastered'
   | 'locked'
   | string
-
-const STATUS_LABEL: Record<string, string> = {
-  not_started: 'Not Started',
-  unsolved: 'Not Started',
-  attempted: 'Attempted',
-  in_progress: 'In Progress',
-  solved: 'Solved',
-  completed: 'Completed',
-  mastered: 'Mastered',
-  locked: 'Locked',
-}
-
-export function statusLabel(status?: string | null) {
-  if (!status) return 'Not Started'
-  return STATUS_LABEL[status] ?? status.replace(/_/g, ' ')
-}
 
 export function PracticeStatusBadge({ status }: { status?: string | null }) {
   const key = status || 'not_started'
@@ -259,33 +244,6 @@ export function HintPanel({
       )}
     </div>
   )
-}
-
-export function apiErrorMessage(error: unknown, fallback = 'Request failed.') {
-  if (error instanceof Error && error.message) return error.message
-  return fallback
-}
-
-export function useWorkspaceShortcuts(handlers: {
-  run?: () => void
-  submit?: () => void
-  enabled?: boolean
-}) {
-  useEffect(() => {
-    if (handlers.enabled === false) return
-    const onKey = (event: KeyboardEvent) => {
-      if (!(event.ctrlKey || event.metaKey) || event.key !== 'Enter') return
-      const target = event.target as HTMLElement | null
-      if (target && ['INPUT', 'SELECT'].includes(target.tagName) && target.tagName !== 'TEXTAREA') {
-        return
-      }
-      event.preventDefault()
-      if (event.shiftKey) handlers.submit?.()
-      else handlers.run?.()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [handlers])
 }
 
 export function WorkspaceSplit({

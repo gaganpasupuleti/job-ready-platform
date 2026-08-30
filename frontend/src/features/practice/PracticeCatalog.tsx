@@ -123,10 +123,11 @@ export function PracticeCatalog({
           <div className="space-y-4">
             <DifficultySelector value={difficulty} onChange={setDifficulty} />
             <div>
-              <label className="mb-1 block text-xs font-medium text-[var(--color-text-muted)]">
+              <label htmlFor="practice-question-count" className="mb-1 block text-xs font-medium text-[var(--color-text-muted)]">
                 Questions
               </label>
               <select
+                id="practice-question-count"
                 className="w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"
                 value={questionCount}
                 onChange={(e) => setQuestionCount(Number(e.target.value))}
