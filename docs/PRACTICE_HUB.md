@@ -14,7 +14,7 @@ Student-facing catalog for guided practice paths, courses, and projects. Origina
 | `/learn/courses/:slug` | Course outline |
 | `/learn/courses/:course/:module/:lesson` | Lesson workspace |
 
-Existing engines stay at `/practice/dsa`, `/practice/sql`, `/practice/mcq`, etc.
+Existing engines stay at `/practice/dsa`, `/practice/sql`, `/practice/mcq`, `/ai`, `/cloud`, `/devops`, `/cybersecurity`.
 
 ## Student API
 

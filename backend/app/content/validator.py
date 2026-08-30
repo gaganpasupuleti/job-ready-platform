@@ -327,11 +327,26 @@ async def validate_file_payload(
         if not isinstance(items, list):
             raise ValueError("Prompt rubric JSON must contain a 'prompt_rubrics' array.")
         return [validate_prompt_rubric_payload(item) for item in items], items
-    if kind in {"ai_mcq", "ai_mcqs"}:
+    if kind in {"ai_mcq", "ai_mcqs", "cloud_mcq", "cloud_mcqs", "devops_mcq", "devops_mcqs", "cybersecurity_mcq", "cybersecurity_mcqs"}:
         items = data.get("questions") or data.get("items")
         if not isinstance(items, list):
-            raise ValueError("AI MCQ JSON must contain a 'questions' array.")
+            raise ValueError("MCQ JSON must contain a 'questions' array.")
         return [validate_ai_mcq_payload(item) for item in items], items
+    if kind in {"scenario_challenge", "scenario_challenges"}:
+        items = data.get("scenarios") or data.get("scenario_challenges") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Scenario JSON must contain a 'scenarios' array.")
+        return [validate_scenario_challenge_payload(item) for item in items], items
+    if kind in {"scenario_step", "scenario_steps"}:
+        items = data.get("steps") or data.get("scenario_steps") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Scenario step JSON must contain a 'steps' array.")
+        return [validate_scenario_step_payload(item) for item in items], items
+    if kind in {"scenario_option", "scenario_options"}:
+        items = data.get("options") or data.get("scenario_options") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Scenario option JSON must contain an 'options' array.")
+        return [validate_scenario_option_payload(item) for item in items], items
     raise ValueError(f"Unsupported content_kind: {kind}")
 
 
@@ -419,6 +434,59 @@ def validate_ai_mcq_payload(item: dict[str, Any]) -> ValidationResult:
         result.errors.append("At least two options required")
     if _contains_placeholder(str(item.get("question_text") or "")):
         result.errors.append("Placeholder text is not allowed")
+    return result
+
+
+def validate_scenario_challenge_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    for field in ("slug", "title", "domain_key", "scenario_type", "difficulty"):
+        if not str(item.get(field) or "").strip():
+            result.errors.append(f"Missing {field}")
+    steps = item.get("steps") or []
+    if not isinstance(steps, list) or not steps:
+        result.errors.append("steps array required")
+    else:
+        for idx, step in enumerate(steps):
+            step_result = validate_scenario_step_payload(step if isinstance(step, dict) else {})
+            for err in step_result.errors:
+                result.errors.append(f"Step {idx + 1}: {err}")
+    if _contains_placeholder(str(item.get("title") or "") + str(item.get("context_text") or "")):
+        result.errors.append("Placeholder text is not allowed")
+    blob = str(item).lower()
+    banned = ("exploit payload", "malware dropper", "phishing kit", "credential stealer")
+    if any(token in blob for token in banned):
+        result.errors.append("Offensive tooling content is not allowed")
+    return result
+
+
+def validate_scenario_step_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    if not str(item.get("prompt") or "").strip():
+        result.errors.append("Missing prompt")
+    options = item.get("options") or []
+    if not isinstance(options, list) or len(options) < 2:
+        result.errors.append("At least two options required")
+    elif not any(o.get("is_correct") for o in options if isinstance(o, dict)):
+        result.errors.append("A correct option is required")
+    for opt in options if isinstance(options, list) else []:
+        opt_result = validate_scenario_option_payload(opt if isinstance(opt, dict) else {})
+        result.errors.extend(opt_result.errors)
+    return result
+
+
+def validate_scenario_option_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    if not str(item.get("label") or "").strip():
+        result.errors.append("Option label required")
     return result
 
 

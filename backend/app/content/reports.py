@@ -135,6 +135,48 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
         or 0
     )
 
+    from app.models.scenario import ScenarioChallenge
+    from app.models.scenario_enums import ScenarioType
+
+    infra_topic: dict[tuple[str, str], int] = {}
+    infra_category: dict[tuple[str, str], int] = {}
+    topic_rows = (
+        await session.execute(
+            select(Domain.slug, Topic.slug, func.count(Question.id))
+            .join(Category, Category.domain_id == Domain.id)
+            .join(Topic, Topic.category_id == Category.id)
+            .join(Question, Question.topic_id == Topic.id)
+            .where(Question.is_active.is_(True), Domain.slug.in_(("cloud", "devops", "cybersecurity")))
+            .group_by(Domain.slug, Topic.slug)
+        )
+    ).all()
+    for dslug, tslug, n in topic_rows:
+        infra_topic[(dslug, tslug)] = int(n)
+    cat_rows = (
+        await session.execute(
+            select(Domain.slug, Category.slug, func.count(Question.id))
+            .join(Category, Category.domain_id == Domain.id)
+            .join(Topic, Topic.category_id == Category.id)
+            .join(Question, Question.topic_id == Topic.id)
+            .where(Question.is_active.is_(True), Domain.slug.in_(("cloud", "devops", "cybersecurity")))
+            .group_by(Domain.slug, Category.slug)
+        )
+    ).all()
+    for dslug, cslug, n in cat_rows:
+        infra_category[(dslug, cslug)] = int(n)
+    incident_scenarios = int(
+        await session.scalar(
+            select(func.count())
+            .select_from(ScenarioChallenge)
+            .where(
+                ScenarioChallenge.is_active.is_(True),
+                ScenarioChallenge.scenario_type == ScenarioType.INCIDENT_RESPONSE,
+            )
+        )
+        or 0
+    )
+    scenario_total = int(await session.scalar(select(func.count()).select_from(ScenarioChallenge)) or 0)
+
     catalog_gaps = []
     for label, key, target in [
         ("Python Projects", "python", 8),
@@ -148,6 +190,13 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
         ("MCP MCQs", None, 6),
         ("AI Security MCQs", None, 8),
         ("Prompt Challenges", None, 20),
+        ("AWS IAM", None, 20),
+        ("AWS Networking", None, 15),
+        ("Kubernetes", None, 40),
+        ("Terraform", None, 20),
+        ("SOC", None, 25),
+        ("API Security", None, 15),
+        ("Incident Scenarios", None, 10),
     ]:
         if label == "GenAI MCQs":
             n = ai_mcq_total
@@ -159,6 +208,20 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
             n = ai_mcq_by_topic.get("ai-security", 0)
         elif label == "Prompt Challenges":
             n = prompt_active
+        elif label == "AWS IAM":
+            n = infra_topic.get(("cloud", "iam"), 0)
+        elif label == "AWS Networking":
+            n = sum(infra_topic.get(("cloud", s), 0) for s in ("vpc", "subnets", "nat", "security-groups", "nacl"))
+        elif label == "Kubernetes":
+            n = infra_category.get(("devops", "kubernetes"), 0)
+        elif label == "Terraform":
+            n = infra_category.get(("devops", "terraform"), 0)
+        elif label == "SOC":
+            n = infra_category.get(("cybersecurity", "soc-siem"), 0)
+        elif label == "API Security":
+            n = infra_category.get(("cybersecurity", "api-security"), 0)
+        elif label == "Incident Scenarios":
+            n = incident_scenarios
         else:
             n = projects_by_category.get(key, 0)
         if n < target:
@@ -178,6 +241,8 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
         "ai_mcq_by_topic": ai_mcq_by_topic,
         "prompt_challenges": prompt_total,
         "active_prompt_challenges": prompt_active,
+        "scenario_challenges": scenario_total,
+        "incident_scenarios": incident_scenarios,
         "catalog_gap_lines": catalog_gaps or ["Catalog coverage looks healthy for current targets."],
     }
 

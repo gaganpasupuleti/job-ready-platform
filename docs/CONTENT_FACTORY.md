@@ -23,9 +23,9 @@ Cursor (dev-time)
 7. Approve (publishes) or reject. Edit payload before approval if needed.
 8. `python -m app.content.daily_report`
 
-`python -m app.content.gaps` reports interview coverage plus catalog lines for projects, **AI MCQs by topic**, and **prompt challenges**.
+`python -m app.content.gaps` reports interview coverage plus catalog lines for projects, **AI MCQs**, **prompt challenges**, **AWS IAM / Kubernetes / Terraform / SOC / API Security**, and **incident scenarios**.
 
-Staging kinds also include `prompt_challenge`, `prompt_case`, `prompt_rubric`, and `ai_mcq`. Production still does **not** call an LLM. No auto-publish.
+Staging kinds also include `prompt_challenge`, `ai_mcq`, `cloud_mcq`, `devops_mcq`, `cybersecurity_mcq`, `scenario_challenge`, `scenario_step`, and `scenario_option`. Production still does **not** call an LLM. No auto-publish.
 
 See [AI_PRACTICE.md](AI_PRACTICE.md) and [PROMPT_CHALLENGES.md](PROMPT_CHALLENGES.md).
 

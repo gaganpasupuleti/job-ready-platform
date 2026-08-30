@@ -15,6 +15,7 @@ interface PracticeCatalogProps {
   description: string
   domainSlug: string
   categorySlug?: string
+  topicSlugs?: string[]
 }
 
 export function PracticeCatalog({
@@ -22,6 +23,7 @@ export function PracticeCatalog({
   description,
   domainSlug,
   categorySlug,
+  topicSlugs,
 }: PracticeCatalogProps) {
   const navigate = useNavigate()
   const { data, isLoading, error } = useQuery({
@@ -40,9 +42,15 @@ export function PracticeCatalog({
   })
 
   const domain = data?.domains.find((item) => item.slug === domainSlug)
-  const categories = domain?.categories.filter(
-    (category) => !categorySlug || category.slug === categorySlug,
-  )
+  const categories = domain?.categories
+    .filter((category) => !categorySlug || category.slug === categorySlug)
+    .map((category) => ({
+      ...category,
+      topics: topicSlugs?.length
+        ? category.topics.filter((topic) => topicSlugs.includes(topic.slug))
+        : category.topics,
+    }))
+    .filter((category) => category.topics.length > 0)
 
   const selectedCategory =
     categories?.find((category) => category.id === selectedCategoryId) ?? categories?.[0]

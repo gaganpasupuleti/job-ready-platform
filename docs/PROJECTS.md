@@ -30,6 +30,8 @@ Progress: `not_started` → `in_progress` → `completed`, percent from complete
 
 Python, Java, C++, JavaScript, SQL, data analysis, machine learning (design-only), GenAI skeletons (no LLM), DevOps, cloud architecture (no cloud APIs), cybersecurity (defensive review only).
 
+Build 7 wires selected DevOps/Cloud/Cyber projects to MCQ topics and `/scenarios/:slug` checklist tasks (still no live cloud or cluster).
+
 ## Admin
 
 `/admin/projects`, `/admin/projects/new`, `/admin/projects/:id/edit`

@@ -5,7 +5,7 @@
   "required": ["content_kind"],
   "properties": {
     "content_kind": {
-      "enum": ["project", "practice_path", "lesson", "project_task", "interview_qa", "prompt_challenge", "prompt_case", "prompt_rubric", "ai_mcq"]
+      "enum": ["project", "practice_path", "lesson", "project_task", "interview_qa", "prompt_challenge", "prompt_case", "prompt_rubric", "ai_mcq", "cloud_mcq", "devops_mcq", "cybersecurity_mcq", "scenario_challenge", "scenario_step", "scenario_option"]
     },
     "projects": {
       "type": "array",

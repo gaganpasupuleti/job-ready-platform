@@ -14,6 +14,9 @@ class PracticePathType(StrEnum):
     INTERVIEW = "interview"
     CUSTOM = "custom"
     AI = "ai"
+    CLOUD = "cloud"
+    DEVOPS = "devops"
+    CYBERSECURITY = "cybersecurity"
 
 
 class PracticePathDifficulty(StrEnum):
@@ -34,6 +37,7 @@ class PracticePathItemType(StrEnum):
     COURSE = "course"
     EXTERNAL_ROUTE = "external_route"
     PROMPT_CHALLENGE = "prompt_challenge"
+    SCENARIO = "scenario"
 
 
 class PathAvailability(StrEnum):

@@ -72,7 +72,7 @@ Sandbox defaults: host port **5433**, user `jobready_sql_runner`, DB `jobready_s
 | Email | `admin@jobready.dev` |
 | Password | `Admin123!` |
 
-Seed includes taxonomy across Placement, Technical, AI, Cloud, DevOps, and Cybersecurity domains plus **37 sample MCQ questions**, **20 coding problems**, **30 SQL challenges**, Practice Hub paths, the **Python Foundations** course, and a sample project (development content only).
+Seed includes taxonomy across Placement, Technical, AI, Cloud, DevOps, and Cybersecurity domains, sample MCQs (including Build 7 cloud/devops/cyber banks), coding/SQL, Practice Hub, prompt challenges, and scenario challenges. Re-run `python -m app.seed.runner` after `alembic upgrade head` (migration `009_build7`).
 
 ## Running Locally
 

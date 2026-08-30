@@ -63,6 +63,14 @@ from app.models.prompt import (  # noqa: F401
     PromptSubmission,
     PromptSubmissionCaseResult,
 )
+from app.models.scenario import (  # noqa: F401
+    ScenarioChallenge,
+    ScenarioOption,
+    ScenarioProgress,
+    ScenarioStep,
+    ScenarioStepAnswer,
+    ScenarioSubmission,
+)
 from app.models.learn import (  # noqa: F401
     Course,
     CourseLesson,

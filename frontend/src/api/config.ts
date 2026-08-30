@@ -61,6 +61,9 @@ export const apiEndpoints = {
     aiPromptValidate: (id: string) => `/api/v1/admin/ai/prompts/${id}/validate`,
     practicePaths: '/api/v1/admin/practice-paths',
     practicePath: (id: string) => `/api/v1/admin/practice-paths/${id}`,
+    infraHome: (domain: string) => `/api/v1/admin/${domain}`,
+    scenarios: '/api/v1/admin/scenarios',
+    scenario: (id: string) => `/api/v1/admin/scenarios/${id}`,
     learnCourses: '/api/v1/admin/courses',
     learnCourse: (id: string) => `/api/v1/admin/courses/${id}`,
     learnCourseModules: (id: string) => `/api/v1/admin/courses/${id}/modules`,
@@ -141,6 +144,14 @@ export const apiEndpoints = {
     submission: (id: string) => `/api/v1/ai/prompt-submissions/${id}`,
     bookmark: (id: string) => `/api/v1/ai/prompts/${id}/bookmark`,
     bookmarks: '/api/v1/ai/prompt-bookmarks',
+  },
+  infra: {
+    home: (domain: string) => `/api/v1/${domain}`,
+    progress: (domain: string) => `/api/v1/${domain}/progress`,
+    scenarios: '/api/v1/scenarios',
+    scenario: (slug: string) => `/api/v1/scenarios/${slug}`,
+    scenarioSubmit: (slug: string) => `/api/v1/scenarios/${slug}/submit`,
+    submission: (id: string) => `/api/v1/scenario-submissions/${id}`,
   },
 } as const
 

@@ -50,6 +50,13 @@ import { PromptChallengeListPage } from '@/pages/ai/PromptChallengeListPage'
 import { PromptChallengeWorkspacePage } from '@/pages/ai/PromptChallengeWorkspacePage'
 import { PromptSubmissionsPage } from '@/pages/ai/PromptSubmissionsPage'
 import { PromptSubmissionDetailPage } from '@/pages/ai/PromptSubmissionDetailPage'
+import { InfraHomePage } from '@/pages/infra/InfraHomePage'
+import { InfraProgressPage } from '@/pages/infra/InfraProgressPage'
+import { InfraTrackPage } from '@/pages/infra/InfraTrackPage'
+import { ScenarioWorkspacePage } from '@/pages/infra/ScenarioWorkspacePage'
+import { AdminInfraPage } from '@/pages/admin/AdminInfraPage'
+import { AdminScenariosPage } from '@/pages/admin/AdminScenariosPage'
+import { AdminScenarioFormPage } from '@/pages/admin/AdminScenarioFormPage'
 import { moduleRoutes } from '@/routes/moduleRoutes'
 
 const placeholderRoutes = moduleRoutes.filter(
@@ -67,6 +74,9 @@ const placeholderRoutes = moduleRoutes.filter(
       'ai/genai',
       'ai/prompt-engineering',
       'ai/agents',
+      'cloud',
+      'devops',
+      'cybersecurity',
     ].includes(route.path),
 )
 
@@ -137,6 +147,38 @@ export function AppRoutes() {
         <Route path="ai/security" element={<AiTrackPage track="security" />} />
         <Route path="ai/system-design" element={<AiTrackPage track="system-design" />} />
         <Route path="ai/progress" element={<AiProgressPage />} />
+        <Route path="cloud" element={<InfraHomePage domain="cloud" />} />
+        <Route path="cloud/fundamentals" element={<InfraTrackPage track="cloud-fundamentals" />} />
+        <Route path="cloud/aws" element={<InfraTrackPage track="cloud-aws" />} />
+        <Route path="cloud/azure" element={<InfraTrackPage track="cloud-azure" />} />
+        <Route path="cloud/gcp" element={<InfraTrackPage track="cloud-gcp" />} />
+        <Route path="cloud/architecture" element={<InfraTrackPage track="cloud-architecture" />} />
+        <Route path="cloud/security" element={<InfraTrackPage track="cloud-security" />} />
+        <Route path="cloud/progress" element={<InfraProgressPage domain="cloud" />} />
+        <Route path="devops" element={<InfraHomePage domain="devops" />} />
+        <Route path="devops/linux" element={<InfraTrackPage track="devops-linux" />} />
+        <Route path="devops/git" element={<InfraTrackPage track="devops-git" />} />
+        <Route path="devops/docker" element={<InfraTrackPage track="devops-docker" />} />
+        <Route path="devops/kubernetes" element={<InfraTrackPage track="devops-kubernetes" />} />
+        <Route path="devops/cicd" element={<InfraTrackPage track="devops-cicd" />} />
+        <Route path="devops/terraform" element={<InfraTrackPage track="devops-terraform" />} />
+        <Route path="devops/observability" element={<InfraTrackPage track="devops-observability" />} />
+        <Route path="devops/sre" element={<InfraTrackPage track="devops-sre" />} />
+        <Route path="devops/progress" element={<InfraProgressPage domain="devops" />} />
+        <Route path="cybersecurity" element={<InfraHomePage domain="cybersecurity" />} />
+        <Route path="cybersecurity/fundamentals" element={<InfraTrackPage track="cyber-fundamentals" />} />
+        <Route path="cybersecurity/network-security" element={<InfraTrackPage track="cyber-network" />} />
+        <Route path="cybersecurity/iam" element={<InfraTrackPage track="cyber-iam" />} />
+        <Route path="cybersecurity/web-security" element={<InfraTrackPage track="cyber-web" />} />
+        <Route path="cybersecurity/owasp" element={<InfraTrackPage track="cyber-owasp" />} />
+        <Route path="cybersecurity/api-security" element={<InfraTrackPage track="cyber-api" />} />
+        <Route path="cybersecurity/cloud-security" element={<InfraTrackPage track="cyber-cloud" />} />
+        <Route path="cybersecurity/soc" element={<InfraTrackPage track="cyber-soc" />} />
+        <Route path="cybersecurity/siem" element={<InfraTrackPage track="cyber-siem" />} />
+        <Route path="cybersecurity/incident-response" element={<InfraTrackPage track="cyber-ir" />} />
+        <Route path="cybersecurity/secure-coding" element={<InfraTrackPage track="cyber-coding" />} />
+        <Route path="cybersecurity/progress" element={<InfraProgressPage domain="cybersecurity" />} />
+        <Route path="scenarios/:slug" element={<ScenarioWorkspacePage />} />
         <Route path="practice/sessions/:sessionId" element={<PracticeSessionPage />} />
         <Route path="practice/sessions/:sessionId/results" element={<PracticeResultsPage />} />
 
@@ -327,6 +369,54 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminTaxonomyPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/cloud"
+          element={
+            <AdminRoute>
+              <AdminInfraPage domain="cloud" />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/devops"
+          element={
+            <AdminRoute>
+              <AdminInfraPage domain="devops" />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/cybersecurity"
+          element={
+            <AdminRoute>
+              <AdminInfraPage domain="cybersecurity" />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/scenarios"
+          element={
+            <AdminRoute>
+              <AdminScenariosPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/scenarios/new"
+          element={
+            <AdminRoute>
+              <AdminScenarioFormPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/scenarios/:id/edit"
+          element={
+            <AdminRoute>
+              <AdminScenarioFormPage />
             </AdminRoute>
           }
         />

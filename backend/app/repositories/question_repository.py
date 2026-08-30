@@ -32,6 +32,12 @@ class TaxonomyRepository(BaseRepository):
         result = await self.db.execute(select(Topic).where(Topic.id == topic_id))
         return result.scalar_one_or_none()
 
+    async def get_topic_by_slug(self, category_id: UUID, slug: str) -> Topic | None:
+        result = await self.db.execute(
+            select(Topic).where(Topic.category_id == category_id, Topic.slug == slug)
+        )
+        return result.scalar_one_or_none()
+
 
 class QuestionRepository(BaseRepository):
     async def get_by_id(self, question_id: UUID) -> Question | None:

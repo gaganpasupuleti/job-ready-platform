@@ -11,6 +11,8 @@ from app.schemas.admin import (
     AdminQuestionDetail,
     AdminQuestionListResponse,
     AdminQuestionUpdate,
+    TaxonomyTopicCreate,
+    TaxonomyTopicUpdate,
 )
 from app.schemas.coding import (
     AdminCodingProblemCreate,
@@ -43,6 +45,25 @@ async def get_taxonomy(
     db: AsyncSession = Depends(get_db),
 ) -> CatalogResponse:
     return await CatalogService(db).get_catalog(use_cache=False)
+
+
+@router.post("/taxonomy/topics")
+async def create_taxonomy_topic(
+    payload: TaxonomyTopicCreate,
+    _admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    return await CatalogService(db).create_topic(payload)
+
+
+@router.patch("/taxonomy/topics/{topic_id}")
+async def update_taxonomy_topic(
+    topic_id: UUID,
+    payload: TaxonomyTopicUpdate,
+    _admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    return await CatalogService(db).update_topic(topic_id, payload)
 
 
 @router.get("/questions", response_model=AdminQuestionListResponse)

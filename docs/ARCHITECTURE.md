@@ -72,6 +72,15 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 - Docs: [AI_PRACTICE.md](AI_PRACTICE.md), [PROMPT_CHALLENGES.md](PROMPT_CHALLENGES.md)
 - Migration: `008_build6`
 
+## Cloud, DevOps, Cybersecurity (Build 7)
+
+- **MCQs:** Universal question engine; taxonomy domains `cloud`, `devops`, `cybersecurity`
+- **Scenarios:** Shared deterministic engine (`scenario_*` tables) — no LLM, no cloud/K8s/SIEM APIs
+- **Student API:** `/api/v1/cloud`, `/devops`, `/cybersecurity`, `/scenarios`
+- **Admin:** `/api/v1/admin/cloud|devops|cybersecurity`, `/admin/scenarios`
+- Docs: [CLOUD_PRACTICE.md](CLOUD_PRACTICE.md), [DEVOPS_PRACTICE.md](DEVOPS_PRACTICE.md), [CYBERSECURITY_PRACTICE.md](CYBERSECURITY_PRACTICE.md), [SCENARIO_ENGINE.md](SCENARIO_ENGINE.md)
+- Migration: `009_build7`
+
 ## Frontend
 
 - **Framework:** React 19 with Vite and TypeScript (strict mode)

@@ -95,6 +95,9 @@ HUB_SECTIONS: list[tuple[PracticePathType, str]] = [
     (PracticePathType.COMPANY, "Company Paths"),
     (PracticePathType.CUSTOM, "Other Practice Paths"),
     (PracticePathType.AI, "AI Practice"),
+    (PracticePathType.CLOUD, "Cloud"),
+    (PracticePathType.DEVOPS, "DevOps"),
+    (PracticePathType.CYBERSECURITY, "Cybersecurity"),
 ]
 
 
@@ -1447,6 +1450,12 @@ class LearnService:
             elif item.item_type == PracticePathItemType.MCQ_TOPIC and item.topic_id:
                 slug = topic_slugs.get(item.topic_id)
                 href = f"/practice/mcq?topic={slug}" if slug else href
+            elif item.item_type in (
+                PracticePathItemType.SCENARIO,
+                PracticePathItemType.PROMPT_CHALLENGE,
+                PracticePathItemType.EXTERNAL_ROUTE,
+            ):
+                href = item.external_route or href
             hrefs[item.id] = href
         return hrefs
 

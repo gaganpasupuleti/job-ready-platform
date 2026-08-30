@@ -497,6 +497,12 @@ async def seed_build6_content_entry() -> None:
     await _seed()
 
 
+async def seed_build7_content_entry() -> None:
+    from app.seed.build7_seed import seed_build7_content as _seed
+
+    await _seed()
+
+
 async def _run() -> None:
     await seed_all()
     await ensure_content_factory_catalog()
@@ -504,4 +510,5 @@ async def _run() -> None:
     await seed_sql_problems()
     await seed_learn_content()
     await seed_build6_content_entry()
+    await seed_build7_content_entry()
     await engine.dispose()

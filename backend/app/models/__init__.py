@@ -27,7 +27,14 @@ from app.models.learn import (
     PracticePath,
     Project,
 )
-from app.models.practice import Bookmark, PracticeAnswer, PracticeSession, PracticeSessionQuestion
+from app.models.scenario import (
+    ScenarioChallenge,
+    ScenarioOption,
+    ScenarioProgress,
+    ScenarioStep,
+    ScenarioStepAnswer,
+    ScenarioSubmission,
+)
 from app.models.prompt import (
     PromptChallenge,
     PromptChallengeCase,
@@ -36,6 +43,7 @@ from app.models.prompt import (
     PromptSubmission,
     PromptSubmissionCaseResult,
 )
+from app.models.practice import Bookmark, PracticeAnswer, PracticeSession, PracticeSessionQuestion
 from app.models.question import Question, QuestionOption
 from app.models.sql_practice import (
     SqlExpectedResult,
@@ -102,4 +110,10 @@ __all__ = [
     "PromptSubmission",
     "PromptSubmissionCaseResult",
     "PromptProblemProgress",
+    "ScenarioChallenge",
+    "ScenarioStep",
+    "ScenarioOption",
+    "ScenarioSubmission",
+    "ScenarioStepAnswer",
+    "ScenarioProgress",
 ]
