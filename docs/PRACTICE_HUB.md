@@ -46,8 +46,11 @@ Hub section keys:
 - Interview Questions
 - Company Paths
 - Other Practice Paths
+- AI Practice
 
 Company paths include explicit disclaimer copy: community-curated skill patterns, original content, not affiliated with the company.
+
+Build 6 adds `path_type=ai` paths (Generative AI, RAG, Prompt Engineering, Agents, MCP, AI Security) that link MCQ topics and prompt-challenge routes. See [AI_PRACTICE.md](AI_PRACTICE.md).
 
 ## Admin
 

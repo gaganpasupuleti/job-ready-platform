@@ -53,9 +53,11 @@ python -m app.seed
 python -c "import asyncio; from app.seed.sql_data import seed_sql_problems; asyncio.run(seed_sql_problems())"
 # Build 5 Practice Hub / courses / projects:
 python -c "import asyncio; from app.seed.learn_data import seed_learn_content; asyncio.run(seed_learn_content())"
+# Build 6 AI MCQs + prompt challenges:
+python -c "import asyncio; from app.seed.build6_seed import seed_build6_content; asyncio.run(seed_build6_content())"
 ```
 
-`python -m app.seed` runs taxonomy/MCQ, coding problems, SQL problems, and learn content (idempotent by slug).
+`python -m app.seed` runs taxonomy/MCQ, coding, SQL, learn content, and Build 6 AI practice (idempotent).
 
 Start SQL sandbox (required for live SQL run/submit):
 

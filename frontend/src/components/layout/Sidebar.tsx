@@ -87,6 +87,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 {[
                   { label: 'Questions', path: '/admin/questions' },
                   { label: 'Taxonomy', path: '/admin/taxonomy' },
+                  { label: 'AI Practice', path: '/admin/ai' },
                   { label: 'Content Factory', path: '/admin/content' },
                   { label: 'Practice Paths', path: '/admin/practice-paths' },
                   { label: 'Courses', path: '/admin/courses' },

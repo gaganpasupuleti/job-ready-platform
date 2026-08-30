@@ -2,8 +2,10 @@ from fastapi import APIRouter
 
 from app.api.v1 import (
     admin,
+    admin_ai,
     admin_content,
     admin_learn,
+    ai,
     auth,
     coding,
     health,
@@ -23,6 +25,8 @@ api_router.include_router(coding.router, tags=["coding"])
 api_router.include_router(sql_practice.router, tags=["sql"])
 api_router.include_router(interview.router, tags=["interview"])
 api_router.include_router(learn.router, tags=["learn"])
+api_router.include_router(ai.router, tags=["ai"])
 api_router.include_router(admin.router, tags=["admin"])
+api_router.include_router(admin_ai.router, tags=["admin-ai"])
 api_router.include_router(admin_content.router, tags=["admin-content"])
 api_router.include_router(admin_learn.router, tags=["admin-learn"])

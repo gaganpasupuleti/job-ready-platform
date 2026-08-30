@@ -94,6 +94,7 @@ HUB_SECTIONS: list[tuple[PracticePathType, str]] = [
     (PracticePathType.INTERVIEW, "Interview Questions"),
     (PracticePathType.COMPANY, "Company Paths"),
     (PracticePathType.CUSTOM, "Other Practice Paths"),
+    (PracticePathType.AI, "AI Practice"),
 ]
 
 

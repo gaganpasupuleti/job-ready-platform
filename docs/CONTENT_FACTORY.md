@@ -23,7 +23,11 @@ Cursor (dev-time)
 7. Approve (publishes) or reject. Edit payload before approval if needed.
 8. `python -m app.content.daily_report`
 
-Generated content is **never** student-facing until `review_status=approved` and `is_active=true`.
+`python -m app.content.gaps` reports interview coverage plus catalog lines for projects, **AI MCQs by topic**, and **prompt challenges**.
+
+Staging kinds also include `prompt_challenge`, `prompt_case`, `prompt_rubric`, and `ai_mcq`. Production still does **not** call an LLM. No auto-publish.
+
+See [AI_PRACTICE.md](AI_PRACTICE.md) and [PROMPT_CHALLENGES.md](PROMPT_CHALLENGES.md).
 
 ## JSON schema
 

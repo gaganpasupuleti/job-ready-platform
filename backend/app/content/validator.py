@@ -312,7 +312,114 @@ async def validate_file_payload(
         if not isinstance(items, list):
             raise ValueError("Task JSON must contain a 'tasks' array.")
         return [validate_task_payload(item) for item in items], items
+    if kind in {"prompt_challenge", "prompt_challenges"}:
+        items = data.get("prompt_challenges") or data.get("challenges") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Prompt challenge JSON must contain a 'prompt_challenges' array.")
+        return [validate_prompt_challenge_payload(item) for item in items], items
+    if kind in {"prompt_case", "prompt_cases"}:
+        items = data.get("prompt_cases") or data.get("cases") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Prompt case JSON must contain a 'prompt_cases' array.")
+        return [validate_prompt_case_payload(item) for item in items], items
+    if kind in {"prompt_rubric", "prompt_rubrics"}:
+        items = data.get("prompt_rubrics") or data.get("rubrics") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Prompt rubric JSON must contain a 'prompt_rubrics' array.")
+        return [validate_prompt_rubric_payload(item) for item in items], items
+    if kind in {"ai_mcq", "ai_mcqs"}:
+        items = data.get("questions") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("AI MCQ JSON must contain a 'questions' array.")
+        return [validate_ai_mcq_payload(item) for item in items], items
     raise ValueError(f"Unsupported content_kind: {kind}")
+
+
+def validate_prompt_challenge_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    for field in ("slug", "title", "task_type", "difficulty"):
+        if not str(item.get(field) or "").strip():
+            result.errors.append(f"Missing {field}")
+    cases = item.get("cases") or []
+    if not isinstance(cases, list) or not cases:
+        result.errors.append("cases array required")
+    else:
+        public = [c for c in cases if isinstance(c, dict) and not c.get("is_hidden")]
+        if not public:
+            result.errors.append("At least one public case is required")
+        for idx, case in enumerate(cases):
+            case_result = validate_prompt_case_payload(case if isinstance(case, dict) else {})
+            for err in case_result.errors:
+                result.errors.append(f"Case {idx + 1}: {err}")
+    if item.get("rubric_weights") is not None and not isinstance(item.get("rubric_weights"), dict):
+        result.errors.append("rubric_weights must be an object")
+    if _contains_placeholder(str(item.get("title") or "") + str(item.get("instructions") or "")):
+        result.errors.append("Placeholder text is not allowed")
+    return result
+
+
+def validate_prompt_case_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    config = item.get("evaluation_config") or {}
+    if not isinstance(config, dict):
+        result.errors.append("evaluation_config must be an object")
+        return result
+    checks = config.get("checks") or []
+    if not checks and not item.get("expected_schema"):
+        result.errors.append("evaluation checks or expected_schema required")
+    for check in checks if isinstance(checks, list) else []:
+        if not isinstance(check, dict) or not check.get("type"):
+            result.errors.append("Each check needs a type")
+            continue
+        if check.get("type") == "regex":
+            import re
+
+            pattern = str(check.get("pattern") or check.get("value") or "")
+            try:
+                re.compile(pattern)
+            except re.error:
+                result.errors.append("regex does not compile")
+        if check.get("type") == "json_schema" and not isinstance(check.get("schema"), dict):
+            result.errors.append("json_schema needs schema object")
+    if item.get("expected_schema") is not None and not isinstance(item.get("expected_schema"), dict):
+        result.errors.append("expected_schema must be an object")
+    return result
+
+
+def validate_prompt_rubric_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    if not str(item.get("dimension") or "").strip():
+        result.errors.append("Missing dimension")
+    try:
+        float(item.get("weight", 0))
+    except (TypeError, ValueError):
+        result.errors.append("weight must be numeric")
+    return result
+
+
+def validate_ai_mcq_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    for field in ("question_text", "topic", "difficulty"):
+        if not str(item.get(field) or "").strip():
+            result.errors.append(f"Missing {field}")
+    options = item.get("options") or []
+    if not isinstance(options, list) or len(options) < 2:
+        result.errors.append("At least two options required")
+    if _contains_placeholder(str(item.get("question_text") or "")):
+        result.errors.append("Placeholder text is not allowed")
+    return result
 
 
 def validate_project_payload(item: dict[str, Any]) -> ValidationResult:

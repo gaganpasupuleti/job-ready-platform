@@ -47,10 +47,13 @@ export const navigationConfig: NavSection[] = [
   {
     title: 'AI Era',
     items: [
-      { label: 'AI / ML', path: '/ai/ml', icon: 'Sparkles' },
+      { label: 'AI Home', path: '/ai', icon: 'Sparkles' },
       { label: 'Generative AI', path: '/ai/genai', icon: 'Bot' },
       { label: 'Prompt Engineering', path: '/ai/prompt-engineering', icon: 'MessageSquare' },
+      { label: 'RAG', path: '/ai/rag', icon: 'Database' },
       { label: 'AI Agents', path: '/ai/agents', icon: 'Users' },
+      { label: 'MCP', path: '/ai/mcp', icon: 'Server' },
+      { label: 'AI Progress', path: '/ai/progress', icon: 'Target' },
     ],
   },
   {

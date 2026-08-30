@@ -6,11 +6,12 @@ import { Badge } from '@/components/common/Badge'
 import { Card, CardHeader } from '@/components/common/Card'
 import { CodingProblemList } from '@/features/dsa/CodingProblemList'
 import { SqlProblemList } from '@/features/sql/SqlProblemList'
+import { fetchPromptBookmarks } from '@/services/aiService'
 import { fetchCodingBookmarks } from '@/services/codingService'
 import { fetchPracticeBookmarks } from '@/services/practiceService'
 import { fetchSqlBookmarks } from '@/services/sqlService'
 
-type Tab = 'mcq' | 'coding' | 'sql'
+type Tab = 'mcq' | 'coding' | 'sql' | 'prompt'
 
 export function BookmarksPage() {
   const [tab, setTab] = useState<Tab>('mcq')
@@ -33,10 +34,17 @@ export function BookmarksPage() {
     enabled: tab === 'sql',
   })
 
+  const { data: promptBookmarks, isLoading: promptLoading } = useQuery({
+    queryKey: ['prompt-bookmarks'],
+    queryFn: fetchPromptBookmarks,
+    enabled: tab === 'prompt',
+  })
+
   const tabLabel: Record<Tab, string> = {
     mcq: 'MCQ Questions',
     coding: 'Coding Problems',
     sql: 'SQL Problems',
+    prompt: 'Prompt Challenges',
   }
 
   return (
@@ -44,12 +52,12 @@ export function BookmarksPage() {
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-text)]">Bookmarks</h2>
         <p className="text-sm text-[var(--color-text-muted)]">
-          Saved MCQ questions, coding problems, and SQL problems for later review.
+          Saved MCQ questions, coding problems, SQL problems, and prompt challenges.
         </p>
       </div>
 
       <div className="flex gap-2 border-b border-[var(--color-border)]">
-        {(['mcq', 'coding', 'sql'] as Tab[]).map((key) => (
+        {(['mcq', 'coding', 'sql', 'prompt'] as Tab[]).map((key) => (
           <button
             key={key}
             type="button"
@@ -120,6 +128,30 @@ export function BookmarksPage() {
             to continue querying.
           </p>
         </>
+      )}
+
+      {tab === 'prompt' && (
+        <Card>
+          <CardHeader title={`Prompt challenge bookmarks (${promptBookmarks?.length ?? 0})`} />
+          {promptLoading ? (
+            <p className="text-sm text-[var(--color-text-muted)]">Loading...</p>
+          ) : promptBookmarks?.length ? (
+            <div className="space-y-3">
+              {promptBookmarks.map((item) => (
+                <Link
+                  key={item.id}
+                  to={`/ai/prompt-engineering/challenges/${item.slug}`}
+                  className="block rounded-md border border-[var(--color-border)] px-3 py-2 text-sm"
+                >
+                  <p>{item.title}</p>
+                  <Badge className="mt-2">{item.difficulty}</Badge>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--color-text-muted)]">No prompt challenge bookmarks yet.</p>
+          )}
+        </Card>
       )}
     </div>
   )

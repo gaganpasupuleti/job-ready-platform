@@ -104,3 +104,6 @@ class Bookmark(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     sql_problem_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("sql_problems.id", ondelete="CASCADE"), nullable=True
     )
+    prompt_challenge_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("prompt_challenges.id", ondelete="CASCADE"), nullable=True
+    )

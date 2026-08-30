@@ -13,6 +13,7 @@ class PracticePathType(StrEnum):
     COMPANY = "company"
     INTERVIEW = "interview"
     CUSTOM = "custom"
+    AI = "ai"
 
 
 class PracticePathDifficulty(StrEnum):
@@ -32,6 +33,7 @@ class PracticePathItemType(StrEnum):
     CHECKPOINT = "checkpoint"
     COURSE = "course"
     EXTERNAL_ROUTE = "external_route"
+    PROMPT_CHALLENGE = "prompt_challenge"
 
 
 class PathAvailability(StrEnum):

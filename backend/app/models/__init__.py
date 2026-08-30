@@ -28,6 +28,14 @@ from app.models.learn import (
     Project,
 )
 from app.models.practice import Bookmark, PracticeAnswer, PracticeSession, PracticeSessionQuestion
+from app.models.prompt import (
+    PromptChallenge,
+    PromptChallengeCase,
+    PromptEvaluationRubric,
+    PromptProblemProgress,
+    PromptSubmission,
+    PromptSubmissionCaseResult,
+)
 from app.models.question import Question, QuestionOption
 from app.models.sql_practice import (
     SqlExpectedResult,
@@ -88,4 +96,10 @@ __all__ = [
     "SqlExpectedResult",
     "SqlSubmission",
     "SqlProblemProgress",
+    "PromptChallenge",
+    "PromptChallengeCase",
+    "PromptEvaluationRubric",
+    "PromptSubmission",
+    "PromptSubmissionCaseResult",
+    "PromptProblemProgress",
 ]

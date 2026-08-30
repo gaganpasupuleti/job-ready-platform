@@ -80,8 +80,9 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
     )
 
     from app.models.learn import CourseLesson, PracticePath, Project
+    from app.models.prompt import PromptChallenge
     from app.models.question import Question
-    from app.models.taxonomy import Domain
+    from app.models.taxonomy import Category, Domain, Topic
 
     project_rows = (
         await session.execute(
@@ -111,6 +112,29 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
         )
     ).all()
 
+    ai_domain = (await session.execute(select(Domain).where(Domain.slug == "ai"))).scalar_one_or_none()
+    ai_mcq_by_topic: dict[str, int] = {}
+    ai_mcq_total = 0
+    if ai_domain:
+        rows = (
+            await session.execute(
+                select(Topic.slug, func.count(Question.id))
+                .join(Question, Question.topic_id == Topic.id)
+                .join(Category, Category.id == Topic.category_id)
+                .where(Category.domain_id == ai_domain.id, Question.is_active.is_(True))
+                .group_by(Topic.slug)
+            )
+        ).all()
+        ai_mcq_by_topic = {slug: int(n) for slug, n in rows}
+        ai_mcq_total = sum(ai_mcq_by_topic.values())
+    prompt_total = int(await session.scalar(select(func.count()).select_from(PromptChallenge)) or 0)
+    prompt_active = int(
+        await session.scalar(
+            select(func.count()).select_from(PromptChallenge).where(PromptChallenge.is_active.is_(True))
+        )
+        or 0
+    )
+
     catalog_gaps = []
     for label, key, target in [
         ("Python Projects", "python", 8),
@@ -119,8 +143,24 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
         ("Java Projects", "java", 4),
         ("C++ Projects", "cpp", 4),
         ("JavaScript Projects", "javascript", 4),
+        ("GenAI MCQs", None, 80),
+        ("RAG MCQs", None, 15),
+        ("MCP MCQs", None, 6),
+        ("AI Security MCQs", None, 8),
+        ("Prompt Challenges", None, 20),
     ]:
-        n = projects_by_category.get(key, 0)
+        if label == "GenAI MCQs":
+            n = ai_mcq_total
+        elif label == "RAG MCQs":
+            n = ai_mcq_by_topic.get("rag", 0) + ai_mcq_by_topic.get("retrieval", 0)
+        elif label == "MCP MCQs":
+            n = ai_mcq_by_topic.get("mcp-fundamentals", 0)
+        elif label == "AI Security MCQs":
+            n = ai_mcq_by_topic.get("ai-security", 0)
+        elif label == "Prompt Challenges":
+            n = prompt_active
+        else:
+            n = projects_by_category.get(key, 0)
         if n < target:
             catalog_gaps.append(f"{label}: {n}")
 
@@ -134,6 +174,10 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
         "lessons": lesson_count,
         "mcq_questions": mcq_count,
         "mcq_by_domain": {name: int(n or 0) for name, n in domain_rows},
+        "ai_mcqs": ai_mcq_total,
+        "ai_mcq_by_topic": ai_mcq_by_topic,
+        "prompt_challenges": prompt_total,
+        "active_prompt_challenges": prompt_active,
         "catalog_gap_lines": catalog_gaps or ["Catalog coverage looks healthy for current targets."],
     }
 

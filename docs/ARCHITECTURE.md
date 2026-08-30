@@ -63,6 +63,15 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 - **Frontend:** `/practice` hub, `/practice/paths/:slug`, `/learn/*` lesson workspace, `/practice/projects`, admin pages
 - Docs: [PRACTICE_HUB.md](PRACTICE_HUB.md), [INTERACTIVE_LEARNING.md](INTERACTIVE_LEARNING.md), [PROJECTS.md](PROJECTS.md)
 
+## AI Practice (Build 6)
+
+- **MCQs:** Same universal question engine and taxonomy domain `ai` (no second MCQ stack)
+- **Prompt challenges:** Separate tables (`prompt_challenges`, cases, submissions, progress) and `PromptEvaluator` — deterministic, no model provider
+- **Student API:** `/api/v1/ai/*` · **Admin:** `/api/v1/admin/ai/*`
+- **Frontend:** `/ai`, track pages, prompt workspace, `/ai/progress`, `/admin/ai`
+- Docs: [AI_PRACTICE.md](AI_PRACTICE.md), [PROMPT_CHALLENGES.md](PROMPT_CHALLENGES.md)
+- Migration: `008_build6`
+
 ## Frontend
 
 - **Framework:** React 19 with Vite and TypeScript (strict mode)

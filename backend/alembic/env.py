@@ -55,6 +55,14 @@ from app.models.interview import (  # noqa: F401
     InterviewQuestionSkill,
     JobListing,
 )
+from app.models.prompt import (  # noqa: F401
+    PromptChallenge,
+    PromptChallengeCase,
+    PromptEvaluationRubric,
+    PromptProblemProgress,
+    PromptSubmission,
+    PromptSubmissionCaseResult,
+)
 from app.models.learn import (  # noqa: F401
     Course,
     CourseLesson,

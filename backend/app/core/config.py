@@ -83,6 +83,11 @@ class Settings(BaseSettings):
     practice_catalog_cache_ttl_seconds: int = 300
     practice_catalog_cache_key: str = "practice:catalog"
 
+    prompt_max_chars: int = 20000
+    prompt_max_cases: int = 40
+    prompt_max_regex_length: int = 200
+    prompt_evaluation_timeout_ms: int = 2000
+
     cors_origins: list[str] = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",

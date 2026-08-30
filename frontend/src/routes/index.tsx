@@ -40,6 +40,16 @@ import { LessonWorkspacePage } from '@/pages/learn/LessonWorkspacePage'
 import { AdminPracticePathsPage } from '@/pages/admin/AdminPracticePathsPage'
 import { AdminCoursesPage } from '@/pages/admin/AdminCoursesPage'
 import { AdminProjectsPage } from '@/pages/admin/AdminProjectsPage'
+import { AdminAiPage } from '@/pages/admin/AdminAiPage'
+import { AdminPromptsPage } from '@/pages/admin/AdminPromptsPage'
+import { AdminPromptFormPage } from '@/pages/admin/AdminPromptFormPage'
+import { AiHomePage } from '@/pages/ai/AiHomePage'
+import { AiTrackPage } from '@/pages/ai/AiTrackPage'
+import { AiProgressPage } from '@/pages/ai/AiProgressPage'
+import { PromptChallengeListPage } from '@/pages/ai/PromptChallengeListPage'
+import { PromptChallengeWorkspacePage } from '@/pages/ai/PromptChallengeWorkspacePage'
+import { PromptSubmissionsPage } from '@/pages/ai/PromptSubmissionsPage'
+import { PromptSubmissionDetailPage } from '@/pages/ai/PromptSubmissionDetailPage'
 import { moduleRoutes } from '@/routes/moduleRoutes'
 
 const placeholderRoutes = moduleRoutes.filter(
@@ -52,6 +62,11 @@ const placeholderRoutes = moduleRoutes.filter(
       'practice/sql',
       'bookmarks',
       'interviews',
+      'ai',
+      'ai/ml',
+      'ai/genai',
+      'ai/prompt-engineering',
+      'ai/agents',
     ].includes(route.path),
 )
 
@@ -107,6 +122,21 @@ export function AppRoutes() {
         <Route path="sql/submissions/:submissionId" element={<SqlSubmissionDetailPage />} />
         <Route path="bookmarks" element={<BookmarksPage />} />
         <Route path="interviews" element={<InterviewsPage />} />
+        <Route path="ai" element={<AiHomePage />} />
+        <Route path="ai/genai" element={<AiTrackPage track="genai" />} />
+        <Route path="ai/rag" element={<AiTrackPage track="rag" />} />
+        <Route path="ai/prompt-engineering" element={<AiTrackPage track="prompt-engineering" />} />
+        <Route path="ai/prompt-engineering/challenges" element={<PromptChallengeListPage />} />
+        <Route path="ai/prompt-engineering/challenges/:slug" element={<PromptChallengeWorkspacePage />} />
+        <Route path="ai/prompt-engineering/submissions" element={<PromptSubmissionsPage />} />
+        <Route path="ai/prompt-engineering/submissions/:id" element={<PromptSubmissionDetailPage />} />
+        <Route path="ai/agents" element={<AiTrackPage track="agents" />} />
+        <Route path="ai/mcp" element={<AiTrackPage track="mcp" />} />
+        <Route path="ai/tool-calling" element={<AiTrackPage track="tool-calling" />} />
+        <Route path="ai/evaluation" element={<AiTrackPage track="evaluation" />} />
+        <Route path="ai/security" element={<AiTrackPage track="security" />} />
+        <Route path="ai/system-design" element={<AiTrackPage track="system-design" />} />
+        <Route path="ai/progress" element={<AiProgressPage />} />
         <Route path="practice/sessions/:sessionId" element={<PracticeSessionPage />} />
         <Route path="practice/sessions/:sessionId/results" element={<PracticeResultsPage />} />
 
@@ -257,6 +287,46 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminProjectsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/ai"
+          element={
+            <AdminRoute>
+              <AdminAiPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/ai/prompts"
+          element={
+            <AdminRoute>
+              <AdminPromptsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/ai/prompts/new"
+          element={
+            <AdminRoute>
+              <AdminPromptFormPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/ai/prompts/:id/edit"
+          element={
+            <AdminRoute>
+              <AdminPromptFormPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/ai/taxonomy"
+          element={
+            <AdminRoute>
+              <AdminTaxonomyPage />
             </AdminRoute>
           }
         />
