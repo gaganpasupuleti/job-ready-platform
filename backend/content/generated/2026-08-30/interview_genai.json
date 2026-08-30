@@ -1,0 +1,22 @@
+{
+  "target_skill": "RAG",
+  "target_role": "GenAI Engineer",
+  "questions": [
+    {
+      "question_text": "What problem does Retrieval-Augmented Generation solve in LLM applications?",
+      "question_type": "conceptual",
+      "difficulty": "medium",
+      "experience_level": "intermediate",
+      "expected_answer": "RAG retrieves relevant documents at query time and injects them into the prompt so the model can answer with current or private knowledge. It reduces hallucination versus relying only on parametric memory, and it lets teams update knowledge by changing the index rather than retraining the model.",
+      "key_points": [
+        "RAG grounds answers in retrieved documents",
+        "It helps with private or frequently changing knowledge",
+        "Updating the index is cheaper than retraining the model"
+      ],
+      "skills": ["RAG"],
+      "roles": ["GenAI Engineer", "RAG Engineer"],
+      "companies": [],
+      "jobs": []
+    }
+  ]
+}

@@ -1,3 +1,10 @@
+from app.models.coding import (
+    CodingProblem,
+    CodingProblemProgress,
+    CodingSubmission,
+    CodingSubmissionResult,
+    CodingTestCase,
+)
 from app.models.enums import (
     Difficulty,
     PracticeMode,
@@ -5,8 +12,32 @@ from app.models.enums import (
     SessionStatus,
     UserRole,
 )
+from app.models.interview import (
+    ContentGenerationBatch,
+    ContentGenerationCandidate,
+    InterviewAnswerPoint,
+    InterviewPack,
+    InterviewQuestion,
+    JobListing,
+)
+from app.models.learn import (
+    Course,
+    CourseLesson,
+    CourseModule,
+    PracticePath,
+    Project,
+)
 from app.models.practice import Bookmark, PracticeAnswer, PracticeSession, PracticeSessionQuestion
 from app.models.question import Question, QuestionOption
+from app.models.sql_practice import (
+    SqlExpectedResult,
+    SqlProblem,
+    SqlProblemColumn,
+    SqlProblemProgress,
+    SqlProblemSeedRow,
+    SqlProblemTable,
+    SqlSubmission,
+)
 from app.models.tagging import Company, JobRole, QuestionCompany, QuestionRole, QuestionSkill, Skill
 from app.models.taxonomy import Category, Domain, Subtopic, Topic
 from app.models.user import User
@@ -34,4 +65,27 @@ __all__ = [
     "PracticeSessionQuestion",
     "PracticeAnswer",
     "Bookmark",
+    "InterviewQuestion",
+    "InterviewAnswerPoint",
+    "InterviewPack",
+    "JobListing",
+    "ContentGenerationBatch",
+    "ContentGenerationCandidate",
+    "PracticePath",
+    "Course",
+    "CourseModule",
+    "CourseLesson",
+    "Project",
+    "CodingProblem",
+    "CodingTestCase",
+    "CodingSubmission",
+    "CodingSubmissionResult",
+    "CodingProblemProgress",
+    "SqlProblem",
+    "SqlProblemTable",
+    "SqlProblemColumn",
+    "SqlProblemSeedRow",
+    "SqlExpectedResult",
+    "SqlSubmission",
+    "SqlProblemProgress",
 ]

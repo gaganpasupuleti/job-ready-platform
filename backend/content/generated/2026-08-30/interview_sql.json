@@ -1,0 +1,40 @@
+{
+  "target_skill": "SQL",
+  "target_role": "Data Engineer",
+  "questions": [
+    {
+      "question_text": "Explain the difference between RANK and DENSE_RANK in SQL.",
+      "question_type": "technical",
+      "difficulty": "medium",
+      "experience_level": "fresher",
+      "expected_answer": "RANK and DENSE_RANK are window ranking functions. RANK assigns the same rank to ties and then skips subsequent ranks, creating gaps. DENSE_RANK also assigns the same rank to ties but does not skip values, so the next rank is consecutive. Both can be used with PARTITION BY to rank independently within groups.",
+      "explanation": "Interviewers want to hear gap vs no-gap behavior and PARTITION BY.",
+      "key_points": [
+        "Both RANK and DENSE_RANK are window ranking functions",
+        "RANK creates gaps after ties",
+        "DENSE_RANK does not create gaps after ties",
+        "PARTITION BY creates independent ranking groups"
+      ],
+      "skills": ["SQL"],
+      "roles": ["Data Analyst", "Data Engineer"],
+      "companies": [],
+      "jobs": []
+    },
+    {
+      "question_text": "When would you use a window function instead of GROUP BY?",
+      "question_type": "conceptual",
+      "difficulty": "medium",
+      "experience_level": "junior",
+      "expected_answer": "GROUP BY collapses rows into aggregated groups and removes detail. Window functions compute aggregates or ranks while keeping the original row grain. Use windows when you need running totals, ranks, or comparisons against a partition without losing individual rows.",
+      "key_points": [
+        "GROUP BY reduces row grain to one row per group",
+        "Window functions keep original rows and add computed columns",
+        "Typical uses include running totals, ranks, and lag/lead comparisons"
+      ],
+      "skills": ["SQL"],
+      "roles": ["Data Engineer", "Data Analyst"],
+      "companies": [],
+      "jobs": []
+    }
+  ]
+}

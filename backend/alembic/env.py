@@ -42,6 +42,40 @@ from app.models.sql_practice import (  # noqa: F401
     SqlProblemTable,
     SqlSubmission,
 )
+from app.models.interview import (  # noqa: F401
+    ContentGenerationBatch,
+    ContentGenerationCandidate,
+    InterviewAnswerPoint,
+    InterviewPack,
+    InterviewPackQuestion,
+    InterviewQuestion,
+    InterviewQuestionCompany,
+    InterviewQuestionJob,
+    InterviewQuestionRole,
+    InterviewQuestionSkill,
+    JobListing,
+)
+from app.models.learn import (  # noqa: F401
+    Course,
+    CourseLesson,
+    CourseModule,
+    LessonAttempt,
+    LessonDoubt,
+    LessonFeedback,
+    LessonHint,
+    LessonResource,
+    LessonStep,
+    PracticePath,
+    PracticePathItem,
+    PracticePathSection,
+    Project,
+    ProjectModule,
+    ProjectTask,
+    UserCourseProgress,
+    UserLessonProgress,
+    UserPracticePathProgress,
+    UserProjectProgress,
+)
 
 config = context.config
 config.set_main_option("sqlalchemy.url", sqlalchemy_async_url(settings.database_url))

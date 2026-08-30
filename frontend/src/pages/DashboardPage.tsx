@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+
 import { Card, CardHeader } from '@/components/common/Card'
 import { StatCard } from '@/features/dashboard/StatCard'
 import {
@@ -5,17 +8,45 @@ import {
   mockUpcomingAssessments,
   mockWeakSkills,
 } from '@/mocks/dev-data'
+import { fetchContinueLearning } from '@/services/learnService'
 import { formatPercent } from '@/utils/cn'
 
 export function DashboardPage() {
+  const { data: continueItems } = useQuery({
+    queryKey: ['continue-learning'],
+    queryFn: fetchContinueLearning,
+  })
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-text)]">Welcome back</h2>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Your job preparation overview. Data shown is mock data for Build 1.
+          Your job preparation overview. Continue Learning uses live course progress; other cards may still use
+          sample data.
         </p>
       </div>
+
+      {(continueItems?.length ?? 0) > 0 && (
+        <Card>
+          <CardHeader title="Continue Learning" description="Pick up where you left off" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            {continueItems!.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className="rounded-md border border-[var(--color-border)] p-3 hover:border-[var(--color-accent)]"
+              >
+                <p className="text-sm font-medium text-[var(--color-text)]">{item.title}</p>
+                {item.subtitle && (
+                  <p className="text-xs text-[var(--color-text-muted)]">{item.subtitle}</p>
+                )}
+                <p className="mt-1 text-xs text-[var(--color-text-subtle)]">{item.progress_percent}%</p>
+              </Link>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {mockDashboardCards.map((card) => (
@@ -71,6 +102,12 @@ export function DashboardPage() {
           </ul>
         </Card>
       </div>
+
+      <p className="text-sm">
+        <Link to="/practice" className="text-[var(--color-accent)] hover:underline">
+          Open Practice Hub →
+        </Link>
+      </p>
     </div>
   )
 }

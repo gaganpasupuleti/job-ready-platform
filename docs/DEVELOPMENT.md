@@ -44,16 +44,18 @@ alembic upgrade head
 python -m app.seed
 ```
 
-## Seed Data (Build 2–4)
+## Seed Data (Build 2–5)
 
 ```bash
 cd backend
 python -m app.seed
 # Or seed SQL alone:
 python -c "import asyncio; from app.seed.sql_data import seed_sql_problems; asyncio.run(seed_sql_problems())"
+# Build 5 Practice Hub / courses / projects:
+python -c "import asyncio; from app.seed.learn_data import seed_learn_content; asyncio.run(seed_learn_content())"
 ```
 
-`python -m app.seed` runs taxonomy/MCQ, coding problems, and SQL problems (idempotent by slug).
+`python -m app.seed` runs taxonomy/MCQ, coding problems, SQL problems, and learn content (idempotent by slug).
 
 Start SQL sandbox (required for live SQL run/submit):
 
@@ -61,14 +63,14 @@ Start SQL sandbox (required for live SQL run/submit):
 docker compose -f infra/docker-compose.yml up -d postgres postgres_sql_sandbox redis
 ```
 
-Sandbox defaults: host port **5433**, user `jobready_sql_runner`, DB `jobready_sql_sandbox`. See [SQL_PRACTICE.md](SQL_PRACTICE.md).
+Sandbox defaults: host port **5433**, user `jobready_sql_runner`, DB `jobready_sql_sandbox`. See [SQL_PRACTICE.md](SQL_PRACTICE.md). See also [PRACTICE_HUB.md](PRACTICE_HUB.md).
 
 | Field | Value |
 |-------|-------|
 | Email | `admin@jobready.dev` |
 | Password | `Admin123!` |
 
-Seed includes taxonomy across Placement, Technical, AI, Cloud, DevOps, and Cybersecurity domains plus **37 sample MCQ questions**, **20 coding problems**, and **30 SQL challenges** (development content only).
+Seed includes taxonomy across Placement, Technical, AI, Cloud, DevOps, and Cybersecurity domains plus **37 sample MCQ questions**, **20 coding problems**, **30 SQL challenges**, Practice Hub paths, the **Python Foundations** course, and a sample project (development content only).
 
 ## Running Locally
 

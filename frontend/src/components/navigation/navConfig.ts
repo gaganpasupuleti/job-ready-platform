@@ -34,6 +34,9 @@ export const navigationConfig: NavSection[] = [
   {
     title: 'Practice',
     items: [
+      { label: 'Practice Hub', path: '/practice', icon: 'Target' },
+      { label: 'Courses', path: '/learn', icon: 'ListChecks' },
+      { label: 'Projects', path: '/practice/projects', icon: 'Wrench' },
       { label: 'Aptitude / CRT', path: '/practice/aptitude', icon: 'Brain' },
       { label: 'DSA', path: '/practice/dsa', icon: 'Code2' },
       { label: 'Coding', path: '/practice/coding', icon: 'Terminal' },

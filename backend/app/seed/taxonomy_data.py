@@ -162,6 +162,17 @@ SKILLS = [
     "cloud architecture",
     "prompt design",
     "rag retrieval",
+    "SQL",
+    "Python",
+    "Spark",
+    "Airflow",
+    "AWS",
+    "Snowflake",
+    "Data Warehousing",
+    "Prompt Engineering",
+    "RAG",
+    "Agents",
+    "MCP",
 ]
 
 JOB_ROLES = [
@@ -171,6 +182,8 @@ JOB_ROLES = [
     "Software Engineer",
     "Data Analyst",
     "Cloud Engineer",
+    "Data Engineer",
+    "Analytics Engineer",
 ]
 
 COMPANIES = ["Acme Labs", "TechCorp"]

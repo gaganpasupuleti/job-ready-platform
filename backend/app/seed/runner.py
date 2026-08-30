@@ -446,12 +446,55 @@ async def seed_sql_problems() -> None:
     await _seed_sql()
 
 
+async def seed_learn_content() -> None:
+    from app.seed.learn_data import seed_learn_content as _seed_learn
+
+    await _seed_learn()
+
+
 def run_seed() -> None:
     asyncio.run(_run())
 
 
+async def ensure_content_factory_catalog() -> None:
+    """Idempotent extra skills/roles for interview Q&A tagging."""
+    from app.models.interview import JobListing
+
+    async with AsyncSessionLocal() as session:
+        for skill_name in SKILLS:
+            existing = await session.execute(select(Skill).where(Skill.slug == slugify(skill_name)))
+            if existing.scalar_one_or_none() is None:
+                session.add(Skill(name=skill_name, slug=slugify(skill_name)))
+        for role_name in JOB_ROLES:
+            existing = await session.execute(select(JobRole).where(JobRole.slug == slugify(role_name)))
+            if existing.scalar_one_or_none() is None:
+                session.add(JobRole(name=role_name, slug=slugify(role_name)))
+        for company_name in COMPANIES:
+            existing = await session.execute(select(Company).where(Company.slug == slugify(company_name)))
+            if existing.scalar_one_or_none() is None:
+                session.add(Company(name=company_name, slug=slugify(company_name)))
+        await session.flush()
+        demo_job_slug = "acme-data-engineer"
+        job = await session.execute(select(JobListing).where(JobListing.slug == demo_job_slug))
+        if job.scalar_one_or_none() is None:
+            company = (
+                await session.execute(select(Company).where(Company.slug == slugify("Acme Labs")))
+            ).scalar_one_or_none()
+            session.add(
+                JobListing(
+                    slug=demo_job_slug,
+                    title="Acme Data Engineer",
+                    company_id=company.id if company else None,
+                    is_active=True,
+                )
+            )
+        await session.commit()
+
+
 async def _run() -> None:
     await seed_all()
+    await ensure_content_factory_catalog()
     await seed_coding_problems()
     await seed_sql_problems()
+    await seed_learn_content()
     await engine.dispose()

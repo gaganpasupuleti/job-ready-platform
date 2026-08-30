@@ -1,0 +1,22 @@
+{
+  "target_skill": "Python",
+  "target_role": "Data Engineer",
+  "questions": [
+    {
+      "question_text": "What is the difference between a list and a tuple in Python?",
+      "question_type": "technical",
+      "difficulty": "easy",
+      "experience_level": "fresher",
+      "expected_answer": "Lists are mutable ordered collections, so you can append, update, and delete items. Tuples are immutable ordered collections, which makes them hashable when their contents are hashable and useful as dict keys. Choose lists for growing sequences and tuples for fixed records.",
+      "key_points": [
+        "Lists are mutable; tuples are immutable",
+        "Both are ordered sequences",
+        "Immutable tuples can be used as dictionary keys when elements are hashable"
+      ],
+      "skills": ["Python"],
+      "roles": ["Data Engineer", "Software Engineer"],
+      "companies": [],
+      "jobs": []
+    }
+  ]
+}

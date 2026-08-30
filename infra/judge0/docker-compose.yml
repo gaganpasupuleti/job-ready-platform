@@ -33,6 +33,8 @@ services:
       - redis
     restart: unless-stopped
 
+  # Start order (official): docker compose up -d db redis && sleep 10 && docker compose up -d
+
   db:
     image: postgres:16.4-alpine
     environment:

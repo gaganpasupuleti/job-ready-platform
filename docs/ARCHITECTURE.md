@@ -52,7 +52,16 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 - Host Judge0 on a privileged Linux VM (`infra/judge0/`, image `judge0/judge0:1.13.1`) — see [JUDGE0_DEPLOYMENT.md](JUDGE0_DEPLOYMENT.md)
 - Job Ready Redis is used only for rate/concurrency coordination — not Judge0's Redis
 - **Critical rule:** Student code MUST NEVER execute inside the FastAPI container
-```
+
+## Practice Hub & Interactive Learning (Build 5)
+
+- **Models:** `PracticePath` (+ sections/items), `Course` / `CourseModule` / `CourseLesson` (+ hints, doubts, resources, attempts, feedback), `Project` (+ modules/tasks), user progress tables
+- **Migration:** `006_build5`
+- **Service:** `app/services/learn_service.py` (`LearnService`, `LearnAdminService`)
+- **Student API:** `/api/v1/practice-hub`, `/paths`, `/courses`, `/lessons/*`, `/projects`, `/learning/continue`, `/practice/search`
+- **Admin API:** `/api/v1/admin/practice-paths`, `/admin/courses`, modules, lessons
+- **Frontend:** `/practice` hub, `/practice/paths/:slug`, `/learn/*` lesson workspace, `/practice/projects`, admin pages
+- Docs: [PRACTICE_HUB.md](PRACTICE_HUB.md), [INTERACTIVE_LEARNING.md](INTERACTIVE_LEARNING.md)
 
 ## Frontend
 

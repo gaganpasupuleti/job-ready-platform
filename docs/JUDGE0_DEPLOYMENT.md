@@ -1,116 +1,286 @@
 # Judge0 Production Deployment (Build 4.2)
 
-This document covers hosting **Judge0 CE** as an isolated execution plane for Job Ready Platform coding practice.
+Isolated execution plane for Job Ready coding practice. Checkpoint: commit `a903c1d`.
 
-## 1. Why not Railway for the worker?
+Student code must **never** run in FastAPI / Railway. Only Judge0 workers execute untrusted code.
 
-Official Judge0 CE uses **privileged containers** and Linux **isolate** for sandboxing. Typical PaaS app containers (including Railway) do not provide the required cgroup/isolate capabilities.
+---
 
-**Preferred:** small dedicated Linux VPS/VM with Docker Compose (`infra/judge0/`).
+## 1. Why a dedicated Linux VPS?
 
-**Alternative:** any Judge0-compatible HTTP API. Job Ready only needs `JUDGE0_URL` + auth configuration.
+Judge0 CE uses **privileged** Docker containers and Linux **isolate**. Railway app containers cannot provide that. Host Judge0 alone on a small VM.
+
+| Role | Where |
+|------|--------|
+| Frontend / FastAPI / app Postgres / Redis / SQL sandbox | Railway |
+| Judge0 server + workers + Judge0 Postgres + Judge0 Redis | Dedicated Ubuntu VPS |
+
+---
 
 ## 2. Version pin
 
 | Item | Value |
 |------|-------|
-| Image | `judge0/judge0:1.13.1` |
-| Selected / tested | 2026-08-29 |
-| Compose path | `infra/judge0/docker-compose.yml` |
+| Release | **Judge0 CE v1.13.1** |
+| Image | `judge0/judge0:1.13.1` (via official release zip) |
+| OS | **Ubuntu 22.04 LTS** (officially documented) |
+| Selected | 2026-08-29 |
 
-Never deploy `judge0/judge0:latest` for production without pinning and re-testing.
+**Do not** deploy `judge0/judge0:latest` for production. Upgrade Judge0 on its own lifecycle — never auto-bump when Job Ready deploys.
 
-Upgrade is a **Judge0-only** change — not tied to Job Ready app releases. See `infra/judge0/README.md`.
+Official artifact:
 
-## 3. Architecture
-
-```
-Browser  →  Railway Frontend
-               ↓
-         Railway FastAPI  ──private/authenticated HTTPS──►  Judge0 Server :2358
-                                                               ↓
-                                                         Judge0 Worker (isolate)
-                                                               ↓
-                                              Judge0 Postgres + Judge0 Redis
+```text
+https://github.com/judge0/judge0/releases/download/v1.13.1/judge0-v1.13.1.zip
 ```
 
-Isolated from:
+---
 
-- Job Ready application Postgres
-- Job Ready Redis
-- SQL practice sandbox Postgres
+## 3. VPS sizing
 
-## 4. Ubuntu VPS checklist
+| Use | Spec |
+|-----|------|
+| **Initial students (recommended)** | **4 vCPU / 8 GB RAM / 50+ GB SSD** |
+| Light smoke only | 2 vCPU / 4 GB RAM (Java/C++ + concurrency will feel tight) |
 
-1. Provision Ubuntu 22.04+ (2 vCPU / 4 GB RAM minimum recommended).
-2. Install Docker Engine + Compose plugin.
-3. Clone this repo (or copy `infra/judge0/`).
-4. Copy `.env.example` → `.env` and `judge0.conf.example` → `judge0.conf`.
-5. Generate strong secrets (`openssl rand -hex 32`) for Postgres, Redis, and `AUTHN_TOKEN`.
-6. Align `AUTHN_TOKEN` in `judge0.conf` with Railway `JUDGE0_AUTH_TOKEN`.
-7. `docker compose up -d`
-8. Firewall: allow `:2358` only from backend egress IPs (or VPN).
-9. Optional: Caddy/Nginx TLS reverse proxy if the API must be on the public internet.
-10. Point Railway backend env at the Judge0 URL and enable `JUDGE0_ENABLED=true`.
+Providers (any Linux VPS with privileged Docker): Hetzner, DigitalOcean, EC2, generic Ubuntu cloud.
 
-## 5. Backend configuration
+---
 
-See root `.env.example` for the full list. Critical keys:
+## 4. Architecture (production)
+
+```
+Browser → Railway Frontend
+              ↓
+        Railway FastAPI
+              │
+              │ HTTPS + X-Auth-Token
+              ▼
+     judge.yourdomain.com   (Caddy/Nginx TLS)
+              │
+              ▼
+        Judge0 :2358  (localhost / private only)
+              ├── workers (isolate, privileged)
+              ├── Postgres (Judge0-only)
+              └── Redis (Judge0-only)
+```
+
+**Do not** leave `http://VPS-IP:2358` as the final public production endpoint.
+
+---
+
+## 5. Ubuntu 22.04 — legacy cgroups (required for v1.13.1)
+
+Judge0 v1.13.1 documents configuring **legacy cgroups** before deploy:
+
+```bash
+sudo nano /etc/default/grub
+```
+
+Set / extend:
+
+```bash
+GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=0"
+```
+
+Then:
+
+```bash
+sudo update-grub
+sudo reboot
+```
+
+After reboot, confirm Docker works, then continue.
+
+---
+
+## 6. Install Docker + Compose
+
+```bash
+# Official Docker Engine install for Ubuntu, then:
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose-v2
+sudo usermod -aG docker "$USER"
+# log out/in if needed
+docker version
+docker compose version
+```
+
+---
+
+## 7. Official Judge0 1.13.1 deploy
+
+```bash
+cd /opt
+sudo mkdir -p judge0 && sudo chown "$USER":"$USER" judge0
+cd /opt/judge0
+
+wget https://github.com/judge0/judge0/releases/download/v1.13.1/judge0-v1.13.1.zip
+unzip judge0-v1.13.1.zip
+cd judge0-v1.13.1
+```
+
+Edit `judge0.conf` — set **strong random** values at minimum:
+
+```bash
+POSTGRES_PASSWORD=$(openssl rand -hex 24)
+REDIS_PASSWORD=$(openssl rand -hex 24)
+# Also configure authentication (names may vary by conf template):
+# AUTHN_HEADER=X-Auth-Token
+# AUTHN_TOKEN=$(openssl rand -hex 32)
+```
+
+Save `AUTHN_TOKEN` somewhere safe — Railway `JUDGE0_AUTH_TOKEN` must match. **Never commit secrets.**
+
+Start DB/Redis first, then the stack (official order):
+
+```bash
+docker compose up -d db redis
+sleep 10
+docker compose up -d
+```
+
+Default API port: **2358**.
+
+Health:
+
+```bash
+curl -s -H "X-Auth-Token: $AUTHN_TOKEN" http://127.0.0.1:2358/about
+curl -s -H "X-Auth-Token: $AUTHN_TOKEN" http://127.0.0.1:2358/languages | head
+```
+
+### Optional: repo wrapper
+
+This repo also ships `infra/judge0/` (pinned `1.13.1` compose). Prefer the **official zip** for production parity with Judge0 release notes; keep `infra/judge0` as a thin reference.
+
+---
+
+## 8. HTTPS reverse proxy (before Railway)
+
+Example with Caddy (TLS automatic):
+
+```text
+judge.yourdomain.com {
+    reverse_proxy 127.0.0.1:2358
+}
+```
+
+Firewall:
+
+- Allow `443` (and `80` for ACME) from the internet **or** lock to known IPs.
+- Do **not** publish `2358` publicly once the proxy is up.
+- Never expose Judge0 Postgres/Redis ports.
+
+---
+
+## 9. Railway backend env
 
 ```
 JUDGE0_ENABLED=true
-JUDGE0_URL=
+JUDGE0_URL=https://judge.yourdomain.com
 JUDGE0_AUTH_HEADER=X-Auth-Token
-JUDGE0_AUTH_TOKEN=
+JUDGE0_AUTH_TOKEN=<same as AUTHN_TOKEN>
 JUDGE0_TIMEOUT_SECONDS=30
 JUDGE0_POLL_INTERVAL_MS=500
 JUDGE0_MAX_POLL_SECONDS=45
+```
+
+Optional platform caps (already in `.env.example`):
+
+```
 JUDGE0_MAX_CPU_TIME_SECONDS=15
 JUDGE0_MAX_WALL_TIME_SECONDS=20
 JUDGE0_MAX_MEMORY_KB=256000
-CODING_MAX_SOURCE_CHARS=65536
-CODING_MAX_STDIN_CHARS=100000
 CODING_RUNS_PER_MINUTE=20
 CODING_SUBMITS_PER_MINUTE=10
 CODING_MAX_CONCURRENT_EXECUTIONS_PER_USER=2
 ```
 
-## 6. Language IDs (Judge0 CE defaults)
+**Never** put `JUDGE0_AUTH_TOKEN` in the frontend or `VITE_*` vars.
 
-| Key | Judge0 ID | Typical label |
-|-----|-----------|---------------|
+Redeploy the Railway **backend** after setting variables.
+
+---
+
+## 10. Verification before switching production
+
+### A. Opt-in live suite (from a machine that can reach Judge0)
+
+Windows PowerShell:
+
+```powershell
+cd backend
+$env:JUDGE0_LIVE_TESTS = "1"
+$env:JUDGE0_ENABLED = "true"
+$env:JUDGE0_URL = "https://judge.yourdomain.com"
+$env:JUDGE0_AUTH_HEADER = "X-Auth-Token"
+$env:JUDGE0_AUTH_TOKEN = "<secret>"
+python -m pytest tests/test_judge0_live.py -q --tb=short
+```
+
+Or use `scripts/verify_judge0_live.ps1` (see repo).
+
+Expect:
+
+| Language | Result |
+|----------|--------|
+| Python | ✅ |
+| Java | ✅ |
+| C++ | ✅ |
+| JavaScript | ✅ |
+
+Plus isolation check (`DATABASE_URL` / `JWT_SECRET_KEY` not visible in student env).
+
+### B. Manual / product checks
+
+| Check | Expect |
+|-------|--------|
+| Accepted | ✅ |
+| Wrong Answer | ✅ |
+| Compilation Error | ✅ |
+| Runtime Error | ✅ |
+| Time Limit Exceeded | ✅ |
+| Public Run shows I/O | ✅ |
+| Submit hides hidden I/O | ✅ |
+| Judge0 stopped → `503` / unavailable UI | ✅ |
+| Auth / MCQ / SQL still work during outage | ✅ |
+
+### C. Production app
+
+1. `GET /api/v1/coding/execution-status` → `enabled: true`, `available: true`, `provider: judge0`
+2. Run/Submit from DSA workspace for all four languages
+
+Checklist copy: [JUDGE0_VERIFICATION.md](JUDGE0_VERIFICATION.md)
+
+---
+
+## 11. Language IDs (Judge0 CE defaults)
+
+| Key | ID | Typical label |
+|-----|-----|----------------|
 | python | 71 | Python 3.x |
 | java | 62 | Java (OpenJDK) |
 | cpp | 54 | C++ (GCC) |
 | javascript | 63 | JavaScript (Node.js) |
 
-At startup the backend queries `GET /languages` and refreshes display names / availability. The backend rejects unknown language IDs from the client.
+Backend discovers labels via `GET /languages` and rejects unknown IDs from the client.
 
-## 7. Smoke tests (production)
+---
 
-After wiring:
+## 12. Security expectations
 
-1. `GET /api/v1/coding/execution-status` → `available: true`
-2. Run/Submit Python, Java, C++, JavaScript Accepted solutions
-3. Wrong Answer / Compilation Error / Runtime Error / TLE
-4. Stop Judge0 → UI shows “Code execution is currently unavailable.” Auth/MCQ/SQL still work
+- No student `subprocess` / `exec` / `eval` in FastAPI
+- Auth token only FastAPI → Judge0
+- Hidden test stdin/stdout/expected never returned on Submit
+- Sanitized compile/runtime messages
+- Job Ready Redis = rate/concurrency only; **not** Judge0 Redis
 
-## 8. Live integration tests (optional)
+---
 
-```bash
-cd backend
-set JUDGE0_LIVE_TESTS=1
-set JUDGE0_URL=http://localhost:2358
-set JUDGE0_AUTH_TOKEN=...
-pytest tests/test_judge0_live.py -q
-```
+## 13. Upgrade / backup
 
-These are **disabled by default** and must not run in normal CI.
-
-## 9. Security expectations
-
-- No `subprocess` / `exec` / `eval` of student code in FastAPI
-- Auth token never sent to the frontend
-- Hidden test I/O never returned on Submit
-- Compiler/runtime messages sanitized (paths, hosts, tokens)
-- Rate limits + per-user concurrency via Redis (Job Ready Redis — coordination only, not Judge0 Redis)
+1. Read CE release notes for the next **pinned** tag.
+2. Backup Judge0 Postgres volume.
+3. Deploy new zip/tag on the VPS only.
+4. Re-run live + smoke checks.
+5. Do not couple upgrades to Job Ready app deploys.

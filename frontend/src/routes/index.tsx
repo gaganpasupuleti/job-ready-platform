@@ -10,6 +10,8 @@ import { AdminQuestionsPage } from '@/pages/admin/AdminQuestionsPage'
 import { AdminSqlProblemFormPage } from '@/pages/admin/AdminSqlProblemFormPage'
 import { AdminSqlProblemsPage } from '@/pages/admin/AdminSqlProblemsPage'
 import { AdminTaxonomyPage } from '@/pages/admin/AdminTaxonomyPage'
+import { AdminContentBatchPage } from '@/pages/admin/AdminContentBatchPage'
+import { AdminContentPage } from '@/pages/admin/AdminContentPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { DashboardPage } from '@/pages/DashboardPage'
@@ -27,6 +29,16 @@ import { SqlPage } from '@/pages/practice/SqlPage'
 import { SqlProblemPage } from '@/pages/practice/SqlProblemPage'
 import { SqlSubmissionDetailPage } from '@/pages/sql/SqlSubmissionDetailPage'
 import { SqlSubmissionsPage } from '@/pages/sql/SqlSubmissionsPage'
+import { InterviewsPage } from '@/pages/interviews/InterviewsPage'
+import { PracticeHubPage } from '@/pages/practice/PracticeHubPage'
+import { PracticePathPage } from '@/pages/practice/PracticePathPage'
+import { ProjectsPage } from '@/pages/practice/ProjectsPage'
+import { ProjectDetailPage } from '@/pages/practice/ProjectDetailPage'
+import { CourseListPage } from '@/pages/learn/CourseListPage'
+import { CourseDetailPage } from '@/pages/learn/CourseDetailPage'
+import { LessonWorkspacePage } from '@/pages/learn/LessonWorkspacePage'
+import { AdminPracticePathsPage } from '@/pages/admin/AdminPracticePathsPage'
+import { AdminCoursesPage } from '@/pages/admin/AdminCoursesPage'
 import { moduleRoutes } from '@/routes/moduleRoutes'
 
 const placeholderRoutes = moduleRoutes.filter(
@@ -38,6 +50,7 @@ const placeholderRoutes = moduleRoutes.filter(
       'practice/coding',
       'practice/sql',
       'bookmarks',
+      'interviews',
     ].includes(route.path),
 )
 
@@ -69,6 +82,16 @@ export function AppRoutes() {
         }
       >
         <Route index element={<DashboardPage />} />
+        <Route path="practice" element={<PracticeHubPage />} />
+        <Route path="practice/paths/:slug" element={<PracticePathPage />} />
+        <Route path="practice/projects" element={<ProjectsPage />} />
+        <Route path="practice/projects/:slug" element={<ProjectDetailPage />} />
+        <Route path="learn" element={<CourseListPage />} />
+        <Route path="learn/courses/:slug" element={<CourseDetailPage />} />
+        <Route
+          path="learn/courses/:courseSlug/:moduleSlug/:lessonSlug"
+          element={<LessonWorkspacePage />}
+        />
         <Route path="practice/aptitude" element={<AptitudePage />} />
         <Route path="practice/mcq" element={<McqPage />} />
         <Route path="practice/dsa" element={<DsaPage />} />
@@ -81,6 +104,7 @@ export function AppRoutes() {
         <Route path="sql/submissions" element={<SqlSubmissionsPage />} />
         <Route path="sql/submissions/:submissionId" element={<SqlSubmissionDetailPage />} />
         <Route path="bookmarks" element={<BookmarksPage />} />
+        <Route path="interviews" element={<InterviewsPage />} />
         <Route path="practice/sessions/:sessionId" element={<PracticeSessionPage />} />
         <Route path="practice/sessions/:sessionId/results" element={<PracticeResultsPage />} />
 
@@ -175,6 +199,38 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminSqlProblemFormPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/content"
+          element={
+            <AdminRoute>
+              <AdminContentPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/content/batches/:batchId"
+          element={
+            <AdminRoute>
+              <AdminContentBatchPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/practice-paths"
+          element={
+            <AdminRoute>
+              <AdminPracticePathsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/courses"
+          element={
+            <AdminRoute>
+              <AdminCoursesPage />
             </AdminRoute>
           }
         />
