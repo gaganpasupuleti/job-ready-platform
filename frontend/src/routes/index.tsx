@@ -39,6 +39,7 @@ import { CourseDetailPage } from '@/pages/learn/CourseDetailPage'
 import { LessonWorkspacePage } from '@/pages/learn/LessonWorkspacePage'
 import { AdminPracticePathsPage } from '@/pages/admin/AdminPracticePathsPage'
 import { AdminCoursesPage } from '@/pages/admin/AdminCoursesPage'
+import { AdminProjectsPage } from '@/pages/admin/AdminProjectsPage'
 import { moduleRoutes } from '@/routes/moduleRoutes'
 
 const placeholderRoutes = moduleRoutes.filter(
@@ -86,6 +87,7 @@ export function AppRoutes() {
         <Route path="practice/paths/:slug" element={<PracticePathPage />} />
         <Route path="practice/projects" element={<ProjectsPage />} />
         <Route path="practice/projects/:slug" element={<ProjectDetailPage />} />
+        <Route path="projects/:slug" element={<ProjectDetailPage />} />
         <Route path="learn" element={<CourseListPage />} />
         <Route path="learn/courses/:slug" element={<CourseDetailPage />} />
         <Route
@@ -231,6 +233,30 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminCoursesPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/projects"
+          element={
+            <AdminRoute>
+              <AdminProjectsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/projects/new"
+          element={
+            <AdminRoute>
+              <AdminProjectsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/projects/:id/edit"
+          element={
+            <AdminRoute>
+              <AdminProjectsPage />
             </AdminRoute>
           }
         />

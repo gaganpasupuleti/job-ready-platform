@@ -204,8 +204,10 @@ class ProjectCard(BaseModel):
     technology: str | None = None
     category_key: str
     availability: str
+    estimated_minutes: int | None = None
     task_count: int = 0
     progress_percent: int = 0
+    href: str
 
 
 class ProjectTaskOut(BaseModel):
@@ -213,8 +215,17 @@ class ProjectTaskOut(BaseModel):
     title: str
     sort_order: int
     summary: str | None = None
+    task_type: str = "concept"
+    status: str = "not_started"
+    href: str | None = None
     lesson_id: UUID | None = None
     coding_problem_id: UUID | None = None
+    sql_problem_id: UUID | None = None
+    topic_id: UUID | None = None
+    body_json: dict[str, Any] = Field(default_factory=dict)
+    checklist_json: list[Any] = Field(default_factory=list)
+    reference_json: dict[str, Any] | None = None
+    estimated_minutes: int | None = None
 
 
 class ProjectModuleOut(BaseModel):
@@ -234,7 +245,20 @@ class ProjectDetail(BaseModel):
     technology: str | None = None
     category_key: str
     availability: str
+    estimated_minutes: int | None = None
+    prerequisites: list[str] = Field(default_factory=list)
+    skills: list[str] = Field(default_factory=list)
+    final_objective: str | None = None
+    reference_json: dict[str, Any] | None = None
     progress_percent: int = 0
+    status: str = "not_started"
+    completed_task_count: int = 0
+    task_count: int = 0
+    current_task_id: UUID | None = None
+    current_task_href: str | None = None
+    continue_href: str | None = None
+    last_activity_at: datetime | None = None
+    completed_at: datetime | None = None
     modules: list[ProjectModuleOut] = Field(default_factory=list)
 
 
@@ -302,3 +326,64 @@ class LessonAdminIn(BaseModel):
     estimated_minutes: int | None = None
     hints: list[dict[str, Any]] = Field(default_factory=list)
     doubts: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class ProjectAdminIn(BaseModel):
+    slug: str
+    title: str
+    short_description: str = ""
+    description: str | None = None
+    difficulty: str = "beginner"
+    technology: str | None = None
+    category_key: str
+    estimated_minutes: int | None = None
+    is_published: bool = False
+    is_featured: bool = False
+    sort_order: int = 0
+    availability: str = "available"
+    prerequisites: list[str] = Field(default_factory=list)
+    skills: list[str] = Field(default_factory=list)
+    final_objective: str | None = None
+    reference_json: dict[str, Any] | None = None
+
+
+class ProjectModuleAdminIn(BaseModel):
+    title: str
+    sort_order: int = 0
+
+
+class ProjectTaskAdminIn(BaseModel):
+    title: str
+    sort_order: int = 0
+    task_type: str = "concept"
+    summary: str | None = None
+    coding_problem_id: UUID | None = None
+    sql_problem_id: UUID | None = None
+    topic_id: UUID | None = None
+    lesson_id: UUID | None = None
+    question_id: UUID | None = None
+    body_json: dict[str, Any] = Field(default_factory=dict)
+    checklist_json: list[Any] = Field(default_factory=list)
+    reference_json: dict[str, Any] | None = None
+    estimated_minutes: int | None = None
+
+
+class PracticePathSectionAdminIn(BaseModel):
+    title: str
+    section_key: str | None = None
+    sort_order: int = 0
+
+
+class PracticePathItemAdminIn(BaseModel):
+    item_type: str
+    title: str | None = None
+    sort_order: int = 0
+    coding_problem_id: UUID | None = None
+    sql_problem_id: UUID | None = None
+    topic_id: UUID | None = None
+    course_id: UUID | None = None
+    lesson_id: UUID | None = None
+    project_id: UUID | None = None
+    external_route: str | None = None
+    is_preview: bool = False
+

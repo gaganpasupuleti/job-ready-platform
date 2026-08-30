@@ -33,6 +33,7 @@ from app.models.learn_enums import (
     PracticePathItemType,
     PracticePathType,
     ProgressStatus,
+    ProjectTaskType,
     SolutionRevealPolicy,
 )
 
@@ -153,6 +154,7 @@ class UserPracticePathProgress(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     )
     percent: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     last_activity_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class Course(Base, UUIDPrimaryKeyMixin, TimestampMixin):
@@ -435,6 +437,10 @@ class Project(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         default=PathAvailability.COMING_SOON,
         nullable=False,
     )
+    prerequisites: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+    skills: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+    final_objective: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reference_json: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
     modules: Mapped[list[ProjectModule]] = relationship(
         back_populates="project",
@@ -466,13 +472,31 @@ class ProjectTask(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     )
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    task_type: Mapped[ProjectTaskType] = mapped_column(
+        Enum(ProjectTaskType, name="project_task_type", native_enum=False),
+        default=ProjectTaskType.CONCEPT,
+        nullable=False,
+    )
     lesson_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("course_lessons.id", ondelete="SET NULL"), nullable=True
     )
     coding_problem_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("coding_problems.id", ondelete="SET NULL"), nullable=True
     )
+    sql_problem_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("sql_problems.id", ondelete="SET NULL"), nullable=True
+    )
+    topic_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("topics.id", ondelete="SET NULL"), nullable=True
+    )
+    question_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("questions.id", ondelete="SET NULL"), nullable=True
+    )
     summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    body_json: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    checklist_json: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+    reference_json: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    estimated_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     module: Mapped[ProjectModule] = relationship(back_populates="tasks")
 
@@ -501,4 +525,29 @@ class UserProjectProgress(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     last_task_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("project_tasks.id", ondelete="SET NULL"), nullable=True
     )
+    last_activity_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class UserProjectTaskProgress(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+    __tablename__ = "user_project_task_progress"
+    __table_args__ = (UniqueConstraint("user_id", "task_id", name="uq_user_project_task_progress"),)
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    task_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("project_tasks.id", ondelete="CASCADE"), index=True
+    )
+    status: Mapped[ProgressStatus] = mapped_column(
+        Enum(
+            ProgressStatus,
+            name="learn_progress_status",
+            native_enum=False,
+            create_constraint=False,
+        ),
+        default=ProgressStatus.NOT_STARTED,
+        nullable=False,
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     last_activity_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

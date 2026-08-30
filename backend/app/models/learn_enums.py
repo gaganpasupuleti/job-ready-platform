@@ -82,3 +82,13 @@ class LessonResourceType(StrEnum):
 class LessonFeedbackVote(StrEnum):
     HELPFUL = "helpful"
     NOT_HELPFUL = "not_helpful"
+
+
+class ProjectTaskType(StrEnum):
+    CONCEPT = "concept"
+    CODING = "coding"
+    SQL = "sql"
+    MCQ = "mcq"
+    CHECKLIST = "checklist"
+    IMPLEMENTATION = "implementation"
+    REVIEW = "review"

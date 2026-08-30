@@ -75,6 +75,7 @@ from app.models.learn import (  # noqa: F401
     UserLessonProgress,
     UserPracticePathProgress,
     UserProjectProgress,
+    UserProjectTaskProgress,
 )
 
 config = context.config

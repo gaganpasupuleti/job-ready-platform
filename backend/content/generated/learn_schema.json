@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Learn catalog generation batch",
+  "type": "object",
+  "required": ["content_kind"],
+  "properties": {
+    "content_kind": {
+      "enum": ["project", "practice_path", "lesson", "project_task", "interview_qa"]
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "title", "category_key", "short_description"],
+        "properties": {
+          "slug": { "type": "string" },
+          "title": { "type": "string" },
+          "category_key": { "type": "string" },
+          "short_description": { "type": "string" },
+          "difficulty": { "type": "string" },
+          "technology": { "type": "string" },
+          "skills": { "type": "array", "items": { "type": "string" } },
+          "prerequisites": { "type": "array", "items": { "type": "string" } },
+          "final_objective": { "type": "string" },
+          "task_types": {
+            "type": "array",
+            "items": {
+              "enum": ["concept", "coding", "sql", "mcq", "checklist", "implementation", "review"]
+            }
+          }
+        }
+      }
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "title", "path_type"],
+        "properties": {
+          "slug": { "type": "string" },
+          "title": { "type": "string" },
+          "path_type": { "type": "string" },
+          "sections": { "type": "array" }
+        }
+      }
+    },
+    "lessons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "title", "lesson_type"],
+        "properties": {
+          "slug": { "type": "string" },
+          "title": { "type": "string" },
+          "lesson_type": { "type": "string" },
+          "hints": { "type": "array" },
+          "doubts": { "type": "array" }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string" },
+          "task_type": { "type": "string" },
+          "coding_problem_slug": { "type": "string" },
+          "sql_problem_slug": { "type": "string" }
+        }
+      }
+    }
+  }
+}

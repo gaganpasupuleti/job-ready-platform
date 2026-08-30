@@ -90,6 +90,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   { label: 'Content Factory', path: '/admin/content' },
                   { label: 'Practice Paths', path: '/admin/practice-paths' },
                   { label: 'Courses', path: '/admin/courses' },
+                  { label: 'Projects', path: '/admin/projects' },
                 ].map((item) => (
                   <li key={item.path}>
                     <NavLink

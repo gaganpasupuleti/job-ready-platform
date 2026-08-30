@@ -80,6 +80,14 @@ Only approved live questions:
 - `GET /api/v1/interview/questions/{slug}`
 - `GET /api/v1/interview/packs`
 
+## Learn catalog batches (Build 5.1)
+
+`content_kind` may be `project`, `practice_path`, `lesson`, or `project_task`. Schema: `backend/content/generated/learn_schema.json`.
+
+`python -m app.content.validate` routes by `content_kind`. Staging/publish for interview Q&A is unchanged; learn JSON is validated only until a dedicated importer is added. No automatic publishing.
+
+`python -m app.content.gaps` also reports projects by category, paths by type, lessons, and MCQ domain counts.
+
 ## Future content types
 
-`ContentType` also includes `course`, `lesson`, `practice_path`, and `project` for later Content Factory pipelines into Build 5 learning entities. Interview Q&A remains the only generated pipeline in production today.
+`ContentType` includes `course`, `lesson`, `practice_path`, and `project`. Interview Q&A is the only auto-import pipeline today.

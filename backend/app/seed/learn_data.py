@@ -1465,6 +1465,9 @@ async def seed_learn_content() -> None:
         companies = await _ensure_companies(session)
         course = await _ensure_python_course(session)
         await _ensure_projects(session)
+        from app.seed.build51_seed import seed_build51_content
+
+        await seed_build51_content(session)
         await _ensure_language_paths(session, course)
         await _ensure_dsa_paths(session)
         await _ensure_structure_and_algorithm_paths(session)

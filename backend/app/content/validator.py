@@ -277,16 +277,101 @@ async def validate_question_payload(
 async def validate_file_payload(
     session: AsyncSession, data: dict[str, Any]
 ) -> tuple[list[ValidationResult], list[dict[str, Any]]]:
-    questions = data.get("questions") if isinstance(data, dict) else None
-    if not isinstance(questions, list):
-        raise ValueError("JSON must contain a 'questions' array.")
-    results: list[ValidationResult] = []
-    batch_hashes: set[str] = set()
-    for item in questions:
-        result = await validate_question_payload(session, item, batch_hashes=batch_hashes)
-        if result.content_hash and result.ok:
-            batch_hashes.add(result.content_hash)
-        elif result.content_hash:
-            batch_hashes.add(result.content_hash)
-        results.append(result)
-    return results, questions
+    if not isinstance(data, dict):
+        raise ValueError("JSON root must be an object.")
+    kind = (data.get("content_kind") or data.get("kind") or "interview_qa").strip().lower()
+    if kind in {"interview_qa", "interview", "qa"}:
+        questions = data.get("questions")
+        if not isinstance(questions, list):
+            raise ValueError("JSON must contain a 'questions' array.")
+        results: list[ValidationResult] = []
+        batch_hashes: set[str] = set()
+        for item in questions:
+            result = await validate_question_payload(session, item, batch_hashes=batch_hashes)
+            if result.content_hash:
+                batch_hashes.add(result.content_hash)
+            results.append(result)
+        return results, questions
+    if kind in {"project", "projects"}:
+        items = data.get("projects") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Project JSON must contain a 'projects' array.")
+        return [validate_project_payload(item) for item in items], items
+    if kind in {"practice_path", "path", "paths"}:
+        items = data.get("paths") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Path JSON must contain a 'paths' array.")
+        return [validate_path_payload(item) for item in items], items
+    if kind in {"lesson", "lessons", "course_lesson"}:
+        items = data.get("lessons") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Lesson JSON must contain a 'lessons' array.")
+        return [validate_lesson_payload(item) for item in items], items
+    if kind in {"project_task", "tasks"}:
+        items = data.get("tasks") or data.get("items")
+        if not isinstance(items, list):
+            raise ValueError("Task JSON must contain a 'tasks' array.")
+        return [validate_task_payload(item) for item in items], items
+    raise ValueError(f"Unsupported content_kind: {kind}")
+
+
+def validate_project_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    for field in ("slug", "title", "category_key", "short_description"):
+        if not str(item.get(field) or "").strip():
+            result.errors.append(f"Missing {field}")
+    if _contains_placeholder(str(item.get("title") or "") + str(item.get("short_description") or "")):
+        result.errors.append("Placeholder text is not allowed")
+    if item.get("task_types"):
+        allowed = {"concept", "coding", "sql", "mcq", "checklist", "implementation", "review"}
+        bad = [t for t in item["task_types"] if t not in allowed]
+        if bad:
+            result.errors.append(f"Unknown task_types: {bad}")
+    return result
+
+
+def validate_path_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    for field in ("slug", "title", "path_type"):
+        if not str(item.get(field) or "").strip():
+            result.errors.append(f"Missing {field}")
+    if _contains_placeholder(str(item.get("title") or "")):
+        result.errors.append("Placeholder text is not allowed")
+    return result
+
+
+def validate_lesson_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    for field in ("slug", "title", "lesson_type"):
+        if not str(item.get(field) or "").strip():
+            result.errors.append(f"Missing {field}")
+    if item.get("hints") and not isinstance(item["hints"], list):
+        result.errors.append("hints must be a list")
+    if item.get("doubts") and not isinstance(item["doubts"], list):
+        result.errors.append("doubts must be a list")
+    if _contains_placeholder(str(item.get("title") or "")):
+        result.errors.append("Placeholder text is not allowed")
+    return result
+
+
+def validate_task_payload(item: dict[str, Any]) -> ValidationResult:
+    result = ValidationResult()
+    if not isinstance(item, dict):
+        result.errors.append("Item must be an object")
+        return result
+    if not str(item.get("title") or "").strip():
+        result.errors.append("Missing title")
+    task_type = item.get("task_type")
+    allowed = {"concept", "coding", "sql", "mcq", "checklist", "implementation", "review"}
+    if task_type and task_type not in allowed:
+        result.errors.append(f"Unknown task_type: {task_type}")
+    return result

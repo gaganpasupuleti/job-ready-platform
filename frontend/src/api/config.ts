@@ -62,6 +62,11 @@ export const apiEndpoints = {
     learnCourseModules: (id: string) => `/api/v1/admin/courses/${id}/modules`,
     learnModuleLessons: (id: string) => `/api/v1/admin/modules/${id}/lessons`,
     learnLesson: (id: string) => `/api/v1/admin/lessons/${id}`,
+    projects: '/api/v1/admin/projects',
+    project: (id: string) => `/api/v1/admin/projects/${id}`,
+    projectModules: (id: string) => `/api/v1/admin/projects/${id}/modules`,
+    projectModuleTasks: (id: string) => `/api/v1/admin/project-modules/${id}/tasks`,
+    projectTask: (id: string) => `/api/v1/admin/project-tasks/${id}`,
   },
   coding: {
     problems: '/api/v1/coding/problems',
@@ -112,6 +117,12 @@ export const apiEndpoints = {
     lessonFeedback: (id: string) => `/api/v1/lessons/${id}/feedback`,
     projects: '/api/v1/projects',
     project: (slug: string) => `/api/v1/projects/${slug}`,
+    projectStart: (id: string) => `/api/v1/projects/${id}/start`,
+    projectTaskComplete: (projectId: string, taskId: string) =>
+      `/api/v1/projects/${projectId}/tasks/${taskId}/complete`,
+    pathStart: (id: string) => `/api/v1/paths/${id}/start`,
+    pathItemComplete: (pathId: string, itemId: string) =>
+      `/api/v1/paths/${pathId}/items/${itemId}/complete`,
     continueLearning: '/api/v1/learning/continue',
     search: '/api/v1/practice/search',
   },

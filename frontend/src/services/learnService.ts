@@ -146,8 +146,10 @@ export interface ProjectCard {
   technology: string | null
   category_key: string
   availability: string
+  estimated_minutes: number | null
   task_count: number
   progress_percent: number
+  href: string
 }
 
 export interface ProjectDetail {
@@ -160,7 +162,17 @@ export interface ProjectDetail {
   technology: string | null
   category_key: string
   availability: string
+  estimated_minutes: number | null
+  prerequisites: string[]
+  skills: string[]
+  final_objective: string | null
   progress_percent: number
+  status: string
+  completed_task_count: number
+  task_count: number
+  current_task_id: string | null
+  current_task_href: string | null
+  continue_href: string | null
   modules: Array<{
     id: string
     title: string
@@ -170,6 +182,11 @@ export interface ProjectDetail {
       title: string
       sort_order: number
       summary: string | null
+      task_type: string
+      status: string
+      href: string | null
+      checklist_json: string[]
+      body_json: Record<string, unknown>
     }>
   }>
 }
@@ -239,6 +256,26 @@ export async function fetchProjects() {
 
 export async function fetchProject(slug: string) {
   const { data } = await apiClient.get<ProjectDetail>(apiEndpoints.learn.project(slug))
+  return data
+}
+
+export async function startProject(id: string) {
+  const { data } = await apiClient.post(apiEndpoints.learn.projectStart(id))
+  return data
+}
+
+export async function completeProjectTask(projectId: string, taskId: string) {
+  const { data } = await apiClient.post(apiEndpoints.learn.projectTaskComplete(projectId, taskId))
+  return data
+}
+
+export async function startPath(id: string) {
+  const { data } = await apiClient.post(apiEndpoints.learn.pathStart(id))
+  return data
+}
+
+export async function completePathItem(pathId: string, itemId: string) {
+  const { data } = await apiClient.post(apiEndpoints.learn.pathItemComplete(pathId, itemId))
   return data
 }
 

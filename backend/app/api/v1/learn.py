@@ -141,6 +141,44 @@ async def get_project(
     return await LearnService(db).get_project(slug, user)
 
 
+@router.post("/projects/{project_id}/start", tags=["learn"])
+async def start_project(
+    project_id: UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    return await LearnService(db).start_project(project_id, user)
+
+
+@router.post("/projects/{project_id}/tasks/{task_id}/complete", tags=["learn"])
+async def complete_project_task(
+    project_id: UUID,
+    task_id: UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    return await LearnService(db).complete_project_task(project_id, task_id, user)
+
+
+@router.post("/paths/{path_id}/start", tags=["learn"])
+async def start_path(
+    path_id: UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    return await LearnService(db).start_path(path_id, user)
+
+
+@router.post("/paths/{path_id}/items/{item_id}/complete", tags=["learn"])
+async def complete_path_item(
+    path_id: UUID,
+    item_id: UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    return await LearnService(db).complete_path_item(path_id, item_id, user)
+
+
 @router.get("/learning/continue", response_model=list[ContinueLearningItem], tags=["learn"])
 async def continue_learning(
     user: User = Depends(get_current_user),

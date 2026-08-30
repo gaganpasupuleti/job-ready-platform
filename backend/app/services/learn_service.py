@@ -26,10 +26,12 @@ from app.models.learn import (
     PracticePathSection,
     Project,
     ProjectModule,
+    ProjectTask,
     UserCourseProgress,
     UserLessonProgress,
     UserPracticePathProgress,
     UserProjectProgress,
+    UserProjectTaskProgress,
 )
 from app.models.learn_enums import (
     CourseLevel,
@@ -41,6 +43,7 @@ from app.models.learn_enums import (
     PracticePathItemType,
     PracticePathType,
     ProgressStatus,
+    ProjectTaskType,
     SolutionRevealPolicy,
 )
 from app.models.sql_practice import SqlProblem
@@ -66,11 +69,16 @@ from app.schemas.learn import (
     PracticePathAdminIn,
     PracticePathCard,
     PracticePathDetail,
+    PracticePathItemAdminIn,
     PracticePathItemOut,
+    PracticePathSectionAdminIn,
     PracticePathSectionOut,
+    ProjectAdminIn,
     ProjectCard,
     ProjectDetail,
+    ProjectModuleAdminIn,
     ProjectModuleOut,
+    ProjectTaskAdminIn,
     ProjectTaskOut,
     SearchHit,
     SearchResponse,
@@ -84,7 +92,7 @@ HUB_SECTIONS: list[tuple[PracticePathType, str]] = [
     (PracticePathType.ALGORITHM, "Algorithms"),
     (PracticePathType.DIFFICULTY, "Difficulty Paths"),
     (PracticePathType.INTERVIEW, "Interview Questions"),
-    (PracticePathType.COMPANY, "Company Practice"),
+    (PracticePathType.COMPANY, "Company Paths"),
     (PracticePathType.CUSTOM, "Other Practice Paths"),
 ]
 
@@ -113,7 +121,7 @@ def path_href(path: PracticePath) -> str:
 
 
 def project_href(project_slug: str) -> str:
-    return f"/practice/projects/{project_slug}"
+    return f"/projects/{project_slug}"
 
 
 class LearnService:
@@ -673,8 +681,10 @@ class LearnService:
                 technology=p.technology,
                 category_key=p.category_key,
                 availability=_enum_value(p.availability),
+                estimated_minutes=p.estimated_minutes,
                 task_count=task_counts.get(p.id, 0),
                 progress_percent=progress_map.get(p.id, 0),
+                href=project_href(p.slug),
             )
             for p in projects
         ]
@@ -699,6 +709,15 @@ class LearnService:
             )
         ).scalar_one_or_none()
 
+        ordered_tasks = [task for module in project.modules for task in module.tasks]
+        completed_ids = await self._completed_task_ids(user.id, [t.id for t in ordered_tasks])
+        hrefs = await self._project_task_hrefs(ordered_tasks)
+        current_task = next((t for t in ordered_tasks if t.id not in completed_ids), None)
+        completed_count = len(completed_ids)
+        total = len(ordered_tasks)
+        percent = progress.percent if progress else (int(round(completed_count * 100 / total)) if total else 0)
+        status = _enum_value(progress.status) if progress else ProgressStatus.NOT_STARTED.value
+
         return ProjectDetail(
             id=project.id,
             slug=project.slug,
@@ -709,7 +728,20 @@ class LearnService:
             technology=project.technology,
             category_key=project.category_key,
             availability=_enum_value(project.availability),
-            progress_percent=progress.percent if progress else 0,
+            estimated_minutes=project.estimated_minutes,
+            prerequisites=list(project.prerequisites or []),
+            skills=list(project.skills or []),
+            final_objective=project.final_objective,
+            reference_json=project.reference_json,
+            progress_percent=percent,
+            status=status,
+            completed_task_count=completed_count,
+            task_count=total,
+            current_task_id=current_task.id if current_task else None,
+            current_task_href=hrefs.get(current_task.id) if current_task else None,
+            continue_href=project_href(project.slug),
+            last_activity_at=progress.last_activity_at if progress else None,
+            completed_at=progress.completed_at if progress else None,
             modules=[
                 ProjectModuleOut(
                     id=module.id,
@@ -721,8 +753,17 @@ class LearnService:
                             title=task.title,
                             sort_order=task.sort_order,
                             summary=task.summary,
+                            task_type=_enum_value(task.task_type),
+                            status="completed" if task.id in completed_ids else "not_started",
+                            href=hrefs.get(task.id),
                             lesson_id=task.lesson_id,
                             coding_problem_id=task.coding_problem_id,
+                            sql_problem_id=task.sql_problem_id,
+                            topic_id=task.topic_id,
+                            body_json=task.body_json or {},
+                            checklist_json=list(task.checklist_json or []),
+                            reference_json=task.reference_json,
+                            estimated_minutes=task.estimated_minutes,
                         )
                         for task in module.tasks
                     ],
@@ -730,6 +771,203 @@ class LearnService:
                 for module in project.modules
             ],
         )
+
+    async def start_project(self, project_id: UUID, user: User) -> dict:
+        project = await self.db.get(Project, project_id)
+        if project is None or not project.is_published:
+            raise AppException("Project not found", status_code=404)
+        progress = await self._ensure_project_progress(user.id, project.id)
+        if progress.status == ProgressStatus.NOT_STARTED:
+            progress.status = ProgressStatus.IN_PROGRESS
+        progress.last_activity_at = _now()
+        await self.db.commit()
+        return {
+            "status": progress.status.value,
+            "percent": progress.percent,
+            "href": project_href(project.slug),
+        }
+
+    async def complete_project_task(self, project_id: UUID, task_id: UUID, user: User) -> dict:
+        project = (
+            await self.db.execute(
+                select(Project)
+                .options(selectinload(Project.modules).selectinload(ProjectModule.tasks))
+                .where(Project.id == project_id, Project.is_published.is_(True))
+            )
+        ).scalar_one_or_none()
+        if project is None:
+            raise AppException("Project not found", status_code=404)
+        ordered = [task for module in project.modules for task in module.tasks]
+        task = next((t for t in ordered if t.id == task_id), None)
+        if task is None:
+            raise AppException("Task not found on this project", status_code=404)
+
+        row = (
+            await self.db.execute(
+                select(UserProjectTaskProgress).where(
+                    UserProjectTaskProgress.user_id == user.id,
+                    UserProjectTaskProgress.task_id == task_id,
+                )
+            )
+        ).scalar_one_or_none()
+        if row is None:
+            row = UserProjectTaskProgress(user_id=user.id, task_id=task_id)
+            self.db.add(row)
+        row.status = ProgressStatus.COMPLETED
+        row.completed_at = row.completed_at or _now()
+        row.last_activity_at = _now()
+
+        completed_ids = await self._completed_task_ids(user.id, [t.id for t in ordered])
+        completed_ids.add(task_id)
+        percent = int(round(len(completed_ids) * 100 / len(ordered))) if ordered else 100
+        progress = await self._ensure_project_progress(user.id, project.id)
+        progress.percent = percent
+        progress.last_task_id = task_id
+        progress.last_activity_at = _now()
+        progress.status = ProgressStatus.COMPLETED if percent >= 100 else ProgressStatus.IN_PROGRESS
+        if percent >= 100:
+            progress.completed_at = progress.completed_at or _now()
+        await self.db.commit()
+        return {
+            "status": progress.status.value,
+            "percent": percent,
+            "completed_task_id": str(task_id),
+            "href": project_href(project.slug),
+        }
+
+    async def start_path(self, path_id: UUID, user: User) -> dict:
+        path = await self.db.get(PracticePath, path_id)
+        if path is None or not path.is_active:
+            raise AppException("Practice path not found", status_code=404)
+        progress = await self._ensure_path_progress(user.id, path.id)
+        if progress.status == ProgressStatus.NOT_STARTED:
+            progress.status = ProgressStatus.IN_PROGRESS
+        progress.last_activity_at = _now()
+        await self.db.commit()
+        return {"status": progress.status.value, "percent": progress.percent, "href": path_href(path)}
+
+    async def complete_path_item(self, path_id: UUID, item_id: UUID, user: User) -> dict:
+        path = (
+            await self.db.execute(
+                select(PracticePath)
+                .options(selectinload(PracticePath.sections).selectinload(PracticePathSection.items))
+                .where(PracticePath.id == path_id, PracticePath.is_active.is_(True))
+            )
+        ).scalar_one_or_none()
+        if path is None:
+            raise AppException("Practice path not found", status_code=404)
+        items = [item for section in path.sections for item in section.items]
+        if not any(item.id == item_id for item in items):
+            raise AppException("Path item not found", status_code=404)
+        # Approximate progress by counting completed-looking items via percent steps.
+        progress = await self._ensure_path_progress(user.id, path.id)
+        total = max(len(items), 1)
+        step = max(int(round(100 / total)), 1)
+        progress.percent = min(100, (progress.percent or 0) + step)
+        progress.status = ProgressStatus.COMPLETED if progress.percent >= 100 else ProgressStatus.IN_PROGRESS
+        progress.last_activity_at = _now()
+        if progress.percent >= 100:
+            progress.completed_at = progress.completed_at or _now()
+        await self.db.commit()
+        return {"status": progress.status.value, "percent": progress.percent, "href": path_href(path)}
+
+    async def _ensure_project_progress(self, user_id: UUID, project_id: UUID) -> UserProjectProgress:
+        progress = (
+            await self.db.execute(
+                select(UserProjectProgress).where(
+                    UserProjectProgress.user_id == user_id,
+                    UserProjectProgress.project_id == project_id,
+                )
+            )
+        ).scalar_one_or_none()
+        if progress is None:
+            progress = UserProjectProgress(user_id=user_id, project_id=project_id, status=ProgressStatus.IN_PROGRESS)
+            self.db.add(progress)
+            await self.db.flush()
+        return progress
+
+    async def _ensure_path_progress(self, user_id: UUID, path_id: UUID) -> UserPracticePathProgress:
+        progress = (
+            await self.db.execute(
+                select(UserPracticePathProgress).where(
+                    UserPracticePathProgress.user_id == user_id,
+                    UserPracticePathProgress.path_id == path_id,
+                )
+            )
+        ).scalar_one_or_none()
+        if progress is None:
+            progress = UserPracticePathProgress(user_id=user_id, path_id=path_id, status=ProgressStatus.IN_PROGRESS)
+            self.db.add(progress)
+            await self.db.flush()
+        return progress
+
+    async def _completed_task_ids(self, user_id: UUID, task_ids: list[UUID]) -> set[UUID]:
+        if not task_ids:
+            return set()
+        rows = (
+            await self.db.execute(
+                select(UserProjectTaskProgress.task_id).where(
+                    UserProjectTaskProgress.user_id == user_id,
+                    UserProjectTaskProgress.task_id.in_(task_ids),
+                    UserProjectTaskProgress.status == ProgressStatus.COMPLETED,
+                )
+            )
+        ).scalars().all()
+        return set(rows)
+
+    async def _project_task_hrefs(self, tasks: list[ProjectTask]) -> dict[UUID, str | None]:
+        coding_ids = [t.coding_problem_id for t in tasks if t.coding_problem_id]
+        sql_ids = [t.sql_problem_id for t in tasks if t.sql_problem_id]
+        topic_ids = [t.topic_id for t in tasks if t.topic_id]
+        lesson_ids = [t.lesson_id for t in tasks if t.lesson_id]
+        coding_slugs: dict[UUID, str] = {}
+        sql_slugs: dict[UUID, str] = {}
+        topic_slugs: dict[UUID, str] = {}
+        if coding_ids:
+            coding_slugs = {
+                i: s for i, s in (await self.db.execute(select(CodingProblem.id, CodingProblem.slug).where(CodingProblem.id.in_(coding_ids)))).all()
+            }
+        if sql_ids:
+            sql_slugs = {
+                i: s for i, s in (await self.db.execute(select(SqlProblem.id, SqlProblem.slug).where(SqlProblem.id.in_(sql_ids)))).all()
+            }
+        if topic_ids:
+            topic_slugs = {
+                i: s for i, s in (await self.db.execute(select(Topic.id, Topic.slug).where(Topic.id.in_(topic_ids)))).all()
+            }
+        lesson_paths: dict[UUID, str] = {}
+        if lesson_ids:
+            lesson_paths = await self._lesson_href_map(lesson_ids)
+        hrefs: dict[UUID, str | None] = {}
+        for task in tasks:
+            href = None
+            if task.coding_problem_id and task.coding_problem_id in coding_slugs:
+                href = f"/practice/dsa/{coding_slugs[task.coding_problem_id]}"
+            elif task.sql_problem_id and task.sql_problem_id in sql_slugs:
+                href = f"/practice/sql/{sql_slugs[task.sql_problem_id]}"
+            elif task.topic_id and task.topic_id in topic_slugs:
+                href = f"/practice/mcq?topic={topic_slugs[task.topic_id]}"
+            elif task.lesson_id and task.lesson_id in lesson_paths:
+                href = lesson_paths[task.lesson_id]
+            elif _enum_value(task.task_type) == "sql":
+                href = "/practice/sql"
+            elif _enum_value(task.task_type) == "coding":
+                href = "/practice/dsa"
+            elif _enum_value(task.task_type) == "mcq":
+                href = "/practice/mcq"
+            hrefs[task.id] = href
+        return hrefs
+
+    async def _lesson_href_map(self, lesson_ids: list[UUID]) -> dict[UUID, str]:
+        rows = (
+            await self.db.execute(
+                select(CourseLesson.id, Course.slug, CourseModule.slug, CourseLesson.slug)
+                .join(CourseModule, CourseModule.id == CourseLesson.module_id)
+                .join(Course, Course.id == CourseModule.course_id)
+                .where(CourseLesson.id.in_(lesson_ids))
+            )
+        ).all()
+        return {lid: lesson_href(c, m, l) for lid, c, m, l in rows}
 
     async def search(self, query: str, *, limit: int = 20) -> SearchResponse:
         term = (query or "").strip()
@@ -1461,6 +1699,204 @@ class LearnAdminService:
         await self.db.commit()
         await self.db.refresh(lesson)
         return self._lesson_dict(lesson)
+
+    async def list_projects(self) -> list[dict]:
+        projects = (
+            await self.db.execute(select(Project).order_by(Project.sort_order, Project.title))
+        ).scalars().all()
+        return [self._project_dict(p) for p in projects]
+
+    async def create_project(self, payload: ProjectAdminIn) -> dict:
+        if await self.db.scalar(select(Project.id).where(Project.slug == payload.slug)):
+            raise AppException("A project with this slug already exists", status_code=400)
+        project = Project(
+            slug=payload.slug,
+            title=payload.title,
+            short_description=payload.short_description,
+            description=payload.description,
+            difficulty=_coerce(PracticePathDifficulty, payload.difficulty, "difficulty"),
+            technology=payload.technology,
+            category_key=payload.category_key,
+            estimated_minutes=payload.estimated_minutes,
+            is_published=payload.is_published,
+            is_featured=payload.is_featured,
+            sort_order=payload.sort_order,
+            availability=_coerce(PathAvailability, payload.availability, "availability"),
+            prerequisites=payload.prerequisites,
+            skills=payload.skills,
+            final_objective=payload.final_objective,
+            reference_json=payload.reference_json,
+        )
+        self.db.add(project)
+        await self.db.commit()
+        await self.db.refresh(project)
+        return self._project_dict(project)
+
+    async def update_project(self, project_id: UUID, payload: dict[str, Any]) -> dict:
+        project = await self.db.get(Project, project_id)
+        if project is None:
+            raise AppException("Project not found", status_code=404)
+        enum_fields = {"difficulty": PracticePathDifficulty, "availability": PathAvailability}
+        allowed = {
+            "slug",
+            "title",
+            "short_description",
+            "description",
+            "technology",
+            "category_key",
+            "estimated_minutes",
+            "is_published",
+            "is_featured",
+            "sort_order",
+            "prerequisites",
+            "skills",
+            "final_objective",
+            "reference_json",
+            *enum_fields,
+        }
+        for key, value in payload.items():
+            if key not in allowed:
+                continue
+            if key in enum_fields:
+                value = _coerce(enum_fields[key], value, key)
+            setattr(project, key, value)
+        await self.db.commit()
+        await self.db.refresh(project)
+        return self._project_dict(project)
+
+    async def create_project_module(self, project_id: UUID, payload: ProjectModuleAdminIn) -> dict:
+        project = await self.db.get(Project, project_id)
+        if project is None:
+            raise AppException("Project not found", status_code=404)
+        module = ProjectModule(project_id=project.id, title=payload.title, sort_order=payload.sort_order)
+        self.db.add(module)
+        await self.db.commit()
+        await self.db.refresh(module)
+        return {"id": str(module.id), "title": module.title, "sort_order": module.sort_order}
+
+    async def create_project_task(self, module_id: UUID, payload: ProjectTaskAdminIn) -> dict:
+        module = await self.db.get(ProjectModule, module_id)
+        if module is None:
+            raise AppException("Project module not found", status_code=404)
+        task = ProjectTask(
+            module_id=module.id,
+            title=payload.title,
+            sort_order=payload.sort_order,
+            task_type=_coerce(ProjectTaskType, payload.task_type, "task_type"),
+            summary=payload.summary,
+            coding_problem_id=payload.coding_problem_id,
+            sql_problem_id=payload.sql_problem_id,
+            topic_id=payload.topic_id,
+            lesson_id=payload.lesson_id,
+            question_id=payload.question_id,
+            body_json=payload.body_json,
+            checklist_json=payload.checklist_json,
+            reference_json=payload.reference_json,
+            estimated_minutes=payload.estimated_minutes,
+        )
+        self.db.add(task)
+        await self.db.commit()
+        await self.db.refresh(task)
+        return self._task_dict(task)
+
+    async def update_project_task(self, task_id: UUID, payload: dict[str, Any]) -> dict:
+        task = await self.db.get(ProjectTask, task_id)
+        if task is None:
+            raise AppException("Project task not found", status_code=404)
+        enum_fields = {"task_type": ProjectTaskType}
+        allowed = {
+            "title",
+            "sort_order",
+            "summary",
+            "coding_problem_id",
+            "sql_problem_id",
+            "topic_id",
+            "lesson_id",
+            "question_id",
+            "body_json",
+            "checklist_json",
+            "reference_json",
+            "estimated_minutes",
+            *enum_fields,
+        }
+        for key, value in payload.items():
+            if key not in allowed:
+                continue
+            if key in enum_fields:
+                value = _coerce(enum_fields[key], value, key)
+            setattr(task, key, value)
+        await self.db.commit()
+        await self.db.refresh(task)
+        return self._task_dict(task)
+
+    async def add_path_section(self, path_id: UUID, payload: PracticePathSectionAdminIn) -> dict:
+        path = await self.db.get(PracticePath, path_id)
+        if path is None:
+            raise AppException("Practice path not found", status_code=404)
+        section = PracticePathSection(
+            path_id=path.id,
+            title=payload.title,
+            section_key=payload.section_key,
+            sort_order=payload.sort_order,
+        )
+        self.db.add(section)
+        await self.db.commit()
+        await self.db.refresh(section)
+        return {"id": str(section.id), "title": section.title, "sort_order": section.sort_order}
+
+    async def add_path_item(self, section_id: UUID, payload: PracticePathItemAdminIn) -> dict:
+        section = await self.db.get(PracticePathSection, section_id)
+        if section is None:
+            raise AppException("Path section not found", status_code=404)
+        item = PracticePathItem(
+            section_id=section.id,
+            item_type=_coerce(PracticePathItemType, payload.item_type, "item_type"),
+            title=payload.title,
+            sort_order=payload.sort_order,
+            coding_problem_id=payload.coding_problem_id,
+            sql_problem_id=payload.sql_problem_id,
+            topic_id=payload.topic_id,
+            course_id=payload.course_id,
+            lesson_id=payload.lesson_id,
+            project_id=payload.project_id,
+            external_route=payload.external_route,
+            is_preview=payload.is_preview,
+        )
+        self.db.add(item)
+        await self.db.commit()
+        await self.db.refresh(item)
+        return {"id": str(item.id), "item_type": _enum_value(item.item_type), "title": item.title}
+
+    def _project_dict(self, project: Project) -> dict:
+        return {
+            "id": str(project.id),
+            "slug": project.slug,
+            "title": project.title,
+            "short_description": project.short_description,
+            "description": project.description,
+            "difficulty": _enum_value(project.difficulty),
+            "technology": project.technology,
+            "category_key": project.category_key,
+            "estimated_minutes": project.estimated_minutes,
+            "is_published": project.is_published,
+            "is_featured": project.is_featured,
+            "availability": _enum_value(project.availability),
+            "prerequisites": project.prerequisites or [],
+            "skills": project.skills or [],
+            "final_objective": project.final_objective,
+        }
+
+    def _task_dict(self, task: ProjectTask) -> dict:
+        return {
+            "id": str(task.id),
+            "title": task.title,
+            "sort_order": task.sort_order,
+            "task_type": _enum_value(task.task_type),
+            "summary": task.summary,
+            "coding_problem_id": str(task.coding_problem_id) if task.coding_problem_id else None,
+            "sql_problem_id": str(task.sql_problem_id) if task.sql_problem_id else None,
+            "topic_id": str(task.topic_id) if task.topic_id else None,
+        }
 
     def _path_dict(self, path: PracticePath) -> dict:
         return {

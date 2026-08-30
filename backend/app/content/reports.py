@@ -78,11 +78,63 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
     live = await session.scalar(
         select(func.count()).select_from(InterviewQuestion).where(live_filter)
     )
+
+    from app.models.learn import CourseLesson, PracticePath, Project
+    from app.models.question import Question
+    from app.models.taxonomy import Domain
+
+    project_rows = (
+        await session.execute(
+            select(Project.category_key, func.count(Project.id))
+            .where(Project.is_published.is_(True))
+            .group_by(Project.category_key)
+        )
+    ).all()
+    projects_by_category = {key: int(n) for key, n in project_rows}
+
+    path_rows = (
+        await session.execute(
+            select(PracticePath.path_type, func.count(PracticePath.id))
+            .where(PracticePath.is_active.is_(True))
+            .group_by(PracticePath.path_type)
+        )
+    ).all()
+    paths_by_type = {str(getattr(k, "value", k)): int(n) for k, n in path_rows}
+
+    lesson_count = int(await session.scalar(select(func.count()).select_from(CourseLesson)) or 0)
+    mcq_count = int(await session.scalar(select(func.count()).select_from(Question)) or 0)
+    domain_rows = (
+        await session.execute(
+            select(Domain.name, func.count(Question.id))
+            .join(Question, Question.domain_id == Domain.id, isouter=True)
+            .group_by(Domain.name)
+        )
+    ).all()
+
+    catalog_gaps = []
+    for label, key, target in [
+        ("Python Projects", "python", 8),
+        ("SQL Projects", "sql", 4),
+        ("GenAI Projects", "generative-ai", 4),
+        ("Java Projects", "java", 4),
+        ("C++ Projects", "cpp", 4),
+        ("JavaScript Projects", "javascript", 4),
+    ]:
+        n = projects_by_category.get(key, 0)
+        if n < target:
+            catalog_gaps.append(f"{label}: {n}")
+
     return {
         "live_questions": int(live or 0),
         "pending_candidates": int(pending or 0),
         "by_role": by_role,
         "suggested_priorities": suggestions or ["Add interview Q&A for high-demand skills (SQL, Python, RAG)."],
+        "projects_by_category": projects_by_category,
+        "paths_by_type": paths_by_type,
+        "lessons": lesson_count,
+        "mcq_questions": mcq_count,
+        "mcq_by_domain": {name: int(n or 0) for name, n in domain_rows},
+        "catalog_gap_lines": catalog_gaps or ["Catalog coverage looks healthy for current targets."],
     }
 
 

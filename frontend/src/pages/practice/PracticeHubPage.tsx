@@ -32,10 +32,13 @@ function PathCard({ path }: { path: PracticePathCard }) {
         {comingSoon ? <Badge variant="warning">Coming Soon</Badge> : <Badge variant="success">Available</Badge>}
       </div>
       <p className="text-sm text-[var(--color-text-muted)]">{path.short_description}</p>
-      <div className="mt-3 flex flex-wrap gap-3 text-xs text-[var(--color-text-subtle)]">
+      <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-[var(--color-text-subtle)]">
         {path.language && <span>{path.language}</span>}
         <span>{path.item_count} items</span>
         {path.progress_percent > 0 && <span>{path.progress_percent}% done</span>}
+        {path.progress_percent > 0 && !comingSoon && (
+          <span className="font-medium text-[var(--color-accent)]">Continue</span>
+        )}
       </div>
     </Link>
   )

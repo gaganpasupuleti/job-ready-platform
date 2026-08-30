@@ -36,7 +36,7 @@ async def test_practice_hub_sections(client, student_auth, learn_seed):
     labels = [s["label"] for s in body["sections"]]
     assert "Programming Languages" in labels
     assert "Beginner DSA" in labels
-    assert "Company Practice" in labels
+    assert "Company Paths" in labels
     assert isinstance(body["continue_learning"], list)
     assert isinstance(body["recommended"], list)
 

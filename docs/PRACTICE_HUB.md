@@ -9,7 +9,7 @@ Student-facing catalog for guided practice paths, courses, and projects. Origina
 | `/practice` | Practice Hub: search, category nav, Continue Learning, Recently Practiced, recommended |
 | `/practice/paths/:slug` | Path detail with sections/items |
 | `/practice/projects` | Projects catalog |
-| `/practice/projects/:slug` | Project detail (modules/tasks) |
+| `/projects/:slug` | Project workspace (alias `/practice/projects/:slug`) |
 | `/learn` | Interactive courses list |
 | `/learn/courses/:slug` | Course outline |
 | `/learn/courses/:course/:module/:lesson` | Lesson workspace |
@@ -26,6 +26,8 @@ Existing engines stay at `/practice/dsa`, `/practice/sql`, `/practice/mcq`, etc.
 | GET | `/api/v1/courses/{course}/modules/{module}/lessons/{lesson}` |
 | POST | `/api/v1/lessons/{id}/start`, `/complete`, `/attempt`, `/feedback` |
 | GET | `/api/v1/projects`, `/api/v1/projects/{slug}` |
+| POST | `/api/v1/projects/{id}/start`, `/api/v1/projects/{id}/tasks/{task_id}/complete` |
+| POST | `/api/v1/paths/{id}/start`, `/api/v1/paths/{id}/items/{item_id}/complete` |
 | GET | `/api/v1/learning/continue` |
 | GET | `/api/v1/practice/search?q=` |
 
@@ -42,7 +44,7 @@ Hub section keys:
 - Algorithms
 - Difficulty Paths
 - Interview Questions
-- Company Practice
+- Company Paths
 - Other Practice Paths
 
 Company paths include explicit disclaimer copy: community-curated skill patterns, original content, not affiliated with the company.
@@ -63,7 +65,7 @@ python -c "import asyncio; from app.seed.learn_data import seed_learn_content; a
 
 Idempotent by slug. Migration: `006_build5` (`alembic upgrade head`).
 
-## Related
+See also [PROJECTS.md](PROJECTS.md) for Project → Module → Task and engine reuse.
 
 - [INTERACTIVE_LEARNING.md](INTERACTIVE_LEARNING.md) — courses, lessons, workspace
 - Content Factory may later publish into `ContentType` values `course`, `lesson`, `practice_path`, `project`
