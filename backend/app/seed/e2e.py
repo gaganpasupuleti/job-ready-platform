@@ -204,6 +204,12 @@ def run_e2e_seed(*, write_manifest_path: str | None = None) -> dict[str, Any]:
             await seed_build7_content_entry()
         except Exception as exc:  # noqa: BLE001
             print(f"Build 7 seed skipped/failed: {exc}")
+        try:
+            from app.seed.build8_seed import seed_build8_content
+
+            await seed_build8_content()
+        except Exception as exc:  # noqa: BLE001
+            print(f"Build 8 seed skipped/failed: {exc}")
         await _ensure_user(
             email=E2E_STUDENT_EMAIL,
             username=E2E_STUDENT_USERNAME,

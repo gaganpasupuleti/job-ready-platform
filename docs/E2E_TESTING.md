@@ -36,8 +36,11 @@ Creates/updates:
 - Admin: `admin@jobready.dev` / `Admin123!` (from base seed)
 - Stable SQL slug `active-catalog-items` and known accepted query
 - Existing paths/projects/courses/prompts/scenarios from idempotent seeds
+- Build 8 interview packs/questions (`seed_build8_content`) when available
 
 **Safety:** seed refuses production unless `E2E_ALLOW_SEED=1`.
+
+Interview Playwright specs: `frontend/e2e/interview.spec.ts` (hub, study, mock reveal, company prep, admin block).
 
 ## Run stack
 

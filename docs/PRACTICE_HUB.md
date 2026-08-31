@@ -45,12 +45,14 @@ Hub section keys:
 - Data Structures
 - Algorithms
 - Difficulty Paths
-- Interview Questions
+- Interview Questions (links into Build 8 Interview Hub / packs — session engine is separate from MCQ PracticeSession)
 - Company Paths
 - Other Practice Paths
 - AI Practice
 
 Company paths include explicit disclaimer copy: community-curated skill patterns, original content, not affiliated with the company.
+
+Interview Hub (`/interviews`) and Company Prep (`/company-prep`) reuse approved interview packs/questions. See [INTERVIEW_PRACTICE.md](INTERVIEW_PRACTICE.md).
 
 Build 6 adds `path_type=ai` paths (Generative AI, RAG, Prompt Engineering, Agents, MCP, AI Security) that link MCQ topics and prompt-challenge routes. See [AI_PRACTICE.md](AI_PRACTICE.md).
 

@@ -29,6 +29,16 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 - **Admin API:** `/api/v1/admin/sql/*`
 - Docs: [SQL_PRACTICE.md](SQL_PRACTICE.md)
 
+## Interview Practice Engine (Build 8)
+
+- **Content (reused):** `interview_questions`, `interview_answer_points`, packs/mappings, Content Factory approval
+- **Session state:** `interview_sessions`, `interview_session_questions`, `interview_question_notes`, `interview_question_reviews` (`011_build8`)
+- **Modes:** study / mock / rapid_review — mock hides expected answer until reveal
+- **Scoring:** self-review only (key-point coverage, confidence, self-rating) — **no LLM**
+- **Student API:** `/api/v1/interview/*` (content), `/api/v1/interviews/*` (sessions/hub/company-prep)
+- **Admin API:** `/api/v1/admin/interviews/packs`
+- Docs: [INTERVIEW_PRACTICE.md](INTERVIEW_PRACTICE.md)
+
 ## Coding Practice Engine (Build 3 / 3.1)
 
 - **Models:** `CodingProblem`, `CodingTestCase`, `CodingSubmission`, progress and bookmarks

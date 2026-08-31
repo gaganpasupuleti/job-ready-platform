@@ -76,6 +76,18 @@ Question text is normalized (lowercase, trim, collapse whitespace, strip punctua
 
 `jobs` is a catalog stub. `interview_question_jobs` maps Q&A onto jobs. A future Jobs Portal can assemble a pack: job skills + role + company → matching approved questions → `interview_packs`.
 
+## Interview packs (Build 8)
+
+Admin manages packs at `/admin/interviews/packs` (API `/api/v1/admin/interviews/packs`).
+
+Before activating a pack:
+
+- title + description required
+- at least 3 **approved / active** questions mapped
+- no pending/rejected questions on an active pack
+
+Gaps reporting should consider role × skill × experience × question type × pack coverage. Session practice APIs live under `/api/v1/interviews/*` and do **not** call LLMs.
+
 ## Student APIs
 
 Only approved live questions:
@@ -83,6 +95,7 @@ Only approved live questions:
 - `GET /api/v1/interview/questions`
 - `GET /api/v1/interview/questions/{slug}`
 - `GET /api/v1/interview/packs`
+- Sessions / hub / company-prep: `/api/v1/interviews/...` (see [INTERVIEW_PRACTICE.md](INTERVIEW_PRACTICE.md))
 
 ## Learn catalog batches (Build 5.1)
 

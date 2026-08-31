@@ -6,6 +6,7 @@ import { EmptyState, LoadingState } from '@/components/practice-workspace/Practi
 import { StatCard } from '@/features/dashboard/StatCard'
 import { fetchAiHome } from '@/services/aiService'
 import { fetchCodingProgress } from '@/services/codingService'
+import { fetchInterviewProgress } from '@/services/interviewService'
 import { fetchContinueLearning, fetchProjects } from '@/services/learnService'
 import { fetchSqlProgress } from '@/services/sqlService'
 import type { DashboardCard } from '@/types'
@@ -19,6 +20,10 @@ export function DashboardPage() {
   const { data: sql } = useQuery({ queryKey: ['sql-progress'], queryFn: fetchSqlProgress })
   const { data: ai } = useQuery({ queryKey: ['ai-home'], queryFn: fetchAiHome })
   const { data: projects } = useQuery({ queryKey: ['projects'], queryFn: fetchProjects })
+  const { data: interview } = useQuery({
+    queryKey: ['interview-progress'],
+    queryFn: fetchInterviewProgress,
+  })
 
   const cards: DashboardCard[] = [
     {
@@ -36,10 +41,16 @@ export function DashboardPage() {
     {
       id: 'ai-progress',
       title: 'AI Progress',
-      value: ai
-        ? `${ai.prompt_progress.mastered} mastered`
-        : '—',
+      value: ai ? `${ai.prompt_progress.mastered} mastered` : '—',
       subtitle: ai ? `${ai.prompt_progress.attempted} prompt challenges attempted` : 'No AI practice yet',
+    },
+    {
+      id: 'interview-progress',
+      title: 'Interview Progress',
+      value: interview ? String(interview.questions_reviewed) : '—',
+      subtitle: interview
+        ? `${interview.needs_review} need review · ${interview.sessions_completed} sessions`
+        : 'No interview progress yet',
     },
     {
       id: 'project-progress',
@@ -57,7 +68,8 @@ export function DashboardPage() {
       <div>
         <h1 className="text-lg font-semibold text-[var(--color-text)]">Welcome back</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Continue Learning, coding, SQL, AI, and project stats use live progress. Global readiness is not in this build.
+          Continue Learning, coding, SQL, AI, interview, and project stats use live progress. Global
+          readiness is not in this build.
         </p>
       </div>
 
@@ -83,10 +95,27 @@ export function DashboardPage() {
         </Card>
       )}
       {!continueLoading && (continueItems?.length ?? 0) === 0 && (
-        <EmptyState title="No recent learning activity" description="Start a course, project, or practice path to see it here." />
+        <EmptyState
+          title="No recent learning activity"
+          description="Start a course, project, or practice path to see it here."
+        />
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {interview && (interview.questions_reviewed > 0 || interview.needs_review > 0) && (
+        <Card>
+          <CardHeader
+            title="Interview prep"
+            description={`${interview.questions_reviewed} reviewed · ${interview.needs_review} need review`}
+            action={
+              <Link to="/interviews" className="text-sm text-[var(--color-accent)] hover:underline">
+                Continue
+              </Link>
+            }
+          />
+        </Card>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
         {cards.map((card) => (
           <StatCard key={card.id} card={card} />
         ))}

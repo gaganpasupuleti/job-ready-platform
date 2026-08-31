@@ -79,6 +79,43 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
         select(func.count()).select_from(InterviewQuestion).where(live_filter)
     )
 
+    by_experience_rows = (
+        await session.execute(
+            select(InterviewQuestion.experience_level, func.count(InterviewQuestion.id))
+            .where(live_filter)
+            .group_by(InterviewQuestion.experience_level)
+        )
+    ).all()
+    by_type_rows = (
+        await session.execute(
+            select(InterviewQuestion.question_type, func.count(InterviewQuestion.id))
+            .where(live_filter)
+            .group_by(InterviewQuestion.question_type)
+        )
+    ).all()
+
+    from app.models.interview import InterviewPack, InterviewPackQuestion
+
+    pack_rows = (
+        await session.execute(
+            select(
+                InterviewPack.slug,
+                InterviewPack.title,
+                func.count(InterviewPackQuestion.question_id),
+            )
+            .outerjoin(InterviewPackQuestion, InterviewPackQuestion.pack_id == InterviewPack.id)
+            .where(InterviewPack.is_active.is_(True))
+            .group_by(InterviewPack.id, InterviewPack.slug, InterviewPack.title)
+            .order_by(InterviewPack.slug)
+        )
+    ).all()
+    pack_coverage = [
+        {"slug": slug, "title": title, "question_count": int(n or 0)} for slug, title, n in pack_rows
+    ]
+    for item in pack_coverage:
+        if item["question_count"] < 3:
+            suggestions.append(f"Pack {item['slug']}: only {item['question_count']} questions (need ≥3)")
+
     from app.models.learn import CourseLesson, PracticePath, Project
     from app.models.prompt import PromptChallenge
     from app.models.question import Question
@@ -231,6 +268,15 @@ async def gap_report(session: AsyncSession) -> dict[str, Any]:
         "live_questions": int(live or 0),
         "pending_candidates": int(pending or 0),
         "by_role": by_role,
+        "by_experience": {
+            (level.value if hasattr(level, "value") else str(level)): int(n or 0)
+            for level, n in by_experience_rows
+        },
+        "by_question_type": {
+            (qtype.value if hasattr(qtype, "value") else str(qtype)): int(n or 0)
+            for qtype, n in by_type_rows
+        },
+        "pack_coverage": pack_coverage,
         "suggested_priorities": suggestions or ["Add interview Q&A for high-demand skills (SQL, Python, RAG)."],
         "projects_by_category": projects_by_category,
         "paths_by_type": paths_by_type,

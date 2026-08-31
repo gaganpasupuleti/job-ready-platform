@@ -74,6 +74,8 @@ export const apiEndpoints = {
     projectModules: (id: string) => `/api/v1/admin/projects/${id}/modules`,
     projectModuleTasks: (id: string) => `/api/v1/admin/project-modules/${id}/tasks`,
     projectTask: (id: string) => `/api/v1/admin/project-tasks/${id}`,
+    interviewPacks: '/api/v1/admin/interviews/packs',
+    interviewPack: (id: string) => `/api/v1/admin/interviews/packs/${id}`,
   },
   coding: {
     problems: '/api/v1/coding/problems',
@@ -111,6 +113,30 @@ export const apiEndpoints = {
     questions: '/api/v1/interview/questions',
     question: (id: string) => `/api/v1/interview/questions/${id}`,
     packs: '/api/v1/interview/packs',
+  },
+  interviews: {
+    hub: '/api/v1/interviews/hub',
+    pack: (slug: string) => `/api/v1/interviews/packs/${slug}`,
+    sessions: '/api/v1/interviews/sessions',
+    session: (id: string) => `/api/v1/interviews/sessions/${id}`,
+    question: (sessionId: string, number: number) =>
+      `/api/v1/interviews/sessions/${sessionId}/questions/${number}`,
+    notes: (sessionId: string, number: number) =>
+      `/api/v1/interviews/sessions/${sessionId}/questions/${number}/notes`,
+    reveal: (sessionId: string, number: number) =>
+      `/api/v1/interviews/sessions/${sessionId}/questions/${number}/reveal`,
+    review: (sessionId: string, number: number) =>
+      `/api/v1/interviews/sessions/${sessionId}/questions/${number}/review`,
+    complete: (sessionId: string) => `/api/v1/interviews/sessions/${sessionId}/complete`,
+    abandon: (sessionId: string) => `/api/v1/interviews/sessions/${sessionId}/abandon`,
+    results: (sessionId: string) => `/api/v1/interviews/sessions/${sessionId}/results`,
+    history: '/api/v1/interviews/history',
+    progress: '/api/v1/interviews/progress',
+    reviewQueue: '/api/v1/interviews/review',
+    markReviewed: (questionId: string) =>
+      `/api/v1/interviews/review/${questionId}/mark-reviewed`,
+    companyPrep: '/api/v1/interviews/company-prep',
+    companyPrepDetail: (slug: string) => `/api/v1/interviews/company-prep/${slug}`,
   },
   learn: {
     practiceHub: '/api/v1/practice-hub',

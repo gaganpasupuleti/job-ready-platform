@@ -20,6 +20,12 @@ from app.models.interview import (
     InterviewQuestion,
     JobListing,
 )
+from app.models.interview_session import (
+    InterviewQuestionNote,
+    InterviewQuestionReview,
+    InterviewSession,
+    InterviewSessionQuestion,
+)
 from app.models.learn import (
     Course,
     CourseLesson,

@@ -50,3 +50,42 @@ class ContentType(StrEnum):
     LESSON = "lesson"
     PRACTICE_PATH = "practice_path"
     PROJECT = "project"
+    INTERVIEW_PACK = "interview_pack"
+
+
+class InterviewSessionMode(StrEnum):
+    STUDY = "study"
+    MOCK = "mock"
+    RAPID_REVIEW = "rapid_review"
+
+
+class InterviewSessionSource(StrEnum):
+    PACK = "pack"
+    CUSTOM_FILTER = "custom_filter"
+    RETRY_REVIEW = "retry_review"
+
+
+class InterviewSessionStatus(StrEnum):
+    ACTIVE = "active"
+    COMPLETED = "completed"
+    ABANDONED = "abandoned"
+
+
+class InterviewSessionQuestionStatus(StrEnum):
+    UNSEEN = "unseen"
+    VIEWED = "viewed"
+    REVIEWED = "reviewed"
+    COMPLETED = "completed"
+
+
+class InterviewConfidence(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
+class InterviewSelfRating(StrEnum):
+    NEEDS_REVIEW = "needs_review"
+    PARTIAL = "partial"
+    GOOD = "good"
+    STRONG = "strong"

@@ -89,10 +89,21 @@ Use this before tagging a browser-tested release. Prefer Playwright where automa
 - [ ] Bookmark MCQ / coding / SQL / prompt
 - [ ] Appears on `/bookmarks`; navigate back; unbookmark persists after refresh
 
-## Interviews (smoke only — Build 8 not started)
+## Interviews (Build 8)
 
-- [ ] `/interviews` loads approved questions / empty state
-- [ ] Expand shows expected answer and key points
+- [ ] Hub loads with packs / continue / needs review
+- [ ] Start Study from pack; notes; key points; confidence; self-rating; complete
+- [ ] Results show Self-Review Summary (no fake Interview Score / AI rating)
+- [ ] Mock hides expected answer until Reveal
+- [ ] Needs Review queue + retry review session
+- [ ] History and Progress aggregate live data
+- [ ] Company Prep shows disclaimer; no fake “asked by company” claims
+- [ ] Admin packs: student blocked; admin can list/validate
+- [ ] Dashboard interview card uses live progress
+
+## Interviews (legacy note)
+
+Build 8 replaces the accordion-only page.
 
 ## Placeholders
 

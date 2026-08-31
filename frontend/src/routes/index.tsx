@@ -30,7 +30,19 @@ import { SqlPage } from '@/pages/practice/SqlPage'
 import { SqlProblemPage } from '@/pages/practice/SqlProblemPage'
 import { SqlSubmissionDetailPage } from '@/pages/sql/SqlSubmissionDetailPage'
 import { SqlSubmissionsPage } from '@/pages/sql/SqlSubmissionsPage'
-import { InterviewsPage } from '@/pages/interviews/InterviewsPage'
+import { InterviewHubPage } from '@/pages/interviews/InterviewHubPage'
+import { InterviewQuestionsPage } from '@/pages/interviews/InterviewQuestionsPage'
+import { InterviewPacksPage } from '@/pages/interviews/InterviewPacksPage'
+import { InterviewPackDetailPage } from '@/pages/interviews/InterviewPackDetailPage'
+import { InterviewSessionNewPage } from '@/pages/interviews/InterviewSessionNewPage'
+import { InterviewSessionPage } from '@/pages/interviews/InterviewSessionPage'
+import { InterviewResultsPage } from '@/pages/interviews/InterviewResultsPage'
+import { InterviewHistoryPage } from '@/pages/interviews/InterviewHistoryPage'
+import { InterviewReviewPage } from '@/pages/interviews/InterviewReviewPage'
+import { InterviewProgressPage } from '@/pages/interviews/InterviewProgressPage'
+import { CompanyPrepPage } from '@/pages/interviews/CompanyPrepPage'
+import { CompanyPrepDetailPage } from '@/pages/interviews/CompanyPrepDetailPage'
+import { AdminInterviewPacksPage } from '@/pages/admin/AdminInterviewPacksPage'
 import { PracticeHubPage } from '@/pages/practice/PracticeHubPage'
 import { PracticePathPage } from '@/pages/practice/PracticePathPage'
 import { ProjectsPage } from '@/pages/practice/ProjectsPage'
@@ -71,6 +83,7 @@ const placeholderRoutes = moduleRoutes.filter(
       'practice/sql',
       'bookmarks',
       'interviews',
+      'company-prep',
       'ai',
       'ai/genai',
       'ai/prompt-engineering',
@@ -133,7 +146,18 @@ export function AppRoutes() {
         <Route path="sql/submissions" element={<SqlSubmissionsPage />} />
         <Route path="sql/submissions/:submissionId" element={<SqlSubmissionDetailPage />} />
         <Route path="bookmarks" element={<BookmarksPage />} />
-        <Route path="interviews" element={<InterviewsPage />} />
+        <Route path="interviews" element={<InterviewHubPage />} />
+        <Route path="interviews/questions" element={<InterviewQuestionsPage />} />
+        <Route path="interviews/packs" element={<InterviewPacksPage />} />
+        <Route path="interviews/packs/:slug" element={<InterviewPackDetailPage />} />
+        <Route path="interviews/session/new" element={<InterviewSessionNewPage />} />
+        <Route path="interviews/sessions/:sessionId" element={<InterviewSessionPage />} />
+        <Route path="interviews/sessions/:sessionId/results" element={<InterviewResultsPage />} />
+        <Route path="interviews/history" element={<InterviewHistoryPage />} />
+        <Route path="interviews/review" element={<InterviewReviewPage />} />
+        <Route path="interviews/progress" element={<InterviewProgressPage />} />
+        <Route path="company-prep" element={<CompanyPrepPage />} />
+        <Route path="company-prep/:slug" element={<CompanyPrepDetailPage />} />
         <Route path="ai" element={<AiHomePage />} />
         <Route path="ai/genai" element={<AiTrackPage track="genai" />} />
         <Route path="ai/rag" element={<AiTrackPage track="rag" />} />
@@ -419,6 +443,22 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminScenarioFormPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/interviews"
+          element={
+            <AdminRoute>
+              <AdminInterviewPacksPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/interviews/packs"
+          element={
+            <AdminRoute>
+              <AdminInterviewPacksPage />
             </AdminRoute>
           }
         />
