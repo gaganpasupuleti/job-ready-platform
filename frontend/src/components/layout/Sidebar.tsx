@@ -97,6 +97,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   { label: 'Courses', path: '/admin/courses' },
                   { label: 'Projects', path: '/admin/projects' },
                   { label: 'Interview Packs', path: '/admin/interviews' },
+                  { label: 'Jobs', path: '/admin/jobs' },
                 ].map((item) => (
                   <li key={item.path}>
                     <NavLink

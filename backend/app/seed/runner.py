@@ -477,14 +477,32 @@ async def ensure_content_factory_catalog() -> None:
         demo_job_slug = "acme-data-engineer"
         job = await session.execute(select(JobListing).where(JobListing.slug == demo_job_slug))
         if job.scalar_one_or_none() is None:
+            from datetime import UTC, datetime
+
+            from app.services.job_normalization import job_content_hash, normalize_title
+
             company = (
                 await session.execute(select(Company).where(Company.slug == slugify("Acme Labs")))
             ).scalar_one_or_none()
+            now = datetime.now(UTC)
+            title = "Acme Data Engineer"
+            norm = normalize_title(title)
             session.add(
                 JobListing(
                     slug=demo_job_slug,
-                    title="Acme Data Engineer",
+                    title=title,
+                    normalized_title=norm,
                     company_id=company.id if company else None,
+                    company_name_raw="Acme Labs" if not company else None,
+                    description="Data engineering role at Acme Labs (content factory catalog).",
+                    first_seen_at=now,
+                    last_seen_at=now,
+                    content_hash=job_content_hash(
+                        normalized_title=norm,
+                        company="Acme Labs",
+                        location=None,
+                        description_snippet="Data engineering role at Acme Labs",
+                    ),
                     is_active=True,
                 )
             )
@@ -509,6 +527,12 @@ async def seed_build8_content_entry() -> None:
     await _seed()
 
 
+async def seed_build9_jobs_entry() -> None:
+    from app.seed.build9_seed import seed_build9_jobs as _seed
+
+    await _seed()
+
+
 async def _run() -> None:
     await seed_all()
     await ensure_content_factory_catalog()
@@ -518,4 +542,5 @@ async def _run() -> None:
     await seed_build6_content_entry()
     await seed_build7_content_entry()
     await seed_build8_content_entry()
+    await seed_build9_jobs_entry()
     await engine.dispose()

@@ -18,7 +18,20 @@ from app.models.interview import (
     InterviewAnswerPoint,
     InterviewPack,
     InterviewQuestion,
+)
+from app.models.job import (
+    ApplicationStatusHistory,
+    Job,
+    JobApplication,
+    JobIngestionError,
+    JobIngestionRun,
     JobListing,
+    JobLocation,
+    JobRoleMap,
+    JobSkill,
+    JobSource,
+    SavedJob,
+    UserJobPreference,
 )
 from app.models.interview_session import (
     InterviewQuestionNote,
@@ -91,6 +104,10 @@ __all__ = [
     "InterviewAnswerPoint",
     "InterviewPack",
     "JobListing",
+    "Job",
+    "JobApplication",
+    "SavedJob",
+    "JobSource",
     "ContentGenerationBatch",
     "ContentGenerationCandidate",
     "PracticePath",

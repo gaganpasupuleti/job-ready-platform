@@ -7,6 +7,7 @@ import { StatCard } from '@/features/dashboard/StatCard'
 import { fetchAiHome } from '@/services/aiService'
 import { fetchCodingProgress } from '@/services/codingService'
 import { fetchInterviewProgress } from '@/services/interviewService'
+import { fetchJobsSummary } from '@/services/jobService'
 import { fetchContinueLearning, fetchProjects } from '@/services/learnService'
 import { fetchSqlProgress } from '@/services/sqlService'
 import type { DashboardCard } from '@/types'
@@ -23,6 +24,10 @@ export function DashboardPage() {
   const { data: interview } = useQuery({
     queryKey: ['interview-progress'],
     queryFn: fetchInterviewProgress,
+  })
+  const { data: jobsSummary } = useQuery({
+    queryKey: ['jobs-summary'],
+    queryFn: fetchJobsSummary,
   })
 
   const cards: DashboardCard[] = [
@@ -99,6 +104,38 @@ export function DashboardPage() {
           title="No recent learning activity"
           description="Start a course, project, or practice path to see it here."
         />
+      )}
+
+      {jobsSummary && (
+        <Card>
+          <CardHeader
+            title="Job search"
+            description={`${jobsSummary.saved_count} saved · ${jobsSummary.applications_total} applications · ${jobsSummary.follow_ups_due} follow-ups due`}
+            action={
+              <Link to="/jobs" className="text-sm text-[var(--color-accent)] hover:underline">
+                Open jobs hub
+              </Link>
+            }
+          />
+          <div className="grid gap-3 sm:grid-cols-4 text-sm">
+            <div>
+              <p className="text-xs text-[var(--color-text-muted)]">Applied</p>
+              <p className="font-semibold text-[var(--color-text)]">{jobsSummary.applied_count}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[var(--color-text-muted)]">Interviews</p>
+              <p className="font-semibold text-[var(--color-text)]">{jobsSummary.interview_count}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[var(--color-text-muted)]">Offers</p>
+              <p className="font-semibold text-[var(--color-text)]">{jobsSummary.offer_count}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[var(--color-text-muted)]">Overdue follow-ups</p>
+              <p className="font-semibold text-[var(--color-text)]">{jobsSummary.follow_ups_overdue}</p>
+            </div>
+          </div>
+        </Card>
       )}
 
       {interview && (interview.questions_reviewed > 0 || interview.needs_review > 0) && (

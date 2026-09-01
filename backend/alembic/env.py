@@ -53,8 +53,8 @@ from app.models.interview import (  # noqa: F401
     InterviewQuestionJob,
     InterviewQuestionRole,
     InterviewQuestionSkill,
-    JobListing,
 )
+from app.models.job import Job, JobApplication, JobListing, JobSource  # noqa: F401
 from app.models.prompt import (  # noqa: F401
     PromptChallenge,
     PromptChallengeCase,

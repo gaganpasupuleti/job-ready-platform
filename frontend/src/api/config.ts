@@ -76,6 +76,16 @@ export const apiEndpoints = {
     projectTask: (id: string) => `/api/v1/admin/project-tasks/${id}`,
     interviewPacks: '/api/v1/admin/interviews/packs',
     interviewPack: (id: string) => `/api/v1/admin/interviews/packs/${id}`,
+    jobs: {
+      list: '/api/v1/admin/jobs',
+      detail: (id: string) => `/api/v1/admin/jobs/${id}`,
+      archive: (id: string) => `/api/v1/admin/jobs/${id}/archive`,
+      sources: '/api/v1/admin/jobs/sources',
+      imports: '/api/v1/admin/jobs/imports',
+      importErrors: (runId: string) => `/api/v1/admin/jobs/imports/${runId}/errors`,
+      importValidate: '/api/v1/admin/jobs/imports/validate',
+      importConfirm: '/api/v1/admin/jobs/imports/confirm',
+    },
   },
   coding: {
     problems: '/api/v1/coding/problems',
@@ -183,6 +193,23 @@ export const apiEndpoints = {
     scenario: (slug: string) => `/api/v1/scenarios/${slug}`,
     scenarioSubmit: (slug: string) => `/api/v1/scenarios/${slug}/submit`,
     submission: (id: string) => `/api/v1/scenario-submissions/${id}`,
+  },
+  jobs: {
+    list: '/api/v1/jobs',
+    summary: '/api/v1/jobs/summary',
+    saved: '/api/v1/jobs/saved',
+    recommended: '/api/v1/jobs/recommended',
+    detail: (idOrSlug: string) => `/api/v1/jobs/${idOrSlug}`,
+    save: (id: string) => `/api/v1/jobs/${id}/save`,
+    apply: (id: string) => `/api/v1/jobs/${id}/apply`,
+    prepare: (id: string) => `/api/v1/jobs/${id}/prepare`,
+    preferences: '/api/v1/jobs/preferences',
+  },
+  applications: {
+    list: '/api/v1/applications',
+    detail: (id: string) => `/api/v1/applications/${id}`,
+    status: (id: string) => `/api/v1/applications/${id}/status`,
+    history: (id: string) => `/api/v1/applications/${id}/history`,
   },
 } as const
 

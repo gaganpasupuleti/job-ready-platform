@@ -40,7 +40,8 @@ Creates/updates:
 
 **Safety:** seed refuses production unless `E2E_ALLOW_SEED=1`.
 
-Interview Playwright specs: `frontend/e2e/interview.spec.ts` (hub, study, mock reveal, company prep, admin block).
+Interview Playwright specs: `frontend/e2e/interview.spec.ts`  
+Jobs Playwright specs: `frontend/e2e/jobs.spec.ts` (browse, save, apply, recommended, admin block).
 
 ## Run stack
 

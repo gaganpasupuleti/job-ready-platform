@@ -34,18 +34,7 @@ from app.models.interview_enums import (
 )
 
 
-class JobListing(Base, UUIDPrimaryKeyMixin, TimestampMixin):
-    """Catalog stub for future Jobs Portal — not the full jobs product."""
-
-    __tablename__ = "jobs"
-
-    slug: Mapped[str] = mapped_column(String(180), unique=True, index=True, nullable=False)
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-    company_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("companies.id"), nullable=True
-    )
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-
+from app.models.job import Job, JobListing  # JobListing alias for content factory
 
 class InterviewQuestion(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "interview_questions"

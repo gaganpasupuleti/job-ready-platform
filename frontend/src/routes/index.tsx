@@ -43,6 +43,13 @@ import { InterviewProgressPage } from '@/pages/interviews/InterviewProgressPage'
 import { CompanyPrepPage } from '@/pages/interviews/CompanyPrepPage'
 import { CompanyPrepDetailPage } from '@/pages/interviews/CompanyPrepDetailPage'
 import { AdminInterviewPacksPage } from '@/pages/admin/AdminInterviewPacksPage'
+import { AdminJobsPage } from '@/pages/admin/AdminJobsPage'
+import { JobsApplicationsPage } from '@/pages/jobs/JobsApplicationsPage'
+import { JobApplicationDetailPage } from '@/pages/jobs/JobApplicationDetailPage'
+import { JobDetailPage } from '@/pages/jobs/JobDetailPage'
+import { JobsHubPage } from '@/pages/jobs/JobsHubPage'
+import { JobsRecommendedPage } from '@/pages/jobs/JobsRecommendedPage'
+import { JobsSavedPage } from '@/pages/jobs/JobsSavedPage'
 import { PracticeHubPage } from '@/pages/practice/PracticeHubPage'
 import { PracticePathPage } from '@/pages/practice/PracticePathPage'
 import { ProjectsPage } from '@/pages/practice/ProjectsPage'
@@ -91,6 +98,10 @@ const placeholderRoutes = moduleRoutes.filter(
       'cloud',
       'devops',
       'cybersecurity',
+      'jobs',
+      'jobs/recommended',
+      'jobs/saved',
+      'jobs/applications',
     ].includes(route.path),
 )
 
@@ -158,6 +169,12 @@ export function AppRoutes() {
         <Route path="interviews/progress" element={<InterviewProgressPage />} />
         <Route path="company-prep" element={<CompanyPrepPage />} />
         <Route path="company-prep/:slug" element={<CompanyPrepDetailPage />} />
+        <Route path="jobs" element={<JobsHubPage />} />
+        <Route path="jobs/recommended" element={<JobsRecommendedPage />} />
+        <Route path="jobs/saved" element={<JobsSavedPage />} />
+        <Route path="jobs/applications" element={<JobsApplicationsPage />} />
+        <Route path="jobs/applications/:applicationId" element={<JobApplicationDetailPage />} />
+        <Route path="jobs/:jobId" element={<JobDetailPage />} />
         <Route path="ai" element={<AiHomePage />} />
         <Route path="ai/genai" element={<AiTrackPage track="genai" />} />
         <Route path="ai/rag" element={<AiTrackPage track="rag" />} />
@@ -459,6 +476,14 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminInterviewPacksPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/jobs"
+          element={
+            <AdminRoute>
+              <AdminJobsPage />
             </AdminRoute>
           }
         />

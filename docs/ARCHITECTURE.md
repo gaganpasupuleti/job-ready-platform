@@ -29,7 +29,7 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 - **Admin API:** `/api/v1/admin/sql/*`
 - Docs: [SQL_PRACTICE.md](SQL_PRACTICE.md)
 
-## Interview Practice Engine (Build 8)
+## Interview Practice Engine (Build 8) — detail
 
 - **Content (reused):** `interview_questions`, `interview_answer_points`, packs/mappings, Content Factory approval
 - **Session state:** `interview_sessions`, `interview_session_questions`, `interview_question_notes`, `interview_question_reviews` (`011_build8`)
@@ -38,6 +38,15 @@ Job Ready Platform is a modular monolith designed for independent domain expansi
 - **Student API:** `/api/v1/interview/*` (content), `/api/v1/interviews/*` (sessions/hub/company-prep)
 - **Admin API:** `/api/v1/admin/interviews/packs`
 - Docs: [INTERVIEW_PRACTICE.md](INTERVIEW_PRACTICE.md)
+
+## Jobs Portal (Build 9)
+
+- **Tables:** expanded `jobs`, `job_sources`, `job_skills`, `job_role_mappings`, `saved_jobs`, `job_applications`, ingestion runs/errors
+- **Reuse:** `companies`, `skills`, `job_roles`, `users`
+- **No** readiness score or match % (Build 10)
+- Student API: `/api/v1/jobs`, `/api/v1/applications`
+- Admin: `/api/v1/admin/jobs` (CSV import validate → confirm)
+- Docs: [JOBS.md](JOBS.md)
 
 ## Coding Practice Engine (Build 3 / 3.1)
 

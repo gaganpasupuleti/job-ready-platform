@@ -42,10 +42,10 @@ Planned modules for the Job Ready Platform. Build 1 enables routing and API cata
 
 | Module | Route | Status |
 |--------|-------|--------|
-| Jobs Portal | `/jobs` | Placeholder |
-| Recommended Jobs | `/jobs/recommended` | Placeholder |
-| Saved Jobs | `/jobs/saved` | Placeholder |
-| Application Tracking | `/jobs/applications` | Placeholder |
+| Jobs Portal | `/jobs` | Live (Build 9) |
+| Recommended Jobs | `/jobs/recommended` | Live — relevant jobs, no match % |
+| Saved Jobs | `/jobs/saved` | Live |
+| Application Tracking | `/jobs/applications` | Live |
 
 ## Progress
 

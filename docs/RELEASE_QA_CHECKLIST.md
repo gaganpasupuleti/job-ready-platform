@@ -101,13 +101,25 @@ Use this before tagging a browser-tested release. Prefer Playwright where automa
 - [ ] Admin packs: student blocked; admin can list/validate
 - [ ] Dashboard interview card uses live progress
 
+## Jobs (Build 9)
+
+- [ ] Browse, search, filter jobs
+- [ ] Job detail: save, mark applied, practice links, external apply (https only)
+- [ ] Saved jobs page; unsave works
+- [ ] Applications board + detail; status change + timeline
+- [ ] Follow-up date visible; no email automation
+- [ ] Recommended shows “Relevant Jobs” — no % match
+- [ ] Admin jobs: list, create, archive, CSV validate → confirm import
+- [ ] Student blocked from `/admin/jobs`
+- [ ] Dashboard jobs summary card live
+
 ## Interviews (legacy note)
 
 Build 8 replaces the accordion-only page.
 
 ## Placeholders
 
-- [ ] `/company-prep`, `/assessments`, `/contests`, `/jobs*`, `/readiness`, `/mistakes`, `/leaderboard` show clean placeholders (no 404)
+- [ ] `/company-prep`, `/assessments`, `/contests`, `/readiness`, `/mistakes`, `/leaderboard` show clean placeholders (no 404)
 
 ## Admin
 
