@@ -75,6 +75,21 @@ class QuestionRepository(BaseRepository):
         result = await self.db.execute(stmt)
         return list(result.scalars().unique().all())
 
+    async def find_by_ids(self, question_ids: list[UUID]) -> list[Question]:
+        if not question_ids:
+            return []
+        unique_ids = list(dict.fromkeys(question_ids))
+        stmt = (
+            select(Question)
+            .where(Question.id.in_(unique_ids), Question.is_active.is_(True))
+            .options(selectinload(Question.options))
+        )
+        result = await self.db.execute(stmt)
+        questions = list(result.scalars().unique().all())
+        order = {qid: idx for idx, qid in enumerate(unique_ids)}
+        questions.sort(key=lambda q: order.get(q.id, 999))
+        return questions
+
     async def list_admin(
         self,
         *,

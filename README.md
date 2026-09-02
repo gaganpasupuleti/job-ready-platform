@@ -169,3 +169,8 @@ npm run build
 ## License
 
 Proprietary — Job Ready Platform
+
+
+
+need to add the Csat Platform in the end 
+and the mapping 

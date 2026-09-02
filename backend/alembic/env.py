@@ -95,6 +95,11 @@ from app.models.learn import (  # noqa: F401
     UserProjectProgress,
     UserProjectTaskProgress,
 )
+from app.models.readiness import (  # noqa: F401
+    MistakeItem,
+    RoleSkillRequirement,
+    UserRoleReadinessSnapshot,
+)
 
 config = context.config
 config.set_main_option("sqlalchemy.url", sqlalchemy_async_url(settings.database_url))

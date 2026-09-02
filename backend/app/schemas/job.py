@@ -51,6 +51,9 @@ class JobCard(BaseModel):
     is_remote: bool | None = None
     top_skills: list[str] = []
     is_saved: bool = False
+    requirement_coverage: float | None = None
+    has_sufficient_mapping: bool | None = None
+    missing_skill_count: int | None = None
 
 
 class JobListResponse(BaseModel):
@@ -102,6 +105,7 @@ class JobDetail(BaseModel):
     practice_links: list[JobPracticeLink] = []
     interview_prep_url: str | None = None
     company_prep_url: str | None = None
+    match: dict[str, Any] | None = None
 
 
 class SavedJobItem(BaseModel):

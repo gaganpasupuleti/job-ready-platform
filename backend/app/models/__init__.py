@@ -73,6 +73,16 @@ from app.models.sql_practice import (
     SqlProblemTable,
     SqlSubmission,
 )
+from app.models.readiness import MistakeItem, RoleSkillRequirement, UserRoleReadinessSnapshot
+from app.models.readiness_enums import (
+    EvidenceSourceType,
+    EvidenceStrength,
+    MistakeSourceType,
+    MistakeStatus,
+    RoleSkillImportance,
+    RoleSkillSource,
+    SkillReadinessStatus,
+)
 from app.models.tagging import Company, JobRole, QuestionCompany, QuestionRole, QuestionSkill, Skill
 from app.models.taxonomy import Category, Domain, Subtopic, Topic
 from app.models.user import User
@@ -139,4 +149,11 @@ __all__ = [
     "ScenarioSubmission",
     "ScenarioStepAnswer",
     "ScenarioProgress",
+    "RoleSkillRequirement",
+    "MistakeItem",
+    "UserRoleReadinessSnapshot",
+    "RoleSkillImportance",
+    "MistakeSourceType",
+    "MistakeStatus",
+    "EvidenceStrength",
 ]

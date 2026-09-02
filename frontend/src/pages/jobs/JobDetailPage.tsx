@@ -171,6 +171,38 @@ export function JobDetailPage() {
         </div>
 
         <div className="space-y-4">
+          {data.match && (
+            <Card>
+              <CardHeader
+                title="Your Requirement Coverage"
+                description="Requirement coverage compares mapped job skills with your recorded practice evidence. It is not a hiring probability."
+              />
+              {data.match.coverage != null ? (
+                <p className="text-3xl font-semibold">{Math.round(data.match.coverage)}%</p>
+              ) : (
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  {data.match.message ?? 'Complete practice to compare your evidence.'}
+                </p>
+              )}
+              {data.match.required?.length > 0 && (
+                <ul className="mt-3 space-y-1 text-sm">
+                  {data.match.required.map((s) => (
+                    <li key={s.skill} className="flex justify-between">
+                      <span>
+                        {s.status === 'covered' ? '✓' : s.status === 'missing' ? '○' : '△'} {s.skill}
+                      </span>
+                      <span className="text-[var(--color-text-muted)]">{Math.round(s.readiness)}%</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {data.match.required?.some((s) => s.status !== 'covered') && (
+                <Link to="/practice" className="mt-3 inline-block text-sm text-[var(--color-accent)] hover:underline">
+                  Practice missing skills
+                </Link>
+              )}
+            </Card>
+          )}
           {data.skills.length > 0 && (
             <Card>
               <CardHeader title="Skills" />

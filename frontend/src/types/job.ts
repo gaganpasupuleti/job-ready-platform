@@ -48,6 +48,9 @@ export interface JobCard {
   is_remote: boolean | null
   top_skills: string[]
   is_saved: boolean
+  requirement_coverage?: number | null
+  has_sufficient_mapping?: boolean | null
+  missing_skill_count?: number | null
 }
 
 export interface JobListResponse {
@@ -99,6 +102,7 @@ export interface JobDetail {
   practice_links: JobPracticeLink[]
   interview_prep_url: string | null
   company_prep_url: string | null
+  match?: import('@/types/readiness').JobMatch | null
 }
 
 export interface SavedJobItem {

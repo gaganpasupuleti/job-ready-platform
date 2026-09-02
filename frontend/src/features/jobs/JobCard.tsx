@@ -69,6 +69,18 @@ export function JobCardView({
         )}
       </div>
 
+      {job.requirement_coverage != null && (
+        <p className="text-sm font-medium text-[var(--color-accent)]">
+          {Math.round(job.requirement_coverage)}% requirement coverage
+          {job.missing_skill_count != null && job.missing_skill_count > 0
+            ? ` · ${job.missing_skill_count} skills to develop`
+            : ''}
+        </p>
+      )}
+      {job.has_sufficient_mapping === false && (
+        <p className="text-xs text-[var(--color-text-muted)]">Not enough mapped requirements</p>
+      )}
+
       {job.top_skills.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {job.top_skills.slice(0, 5).map((skill) => (

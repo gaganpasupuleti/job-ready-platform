@@ -2,7 +2,7 @@ import asyncio
 import re
 from uuid import uuid4
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.core.security import hash_password
 from app.db.session import AsyncSessionLocal, engine
@@ -322,78 +322,167 @@ def _expand_questions() -> list[dict]:
 
 async def seed_all() -> None:
     async with AsyncSessionLocal() as session:
-        existing = await session.execute(select(User).where(User.email == "admin@jobready.dev"))
-        if existing.scalar_one_or_none():
-            print("Seed data already exists. Skipping.")
+        base_domain_slugs = {domain_data["slug"] for domain_data in TAXONOMY}
+        existing_base = set(
+            (
+                await session.execute(
+                    select(Domain.slug).where(Domain.slug.in_(base_domain_slugs))
+                )
+            ).scalars().all()
+        )
+        if existing_base == base_domain_slugs:
+            print("Base seed data already exists. Skipping.")
             return
 
-        admin = User(
-            email="admin@jobready.dev",
-            username="admin",
-            full_name="Platform Admin",
-            password_hash=hash_password("Admin123!"),
-            role=UserRole.ADMIN,
-            is_active=True,
-        )
-        session.add(admin)
+        existing_admin = (
+            await session.execute(select(User).where(User.email == "admin@jobready.dev"))
+        ).scalar_one_or_none()
+        admin = existing_admin
+        if admin is None:
+            admin = User(
+                email="admin@jobready.dev",
+                username="admin",
+                full_name="Platform Admin",
+                password_hash=hash_password("Admin123!"),
+                role=UserRole.ADMIN,
+                is_active=True,
+            )
+            session.add(admin)
+            await session.flush()
 
         domain_map: dict[str, Domain] = {}
         category_map: dict[str, Category] = {}
         topic_map: dict[str, Topic] = {}
 
         for domain_data in TAXONOMY:
-            domain = Domain(
-                name=domain_data["name"],
-                slug=domain_data["slug"],
-                description=f"{domain_data['name']} domain",
-                is_active=True,
-            )
-            session.add(domain)
-            await session.flush()
-            domain_map[domain.slug] = domain
-            for category_data in domain_data["categories"]:
-                category = Category(
-                    domain_id=domain.id,
-                    name=category_data["name"],
-                    slug=category_data["slug"],
+            domain = (
+                await session.execute(select(Domain).where(Domain.slug == domain_data["slug"]))
+            ).scalar_one_or_none()
+            if domain is None:
+                domain = Domain(
+                    name=domain_data["name"],
+                    slug=domain_data["slug"],
+                    description=f"{domain_data['name']} domain",
                     is_active=True,
                 )
-                session.add(category)
+                session.add(domain)
                 await session.flush()
-                category_map[f"{domain.slug}:{category.slug}"] = category
-                for topic_data in category_data["topics"]:
-                    topic = Topic(
-                        category_id=category.id,
-                        name=topic_data["name"],
-                        slug=topic_data["slug"],
+            domain_map[domain.slug] = domain
+            for category_data in domain_data["categories"]:
+                category_key = f"{domain.slug}:{category_data['slug']}"
+                category = (
+                    await session.execute(
+                        select(Category).where(
+                            Category.domain_id == domain.id,
+                            Category.slug == category_data["slug"],
+                        )
+                    )
+                ).scalar_one_or_none()
+                if category is None:
+                    category = Category(
+                        domain_id=domain.id,
+                        name=category_data["name"],
+                        slug=category_data["slug"],
                         is_active=True,
                     )
-                    session.add(topic)
+                    session.add(category)
                     await session.flush()
-                    topic_map[f"{domain.slug}:{category.slug}:{topic.slug}"] = topic
+                category_map[category_key] = category
+                for topic_data in category_data["topics"]:
+                    topic_key = f"{domain.slug}:{category.slug}:{topic_data['slug']}"
+                    topic = (
+                        await session.execute(
+                            select(Topic).where(
+                                Topic.category_id == category.id,
+                                Topic.slug == topic_data["slug"],
+                            )
+                        )
+                    ).scalar_one_or_none()
+                    if topic is None:
+                        topic = Topic(
+                            category_id=category.id,
+                            name=topic_data["name"],
+                            slug=topic_data["slug"],
+                            is_active=True,
+                        )
+                        session.add(topic)
+                        await session.flush()
+                    topic_map[topic_key] = topic
 
         skill_map: dict[str, Skill] = {}
         for skill_name in SKILLS:
-            skill = Skill(name=skill_name, slug=slugify(skill_name))
-            session.add(skill)
-            await session.flush()
+            skill_slug = slugify(skill_name)
+            skill = (
+                await session.execute(select(Skill).where(Skill.slug == skill_slug))
+            ).scalar_one_or_none()
+            if skill is None:
+                skill = Skill(name=skill_name, slug=skill_slug)
+                session.add(skill)
+                await session.flush()
             skill_map[skill_name] = skill
 
         role_map: dict[str, JobRole] = {}
         for role_name in JOB_ROLES:
-            role = JobRole(name=role_name, slug=slugify(role_name))
-            session.add(role)
-            await session.flush()
+            role_slug = slugify(role_name)
+            role = (
+                await session.execute(select(JobRole).where(JobRole.slug == role_slug))
+            ).scalar_one_or_none()
+            if role is None:
+                role = JobRole(name=role_name, slug=role_slug)
+                session.add(role)
+                await session.flush()
             role_map[role_name] = role
 
         for company_name in COMPANIES:
-            session.add(Company(name=company_name, slug=slugify(company_name)))
+            company_slug = slugify(company_name)
+            existing_company = (
+                await session.execute(select(Company).where(Company.slug == company_slug))
+            ).scalar_one_or_none()
+            if existing_company is None:
+                session.add(Company(name=company_name, slug=company_slug))
         await session.flush()
 
         for item in _expand_questions():
-            domain = domain_map[item["domain"]]
-            category = category_map[f"{item['domain']}:{item['category']}"]
-            topic = topic_map[f"{item['domain']}:{item['category']}:{item['topic']}"]
+            topic_key = f"{item['domain']}:{item['category']}:{item['topic']}"
+            if topic_key in topic_map:
+                domain = domain_map[item["domain"]]
+                category = category_map[f"{item['domain']}:{item['category']}"]
+                topic = topic_map[topic_key]
+            else:
+                domain = (
+                    await session.execute(select(Domain).where(Domain.slug == item["domain"]))
+                ).scalar_one_or_none()
+                if domain is None:
+                    continue
+                category = (
+                    await session.execute(
+                        select(Category).where(
+                            Category.domain_id == domain.id,
+                            Category.slug == item["category"],
+                        )
+                    )
+                ).scalar_one_or_none()
+                if category is None:
+                    continue
+                topic = (
+                    await session.execute(
+                        select(Topic).where(
+                            Topic.category_id == category.id,
+                            Topic.slug == item["topic"],
+                        )
+                    )
+                ).scalar_one_or_none()
+                if topic is None:
+                    continue
+            existing_question = (
+                await session.execute(
+                    select(func.count())
+                    .select_from(Question)
+                    .where(Question.topic_id == topic.id)
+                )
+            ).scalar_one()
+            if existing_question:
+                continue
             question = Question(
                 question_type=QuestionType.SINGLE_CHOICE,
                 question_text=item["text"],
@@ -533,6 +622,12 @@ async def seed_build9_jobs_entry() -> None:
     await _seed()
 
 
+async def seed_build10_readiness_entry() -> None:
+    from app.seed.build10_seed import seed_build10 as _seed
+
+    await _seed()
+
+
 async def _run() -> None:
     await seed_all()
     await ensure_content_factory_catalog()
@@ -543,4 +638,5 @@ async def _run() -> None:
     await seed_build7_content_entry()
     await seed_build8_content_entry()
     await seed_build9_jobs_entry()
+    await seed_build10_readiness_entry()
     await engine.dispose()

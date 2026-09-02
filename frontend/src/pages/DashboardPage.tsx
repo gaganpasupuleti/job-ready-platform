@@ -8,6 +8,8 @@ import { fetchAiHome } from '@/services/aiService'
 import { fetchCodingProgress } from '@/services/codingService'
 import { fetchInterviewProgress } from '@/services/interviewService'
 import { fetchJobsSummary } from '@/services/jobService'
+import { fetchReadiness } from '@/services/readinessService'
+import { fetchMistakeSummary } from '@/services/mistakeService'
 import { fetchContinueLearning, fetchProjects } from '@/services/learnService'
 import { fetchSqlProgress } from '@/services/sqlService'
 import type { DashboardCard } from '@/types'
@@ -28,6 +30,11 @@ export function DashboardPage() {
   const { data: jobsSummary } = useQuery({
     queryKey: ['jobs-summary'],
     queryFn: fetchJobsSummary,
+  })
+  const { data: readiness } = useQuery({ queryKey: ['readiness'], queryFn: fetchReadiness })
+  const { data: mistakeSummary } = useQuery({
+    queryKey: ['mistakes-summary'],
+    queryFn: fetchMistakeSummary,
   })
 
   const cards: DashboardCard[] = [
@@ -73,9 +80,46 @@ export function DashboardPage() {
       <div>
         <h1 className="text-lg font-semibold text-[var(--color-text)]">Welcome back</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Continue Learning, coding, SQL, AI, interview, and project stats use live progress. Global
-          readiness is not in this build.
+          Continue learning, practice stats, target role readiness, and recommended next actions.
         </p>
+      </div>
+
+      {(readiness?.recommended_actions?.length ?? 0) > 0 && (
+        <Card>
+          <CardHeader title="Recommended Next" />
+          <Link
+            to={readiness!.recommended_actions[0].href}
+            className="block rounded-md border border-[var(--color-border)] p-3 hover:border-[var(--color-accent)]"
+          >
+            <p className="text-sm font-medium">{readiness!.recommended_actions[0].title}</p>
+            <p className="text-xs text-[var(--color-text-muted)]">
+              {readiness!.recommended_actions[0].reason}
+            </p>
+          </Link>
+        </Card>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Link to="/readiness" className="block">
+          <Card>
+            <CardHeader title="Target Role Readiness" />
+            <p className="text-2xl font-semibold">
+              {readiness?.has_minimum_evidence && readiness.score != null
+                ? `${Math.round(readiness.score)}%`
+                : 'Building profile'}
+            </p>
+            <p className="text-xs text-[var(--color-text-muted)]">
+              {readiness?.target_role?.name ?? 'Set target role in Jobs'}
+            </p>
+          </Card>
+        </Link>
+        <Link to="/mistakes" className="block">
+          <Card>
+            <CardHeader title="Mistakes to Review" />
+            <p className="text-2xl font-semibold">{mistakeSummary?.open_count ?? 0}</p>
+            <p className="text-xs text-[var(--color-text-muted)]">open items</p>
+          </Card>
+        </Link>
       </div>
 
       {continueLoading && <LoadingState label="Loading continue learning" />}

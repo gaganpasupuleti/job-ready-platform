@@ -87,6 +87,41 @@ class PracticeService:
         await self.practice_repo.add_session_questions(session_questions)
         return self._session_detail(session, answered_count=0)
 
+    async def create_retry_session(self, user: User, question_ids: list[UUID]) -> SessionDetailResponse:
+        unique_ids = list(dict.fromkeys(question_ids))[:50]
+        questions = await self.question_repo.find_by_ids(unique_ids)
+        if not questions:
+            raise AppException("No active questions found for the given IDs", status_code=404)
+        if len(questions) < len(unique_ids):
+            raise AppException("Some question IDs are invalid or inactive", status_code=400)
+
+        domain_id = questions[0].domain_id
+        category_id = questions[0].category_id
+        topic_id = questions[0].topic_id
+
+        session = PracticeSession(
+            user_id=user.id,
+            mode=PracticeMode.PRACTICE,
+            domain_id=domain_id,
+            category_id=category_id,
+            topic_id=topic_id,
+            difficulty=None,
+            question_count=len(questions),
+            status=SessionStatus.ACTIVE,
+            unanswered_count=len(questions),
+        )
+        session = await self.practice_repo.create_session(session)
+        session_questions = [
+            PracticeSessionQuestion(
+                session_id=session.id,
+                question_id=question.id,
+                question_number=index + 1,
+            )
+            for index, question in enumerate(questions)
+        ]
+        await self.practice_repo.add_session_questions(session_questions)
+        return self._session_detail(session, answered_count=0)
+
     async def get_session(self, user: User, session_id: UUID) -> SessionDetailResponse:
         session = await self._get_owned_session(user.id, session_id)
         await self._maybe_expire_exam(user, session)

@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.deps import get_current_user
 from app.db.session import get_db
 from app.models.user import User
+from app.schemas.mistake import RetrySessionRequest
 from app.schemas.practice import (
     AnswerRequest,
     AnswerResponse,
@@ -39,6 +40,19 @@ async def create_session(
     db: AsyncSession = Depends(get_db),
 ) -> SessionDetailResponse:
     return await PracticeService(db).create_session(current_user, payload)
+
+
+@router.post("/sessions/retry", response_model=SessionDetailResponse)
+async def create_retry_session(
+    payload: RetrySessionRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> SessionDetailResponse:
+    from uuid import UUID
+
+    return await PracticeService(db).create_retry_session(
+        current_user, [UUID(q) for q in payload.question_ids]
+    )
 
 
 @router.get("/sessions/{session_id}", response_model=SessionDetailResponse)

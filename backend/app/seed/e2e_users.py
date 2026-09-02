@@ -15,6 +15,8 @@ import sys
 from app.db.session import engine
 from app.models.enums import UserRole
 from app.seed.e2e import (
+    E2E_ADMIN_EMAIL,
+    E2E_ADMIN_PASSWORD,
     E2E_STUDENT_EMAIL,
     E2E_STUDENT_PASSWORD,
     E2E_STUDENT_USERNAME,
@@ -25,6 +27,13 @@ from app.seed.e2e import (
 
 
 async def _run(path: str | None) -> dict:
+    await _ensure_user(
+        email=E2E_ADMIN_EMAIL,
+        username="admin",
+        password=E2E_ADMIN_PASSWORD,
+        role=UserRole.ADMIN,
+        full_name="Platform Admin",
+    )
     await _ensure_user(
         email=E2E_STUDENT_EMAIL,
         username=E2E_STUDENT_USERNAME,

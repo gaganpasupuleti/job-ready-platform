@@ -44,12 +44,16 @@ import { CompanyPrepPage } from '@/pages/interviews/CompanyPrepPage'
 import { CompanyPrepDetailPage } from '@/pages/interviews/CompanyPrepDetailPage'
 import { AdminInterviewPacksPage } from '@/pages/admin/AdminInterviewPacksPage'
 import { AdminJobsPage } from '@/pages/admin/AdminJobsPage'
+import { AdminReadinessPage } from '@/pages/admin/AdminReadinessPage'
 import { JobsApplicationsPage } from '@/pages/jobs/JobsApplicationsPage'
 import { JobApplicationDetailPage } from '@/pages/jobs/JobApplicationDetailPage'
 import { JobDetailPage } from '@/pages/jobs/JobDetailPage'
 import { JobsHubPage } from '@/pages/jobs/JobsHubPage'
 import { JobsRecommendedPage } from '@/pages/jobs/JobsRecommendedPage'
 import { JobsSavedPage } from '@/pages/jobs/JobsSavedPage'
+import { ReadinessPage } from '@/pages/readiness/ReadinessPage'
+import { ReadinessSkillsPage } from '@/pages/readiness/ReadinessSkillsPage'
+import { MistakesPage } from '@/pages/mistakes/MistakesPage'
 import { PracticeHubPage } from '@/pages/practice/PracticeHubPage'
 import { PracticePathPage } from '@/pages/practice/PracticePathPage'
 import { ProjectsPage } from '@/pages/practice/ProjectsPage'
@@ -224,6 +228,10 @@ export function AppRoutes() {
         <Route path="scenarios/:slug" element={<ScenarioWorkspacePage />} />
         <Route path="practice/sessions/:sessionId" element={<PracticeSessionPage />} />
         <Route path="practice/sessions/:sessionId/results" element={<PracticeResultsPage />} />
+
+        <Route path="readiness" element={<ReadinessPage />} />
+        <Route path="readiness/skills" element={<ReadinessSkillsPage />} />
+        <Route path="mistakes" element={<MistakesPage />} />
 
         {placeholderRoutes.map((module) => (
           <Route
@@ -484,6 +492,14 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminJobsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/readiness"
+          element={
+            <AdminRoute>
+              <AdminReadinessPage />
             </AdminRoute>
           }
         />

@@ -10,7 +10,10 @@ from app.services.code_execution.mock import MockCodeExecutionService
 
 
 @pytest.fixture(autouse=True)
-def mock_judge0():
+def mock_judge0(monkeypatch):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "judge0_enabled", True)
     app.dependency_overrides[get_code_execution_service] = lambda: MockCodeExecutionService()
     yield
     app.dependency_overrides.pop(get_code_execution_service, None)

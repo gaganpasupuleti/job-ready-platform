@@ -24,7 +24,8 @@ export function JobsRecommendedPage() {
     <div className="space-y-6">
       <PracticeHeader backTo="/jobs" backLabel="Jobs hub" title="Relevant Jobs">
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Roles aligned with your skills and preferences — relevance only, no match percentages.
+          Recommended based on your target role and recorded skill evidence — requirement coverage
+          only, not a hiring probability.
         </p>
       </PracticeHeader>
 

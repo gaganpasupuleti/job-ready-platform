@@ -86,6 +86,9 @@ export const apiEndpoints = {
       importValidate: '/api/v1/admin/jobs/imports/validate',
       importConfirm: '/api/v1/admin/jobs/imports/confirm',
     },
+    readiness: {
+      roles: '/api/v1/admin/readiness/roles',
+    },
   },
   coding: {
     problems: '/api/v1/coding/problems',
@@ -204,12 +207,28 @@ export const apiEndpoints = {
     apply: (id: string) => `/api/v1/jobs/${id}/apply`,
     prepare: (id: string) => `/api/v1/jobs/${id}/prepare`,
     preferences: '/api/v1/jobs/preferences',
+    match: (id: string) => `/api/v1/jobs/${id}/match`,
   },
   applications: {
     list: '/api/v1/applications',
     detail: (id: string) => `/api/v1/applications/${id}`,
     status: (id: string) => `/api/v1/applications/${id}/status`,
     history: (id: string) => `/api/v1/applications/${id}/history`,
+  },
+  readiness: {
+    overview: '/api/v1/readiness',
+    skills: '/api/v1/readiness/skills',
+    roles: '/api/v1/readiness/roles',
+    roleDetail: (slug: string) => `/api/v1/readiness/roles/${slug}`,
+    refresh: '/api/v1/readiness/refresh',
+    recommendations: '/api/v1/readiness/recommendations',
+  },
+  mistakes: {
+    list: '/api/v1/mistakes',
+    summary: '/api/v1/mistakes/summary',
+    detail: (id: string) => `/api/v1/mistakes/${id}`,
+    review: (id: string) => `/api/v1/mistakes/${id}/review`,
+    retrySession: '/api/v1/mistakes/retry-session',
   },
 } as const
 

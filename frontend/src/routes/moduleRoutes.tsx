@@ -152,18 +152,6 @@ export const moduleRoutes: ModuleRouteConfig[] = [
     icon: Award,
   },
   {
-    path: 'readiness',
-    title: 'Job Readiness',
-    description: 'Composite readiness score across skills, practice, assessments, and interviews.',
-    icon: Target,
-  },
-  {
-    path: 'mistakes',
-    title: 'Mistake Book',
-    description: 'Review incorrect answers and coding failures to strengthen weak areas.',
-    icon: FileQuestion,
-  },
-  {
     path: 'bookmarks',
     title: 'Bookmarks',
     description: 'Saved problems, articles, and resources across all learning modules.',

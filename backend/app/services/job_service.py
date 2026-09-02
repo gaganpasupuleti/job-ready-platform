@@ -39,6 +39,7 @@ from app.schemas.job import (
     JobsSummary,
     SavedJobItem,
 )
+from app.services.job_match_service import JobMatchService
 from app.services.job_normalization import validate_url
 
 
@@ -254,6 +255,8 @@ class JobService:
             interview_url += f"?role={role_names[0].lower().replace(' ', '-')}"
         company_prep_url = f"/company-prep/{company_slug}" if company_slug else None
 
+        match = await JobMatchService(self.db).match_job(user, job.id)
+
         source_name = None
         if job.source_id:
             from app.models.job import JobSource
@@ -302,6 +305,7 @@ class JobService:
             practice_links=await self._practice_links(skill_names, role_names),
             interview_prep_url=interview_url,
             company_prep_url=company_prep_url,
+            match=match,
         )
 
     async def save_job(self, user: User, job_id: UUID) -> None:
@@ -345,7 +349,30 @@ class JobService:
             )
         return items
 
-    async def recommended(self, user: User, limit: int = 20) -> JobListResponse:
+    async def recommended(self, user: User, limit: int = 20, sort: str = "coverage") -> JobListResponse:
+        if sort == "coverage":
+            matcher = JobMatchService(self.db)
+            ranked = await matcher.recommended_jobs(user, sort=sort, limit=limit)
+            if not ranked:
+                return await self.list_jobs(user, sort="newest", page=1, limit=limit)
+            job_ids = [UUID(r["job_id"]) for r in ranked]
+            jobs = (
+                await self.db.execute(select(Job).where(Job.id.in_(job_ids)))
+            ).scalars().all()
+            job_map = {j.id: j for j in jobs}
+            saved = await self._saved_ids(user.id, job_ids)
+            items: list[JobCard] = []
+            for row in ranked:
+                job = job_map.get(UUID(row["job_id"]))
+                if job is None:
+                    continue
+                card = await self._to_card(job, user.id, saved)
+                card.requirement_coverage = row.get("coverage")
+                card.has_sufficient_mapping = True
+                card.missing_skill_count = row.get("missing_skill_count")
+                items.append(card)
+            return JobListResponse(items=items, total=len(items), page=1, limit=limit)
+
         pref = (
             await self.db.execute(
                 select(UserJobPreference).where(UserJobPreference.user_id == user.id)

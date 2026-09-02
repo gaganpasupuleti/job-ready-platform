@@ -89,9 +89,21 @@ async def saved_jobs(
 async def recommended_jobs(
     user: User = Depends(get_current_user),
     limit: int = Query(default=20, ge=1, le=50),
+    sort: str = Query(default="coverage"),
     service: JobService = Depends(_svc),
 ) -> JobListResponse:
-    return await service.recommended(user, limit=limit)
+    return await service.recommended(user, limit=limit, sort=sort)
+
+
+@router.get("/{job_id}/match")
+async def job_match(
+    job_id: UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    from app.services.job_match_service import JobMatchService
+
+    return await JobMatchService(db).match_job(user, job_id)
 
 
 @router.get("/{job_id}", response_model=JobDetail)
