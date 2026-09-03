@@ -41,7 +41,10 @@ test.describe('Interview practice', () => {
     await page.getByRole('button', { name: /complete session/i }).click()
     await expect(page).toHaveURL(/\/results/, { timeout: 15_000 })
     await expect(page.getByText(/self-review|reviewed|coverage/i).first()).toBeVisible()
-    await expect(page.getByText(/interview score|hiring probability|ai rating/i)).toHaveCount(0)
+    // Disclaimers may say "not an interview score" — forbid positive score claims only.
+    await expect(page.getByText(/\bhiring probability\b/i)).toHaveCount(0)
+    await expect(page.getByText(/\bai rating\b/i)).toHaveCount(0)
+    await expect(page.getByText(/your interview score|overall interview score/i)).toHaveCount(0)
   })
 
   test('mock mode hides expected answer until reveal', async ({ page }) => {
