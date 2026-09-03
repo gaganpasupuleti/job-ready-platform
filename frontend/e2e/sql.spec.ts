@@ -43,7 +43,10 @@ test.describe('SQL practice', () => {
     await run.click()
     await expect(run).toBeEnabled({ timeout: 45_000 })
     await expect(
-      page.getByText(/error|syntax|failed|invalid|at or near|unexpected/i).locator('visible=true').first(),
+      page
+        .getByText(/error|syntax|failed|invalid|at or near|unexpected|could not be parsed/i)
+        .locator('visible=true')
+        .first(),
     ).toBeVisible()
   })
 

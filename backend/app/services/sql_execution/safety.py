@@ -154,9 +154,9 @@ def validate_sql_query(query: str, *, max_length: int = 20000) -> str | None:
     try:
         trees = sqlglot.parse(query, read="postgres")
     except ParseError:
-        return "Query could not be parsed as valid PostgreSQL SQL."
+        return "Invalid SQL syntax: query could not be parsed as PostgreSQL."
     except Exception:
-        return "Query could not be parsed as valid PostgreSQL SQL."
+        return "Invalid SQL syntax: query could not be parsed as PostgreSQL."
 
     statements = [t for t in trees if t is not None]
     if not statements:
