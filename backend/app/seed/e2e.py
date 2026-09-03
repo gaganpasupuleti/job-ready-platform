@@ -43,7 +43,8 @@ FIXTURES = {
         "ORDER BY price DESC"
     ),
     "sql_wrong_query": "SELECT product_name FROM products LIMIT 1",
-    "sql_invalid_query": "SELEC product_name FROM products",
+    # Must pass safety (looks like SELECT) but fail at the database — not a safety rejection.
+    "sql_invalid_query": "SELECT product_name FROM products WHERE",
     "sql_blocked_query": "DELETE FROM products",
     "path_slug": "beginner-arrays",
     "project_slug": "python-calculator",
@@ -210,12 +211,14 @@ def run_e2e_seed(*, write_manifest_path: str | None = None) -> dict[str, Any]:
             await seed_build8_content()
         except Exception as exc:  # noqa: BLE001
             print(f"Build 8 seed skipped/failed: {exc}")
-        try:
-            from app.seed.build9_seed import seed_build9_jobs
-
-            await seed_build9_jobs()
-        except Exception as exc:  # noqa: BLE001
-            print(f"Build 9 seed skipped/failed: {exc}")
+        # Users must exist before Build 9 sample saved-job / application fixtures.
+        await _ensure_user(
+            email=E2E_ADMIN_EMAIL,
+            username="admin",
+            password=E2E_ADMIN_PASSWORD,
+            role=UserRole.ADMIN,
+            full_name="Platform Admin",
+        )
         await _ensure_user(
             email=E2E_STUDENT_EMAIL,
             username=E2E_STUDENT_USERNAME,
@@ -223,6 +226,18 @@ def run_e2e_seed(*, write_manifest_path: str | None = None) -> dict[str, Any]:
             role=UserRole.STUDENT,
             full_name="E2E Student",
         )
+        try:
+            from app.seed.build9_seed import seed_build9_jobs
+
+            await seed_build9_jobs()
+        except Exception as exc:  # noqa: BLE001
+            print(f"Build 9 seed skipped/failed: {exc}")
+        try:
+            from app.seed.build10_seed import seed_build10
+
+            await seed_build10()
+        except Exception as exc:  # noqa: BLE001
+            print(f"Build 10 seed skipped/failed: {exc}")
         manifest = await build_manifest()
         await engine.dispose()
         return manifest

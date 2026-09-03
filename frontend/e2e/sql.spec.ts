@@ -42,7 +42,9 @@ test.describe('SQL practice', () => {
     const run = page.getByRole('button', { name: /^run$/i })
     await run.click()
     await expect(run).toBeEnabled({ timeout: 45_000 })
-    await expect(page.getByText(/error|syntax|failed|invalid/i).first()).toBeVisible()
+    await expect(
+      page.getByText(/error|syntax|failed|invalid|at or near|unexpected/i).locator('visible=true').first(),
+    ).toBeVisible()
   })
 
   test('blocked statement is rejected safely', async ({ page }) => {
@@ -52,7 +54,12 @@ test.describe('SQL practice', () => {
     const run = page.getByRole('button', { name: /^run$/i })
     await run.click()
     await expect(run).toBeEnabled({ timeout: 45_000 })
-    await expect(page.getByText(/only select|read-only|not allowed|forbidden|blocked|safety/i).first()).toBeVisible()
+    await expect(
+      page
+        .getByText(/only select|read-only|not allowed|forbidden|blocked|safety/i)
+        .locator('visible=true')
+        .first(),
+    ).toBeVisible()
   })
 
   test('wrong submit does not reveal expected rows', async ({ page }) => {
@@ -62,8 +69,12 @@ test.describe('SQL practice', () => {
     const submit = page.getByRole('button', { name: /^submit$/i })
     await submit.click()
     await expect(submit).toBeEnabled({ timeout: 45_000 })
-    await expect(page.getByText(/wrong answer|incorrect|not match/i).first()).toBeVisible()
-    await expect(page.getByText(/hidden|expected result rows stay hidden/i).first()).toBeVisible()
+    await expect(
+      page.getByText(/wrong answer|incorrect|not match/i).locator('visible=true').first(),
+    ).toBeVisible()
+    await expect(
+      page.getByText(/hidden|expected result rows stay hidden/i).locator('visible=true').first(),
+    ).toBeVisible()
   })
 
   test('accepted submit unlocks solution path', async ({ page }) => {
@@ -72,15 +83,17 @@ test.describe('SQL practice', () => {
     await fillMonaco(page, fixtures.sql.accepted_query)
     const submit = page.getByRole('button', { name: /^submit$/i })
     await submit.click()
-    await expect(page.getByText(/accepted/i).first()).toBeVisible({ timeout: 45_000 })
+    await expect(
+      page.getByText(/accepted/i).locator('visible=true').first(),
+    ).toBeVisible({ timeout: 45_000 })
     await expect(submit).toBeEnabled()
     const solutionTab = page.getByRole('tab', { name: /solution/i })
     if (await solutionTab.count()) {
       await solutionTab.click()
-      await expect(page.getByText(/solution|explanation|query/i).first()).toBeVisible()
+      await expect(page.getByText(/solution|explanation|query/i).locator('visible=true').first()).toBeVisible()
     }
     await page.reload()
-    await expect(page.getByText(/solved|accepted/i).first()).toBeVisible()
+    await expect(page.getByText(/solved|accepted/i).locator('visible=true').first()).toBeVisible()
   })
 
   test('draft persists across reload', async ({ page }) => {
@@ -90,7 +103,7 @@ test.describe('SQL practice', () => {
     await fillMonaco(page, `${marker}\nSELECT 1`)
     await page.waitForTimeout(400)
     await page.reload()
-    await expect(page.locator('.monaco-editor')).toBeVisible({ timeout: 30_000 })
-    await expect(page.getByText(marker)).toBeVisible({ timeout: 10_000 })
+    await expect(page.locator('.monaco-editor:visible').first()).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByText(marker).locator('visible=true').first()).toBeVisible({ timeout: 10_000 })
   })
 })

@@ -42,7 +42,7 @@ const fallbackManifest: E2EManifest = {
     accepted_query:
       'SELECT product_name, price\nFROM products\nWHERE is_active = TRUE\nORDER BY price DESC',
     wrong_query: 'SELECT product_name FROM products LIMIT 1',
-    invalid_query: 'SELEC product_name FROM products',
+    invalid_query: 'SELECT product_name FROM products WHERE',
     blocked_query: 'DELETE FROM products',
   },
   coding: { id: null, slug: null, title: null },
@@ -132,9 +132,29 @@ export async function fillMonaco(page: Page, text: string) {
   const editor = page.locator('.monaco-editor:visible').first()
   await expect(editor).toBeVisible({ timeout: 30_000 })
   await editor.click()
-  const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
-  await page.keyboard.press(`${modifier}+A`)
-  await page.keyboard.type(text, { delay: 5 })
+
+  // Prefer editor instance exposed by SqlEditor onMount (updates React controlled state).
+  const setViaApi = await page.evaluate((value) => {
+    const w = window as unknown as {
+      __jobReadyMonaco?: { setValue: (v: string) => void; getValue: () => string }
+      monaco?: { editor?: { getEditors?: () => Array<{ setValue: (v: string) => void; getValue: () => string }> } }
+    }
+    const ed = w.__jobReadyMonaco ?? w.monaco?.editor?.getEditors?.()?.[0]
+    if (!ed) return false
+    ed.setValue(value)
+    return ed.getValue() === value
+  }, text)
+
+  if (!setViaApi) {
+    const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+    await page.keyboard.press(`${modifier}+A`)
+    await page.keyboard.insertText(text)
+  }
+
+  const probe = text.trim().split(/\r?\n/).find((line) => line.trim().length > 0) ?? text
+  await expect(page.getByText(probe.slice(0, Math.min(probe.length, 32))).first()).toBeVisible({
+    timeout: 5_000,
+  })
 }
 
 export async function fillPromptEditor(page: Page, text: string) {

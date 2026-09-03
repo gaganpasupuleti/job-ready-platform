@@ -23,8 +23,10 @@ test.describe('Jobs portal', () => {
 
   test('save unsave and saved page', async ({ page }) => {
     await page.goto('/jobs/data-engineer-remote-infosys')
-    const saveBtn = page.getByRole('button', { name: /save job/i })
-    if (await saveBtn.count()) {
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
+    const saveBtn = page.getByRole('button', { name: /save job|^saved$/i })
+    await expect(saveBtn).toBeVisible({ timeout: 15_000 })
+    if (/save job/i.test((await saveBtn.textContent()) || '')) {
       await saveBtn.click()
       await expect(page.getByRole('button', { name: /^saved$/i })).toBeVisible()
     }
@@ -35,15 +37,18 @@ test.describe('Jobs portal', () => {
 
   test('mark applied and application detail', async ({ page }) => {
     await page.goto('/jobs/devops-engineer-cognizant')
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
     const applyBtn = page.getByRole('button', { name: /mark applied/i })
-    if (await applyBtn.count()) await applyBtn.click()
+    await expect(applyBtn).toBeVisible({ timeout: 15_000 })
+    await applyBtn.click()
+    await expect(page).toHaveURL(/\/jobs\/applications\//, { timeout: 15_000 })
     await page.goto('/jobs/applications')
     await expect(page.getByRole('heading', { name: /applications/i }).first()).toBeVisible({
       timeout: 15_000,
     })
     await expect(
       page.getByText(/python developer|data analyst|devops engineer/i).first(),
-    ).toBeVisible()
+    ).toBeVisible({ timeout: 15_000 })
   })
 
   test('recommended page without match score', async ({ page }) => {

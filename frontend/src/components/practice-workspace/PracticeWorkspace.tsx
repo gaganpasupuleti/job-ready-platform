@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from 'react'
 import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/common/Badge'
@@ -246,6 +253,19 @@ export function HintPanel({
   )
 }
 
+function useIsDesktopLayout(minWidth = 1024) {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      if (typeof window === 'undefined') return () => undefined
+      const mq = window.matchMedia(`(min-width: ${minWidth}px)`)
+      mq.addEventListener('change', onStoreChange)
+      return () => mq.removeEventListener('change', onStoreChange)
+    },
+    () => (typeof window !== 'undefined' ? window.matchMedia(`(min-width: ${minWidth}px)`).matches : true),
+    () => true,
+  )
+}
+
 export function WorkspaceSplit({
   storageKey,
   left,
@@ -261,6 +281,7 @@ export function WorkspaceSplit({
   mobileTab: 'problem' | 'code' | 'output'
   onMobileTab: (tab: 'problem' | 'code' | 'output') => void
 }) {
+  const isDesktop = useIsDesktopLayout()
   const [leftPct, setLeftPct] = useState(() => {
     const stored = Number(localStorage.getItem(storageKey) || 42)
     return Number.isFinite(stored) ? Math.min(70, Math.max(22, stored)) : 42
@@ -301,69 +322,73 @@ export function WorkspaceSplit({
     }
   }, [onPointerMove, stopDrag])
 
+  // Render only one layout tree so Playwright/a11y do not see duplicate hidden panels.
+  if (!isDesktop) {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="mb-2 flex gap-1" role="tablist" aria-label="Workspace">
+          {(['problem', 'code', 'output'] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              className={cn(
+                'flex-1 rounded-md border px-2 py-1.5 text-sm capitalize',
+                mobileTab === tab
+                  ? 'border-[var(--color-accent)] text-[var(--color-accent)]'
+                  : 'border-[var(--color-border)] text-[var(--color-text-muted)]',
+              )}
+              onClick={() => onMobileTab(tab)}
+            >
+              {tab === 'code' ? 'Code' : tab === 'output' ? 'Output' : 'Problem'}
+            </button>
+          ))}
+        </div>
+        <div className="min-h-0 flex-1 overflow-hidden">
+          {mobileTab === 'problem' && <div className="h-full overflow-auto">{left}</div>}
+          {mobileTab === 'code' && <div className="h-full overflow-hidden">{right}</div>}
+          {mobileTab === 'output' && <div className="h-full overflow-auto">{bottom}</div>}
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div className="mb-2 flex gap-1 lg:hidden" role="tablist" aria-label="Workspace">
-        {(['problem', 'code', 'output'] as const).map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            className={cn(
-              'flex-1 rounded-md border px-2 py-1.5 text-sm capitalize',
-              mobileTab === tab
-                ? 'border-[var(--color-accent)] text-[var(--color-accent)]'
-                : 'border-[var(--color-border)] text-[var(--color-text-muted)]',
-            )}
-            onClick={() => onMobileTab(tab)}
-          >
-            {tab === 'code' ? 'Code' : tab === 'output' ? 'Output' : 'Problem'}
-          </button>
-        ))}
+    <div
+      ref={rootRef}
+      className="flex min-h-0 flex-1 flex-col overflow-hidden"
+      style={{ height: '100%' }}
+    >
+      <div className="flex min-h-0" style={{ height: `${100 - (bottom ? bottomPct : 0)}%` }}>
+        <div className="min-w-0 overflow-auto pr-1" style={{ width: `${leftPct}%` }}>
+          {left}
+        </div>
+        <button
+          type="button"
+          aria-label="Resize panels"
+          className="w-1 shrink-0 cursor-col-resize bg-[var(--color-border)] hover:bg-[var(--color-accent)]"
+          onPointerDown={() => {
+            dragging.current = 'x'
+            document.body.style.cursor = 'col-resize'
+          }}
+        />
+        <div className="min-w-0 flex-1 overflow-hidden pl-1">{right}</div>
       </div>
-
-      <div className="min-h-0 flex-1 lg:hidden overflow-hidden">
-        <div className={cn('h-full overflow-auto', mobileTab === 'problem' ? 'block' : 'hidden')}>{left}</div>
-        <div className={cn('h-full overflow-hidden', mobileTab === 'code' ? 'block' : 'hidden')}>{right}</div>
-        <div className={cn('h-full overflow-auto', mobileTab === 'output' ? 'block' : 'hidden')}>{bottom}</div>
-      </div>
-
-      <div
-        ref={rootRef}
-        className="hidden min-h-0 flex-1 overflow-hidden lg:flex lg:flex-col"
-        style={{ height: '100%' }}
-      >
-        <div className="flex min-h-0" style={{ height: `${100 - (bottom ? bottomPct : 0)}%` }}>
-          <div className="min-w-0 overflow-auto pr-1" style={{ width: `${leftPct}%` }}>
-            {left}
-          </div>
+      {bottom && (
+        <>
           <button
             type="button"
-            aria-label="Resize panels"
-            className="w-1 shrink-0 cursor-col-resize bg-[var(--color-border)] hover:bg-[var(--color-accent)]"
+            aria-label="Resize results"
+            className="h-1 w-full cursor-row-resize bg-[var(--color-border)] hover:bg-[var(--color-accent)]"
             onPointerDown={() => {
-              dragging.current = 'x'
-              document.body.style.cursor = 'col-resize'
+              dragging.current = 'y'
+              document.body.style.cursor = 'row-resize'
             }}
           />
-          <div className="min-w-0 flex-1 overflow-hidden pl-1">{right}</div>
-        </div>
-        {bottom && (
-          <>
-            <button
-              type="button"
-              aria-label="Resize results"
-              className="h-1 w-full cursor-row-resize bg-[var(--color-border)] hover:bg-[var(--color-accent)]"
-              onPointerDown={() => {
-                dragging.current = 'y'
-                document.body.style.cursor = 'row-resize'
-              }}
-            />
-            <div className="min-h-0 overflow-auto" style={{ height: `${bottomPct}%` }}>
-              {bottom}
-            </div>
-          </>
-        )}
-      </div>
+          <div className="min-h-0 overflow-auto" style={{ height: `${bottomPct}%` }}>
+            {bottom}
+          </div>
+        </>
+      )}
     </div>
   )
 }
