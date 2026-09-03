@@ -1,63 +1,57 @@
-# MVP Release Hardening — Baseline (pre-fix)
+# MVP Release Hardening — Baseline
 
 **Branch:** `release/mvp-hardening`  
-**Checkpoint:** `9900256` — build 10 complete - readiness job match mistakes recommendations  
+**Checkpoint (start):** `9900256` — build 10 complete  
+**Current tip:** `931fcbe` — CI green after Playwright fixes  
 **Recorded:** 2026-09-03
 
 ## Git
 
 | Check | Result |
 |-------|--------|
-| Working tree | clean |
-| Local HEAD | `9900256` |
-| `origin/master` | `9900256` (identical) |
+| Working tree at start | clean |
+| Local HEAD (start) | `9900256` |
+| `origin/master` (start) | `9900256` |
 | Release branch | `release/mvp-hardening` pushed |
 
-## GitHub Actions (`9900256` on master)
+## GitHub Actions
+
+### Baseline on `9900256` (master) — RED
 
 Run: https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/33594775262
 
 | Job | Result |
 |-----|--------|
+| Backend | PASS |
+| Frontend lint + build | PASS |
+| Playwright desktop | FAIL — 40 pass / 7 fail |
+
+### After hardening fixes (`931fcbe`) — GREEN
+
+Run: https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/33717512505
+
+| Job | Result |
+|-----|--------|
 | Backend (pytest + migrate + seed + SQL sandbox) | **PASS** |
 | Frontend (lint + build) | **PASS** |
-| Playwright E2E desktop | **FAIL** — 40 passed, 2 skipped, **7 failed** |
+| Playwright E2E desktop | **PASS** |
 
-### Playwright failures (CI)
+## Root causes fixed
 
-1. `jobs.spec.ts` — save unsave and saved page → Saved page empty (“No saved jobs yet”)
-2. `jobs.spec.ts` — mark applied and application detail → no application titles
-3. `sql.spec.ts` — syntax error recovers from Running
-4. `sql.spec.ts` — blocked statement is rejected safely (message present but **hidden**)
-5. `sql.spec.ts` — wrong submit does not reveal expected rows
-6. `sql.spec.ts` — accepted submit unlocks solution path (`Submit verdict sql error`)
-7. `sql.spec.ts` — draft persists across reload (Monaco not visible)
+1. **Jobs E2E:** Build 9 sample saved/application ran before E2E user existed; tests raced past Save/Apply.
+2. **SQL visibility:** `WorkspaceSplit` double-rendered mobile+desktop; Playwright matched hidden nodes.
+3. **Monaco fills:** textarea fill did not update React controlled state → `sql_error` on submit.
+4. **Invalid SQL fixture:** `SELEC` hit safety; incomplete `WHERE` parse message lacked test keywords.
+5. **Interview E2E:** disclaimer “not an interview score” falsely matched forbidden-phrase check.
 
-### Root-cause hypotheses (from CI artifacts)
+## Local gates (start)
 
-- **Jobs:** race — `saveBtn.count()` / apply checked before job detail finishes loading; save/apply skipped → empty lists.
-- **SQL visibility:** `WorkspaceSplit` double-renders mobile (`hidden`) + desktop panels; Playwright `.first()` matches the **hidden** mobile ErrorState.
-- **SQL “syntax” fixture:** `SELEC ...` is rejected by **safety** (“Only a single read-only SELECT…”), not Postgres syntax.
-- **SQL submit/accepted:** Monaco `fillMonaco` (Ctrl+A + type) flaky → wrong query submitted → `sql_error`.
+| Gate | Result |
+|------|--------|
+| `fresh_db_gate.py` | PASS |
+| `npm run lint` / `build` | PASS |
+| pytest parallel with fresh_db | contaminated — re-run after seed |
 
-## Local baseline (same day)
+## Stance
 
-| Gate | Result | Notes |
-|------|--------|-------|
-| `fresh_db_gate.py` | **PASS** (`fresh_db_gate_ok`) | Schema reset when CREATE DATABASE denied |
-| `npm run lint` | **PASS** | oxlint warnings (set-state-in-effect) — non-blocking |
-| `npm run build` | **PASS** | main chunk ~721 kB (Monaco) — warn only |
-| `pytest` (parallel w/ fresh_db) | **5 failed** | Contaminated: fresh_db wiped DB mid-run |
-| `pytest` after `seed_all` restore | practice/coding **PASS** | Need full suite re-run after seed |
-
-## Release stance (baseline)
-
-**NO-GO** until CI Playwright is green. Backend/frontend CI jobs already pass.
-
-## Next fixes (in order)
-
-1. Jobs E2E: wait for job detail controls before save/apply
-2. SQL E2E: assert on **visible** results; harden Monaco fill; fix invalid-query fixture
-3. Optionally dedupe `WorkspaceSplit` DOM (product a11y fix)
-4. Seed idempotency hardening (fresh_db → always includes placement/technical)
-5. Continue checklist §§3–73
+CI gate cleared on `release/mvp-hardening`. Continue seed/migration/security/docs audits. **Do not merge/tag MVP until remaining checklist §§3–73 complete.**
