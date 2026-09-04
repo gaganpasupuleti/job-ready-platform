@@ -288,7 +288,7 @@ class MistakeService:
                 user_id=user_id,
                 source_type=MistakeSourceType.INTERVIEW,
                 source_id=question.id,
-                title=question.title,
+                title=(question.question_text or "Interview question")[:500],
                 mistake_type="needs_review",
                 context={"key_point_coverage": review.key_point_coverage},
                 retry_href=f"/interviews/review?question={question.id}",

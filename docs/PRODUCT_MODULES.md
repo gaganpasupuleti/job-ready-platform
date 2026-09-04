@@ -1,82 +1,85 @@
 # Product Modules
 
-Planned modules for the Job Ready Platform. Build 1 enables routing and API catalog only.
+Status as of MVP hardening (Build 10 + release audit).
+
+Legend: **Live** = student-usable · **Partial** = usable with known limits · **Future** = placeholder / not shipped
 
 ## Practice
 
 | Module | Route | Status |
 |--------|-------|--------|
-| Aptitude / CRT | `/practice/aptitude` | Placeholder |
-| DSA | `/practice/dsa` | Placeholder |
-| Coding Practice | `/practice/coding` | Placeholder |
-| SQL Practice | `/practice/sql` | Placeholder |
-| Technical MCQs | `/practice/mcq` | Placeholder |
+| Practice Hub | `/practice` | Live |
+| Aptitude / CRT | `/practice/aptitude` | Live |
+| DSA | `/practice/dsa` | Live |
+| Coding Practice | `/practice/coding` | Partial — editor live; Judge0 execution disabled |
+| SQL Practice | `/practice/sql` | Live — requires SQL sandbox |
+| Technical MCQs | `/practice/mcq` | Live |
+
+## Learn & Projects
+
+| Module | Route | Status |
+|--------|-------|--------|
+| Courses / Learn | `/learn` | Live |
+| Projects | `/practice/projects`, `/projects/:slug` | Live |
 
 ## AI Era
 
 | Module | Route | Status |
 |--------|-------|--------|
-| AI / ML | `/ai/ml` | Placeholder |
-| Generative AI | `/ai/genai` | Placeholder |
-| Prompt Engineering | `/ai/prompt-engineering` | Placeholder |
-| AI Agents | `/ai/agents` | Placeholder |
+| AI Home | `/ai` | Live |
+| Generative AI / Prompt / RAG / Agents | `/ai/*` | Live — deterministic prompts, no LLM |
+| Prompt workspace | `/ai/prompts/:slug` | Live |
 
 ## Infrastructure
 
 | Module | Route | Status |
 |--------|-------|--------|
-| Cloud | `/cloud` | Placeholder |
-| DevOps | `/devops` | Placeholder |
-| Cybersecurity | `/cybersecurity` | Placeholder |
+| Cloud | `/cloud` | Live |
+| DevOps | `/devops` | Live |
+| Cybersecurity | `/cybersecurity` | Live |
+| Scenarios | `/scenarios/:slug` | Live |
 
-## Career
+## Career / Interviews
 
 | Module | Route | Status |
 |--------|-------|--------|
-| Interview Preparation | `/interviews` | Placeholder |
-| Company-specific Preparation | `/company-prep` | Placeholder |
-| Assessments | `/assessments` | Placeholder |
-| Contests | `/contests` | Placeholder |
+| Interview hub | `/interviews` | Live |
+| Packs / sessions / review | `/interviews/*` | Live — self-review, not AI scoring |
+| Company prep | `/company-prep` | Live |
+| Assessments | `/assessments` | Future |
+| Contests | `/contests` | Future |
 
 ## Jobs
 
 | Module | Route | Status |
 |--------|-------|--------|
-| Jobs Portal | `/jobs` | Live (Build 9) |
-| Recommended Jobs | `/jobs/recommended` | Live — relevant jobs, no match % |
-| Saved Jobs | `/jobs/saved` | Live |
-| Application Tracking | `/jobs/applications` | Live |
+| Jobs portal | `/jobs` | Live |
+| Recommended | `/jobs/recommended` | Live — relevance, no match % |
+| Saved / Applications | `/jobs/saved`, `/jobs/applications` | Live |
+| Admin jobs / CSV | `/admin/jobs` | Live |
 
-## Progress
+## Progress / Readiness
 
 | Module | Route | Status |
 |--------|-------|--------|
-| Job Readiness Scoring | `/readiness` | Placeholder |
-| Mistake Book | `/mistakes` | Placeholder |
-| Bookmarks | `/bookmarks` | Placeholder |
-| Leaderboard | `/leaderboard` | Placeholder |
+| Readiness | `/readiness` | Live |
+| Readiness skills | `/readiness/skills` | Live |
+| Mistake Book | `/mistakes` | Live |
+| Bookmarks | `/bookmarks` | Live / Partial by domain |
+| Leaderboard | `/leaderboard` | Future |
+| Admin readiness | `/admin/readiness` | Live |
 
 ## Dashboard
 
 | Feature | Status |
 |---------|--------|
-| Job Readiness Score card | Mock data |
-| Today's Practice | Mock data |
-| Coding Progress | Mock data |
-| Aptitude Progress | Mock data |
-| Interview Readiness | Mock data |
-| Recommended Jobs | Mock data |
-| Current Streak | Mock data |
-| Weak Skills | Mock data |
-| Upcoming Assessments | Mock data |
+| Readiness / recommendations cards | Live (API-backed) |
+| Practice / jobs shortcuts | Live |
+| Contests / assessments widgets | Future / hidden |
 
-## Future Domains (Database)
+## Explicit non-goals (MVP)
 
-Prepared model domains (not yet implemented):
-
-- users, roles
-- questions, coding_problems, submissions
-- assessments, attempts
-- skills, readiness_scores
-- companies, jobs, applications
-- interviews
+- Hiring probability or “chance of getting hired”
+- External LLM execution
+- Live Judge0 coding (until separately provisioned)
+- Payments, community, certificates, live classes

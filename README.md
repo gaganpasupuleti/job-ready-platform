@@ -1,176 +1,122 @@
 # Job Ready Platform
 
-A modern job-preparation platform covering aptitude, DSA, coding, SQL, AI/ML, interviews, assessments, and job tracking.
+MVP job-preparation platform: practice (MCQ, coding, SQL), learn/projects, AI prompt drills, cloud/DevOps/cyber scenarios, interviews, jobs/applications, and readiness / mistake book.
 
-**Build 1** delivers the foundation: application shell, routing, API scaffolding, PostgreSQL/Redis connectivity, and Docker Compose infrastructure.
+## Stack
 
-## Tech Stack
+| Layer | Tech |
+|-------|------|
+| Frontend | React 19, Vite, TypeScript, Tailwind, React Router, TanStack Query |
+| Backend | FastAPI, SQLAlchemy 2, Alembic, Pydantic |
+| Data | PostgreSQL (app), PostgreSQL (SQL sandbox), Redis (optional) |
+| CI | GitHub Actions — pytest, lint, build, Playwright, SQL sandbox |
+| Deploy | Railway (frontend, backend, app Postgres, sandbox Postgres, Redis) |
 
-| Layer | Technologies |
-|-------|-------------|
-| Frontend | React, Vite, TypeScript, Tailwind CSS, React Router, TanStack Query, Axios, Lucide |
-| Backend | Python, FastAPI, SQLAlchemy 2, Alembic, Pydantic |
-| Data | PostgreSQL, Redis |
-| Infra | Docker, Docker Compose |
+## Modules (MVP)
 
-## Prerequisites
+- **Practice** — aptitude/MCQ, DSA/coding, SQL sandbox
+- **Learn / Projects** — paths, courses, project workspaces
+- **AI** — prompt challenges (deterministic, no LLM)
+- **Infrastructure** — cloud / DevOps / cybersecurity scenarios
+- **Interviews** — packs, self-review, company prep
+- **Jobs** — browse, save, applications, requirement coverage
+- **Readiness** — role readiness, mistakes, recommendations
 
-- Node.js 20+
-- Python 3.12+
-- Docker & Docker Compose
-
-## Quick Start (Local Development)
-
-### 1. Clone and configure environment
+## Local setup
 
 ```bash
 cp .env.example .env
 cp frontend/.env.example frontend/.env
-```
 
-### 2. Start PostgreSQL and Redis
+# Postgres + Redis (+ SQL sandbox Postgres on :5433)
+docker compose -f infra/docker-compose.yml up -d postgres redis postgres_sql_sandbox
 
-```bash
-docker compose -f infra/docker-compose.yml up -d postgres redis
-```
-
-### 3. Backend setup
-
-```bash
 cd backend
 python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-
-# macOS/Linux
-source .venv/bin/activate
-
+# Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
+alembic upgrade head
+python -m app.seed.runner
+python -m app.readiness.backfill
 
-### 4. Frontend setup (new terminal)
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-### 5. Verify
+- App: http://127.0.0.1:5173  
+- API docs: http://127.0.0.1:8000/docs  
+- Health: http://127.0.0.1:8000/api/v1/health  
 
-- Frontend: http://localhost:5173
-- API docs: http://localhost:8000/docs
-- Health: http://localhost:8000/api/v1/health
-- Modules: http://localhost:8000/api/v1/modules
+Dev admin (local/seed only): `admin@jobready.dev` — never use default passwords in production.
 
-## Full Stack via Docker Compose
-
-```bash
-cp .env.example .env
-docker compose -f infra/docker-compose.yml up --build
-```
-
-## Project Structure
-
-```
-job-ready-platform/
-├── frontend/          # React + Vite application
-├── backend/           # FastAPI application
-├── infra/             # Docker configuration
-├── docs/              # Architecture and development docs
-├── .env.example
-└── README.md
-```
-
-## API Endpoints (Build 1)
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/v1/health` | Service health check |
-| GET | `/api/v1/modules` | Enabled platform modules |
-
-## Build 4 — SQL Practice Engine
-
-Dedicated SQL practice module (separate from Judge0 coding):
-
-- Isolated sandbox database (`jobready_sql_sandbox`) — student SQL never hits the app DB
-- ~30 original PostgreSQL challenges with schema explorer, Monaco editor, run/submit, progress, bookmarks
-- Read-only SELECT/CTE validation, query timeout, row limits
-- Admin authoring + validation at `/admin/sql`
-
-See [SQL Practice](docs/SQL_PRACTICE.md) for sandbox setup and security details.
-
-### Seed SQL problems (after migrations)
+## Migrations & seed
 
 ```bash
-cd backend
-alembic upgrade head
-python -c "import asyncio; from app.seed.sql_data import seed_sql_problems; asyncio.run(seed_sql_problems())"
+alembic upgrade head          # 001 … 013_build10
+python -m app.seed.runner     # idempotent content seed
+python -m app.readiness.backfill
 ```
 
-## Build 3.1 — Coding Practice (Complete)
+Fresh-DB gate (destructive to local schema): `python scripts/fresh_db_gate.py` from `backend/`.
 
-Build 3.1 completes the coding practice engine before SQL Practice / Build 4:
+E2E users/content: `E2E_ALLOW_SEED=1 python -m app.seed.e2e` (never auto-run in production).
 
-- **20 seeded DSA problems** (10 easy, 7 medium, 3 hard) with multi-language starters, tags, and hidden tests
-- **Languages:** Python, Java, C++, JavaScript (centralized Judge0 IDs)
-- **Student routes:** `/practice/dsa`, `/practice/coding`, `/submissions`, `/bookmarks`
-- **Problem workspace:** drafts in `localStorage`, bookmarks, submissions tab, execution-unavailable banner
-- **Exam mode:** timer, navigator, mark-for-review, autosave, auto-submit on expiry
-- **Admin:** MCQ edit (`/admin/questions/:id/edit`), enhanced coding problem form
-- **Judge0 toggle:** set `JUDGE0_ENABLED=false` for clean 503 when execution is unavailable
-
-### Seed coding problems (after migrations)
+## Tests
 
 ```bash
-cd backend
-alembic upgrade head
-python -c "import asyncio; from app.seed.coding_data import seed_coding_problems; asyncio.run(seed_coding_problems())"
+# Backend
+cd backend && pytest -q
+
+# Frontend
+cd frontend && npm run lint && npm run build
+npx playwright test --project=desktop
 ```
 
-### Environment (Build 3.1)
+## Deployment
 
-| Variable | Description |
-|----------|-------------|
-| `JUDGE0_ENABLED` | Enable remote Judge0 execution (default `false` in `.env.example` for safe local) |
-| `JUDGE0_URL` | Judge0 API base URL |
-| `JUDGE0_AUTH_HEADER` / `JUDGE0_AUTH_TOKEN` | Auth header sent only from FastAPI |
-| `JUDGE0_TIMEOUT_SECONDS` | HTTP client timeout to Judge0 |
-| `CODING_*` | Source/stdin limits and per-user rate/concurrency |
+See [docs/RAILWAY.md](docs/RAILWAY.md), [docs/BACKUP_RESTORE.md](docs/BACKUP_RESTORE.md), [docs/RELEASE_NOTES_MVP.md](docs/RELEASE_NOTES_MVP.md).
 
-Judge0 hosting: [docs/JUDGE0_DEPLOYMENT.md](docs/JUDGE0_DEPLOYMENT.md) · compose: `infra/judge0/` (pinned `judge0/judge0:1.13.1`).
+Production must set:
 
-## Content Factory
+- `APP_ENV=production`
+- `DATABASE_URL`, strong `JWT_SECRET_KEY`
+- `CORS_ORIGINS` = frontend origin only
+- `VITE_API_BASE_URL`, `VITE_ENABLE_DEV_LOGIN=false`
+- SQL sandbox URLs when `SQL_EXECUTION_ENABLED=true`
+- `JUDGE0_ENABLED=false` until a dedicated Judge0 host exists
 
-Interview Q&A is generated by Cursor into JSON, validated, staged, then admin-approved. No LLM API in production. See [docs/CONTENT_FACTORY.md](docs/CONTENT_FACTORY.md).
-| `VITE_ENABLE_DEV_LOGIN` | Gate dev login mock in frontend (default `true` in dev) |
+Smoke: `python scripts/smoke.py --base-url https://<api-host>`
 
-## Running Tests
+## Architecture (summary)
 
-```bash
-cd backend
-pytest
+```
+Browser → FastAPI modular monolith
+        → App Postgres
+        → Redis (optional)
+        → SQL sandbox Postgres (student SELECT only)
+        → Judge0 (optional / currently disabled)
 ```
 
-```bash
-cd frontend
-npm run build
-```
+## Important MVP limits
 
-## Documentation
+- **Judge0 disabled** — coding execution unavailable
+- **No external LLM**
+- **No hiring probability** claims — readiness / requirement coverage only
 
-- [Architecture](docs/ARCHITECTURE.md)
-- [Product Modules](docs/PRODUCT_MODULES.md)
-- [Donor Repositories](docs/DONOR_REPOS.md)
-- [Development Guide](docs/DEVELOPMENT.md)
+Details: [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md)
 
-## License
+## Docs
 
-Proprietary — Job Ready Platform
-
-
-
-need to add the Csat Platform in the end 
-and the mapping 
+| Doc | Topic |
+|-----|--------|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design |
+| [docs/PRODUCT_MODULES.md](docs/PRODUCT_MODULES.md) | Module status |
+| [docs/SQL_PRACTICE.md](docs/SQL_PRACTICE.md) | SQL sandbox |
+| [docs/READINESS.md](docs/READINESS.md) | Readiness |
+| [docs/RELEASE_NOTES_MVP.md](docs/RELEASE_NOTES_MVP.md) | MVP notes |
+| [CHANGELOG.md](CHANGELOG.md) | Version history |
