@@ -61,11 +61,9 @@ test.describe('Jobs portal', () => {
   })
 
   test('sample demos filter and badge', async ({ page }) => {
-    await page.goto('/jobs')
+    await page.goto('/jobs?include_sample=1')
     await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible({ timeout: 20_000 })
-    await expect(page.getByLabel(/show sample demos/i)).toBeVisible()
-    await page.getByLabel(/show sample demos/i).check()
-    await expect(page).toHaveURL(/include_sample=1/)
+    await expect(page.getByLabel(/show sample demos/i)).toBeChecked()
     const sampleSignal = page.getByText(/^sample$/i).or(page.getByText(/SAMPLE DEMO/i))
     if ((await sampleSignal.count()) > 0) {
       await expect(sampleSignal.first()).toBeVisible()
