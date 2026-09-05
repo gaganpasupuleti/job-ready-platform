@@ -11,6 +11,16 @@ class JobSourceType(StrEnum):
     CAREER_SITE = "career_site"
 
 
+class JobListingType(StrEnum):
+    """Provenance / visibility kind — not the ingestion channel (JobSourceType)."""
+
+    REAL = "real"
+    SAMPLE_DEMO = "sample_demo"
+    CURATED_IMPORT = "curated_import"
+    MANUAL = "manual"
+    CAREER_SITE = "career_site"
+
+
 class JobStatus(StrEnum):
     ACTIVE = "active"
     EXPIRED = "expired"

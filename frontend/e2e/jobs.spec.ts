@@ -60,6 +60,44 @@ test.describe('Jobs portal', () => {
     await expect(page.getByText(/best match/i)).toHaveCount(0)
   })
 
+  test('sample demos filter and badge', async ({ page }) => {
+    await page.goto('/jobs')
+    await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible({ timeout: 20_000 })
+    await expect(page.getByLabel(/show sample demos/i)).toBeVisible()
+    await page.getByLabel(/show sample demos/i).check()
+    await expect(page).toHaveURL(/include_sample=1/)
+    const sampleSignal = page.getByText(/^sample$/i).or(page.getByText(/SAMPLE DEMO/i))
+    if ((await sampleSignal.count()) > 0) {
+      await expect(sampleSignal.first()).toBeVisible()
+    }
+  })
+
+  test('job detail external apply and practice links', async ({ page }) => {
+    await page.goto('/jobs/data-engineer-remote-infosys')
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
+    await expect(page.getByRole('button', { name: /practice missing skills/i })).toBeVisible({
+      timeout: 15_000,
+    })
+    const external = page.locator('a[rel*="noopener"][target="_blank"]').filter({
+      hasText: /apply on company site/i,
+    })
+    if ((await external.count()) > 0) {
+      await expect(external.first()).toBeVisible()
+    }
+    await page.getByRole('button', { name: /practice missing skills/i }).click()
+    await expect(page).toHaveURL(/\/practice/)
+  })
+
+  test('interview prep link from job detail when present', async ({ page }) => {
+    await page.goto('/jobs/data-engineer-remote-infosys')
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
+    const interview = page.getByRole('link', { name: /interview prep/i })
+    if (await interview.count()) {
+      await interview.first().click()
+      await expect(page).toHaveURL(/interview|practice|company/i)
+    }
+  })
+
   test('student blocked from admin jobs', async ({ page }) => {
     await page.goto('/admin/jobs')
     await expect(page).toHaveURL(/\/($|\?)/)

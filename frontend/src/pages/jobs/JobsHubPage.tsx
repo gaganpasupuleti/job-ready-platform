@@ -23,6 +23,7 @@ export function JobsHubPage() {
   const [company, setCompany] = useState(searchParams.get('company') ?? '')
   const page = Number(searchParams.get('page') ?? '1')
   const sort = searchParams.get('sort') ?? 'newest'
+  const includeSample = searchParams.get('include_sample') === '1'
 
   const filters = {
     q: searchParams.get('q') || undefined,
@@ -32,6 +33,7 @@ export function JobsHubPage() {
     sort,
     page,
     limit: 20,
+    include_sample: includeSample || undefined,
   }
 
   const { data: summary } = useQuery({
@@ -51,6 +53,7 @@ export function JobsHubPage() {
     if (skill.trim()) next.set('skill', skill.trim())
     if (company.trim()) next.set('company', company.trim())
     if (sort !== 'newest') next.set('sort', sort)
+    if (includeSample) next.set('include_sample', '1')
     next.set('page', '1')
     setSearchParams(next)
   }
@@ -163,6 +166,20 @@ export function JobsHubPage() {
             <option value="oldest">Oldest</option>
             <option value="company">Company</option>
           </select>
+          <label className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
+            <input
+              type="checkbox"
+              checked={includeSample}
+              onChange={(e) => {
+                const next = new URLSearchParams(searchParams)
+                if (e.target.checked) next.set('include_sample', '1')
+                else next.delete('include_sample')
+                next.set('page', '1')
+                setSearchParams(next)
+              }}
+            />
+            Show sample demos
+          </label>
           <Button type="button" variant="primary" onClick={applyFilters}>Search</Button>
         </div>
       </Card>

@@ -84,11 +84,22 @@ export function JobDetailPage() {
           {data.application_status && (
             <ApplicationStatusBadge status={data.application_status} />
           )}
+          {data.is_sample && <Badge variant="accent">Sample Demo</Badge>}
           {data.location_text && <Badge>{data.location_text}</Badge>}
           {data.is_remote && <Badge variant="accent">Remote</Badge>}
           {data.work_mode && <Badge>{data.work_mode.replace(/_/g, ' ')}</Badge>}
           {salary && <Badge>{salary}</Badge>}
         </div>
+        {(data.source_label || data.posted_at) && (
+          <p className="mt-2 text-xs text-[var(--color-text-muted)]">
+            {data.source_label ? `Source: ${data.source_label}` : null}
+            {data.source_label && data.posted_at ? ' · ' : null}
+            {data.posted_at
+              ? `Posted ${new Date(data.posted_at).toLocaleDateString()}`
+              : null}
+            . Listings are curated; apply on the company/source site.
+          </p>
+        )}
       </PracticeHeader>
 
       <div className="flex flex-wrap gap-2">
@@ -125,7 +136,7 @@ export function JobDetailPage() {
         )}
         {applyUrl && (
           <a href={applyUrl} target="_blank" rel="noopener noreferrer">
-            <Button type="button">Apply externally</Button>
+            <Button type="button">Apply on company site</Button>
           </a>
         )}
         {data.company_prep_url && (
@@ -138,6 +149,11 @@ export function JobDetailPage() {
             <Button>Interview prep</Button>
           </Link>
         )}
+        <Link to={data.practice_links?.[0]?.path || '/practice'}>
+          <Button type="button" variant="secondary">
+            Practice missing skills
+          </Button>
+        </Link>
       </div>
 
       {(prepareMutation.isSuccess || applyMutation.isSuccess) && (

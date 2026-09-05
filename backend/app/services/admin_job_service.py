@@ -20,7 +20,14 @@ from app.models.job import (
     JobSkill,
     JobSource,
 )
-from app.models.job_enums import IngestionRunStatus, JobRoleMappingSource, JobSkillImportance, JobSourceType, JobStatus
+from app.models.job_enums import (
+    IngestionRunStatus,
+    JobListingType,
+    JobRoleMappingSource,
+    JobSkillImportance,
+    JobSourceType,
+    JobStatus,
+)
 from app.models.tagging import Company, JobRole, Skill
 from app.schemas.job import (
     AdminJobCreate,
@@ -350,6 +357,14 @@ class AdminJobService:
             desc = (row.get("description") or "").strip()
             if not desc and not (row.get("source_url") or row.get("apply_url")):
                 errs.append("description or source URL required")
+            listing_raw = (row.get("listing_type") or "").strip().lower()
+            if listing_raw in {"real", "career_site"}:
+                src = (row.get("source_url") or "").strip()
+                app = (row.get("apply_url") or "").strip()
+                if not src.startswith(("http://", "https://")) and not app.startswith(
+                    ("http://", "https://")
+                ):
+                    errs.append("real/career_site listings require http(s) source_url or apply_url")
             action = "invalid"
             if not errs:
                 norm = normalize_title(title)
@@ -492,12 +507,63 @@ class AdminJobService:
             ).scalar_one_or_none()
         now = _utcnow()
         exp_min, exp_max = parse_experience(row.get("experience"))
+        listing_raw = (row.get("listing_type") or "").strip().lower()
+        listing_type = None
+        if listing_raw in {e.value for e in JobListingType}:
+            listing_type = JobListingType(listing_raw)
+        elif "sample" in listing_raw or "demo" in listing_raw:
+            listing_type = JobListingType.SAMPLE_DEMO
+        elif listing_raw in {"real", "career_site", "curated", "curated_import"}:
+            listing_type = (
+                JobListingType.REAL
+                if listing_raw == "real"
+                else JobListingType.CAREER_SITE
+                if listing_raw == "career_site"
+                else JobListingType.CURATED_IMPORT
+            )
+
+        def _parse_dt(val: str | None):
+            if not val or not str(val).strip():
+                return None
+            raw = str(val).strip().replace("Z", "+00:00")
+            try:
+                dt = datetime.fromisoformat(raw)
+                return dt if dt.tzinfo else dt.replace(tzinfo=UTC)
+            except ValueError:
+                try:
+                    return datetime.strptime(raw[:10], "%Y-%m-%d").replace(tzinfo=UTC)
+                except ValueError:
+                    return None
+
+        posted_at = _parse_dt(row.get("posted_at")) or now
+        expires_at = _parse_dt(row.get("expires_at"))
+        city = (row.get("city") or "").strip() or None
+        state = (row.get("state") or "").strip() or None
+        country = (row.get("country") or "").strip() or None
         if job:
             job.title = title
             job.normalized_title = norm
             job.description = desc
             job.last_seen_at = now
             job.content_hash = ch
+            job.requirements_text = (row.get("requirements") or "").strip() or job.requirements_text
+            job.responsibilities_text = (
+                (row.get("responsibilities") or "").strip() or job.responsibilities_text
+            )
+            job.location_text = loc or job.location_text
+            job.city = city or job.city
+            job.state = state or job.state
+            job.country = country or job.country
+            if row.get("source_url"):
+                job.source_url = validate_url(row.get("source_url"))
+            if row.get("apply_url"):
+                job.apply_url = validate_url(row.get("apply_url"))
+            if listing_type:
+                job.listing_type = listing_type
+            if posted_at:
+                job.posted_at = posted_at
+            if expires_at:
+                job.expires_at = expires_at
         else:
             job = Job(
                 id=uuid4(),
@@ -510,18 +576,25 @@ class AdminJobService:
                 company_name_raw=company_raw if not company_id else None,
                 description=desc,
                 requirements_text=(row.get("requirements") or "").strip() or None,
+                responsibilities_text=(row.get("responsibilities") or "").strip() or None,
                 location_text=loc,
+                city=city,
+                state=state,
+                country=country,
                 employment_type=normalize_employment_type(row.get("employment_type")),
                 work_mode=normalize_work_mode(row.get("work_mode"), None),
                 experience_min_years=exp_min,
                 experience_max_years=exp_max,
                 source_url=validate_url(row.get("source_url")) if row.get("source_url") else None,
                 apply_url=validate_url(row.get("apply_url")) if row.get("apply_url") else None,
+                posted_at=posted_at,
+                expires_at=expires_at,
                 first_seen_at=now,
                 last_seen_at=now,
                 status=JobStatus.ACTIVE,
                 is_active=True,
                 content_hash=ch,
+                listing_type=listing_type or JobListingType.CURATED_IMPORT,
             )
             self.db.add(job)
             await self.db.flush()
