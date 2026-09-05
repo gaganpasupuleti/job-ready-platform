@@ -28,6 +28,7 @@ from app.models.job_enums import (
     ApplicationStatus,
     EmploymentType,
     IngestionRunStatus,
+    JobListingType,
     JobRoleMappingSource,
     JobSkillImportance,
     JobSourceType,
@@ -111,6 +112,17 @@ class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     is_remote: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
 
     content_hash: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+
+    listing_type: Mapped[JobListingType | None] = mapped_column(
+        Enum(
+            JobListingType,
+            name="job_listing_type",
+            native_enum=False,
+            values_callable=lambda enum: [e.value for e in enum],
+        ),
+        nullable=True,
+        index=True,
+    )
 
     source: Mapped[JobSource | None] = relationship("JobSource")
     skills: Mapped[list["JobSkill"]] = relationship(back_populates="job", cascade="all, delete-orphan")

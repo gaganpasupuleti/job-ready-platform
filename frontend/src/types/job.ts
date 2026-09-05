@@ -32,6 +32,13 @@ export interface JobRolePublic {
   mapping_source: string | null
 }
 
+export type JobListingType =
+  | 'real'
+  | 'sample_demo'
+  | 'curated_import'
+  | 'manual'
+  | 'career_site'
+
 export interface JobCard {
   id: string
   slug: string
@@ -46,6 +53,8 @@ export interface JobCard {
   posted_at: string | null
   status: JobStatus
   is_remote: boolean | null
+  listing_type?: JobListingType | null
+  is_sample?: boolean
   top_skills: string[]
   is_saved: boolean
   requirement_coverage?: number | null
@@ -93,7 +102,10 @@ export interface JobDetail {
   expires_at: string | null
   status: JobStatus
   is_remote: boolean | null
+  listing_type?: JobListingType | null
+  is_sample?: boolean
   source_name: string | null
+  source_label?: string | null
   skills: JobSkillPublic[]
   roles: JobRolePublic[]
   is_saved: boolean
@@ -312,6 +324,8 @@ export interface JobListFilters {
   employment_type?: string
   experience_min?: number
   posted_within_days?: number
+  listing_type?: string
+  include_sample?: boolean
   sort?: string
   page?: number
   limit?: number

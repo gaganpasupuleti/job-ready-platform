@@ -60,9 +60,15 @@ export function JobCardView({
       </div>
 
       <div className="flex flex-wrap gap-1">
+        {job.is_sample && <Badge variant="accent">Sample</Badge>}
+        {job.posted_at &&
+          Date.now() - new Date(job.posted_at).getTime() < 7 * 24 * 60 * 60 * 1000 && (
+            <Badge variant="accent">New</Badge>
+          )}
         {job.location_text && <Badge>{job.location_text}</Badge>}
         {job.is_remote && <Badge variant="accent">Remote</Badge>}
-        {workMode && <Badge>{workMode}</Badge>}
+        {workMode && workMode.toLowerCase() === 'hybrid' && <Badge>Hybrid</Badge>}
+        {workMode && workMode.toLowerCase() !== 'hybrid' && <Badge>{workMode}</Badge>}
         {experience && <Badge>{experience}</Badge>}
         {job.employment_type && (
           <Badge>{job.employment_type.replace(/_/g, ' ')}</Badge>

@@ -14,6 +14,7 @@ from app.models.job_enums import (
     ApplicationStatus,
     EmploymentType,
     IngestionRunStatus,
+    JobListingType,
     JobSkillImportance,
     JobSourceType,
     JobStatus,
@@ -49,6 +50,8 @@ class JobCard(BaseModel):
     posted_at: datetime | None = None
     status: JobStatus
     is_remote: bool | None = None
+    listing_type: JobListingType | None = None
+    is_sample: bool = False
     top_skills: list[str] = []
     is_saved: bool = False
     requirement_coverage: float | None = None
@@ -96,7 +99,10 @@ class JobDetail(BaseModel):
     expires_at: datetime | None = None
     status: JobStatus
     is_remote: bool | None = None
+    listing_type: JobListingType | None = None
+    is_sample: bool = False
     source_name: str | None = None
+    source_label: str | None = None
     skills: list[JobSkillPublic] = []
     roles: list[JobRolePublic] = []
     is_saved: bool = False

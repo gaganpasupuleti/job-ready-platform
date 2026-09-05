@@ -6,7 +6,7 @@ from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -20,7 +20,7 @@ from app.models.job import (
     SavedJob,
     UserJobPreference,
 )
-from app.models.job_enums import ApplicationStatus, JobStatus
+from app.models.job_enums import ApplicationStatus, JobListingType, JobStatus
 from app.models.tagging import Company, JobRole, Skill
 from app.models.user import User
 from app.schemas.job import (
@@ -110,6 +110,8 @@ class JobService:
                 .limit(5)
             )
         ).scalars().all()
+        listing = job.listing_type
+        is_sample = listing == JobListingType.SAMPLE_DEMO if listing else False
         return JobCard(
             id=job.id,
             slug=job.slug,
@@ -124,6 +126,8 @@ class JobService:
             posted_at=job.posted_at,
             status=job.status,
             is_remote=job.is_remote,
+            listing_type=listing,
+            is_sample=is_sample,
             top_skills=list(skills),
             is_saved=job.id in saved,
         )
@@ -144,6 +148,8 @@ class JobService:
         employment_type: str | None = None,
         experience_min: int | None = None,
         posted_within_days: int | None = None,
+        listing_type: str | None = None,
+        include_sample: bool = False,
         sort: str = "newest",
         page: int = 1,
         limit: int = 20,
@@ -151,6 +157,26 @@ class JobService:
         limit = min(max(limit, 1), 50)
         page = max(page, 1)
         stmt = select(Job).where(Job.status == JobStatus.ACTIVE)
+        if listing_type:
+            stmt = stmt.where(Job.listing_type == listing_type)
+        elif not include_sample:
+            # Prefer real/curated catalog; hide sample demos by default when any non-sample exists.
+            realish = await self.db.scalar(
+                select(func.count())
+                .select_from(Job)
+                .where(
+                    Job.status == JobStatus.ACTIVE,
+                    Job.listing_type.is_not(None),
+                    Job.listing_type != JobListingType.SAMPLE_DEMO,
+                )
+            )
+            if int(realish or 0) > 0:
+                stmt = stmt.where(
+                    or_(
+                        Job.listing_type.is_(None),
+                        Job.listing_type != JobListingType.SAMPLE_DEMO,
+                    )
+                )
         if q:
             pattern = f"%{q.strip()}%"
             stmt = stmt.where(
@@ -203,7 +229,16 @@ class JobService:
         elif sort == "title":
             stmt = stmt.order_by(Job.title.asc())
         else:
-            stmt = stmt.order_by(Job.posted_at.desc().nullslast(), Job.created_at.desc())
+            # Newest first; demote sample demos so they don't dominate.
+            sample_rank = case(
+                (Job.listing_type == JobListingType.SAMPLE_DEMO, 1),
+                else_=0,
+            )
+            stmt = stmt.order_by(
+                sample_rank.asc(),
+                Job.posted_at.desc().nullslast(),
+                Job.created_at.desc(),
+            )
 
         stmt = stmt.offset((page - 1) * limit).limit(limit)
         jobs = (await self.db.execute(stmt)).scalars().unique().all()
@@ -263,6 +298,16 @@ class JobService:
             src = await self.db.get(JobSource, job.source_id)
             source_name = src.name if src else None
 
+        listing = job.listing_type
+        is_sample = listing == JobListingType.SAMPLE_DEMO if listing else False
+        source_label = {
+            JobListingType.SAMPLE_DEMO: "Sample Demo",
+            JobListingType.CURATED_IMPORT: "Curated Import",
+            JobListingType.CAREER_SITE: "Company Career Site",
+            JobListingType.MANUAL: "Manual",
+            JobListingType.REAL: "Company Career Site",
+        }.get(listing, source_name or "Curated Import")
+
         return JobDetail(
             id=job.id,
             slug=job.slug,
@@ -290,7 +335,10 @@ class JobService:
             expires_at=job.expires_at,
             status=job.status,
             is_remote=job.is_remote,
+            listing_type=listing,
+            is_sample=is_sample,
             source_name=source_name,
+            source_label=source_label,
             skills=[
                 JobSkillPublic(id=s.id, name=s.name, slug=s.slug, importance=imp)
                 for s, imp in skill_rows
