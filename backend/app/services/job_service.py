@@ -6,7 +6,7 @@ from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -230,7 +230,7 @@ class JobService:
             stmt = stmt.order_by(Job.title.asc())
         else:
             # Newest first; demote sample demos so they don't dominate.
-            sample_rank = func.case(
+            sample_rank = case(
                 (Job.listing_type == JobListingType.SAMPLE_DEMO, 1),
                 else_=0,
             )
