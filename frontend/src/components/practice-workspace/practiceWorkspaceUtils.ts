@@ -26,13 +26,21 @@ export function useWorkspaceShortcuts(handlers: {
   run?: () => void
   submit?: () => void
   enabled?: boolean
+  /** When set, shortcuts fire only when focus is inside this element (e.g. editor area). */
+  rootRef?: { current: HTMLElement | null }
 }) {
   useEffect(() => {
     if (handlers.enabled === false) return
     const onKey = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.key !== 'Enter') return
       const target = event.target as HTMLElement | null
-      if (target && ['INPUT', 'SELECT'].includes(target.tagName) && target.tagName !== 'TEXTAREA') {
+      if (handlers.rootRef?.current) {
+        if (!target || !handlers.rootRef.current.contains(target)) return
+      } else if (
+        target &&
+        ['INPUT', 'SELECT'].includes(target.tagName) &&
+        target.tagName !== 'TEXTAREA'
+      ) {
         return
       }
       event.preventDefault()

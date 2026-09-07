@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { SqlProblemFilters, SqlProblemList } from '@/features/sql/SqlProblemList'
 import { SqlProgressSummary } from '@/features/sql/SqlProgressSummary'
+import { SqlReviewCtas } from '@/features/sql/SqlReviewCtas'
+import { fetchMistakes, fetchMistakeSummary } from '@/services/mistakeService'
 import { fetchSqlProblems, fetchSqlProgress } from '@/services/sqlService'
 import type { SqlProgressStatus } from '@/types/sql'
 
@@ -28,6 +30,32 @@ export function SqlPage() {
       }),
   })
 
+  const { data: sqlMistakes } = useQuery({
+    queryKey: ['mistakes', 'sql', 'unresolved'],
+    queryFn: () => fetchMistakes({ source_type: 'sql', view: 'unresolved' }),
+  })
+
+  const { data: mistakeSummary } = useQuery({
+    queryKey: ['mistakes-summary'],
+    queryFn: fetchMistakeSummary,
+  })
+
+  const { data: unsolvedProblems } = useQuery({
+    queryKey: ['sql-problems', 'unsolved-for-cta'],
+    queryFn: () => fetchSqlProblems({ status: 'unsolved', limit: 5 }),
+  })
+
+  const firstMistakeHref = useMemo(() => {
+    const open = sqlMistakes?.find((m) => m.retry_href)
+    return open?.retry_href ?? null
+  }, [sqlMistakes])
+
+  const unsolvedHref = useMemo(() => {
+    const item = unsolvedProblems?.items?.[0]
+    if (!item) return '/practice/sql?status=unsolved'
+    return `/practice/sql/${item.slug}`
+  }, [unsolvedProblems])
+
   return (
     <div className="space-y-6">
       <div>
@@ -39,6 +67,14 @@ export function SqlPage() {
       </div>
 
       {progress && <SqlProgressSummary progress={progress} />}
+
+      <SqlReviewCtas
+        progress={progress}
+        mistakes={sqlMistakes}
+        mistakeSummary={mistakeSummary}
+        unsolvedHref={unsolvedHref}
+        firstMistakeHref={firstMistakeHref}
+      />
 
       <SqlProblemFilters
         search={search}

@@ -279,7 +279,15 @@ async def test_live_runner_permissions():
 
     from app.core.config import settings
     from app.services.sql_execution.executor import SqlSandboxExecutor
-    from app.services.sql_execution.pools import admin_dsn, runner_dsn, to_asyncpg_dsn
+    from app.services.sql_execution.pools import (
+        admin_dsn,
+        close_sandbox_pools,
+        runner_dsn,
+        to_asyncpg_dsn,
+    )
+
+    # Avoid stale pools bound to a previous pytest event loop.
+    await close_sandbox_pools()
 
     # Runner cannot create schema/table or write
     runner = await asyncpg.connect(runner_dsn())
@@ -319,6 +327,8 @@ async def test_live_runner_permissions():
         "WITH x AS (DELETE FROM t RETURNING *) SELECT * FROM x", tables
     )
     assert bad.error is not None
+
+    await close_sandbox_pools()
 
 
 def test_runner_dsn_derives_when_admin_credentials_shared(monkeypatch):

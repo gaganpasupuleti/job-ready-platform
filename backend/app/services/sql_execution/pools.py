@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from urllib.parse import quote, urlparse, urlunparse
 
@@ -13,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 _admin_pool: asyncpg.Pool | None = None
 _runner_pool: asyncpg.Pool | None = None
+_pool_loop_id: int | None = None
 
 
 def to_asyncpg_dsn(url: str) -> str:
@@ -69,8 +71,19 @@ def runner_dsn() -> str:
     )
 
 
+def _drop_pools_for_new_loop() -> None:
+    """Drop in-memory pool refs when pytest (or reload) starts a new event loop."""
+    global _admin_pool, _runner_pool, _pool_loop_id
+    loop_id = id(asyncio.get_running_loop())
+    if _pool_loop_id is not None and _pool_loop_id != loop_id:
+        _admin_pool = None
+        _runner_pool = None
+    _pool_loop_id = loop_id
+
+
 async def get_admin_pool() -> asyncpg.Pool:
     global _admin_pool
+    _drop_pools_for_new_loop()
     if _admin_pool is None:
         _admin_pool = await asyncpg.create_pool(
             dsn=admin_dsn(),
@@ -84,6 +97,7 @@ async def get_admin_pool() -> asyncpg.Pool:
 
 async def get_runner_pool() -> asyncpg.Pool:
     global _runner_pool
+    _drop_pools_for_new_loop()
     if _runner_pool is None:
         _runner_pool = await asyncpg.create_pool(
             dsn=runner_dsn(),
@@ -96,10 +110,15 @@ async def get_runner_pool() -> asyncpg.Pool:
 
 
 async def close_sandbox_pools() -> None:
-    global _admin_pool, _runner_pool
-    if _admin_pool is not None:
-        await _admin_pool.close()
-        _admin_pool = None
-    if _runner_pool is not None:
-        await _runner_pool.close()
-        _runner_pool = None
+    global _admin_pool, _runner_pool, _pool_loop_id
+    for pool in (_admin_pool, _runner_pool):
+        if pool is None:
+            continue
+        try:
+            await pool.close()
+        except Exception:
+            # Pool may already be bound to a closed event loop (pytest) — drop it.
+            logger.debug("SQL sandbox pool close ignored", exc_info=True)
+    _admin_pool = None
+    _runner_pool = None
+    _pool_loop_id = None

@@ -12,7 +12,9 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
   test('workspace loads with execution unavailable banner', async ({ page }) => {
     test.skip(!fixtures.coding.id, 'No coding problem seeded')
     await page.goto(`/practice/dsa/${fixtures.coding.id}`)
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toBeVisible({
+      timeout: 30_000,
+    })
     await expect(page.getByText(/execution is temporarily unavailable|currently unavailable/i)).toBeVisible()
     await expect(page.getByRole('button', { name: /^run$/i })).toBeDisabled()
     await expect(page.getByRole('button', { name: /^submit$/i })).toBeDisabled()
@@ -24,7 +26,9 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
   test('draft persists while execution is off', async ({ page }) => {
     test.skip(!fixtures.coding.id, 'No coding problem seeded')
     await page.goto(`/practice/dsa/${fixtures.coding.id}`)
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toBeVisible({
+      timeout: 30_000,
+    })
     const marker = `# e2e-draft-${Date.now()}`
     await page.evaluate(
       ({ problemId, markerText }) => {
