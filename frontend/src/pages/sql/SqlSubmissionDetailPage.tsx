@@ -59,7 +59,7 @@ export function SqlSubmissionDetailPage() {
       <Card padding="md">
         <h3 className="mb-3 text-sm font-medium">Query</h3>
         <div className="h-64 overflow-hidden rounded-md border border-[var(--color-border)]">
-          <SqlEditor value={data.query_text} onChange={() => {}} readOnly height="100%" />
+          <SqlEditor value={data.query_text} onChange={() => {}} readOnly height="100%" showHeader={false} />
         </div>
       </Card>
 

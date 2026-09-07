@@ -12,7 +12,13 @@ export function SqlSolutionViewer({ solution }: SqlSolutionViewerProps) {
       <Card padding="md">
         <h4 className="mb-2 text-sm font-medium">Solution query</h4>
         <div className="h-48 overflow-hidden rounded-md border border-[var(--color-border)]">
-          <SqlEditor value={solution.solution_query} onChange={() => {}} readOnly height="100%" />
+          <SqlEditor
+            value={solution.solution_query}
+            onChange={() => {}}
+            readOnly
+            height="100%"
+            showHeader={false}
+          />
         </div>
       </Card>
 
@@ -34,6 +40,7 @@ export function SqlSolutionViewer({ solution }: SqlSolutionViewerProps) {
               onChange={() => {}}
               readOnly
               height="100%"
+              showHeader={false}
             />
           </div>
         </Card>

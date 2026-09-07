@@ -236,17 +236,30 @@ export function HintPanel({
   empty?: string
 }) {
   if (!hints.length) return <EmptyState title={empty} />
+  const canRevealMore = revealed < hints.length
   return (
     <div className="space-y-3">
+      <p className="text-xs text-[var(--color-text-muted)]">
+        {revealed === 0
+          ? `Hint 1 of ${hints.length} — reveal when you need a nudge`
+          : `Showing ${revealed} of ${hints.length}`}
+      </p>
       {hints.slice(0, revealed).map((hint, index) => (
         <div key={index} className="rounded-md border border-[var(--color-border)] p-3 text-sm">
-          <p className="mb-1 text-xs text-[var(--color-text-subtle)]">Hint {index + 1}</p>
+          <p className="mb-1 text-xs text-[var(--color-text-subtle)]">
+            Hint {index + 1} of {hints.length}
+          </p>
           <p>{hint}</p>
         </div>
       ))}
-      {revealed < hints.length && (
+      {revealed === 0 && (
+        <p className="text-xs text-[var(--color-text-subtle)]">
+          Hints stay hidden until you click Reveal. The full solution is never shown automatically.
+        </p>
+      )}
+      {canRevealMore && (
         <Button type="button" variant="secondary" size="sm" onClick={onReveal}>
-          Reveal Hint {revealed + 1}
+          Reveal next hint ({revealed + 1} of {hints.length})
         </Button>
       )}
     </div>
