@@ -5,12 +5,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
 import { ErrorState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
+import { useAuth } from '@/hooks/useAuth'
 import { fetchReadiness, refreshReadiness } from '@/services/readinessService'
 
 export function ReadinessPage() {
+  const { user } = useAuth()
+  const uid = user?.id
   const [showWhy, setShowWhy] = useState(false)
   const queryClient = useQueryClient()
-  const { data, isLoading, error } = useQuery({ queryKey: ['readiness'], queryFn: fetchReadiness })
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['readiness', uid],
+    queryFn: fetchReadiness,
+    enabled: Boolean(uid),
+  })
   const refresh = useMutation({
     mutationFn: refreshReadiness,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['readiness'] }),
@@ -19,10 +26,12 @@ export function ReadinessPage() {
   if (isLoading) return <LoadingState label="Loading readiness" />
   if (error || !data) return <ErrorState message="Could not load readiness profile." />
 
-  const scoreLabel =
-    data.has_minimum_evidence && data.score != null
-      ? `${Math.round(data.score)}%`
-      : 'Building your profile'
+  const showOverall =
+    data.overall_score_ready !== false &&
+    data.is_hiring_probability !== true &&
+    data.has_minimum_evidence &&
+    data.score != null
+  const scoreLabel = showOverall ? `${Math.round(data.score!)}%` : 'Building your profile'
 
   return (
     <div className="space-y-6">
@@ -47,7 +56,14 @@ export function ReadinessPage() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
             <p className="text-3xl font-semibold text-[var(--color-text)]">{scoreLabel}</p>
-            <p className="text-xs text-[var(--color-text-muted)]">Role readiness</p>
+            <p className="text-xs text-[var(--color-text-muted)]">
+              {showOverall ? 'Skill coverage score' : 'Overall % withheld until evidence is ready'}
+            </p>
+            {data.formula_version ? (
+              <p className="mt-1 text-[10px] text-[var(--color-text-subtle)]">
+                Formula {data.formula_version} · not a hiring probability
+              </p>
+            ) : null}
           </div>
           <div>
             <p className="text-lg font-medium capitalize text-[var(--color-text)]">

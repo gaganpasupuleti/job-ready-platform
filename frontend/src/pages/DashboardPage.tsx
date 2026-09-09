@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Card, CardHeader } from '@/components/common/Card'
 import { EmptyState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
 import { StatCard } from '@/features/dashboard/StatCard'
+import { useAuth } from '@/hooks/useAuth'
 import { fetchAiHome } from '@/services/aiService'
 import { fetchCodingProgress } from '@/services/codingService'
 import { fetchInterviewProgress } from '@/services/interviewService'
@@ -15,26 +16,52 @@ import { fetchSqlProgress } from '@/services/sqlService'
 import type { DashboardCard } from '@/types'
 
 export function DashboardPage() {
+  const { user } = useAuth()
+  const uid = user?.id
   const { data: continueItems, isLoading: continueLoading } = useQuery({
-    queryKey: ['continue-learning'],
+    queryKey: ['continue-learning', uid],
     queryFn: fetchContinueLearning,
+    enabled: Boolean(uid),
   })
-  const { data: coding } = useQuery({ queryKey: ['coding-progress'], queryFn: fetchCodingProgress })
-  const { data: sql } = useQuery({ queryKey: ['sql-progress'], queryFn: fetchSqlProgress })
-  const { data: ai } = useQuery({ queryKey: ['ai-home'], queryFn: fetchAiHome })
-  const { data: projects } = useQuery({ queryKey: ['projects'], queryFn: fetchProjects })
+  const { data: coding } = useQuery({
+    queryKey: ['coding-progress', uid],
+    queryFn: fetchCodingProgress,
+    enabled: Boolean(uid),
+  })
+  const { data: sql } = useQuery({
+    queryKey: ['sql-progress', uid],
+    queryFn: fetchSqlProgress,
+    enabled: Boolean(uid),
+  })
+  const { data: ai } = useQuery({
+    queryKey: ['ai-home', uid],
+    queryFn: fetchAiHome,
+    enabled: Boolean(uid),
+  })
+  const { data: projects } = useQuery({
+    queryKey: ['projects', uid],
+    queryFn: fetchProjects,
+    enabled: Boolean(uid),
+  })
   const { data: interview } = useQuery({
-    queryKey: ['interview-progress'],
+    queryKey: ['interview-progress', uid],
     queryFn: fetchInterviewProgress,
+    enabled: Boolean(uid),
   })
   const { data: jobsSummary } = useQuery({
-    queryKey: ['jobs-summary'],
+    queryKey: ['jobs-summary', uid],
     queryFn: fetchJobsSummary,
+    enabled: Boolean(uid),
   })
-  const { data: readiness } = useQuery({ queryKey: ['readiness'], queryFn: fetchReadiness })
+  const { data: readiness } = useQuery({
+    queryKey: ['readiness', uid],
+    queryFn: fetchReadiness,
+    enabled: Boolean(uid),
+  })
   const { data: mistakeSummary } = useQuery({
-    queryKey: ['mistakes-summary'],
+    queryKey: ['mistakes-summary', uid],
     queryFn: fetchMistakeSummary,
+    enabled: Boolean(uid),
   })
 
   const cards: DashboardCard[] = [

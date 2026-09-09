@@ -9,6 +9,7 @@ import {
 } from 'react'
 
 import { getAuthToken } from '@/api/client'
+import { clearAuthQueryCache } from '@/queryClient'
 import { fetchMe, login, logoutApi, register } from '@/services/authService'
 import type { AuthResponse, LoginPayload, RegisterPayload, User } from '@/types/auth'
 
@@ -50,18 +51,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       isAuthenticated: Boolean(user),
       login: async (payload) => {
+        clearAuthQueryCache()
         const response = await login(payload)
         setUser(response.user)
         return response
       },
       register: async (payload) => {
+        clearAuthQueryCache()
         const response = await register(payload)
         setUser(response.user)
         return response
       },
       logout: async () => {
-        await logoutApi()
-        setUser(null)
+        try {
+          await logoutApi()
+        } finally {
+          clearAuthQueryCache()
+          setUser(null)
+        }
       },
       refreshUser,
     }),

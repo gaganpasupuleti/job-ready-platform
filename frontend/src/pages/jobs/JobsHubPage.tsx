@@ -10,12 +10,15 @@ import {
   LoadingState,
 } from '@/components/practice-workspace/PracticeWorkspace'
 import { JobCardView } from '@/features/jobs/JobCard'
+import { useAuth } from '@/hooks/useAuth'
 import { fetchJobs, fetchJobsSummary } from '@/services/jobService'
 
 const inputClass =
   'rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)]'
 
 export function JobsHubPage() {
+  const { user } = useAuth()
+  const uid = user?.id
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
   const [role, setRole] = useState(searchParams.get('role') ?? '')
@@ -35,8 +38,9 @@ export function JobsHubPage() {
   }
 
   const { data: summary } = useQuery({
-    queryKey: ['jobs-summary'],
+    queryKey: ['jobs-summary', uid],
     queryFn: fetchJobsSummary,
+    enabled: Boolean(uid),
   })
 
   const { data, isLoading, error } = useQuery({
