@@ -542,7 +542,11 @@ class LearnService:
     ) -> dict:
         lesson = await self._get_lesson_or_404(lesson_id)
         data = dict(payload or {})
-        is_correct = data.pop("is_correct", None)
+        # Client may self-report correctness; never treat that as verified achievement.
+        self_reported_correct = data.pop("is_correct", None)
+        if self_reported_correct is not None:
+            data["self_reported_correct"] = bool(self_reported_correct)
+
         submission_id = data.pop("coding_submission_id", None)
         if isinstance(submission_id, str):
             try:
@@ -550,12 +554,29 @@ class LearnService:
             except ValueError:
                 submission_id = None
 
+        verified_correct: bool | None = None
+        if submission_id is not None:
+            from app.models.coding import CodingSubmission
+            from app.models.coding_enums import SubmissionStatus
+
+            submission = await self.db.get(CodingSubmission, submission_id)
+            if (
+                submission is not None
+                and submission.user_id == user.id
+                and submission.status == SubmissionStatus.ACCEPTED
+            ):
+                verified_correct = True
+            elif submission is not None and submission.user_id == user.id:
+                verified_correct = False
+            else:
+                submission_id = None
+
         self.db.add(
             LessonAttempt(
                 user_id=user.id,
                 lesson_id=lesson.id,
                 payload_json=data,
-                is_correct=bool(is_correct) if is_correct is not None else None,
+                is_correct=verified_correct,
                 coding_submission_id=submission_id,
             )
         )
@@ -579,7 +600,11 @@ class LearnService:
         return {
             "attempts": progress.attempts,
             "status": progress.status.value,
-            "is_correct": bool(is_correct) if is_correct is not None else None,
+            "is_correct": verified_correct,
+            "self_reported_correct": bool(self_reported_correct)
+            if self_reported_correct is not None
+            else None,
+            "verified": verified_correct is True,
         }
 
     async def feedback(self, lesson_id: UUID, user: User, payload: LessonFeedbackIn) -> dict:
@@ -1475,6 +1500,7 @@ class LearnService:
         return row[0], row[1], row[2]
 
     async def _has_successful_attempt(self, user_id: UUID, lesson_id: UUID) -> bool:
+        """Verified achievement only — client self-reports never set is_correct=True."""
         count = await self.db.scalar(
             select(func.count())
             .select_from(LessonAttempt)

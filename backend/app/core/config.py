@@ -86,6 +86,14 @@ class Settings(BaseSettings):
     jwt_secret_key: str = _UNSAFE_JWT_DEFAULT
     jwt_access_token_expire_minutes: int = 60 * 24
 
+    # Login abuse controls (Redis-backed; process-local fallback if Redis unavailable)
+    login_max_failures: int = 10
+    login_failure_window_seconds: int = 300
+
+    # Explicit admin bootstrap (never use hardcoded defaults in production)
+    admin_bootstrap_email: str = ""
+    admin_bootstrap_password: str = ""
+
     practice_catalog_cache_ttl_seconds: int = 300
     practice_catalog_cache_key: str = "practice:catalog"
 

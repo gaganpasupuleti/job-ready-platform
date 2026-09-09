@@ -30,6 +30,7 @@ class SkillReadinessItem(BaseModel):
     effective_score: float = 0
     evidence_strength: str = "low"
     status: str = "no_evidence"
+    assessed: bool = False
     sources: list[SkillSourceBreakdown] = Field(default_factory=list)
 
 
@@ -40,6 +41,7 @@ class WhyBreakdownItem(BaseModel):
     readiness: float
     effective_score: float
     evidence_strength: str
+    assessed: bool = False
 
 
 class TrendPoint(BaseModel):
@@ -72,6 +74,10 @@ class ReadinessOverview(BaseModel):
     trend: list[TrendPoint] = Field(default_factory=list)
     recommended_actions: list[RecommendationAction] = Field(default_factory=list)
     message: str | None = None
+    formula_version: str = "2.0.0"
+    formula_label: str = "skill_coverage_v2"
+    overall_score_ready: bool = True
+    is_hiring_probability: bool = False
 
 
 class SkillProfileItem(BaseModel):

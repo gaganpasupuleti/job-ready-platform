@@ -460,6 +460,15 @@ class CodingService:
                 from app.services.project_sync import complete_linked_project_tasks
 
                 await complete_linked_project_tasks(self.db, user.id, coding_problem_id=problem.id)
+            elif submission.status == SubmissionStatus.WRONG_ANSWER:
+                from app.services.mistake_service import MistakeService
+
+                await MistakeService(self.db).record_coding_wrong(
+                    user_id=user.id,
+                    problem=problem,
+                    submission=submission,
+                    commit=False,
+                )
 
         public_results = [self._public_result(r, test_cases) for r in results]
 
