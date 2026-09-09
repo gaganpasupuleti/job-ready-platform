@@ -14,8 +14,8 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 | Stream | Focus | Status |
 |--------|-------|--------|
-| Backend | §26 A–E: auth bootstrap, mistakes, readiness, trusted completion, alembic 014 tip | in progress |
-| Frontend | AUTH-01 cache isolation; primary nav reduction; honesty for readiness/mistakes UI | in progress |
+| Backend | §26 A–E: auth bootstrap, mistakes, readiness, trusted completion, alembic 014 tip | **done** on learning-runtime branch |
+| Frontend | AUTH-01 cache isolation; primary nav reduction; honesty for readiness/mistakes UI | **done** on experience-v4 branch |
 
 ## Explicitly deferred
 
@@ -30,18 +30,18 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 |------|------|-------|
 | Routes | `frontend/src/routes/index.tsx` | Deep links for SQL/DSA/AI/infra preserved |
 | Tokens | `frontend/src/index.css` | Light density only in Sprint 1 |
-| Nav | `frontend/src/components/navigation/navConfig.ts`, `Sidebar.tsx` | Reduce primary student set |
-| Auth cache | `frontend/src/hooks/useAuth.tsx`, `App.tsx` QueryClient | AUTH-01 |
-| SQL/DSA workbench | PR #2 on master | Do not regress |
+| Nav | `frontend/src/components/navigation/navConfig.ts`, `Sidebar.tsx` | Primary Today set; deep links under Practice tracks / More |
+| Auth cache | `frontend/src/hooks/useAuth.tsx`, `queryClient.ts` | AUTH-01 clear on auth transitions |
+| SQL/DSA workbench | PR #2 on master | Not regressed |
 
 ## Checks
 
 | Check | Result | When |
 |-------|--------|------|
-| `npm run lint` (frontend) | TBD | Sprint 1 exit |
-| `npm run build` (frontend) | TBD | Sprint 1 exit |
-| `pytest` (backend) | TBD | Sprint 1 exit |
-| Playwright CI baseline | green on PR #3 | recorded Phase 0 |
+| `npm run lint` (frontend) | pass (existing warnings only) | Sprint 1 exit |
+| `npm run build` (frontend) | pass | Sprint 1 exit |
+| `pytest` (backend) | Sprint 1 suites green (`test_auth_hardening`, `test_sprint1_reliability`) | learning-runtime |
+| Playwright CI baseline | green on PR #3; AUTH-01 scenario added in FE branch | recorded Phase 0 |
 
 ## Blockers
 
@@ -66,4 +66,10 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 ### Frontend (`feature/jobready-frontend-experience-v4`)
 
-- (pending AUTH-01 + nav)
+- `frontend/src/queryClient.ts` — shared QueryClient + `clearAuthQueryCache`
+- `frontend/src/App.tsx`, `hooks/useAuth.tsx` — clear cache on login/logout/register (AUTH-01)
+- `frontend/src/components/navigation/navConfig.ts` — primary Today set + demoted deep links
+- Dashboard / Mistakes / Readiness / Jobs private queryKeys scoped with `user.id`
+- `frontend/src/pages/readiness/ReadinessPage.tsx` — withhold misleading overall %; formula honesty
+- `frontend/e2e/auth.spec.ts` — AUTH-01 account-switch scenario
+- Ledgers mirrored from backend branch for FE PR reviewability
