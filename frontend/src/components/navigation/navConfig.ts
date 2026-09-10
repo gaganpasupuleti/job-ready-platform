@@ -44,6 +44,7 @@ export const navigationConfig: NavSection[] = [
       { label: 'SQL', path: '/practice/sql', icon: 'Database' },
       { label: 'DSA', path: '/practice/dsa', icon: 'Code2' },
       { label: 'Coding', path: '/practice/coding', icon: 'Terminal' },
+      { label: 'Python Playground', path: '/practice/python', icon: 'Terminal' },
       { label: 'Technical MCQs', path: '/practice/mcq', icon: 'FileQuestion' },
       { label: 'Aptitude / CRT', path: '/practice/aptitude', icon: 'Brain' },
       { label: 'Projects', path: '/practice/projects', icon: 'Wrench' },
