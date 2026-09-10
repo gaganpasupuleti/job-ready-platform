@@ -16,6 +16,7 @@ import {
   ApplicationStatusBadge,
   applicationStatusLabel,
 } from '@/features/jobs/ApplicationStatusBadge'
+import { useAuth } from '@/hooks/useAuth'
 import {
   changeApplicationStatus,
   fetchApplication,
@@ -54,17 +55,19 @@ function formatDateTime(value: string | null) {
 export function JobApplicationDetailPage() {
   const { applicationId } = useParams<{ applicationId: string }>()
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+  const uid = user?.id
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['application', applicationId],
+    queryKey: ['application', uid, applicationId],
     queryFn: () => fetchApplication(applicationId!),
-    enabled: Boolean(applicationId),
+    enabled: Boolean(applicationId) && Boolean(uid),
   })
 
   const { data: history } = useQuery({
-    queryKey: ['application-history', applicationId],
+    queryKey: ['application-history', uid, applicationId],
     queryFn: () => fetchApplicationHistory(applicationId!),
-    enabled: Boolean(applicationId),
+    enabled: Boolean(applicationId) && Boolean(uid),
   })
 
   const [notes, setNotes] = useState('')
@@ -81,8 +84,8 @@ export function JobApplicationDetailPage() {
   }, [data])
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ['application', applicationId] })
-    queryClient.invalidateQueries({ queryKey: ['application-history', applicationId] })
+    queryClient.invalidateQueries({ queryKey: ['application', uid, applicationId] })
+    queryClient.invalidateQueries({ queryKey: ['application-history', uid, applicationId] })
     queryClient.invalidateQueries({ queryKey: ['applications'] })
     queryClient.invalidateQueries({ queryKey: ['jobs-summary'] })
   }
@@ -192,8 +195,11 @@ export function JobApplicationDetailPage() {
               />
             </div>
             <div>
-              <label className="text-xs text-[var(--color-text-muted)]">Notes</label>
+              <label htmlFor="application-notes" className="text-xs text-[var(--color-text-muted)]">
+                Notes
+              </label>
               <textarea
+                id="application-notes"
                 className={inputClass}
                 rows={4}
                 value={notes}

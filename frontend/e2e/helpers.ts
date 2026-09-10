@@ -95,16 +95,87 @@ export async function registerUser(
 
 export async function logout(page: Page) {
   const logoutBtn = page.getByRole('button', { name: /logout/i })
-  try {
-    await logoutBtn.first().click({ timeout: 8_000 })
-  } catch {
-    await page.evaluate(() => {
-      localStorage.clear()
-      sessionStorage.clear()
-    })
-  }
-  // Avoid racing page.goto with ProtectedRoute / 401 redirects to /login?from=...
+  await expect(logoutBtn, 'Logout control must be present for real sign-out').toBeVisible({
+    timeout: 8_000,
+  })
+  await logoutBtn.click()
   await page.waitForURL(/\/login/, { timeout: 15_000 })
+}
+
+export async function registerUserInApp(
+  page: Page,
+  user: { email: string; username: string; password: string; fullName?: string },
+) {
+  // Client-side navigation only — no page.goto / reload.
+  const registerLink = page.getByRole('link', { name: /register|create account|sign up/i }).first()
+  if (await registerLink.count()) {
+    await registerLink.click()
+  } else {
+    await page.getByRole('button', { name: /register|sign up/i }).first().click()
+  }
+  await expect(page).toHaveURL(/\/register/)
+  await page.getByLabel('Full name').fill(user.fullName ?? 'E2E New Student')
+  await page.getByLabel('Email').fill(user.email)
+  await page.getByLabel('Username').fill(user.username)
+  await page.getByLabel('Password').fill(user.password)
+  await page.getByRole('button', { name: /register/i }).click()
+  await expect(page).not.toHaveURL(/\/register/)
+}
+
+/** Create a distinctive private application note for the current session via API. */
+export async function seedPrivateApplicationNote(page: Page, marker: string) {
+  const result = await page.evaluate(async (noteMarker) => {
+    const token = localStorage.getItem('jrp_access_token')
+    if (!token) throw new Error('missing auth token')
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+    const jobsRes = await fetch('/api/v1/jobs?limit=1', { headers })
+    if (!jobsRes.ok) throw new Error(`jobs list failed: ${jobsRes.status}`)
+    const jobsBody = await jobsRes.json()
+    const jobId = jobsBody.items?.[0]?.id
+    if (!jobId) throw new Error('no jobs available to seed private note')
+
+    const applyRes = await fetch(`/api/v1/jobs/${jobId}/apply`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({}),
+    })
+    let applicationId: string | null = null
+    if (applyRes.ok) {
+      const applied = await applyRes.json()
+      applicationId = applied.id ?? null
+    } else {
+      const appsRes = await fetch('/api/v1/applications', { headers })
+      if (!appsRes.ok) throw new Error(`applications list failed: ${appsRes.status}`)
+      const apps = await appsRes.json()
+      const list = Array.isArray(apps) ? apps : []
+      applicationId = list[0]?.id ?? null
+    }
+    if (!applicationId) throw new Error('could not resolve application id')
+
+    const patchRes = await fetch(`/api/v1/applications/${applicationId}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ notes: noteMarker }),
+    })
+    if (!patchRes.ok) throw new Error(`note update failed: ${patchRes.status}`)
+    return { applicationId, jobId }
+  }, marker)
+  return result
+}
+
+/** Sign in via client-side navigation from the login screen (no page.goto). */
+export async function loginInApp(
+  page: Page,
+  user: { email: string; password: string },
+) {
+  await expect(page).toHaveURL(/\/login/)
+  await page.getByLabel('Email').fill(user.email)
+  await page.getByLabel('Password').fill(user.password)
+  await page.getByRole('button', { name: /sign in/i }).click()
+  await expect(page).not.toHaveURL(/\/login/)
 }
 
 export function attachConsoleGuard(page: Page) {

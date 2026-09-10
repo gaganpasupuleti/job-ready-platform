@@ -18,8 +18,8 @@ const variants = {
 }
 
 const sizes = {
-  sm: 'h-8 px-3 text-xs',
-  md: 'h-9 px-4 text-sm',
+  sm: 'h-7 px-2.5 text-xs',
+  md: 'h-8 px-3 text-sm',
 }
 
 export function Button({
@@ -32,7 +32,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:opacity-50',
+        'inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] font-medium transition-colors disabled:opacity-50',
         variants[variant],
         sizes[size],
         className,

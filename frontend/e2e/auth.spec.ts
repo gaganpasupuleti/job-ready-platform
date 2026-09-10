@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test'
 
-import { attachConsoleGuard, loadManifest, loginAs, logout, registerUser } from './helpers'
+import {
+  attachConsoleGuard,
+  loadManifest,
+  loginAs,
+  logout,
+  registerUser,
+  registerUserInApp,
+  seedPrivateApplicationNote,
+} from './helpers'
 
 const fixtures = loadManifest()
 
@@ -38,7 +46,11 @@ test.describe('Auth', () => {
   test('failed logout still clears local session', async ({ page }) => {
     await loginAs(page, fixtures.users.student)
     await page.route('**/api/v1/auth/logout**', async (route) => {
-      await route.fulfill({ status: 500, contentType: 'application/json', body: '{"detail":"logout failed"}' })
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: '{"detail":"logout failed"}',
+      })
     })
     await logout(page)
     await page.goto('/practice')
@@ -54,7 +66,11 @@ test.describe('Auth', () => {
         await route.continue()
         return
       }
-      await route.fulfill({ status: 401, contentType: 'application/json', body: '{"detail":"expired"}' })
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: '{"detail":"expired"}',
+      })
     })
     await page.goto('/jobs/applications')
     await expect(page).toHaveURL(/\/login/, { timeout: 15_000 })
@@ -63,7 +79,6 @@ test.describe('Auth', () => {
   test('cross-tab token clear signs out this tab', async ({ page }) => {
     await loginAs(page, fixtures.users.student)
     await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
-    // Simulate another tab clearing the auth token.
     await page.evaluate(() => {
       const key = 'jrp_access_token'
       const oldValue = localStorage.getItem(key)
@@ -81,14 +96,14 @@ test.describe('Auth', () => {
     await expect(page).toHaveURL(/\/login/, { timeout: 15_000 })
   })
 
-  test('AUTH-01 account switch does not flash prior private progress', async ({ page }) => {
+  test('AUTH-01 account switch does not leak prior private records', async ({ page }) => {
     const suffix = Date.now().toString(36).slice(-6)
     const markerA = `PRIVATE_MARKER_A_${suffix}`
     const userA = {
       email: `e2e.cache.a.${suffix}@jobready.dev`,
       username: `e2ecachea${suffix}`,
       password: 'E2eStudent123!',
-      fullName: `Cache User A ${markerA}`,
+      fullName: `Cache User A ${suffix}`,
     }
     const userB = {
       email: `e2e.cache.b.${suffix}@jobready.dev`,
@@ -102,46 +117,164 @@ test.describe('Auth', () => {
       timeout: 20_000,
     })
 
-    // Seed identifiable private progress for user A inside the same SPA session.
-    await page.goto('/jobs/applications')
-    await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 15_000 })
-    await page.evaluate((marker) => {
-      // Force a distinctive cached React Query entry that would flash if not cleared.
-      const cacheKey = JSON.stringify(['AUTH01_PRIVATE', marker])
-      sessionStorage.setItem(cacheKey, marker)
-      ;(window as unknown as { __AUTH01_MARKER__?: string }).__AUTH01_MARKER__ = marker
-    }, markerA)
+    const seeded = await seedPrivateApplicationNote(page, markerA)
+    expect(seeded.applicationId).toBeTruthy()
 
-    // Hold dashboard queries so a stale cache would still be visible after switch.
-    await page.route('**/api/v1/mistakes/summary**', async (route) => {
-      await new Promise((r) => setTimeout(r, 800))
+    // Render + cache A's private note through the real UI (SPA navigation).
+    await page.getByRole('link', { name: /^jobs$/i }).click()
+    await expect(page).toHaveURL(/\/jobs/)
+    await page.getByRole('link', { name: /applications/i }).first().click()
+    await expect(page).toHaveURL(/\/jobs\/applications/)
+    await page.locator(`a[href="/jobs/applications/${seeded.applicationId}"]`).click()
+    await expect(page).toHaveURL(new RegExp(`/jobs/applications/${seeded.applicationId}`))
+    await expect(page.getByLabel(/^notes$/i)).toHaveValue(markerA, { timeout: 15_000 })
+
+    const tokenA = await page.evaluate(() => localStorage.getItem('jrp_access_token'))
+    expect(tokenA).toBeTruthy()
+
+    type DelayedMode = 'success' | 'unauthorized'
+    const queue: DelayedMode[] = []
+    const waiters: Array<(mode: DelayedMode) => void> = []
+    const takeDelayedA = () =>
+      new Promise<DelayedMode>((resolve) => {
+        const next = queue.shift()
+        if (next) resolve(next)
+        else waiters.push(resolve)
+      })
+    const releaseDelayedA = (mode: DelayedMode) => {
+      const waiter = waiters.shift()
+      if (waiter) waiter(mode)
+      else queue.push(mode)
+    }
+
+    let delayedSuccessHandled = false
+    let delayed401Handled = false
+
+    await page.route('**/api/v1/applications**', async (route) => {
+      const authHeader = route.request().headers()['authorization'] ?? ''
+      // Only hold the detached A probe — let normal UI traffic continue.
+      if (
+        authHeader === `Bearer ${tokenA}` &&
+        route.request().headers()['x-auth01-probe'] === '1'
+      ) {
+        const mode = await takeDelayedA()
+        delayedSuccessHandled = true
+        if (mode === 'unauthorized') {
+          await route.fulfill({
+            status: 401,
+            contentType: 'application/json',
+            body: '{"detail":"expired"}',
+          })
+          return
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify([
+            {
+              id: seeded.applicationId,
+              job_id: seeded.jobId,
+              job_title: 'AUTH01 Private Job',
+              company_name: 'AUTH01 Co',
+              status: 'applied',
+              priority: 'medium',
+              job_status: 'active',
+            },
+          ]),
+        })
+        return
+      }
+      if (authHeader !== `Bearer ${tokenA}`) {
+        // Delay B private responses so a leaked A cache would still be visible.
+        await new Promise((r) => setTimeout(r, 1000))
+      }
       await route.continue()
     })
-    await page.goto('/mistakes')
-    await expect(page.getByRole('heading', { name: /mistake/i })).toBeVisible({ timeout: 15_000 })
-    await expect(page.getByText(markerA)).toHaveCount(0)
 
-    // Same-document account switch (no full browser restart).
+    await page.route('**/api/v1/mistakes/summary**', async (route) => {
+      const authHeader = route.request().headers()['authorization'] ?? ''
+      if (
+        authHeader === `Bearer ${tokenA}` &&
+        route.request().headers()['x-auth01-probe'] === '1'
+      ) {
+        const mode = await takeDelayedA()
+        if (mode === 'unauthorized') {
+          delayed401Handled = true
+          await route.fulfill({
+            status: 401,
+            contentType: 'application/json',
+            body: '{"detail":"expired"}',
+          })
+          return
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            open_count: 99,
+            repeated_count: 0,
+            resolved_count: 0,
+            top_weak_topics: [{ title: markerA, count: 99 }],
+          }),
+        })
+        return
+      }
+      if (authHeader !== `Bearer ${tokenA}`) {
+        await new Promise((r) => setTimeout(r, 1000))
+      }
+      await route.continue()
+    })
+
+    // Detached axios probes survive logout's queryClient.clear(); Authorization is A.
+    await page.evaluate(() => {
+      const w = window as unknown as {
+        __jobReadyApiClient: {
+          get: (url: string, cfg?: object) => Promise<unknown>
+        }
+        __auth01Probes?: Promise<unknown>[]
+      }
+      const client = w.__jobReadyApiClient
+      w.__auth01Probes = [
+        client.get('/applications', { headers: { 'X-Auth01-Probe': '1' } }),
+        client.get('/mistakes/summary', { headers: { 'X-Auth01-Probe': '1' } }),
+      ]
+    })
+
+    // Same-document switch: logout → register B (no page.goto / reload / new context).
     await logout(page)
-    await registerUser(page, userB)
+    await registerUserInApp(page, userB)
     await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible({
       timeout: 20_000,
     })
 
-    // Immediate checks before delayed private responses settle.
-    await expect(page.getByText(markerA)).toHaveCount(0)
-    await expect(page.getByText(userA.fullName, { exact: false })).toHaveCount(0)
-    await expect(page.getByText(userA.email, { exact: false })).toHaveCount(0)
+    const tokenB = await page.evaluate(() => localStorage.getItem('jrp_access_token'))
+    expect(tokenB).toBeTruthy()
+    expect(tokenB).not.toEqual(tokenA)
 
-    await page.goto('/mistakes')
-    await expect(page.getByRole('heading', { name: /mistake/i })).toBeVisible({ timeout: 15_000 })
+    // Immediate checks while B private responses are still delayed.
     await expect(page.getByText(markerA)).toHaveCount(0)
     await expect(page.getByText(userA.email, { exact: false })).toHaveCount(0)
 
-    await page.goto('/jobs/applications')
-    await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 15_000 })
+    await page.getByRole('link', { name: /^jobs$/i }).click()
+    await page.getByRole('link', { name: /applications/i }).first().click()
+    await expect(page).toHaveURL(/\/jobs\/applications/)
     await expect(page.getByText(markerA)).toHaveCount(0)
-    await expect(page.getByText(userA.email, { exact: false })).toHaveCount(0)
+    await expect(page.getByText('AUTH01 Private Job')).toHaveCount(0)
+
+    // Delayed A success after B must not leak into the UI.
+    releaseDelayedA('success')
+    await expect.poll(() => delayedSuccessHandled).toBe(true)
+    await expect(page.getByText(markerA)).toHaveCount(0)
+    await expect(page.getByText('AUTH01 Private Job')).toHaveCount(0)
+
+    // Old A 401 after B authenticates must not clear B's token or cache.
+    releaseDelayedA('unauthorized')
+    await expect.poll(() => delayed401Handled).toBe(true)
+    await expect
+      .poll(async () => page.evaluate(() => localStorage.getItem('jrp_access_token')))
+      .toBe(tokenB)
+    await expect(page).not.toHaveURL(/\/login/)
+    await expect(page.getByText(markerA)).toHaveCount(0)
   })
 
   test('register creates a student account', async ({ page }) => {

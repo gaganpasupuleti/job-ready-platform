@@ -64,6 +64,14 @@ export function ErrorState({ message }: { message: string }) {
   )
 }
 
+export function SavingState({ label = 'Saving…' }: { label?: string }) {
+  return (
+    <p className="text-xs text-[var(--color-text-muted)]" role="status" aria-live="polite">
+      {label}
+    </p>
+  )
+}
+
 export function SuccessState({
   title,
   children,

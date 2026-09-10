@@ -25,13 +25,29 @@ apiClient.interceptors.response.use(
     const isAuthEndpoint = /\/auth\/(login|register)\b/.test(requestUrl)
 
     if (status === 401 && !isAuthEndpoint) {
-      localStorage.removeItem(AUTH_TOKEN_KEY)
-      clearAuthQueryCache()
-      if (typeof window !== 'undefined') {
-        const path = window.location.pathname
-        if (!path.startsWith('/login') && !path.startsWith('/register')) {
-          const from = encodeURIComponent(path + window.location.search)
-          window.location.assign(`/login?from=${from}`)
+      const currentToken = localStorage.getItem(AUTH_TOKEN_KEY)
+      const rawAuth = error.config?.headers?.Authorization ?? error.config?.headers?.authorization
+      const requestAuth = String(
+        typeof rawAuth === 'string'
+          ? rawAuth
+          : rawAuth && typeof rawAuth === 'object' && 'toString' in rawAuth
+            ? String(rawAuth)
+            : '',
+      )
+      const currentBearer = currentToken ? `Bearer ${currentToken}` : ''
+      // Ignore stale 401s from a previous account after a client-side switch.
+      const matchesCurrentSession =
+        Boolean(currentBearer) && requestAuth === currentBearer
+
+      if (matchesCurrentSession) {
+        localStorage.removeItem(AUTH_TOKEN_KEY)
+        clearAuthQueryCache()
+        if (typeof window !== 'undefined') {
+          const path = window.location.pathname
+          if (!path.startsWith('/login') && !path.startsWith('/register')) {
+            const from = encodeURIComponent(path + window.location.search)
+            window.location.assign(`/login?from=${from}`)
+          }
         }
       }
     }
@@ -49,4 +65,10 @@ export function setAuthToken(token: string | null) {
 
 export function getAuthToken() {
   return localStorage.getItem(AUTH_TOKEN_KEY)
+}
+
+// Detached calls for AUTH e2e: in-flight requests survive queryClient.clear().
+if (typeof window !== 'undefined' && import.meta.env.MODE !== 'production') {
+  ;(window as unknown as { __jobReadyApiClient?: typeof apiClient }).__jobReadyApiClient =
+    apiClient
 }

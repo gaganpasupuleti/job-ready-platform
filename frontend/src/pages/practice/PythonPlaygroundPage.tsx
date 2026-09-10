@@ -60,7 +60,7 @@ export function PythonPlaygroundPage() {
   }, [available, latest?.status, runMutation.isPending])
 
   return (
-    <div className="flex h-[calc(100vh-4.5rem)] min-h-[520px] flex-col gap-3">
+    <div className="flex h-[calc(100vh-2.75rem)] min-h-[520px] flex-col gap-3 px-3 py-2 sm:px-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs text-[var(--color-text-muted)]">
@@ -70,7 +70,10 @@ export function PythonPlaygroundPage() {
             {' / '}
             Playground
           </p>
-          <h1 className="text-[22px] font-semibold leading-tight text-[var(--color-text)]">
+          <h1
+            className="text-[22px] font-semibold leading-tight text-[var(--color-text)]"
+            data-testid="python-playground-heading"
+          >
             Python Playground
           </h1>
           <p className="mt-1 max-w-2xl text-[13px] text-[var(--color-text-muted)]">
