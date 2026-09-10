@@ -75,7 +75,7 @@ export function Header({ onMenuClick, title }: HeaderProps) {
         {user && (
           <Button variant="ghost" size="sm" onClick={() => logout()} aria-label="Logout">
             <LogOut className="h-4 w-4" />
-            <span className="sr-only sm:not-sr-only sm:inline">Logout</span>
+            Logout
           </Button>
         )}
       </div>
