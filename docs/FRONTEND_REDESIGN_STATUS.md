@@ -22,7 +22,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | Item | Evidence | SHA / ref |
 |------|----------|-----------|
 | Backend tip | PR #4 head | `5f59544152a33f84ed3357c7046e15649e00a4db` |
-| Frontend tip (pre this commit) | PR #5 prior harden | `b401cb337fb5907906ff7543322804b3529955a6` |
+| Frontend tip (current tip) | PR #5 prior harden | `dba3ef712c2cc5c060759ffc3758af8a38ff0bc4` |
 | Alembic 014 | Present on PR #4 via `feb8d65`; **do not double-merge PR #3** into master after #4 | `014_phase12_listing_type` |
 | Mistake concurrency | `mistake_source_events` unique constraint + `test_mistake_concurrent_same_event_does_not_double_count` | migration `015_mistake_source_events` on BE branch |
 | AUTH-01 | Cache clear on login/register/logout; private queryKeys scoped; 401 clears cache; cross-tab storage listener; failed logout still clears | FE `useAuth` + `api/client` + `e2e/auth.spec.ts` |
