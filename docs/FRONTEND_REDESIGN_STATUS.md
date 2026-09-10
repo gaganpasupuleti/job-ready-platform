@@ -14,7 +14,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 | Stream | Focus | Status |
 |--------|-------|--------|
-| Backend | §26 A?E: auth bootstrap, mistakes, readiness, trusted completion, alembic 014 tip | **done** on learning-runtime (`5f59544` tip as of 2026-09-10) |
+| Backend | ?26 A?E: auth bootstrap, mistakes, readiness, trusted completion, alembic 014 tip | **done** on learning-runtime (`5f59544` tip as of 2026-09-10) |
 | Frontend | AUTH-01 cache isolation; primary nav reduction; honesty for readiness/mistakes UI | **done** + CI/AUTH hardening commits after `85a28c5` |
 
 ## Verification evidence (Sprint 1 close-out)
@@ -44,7 +44,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | Checkpoint | Status | Notes |
 |------------|--------|-------|
 | Sprint 1 verification | **GREEN** (prior CI) | PR #4/#5 Playwright + pytest + lint |
-| Verification gap close-out (2026-09-10) | **landed local tips** | BE `c6a1666` lesson/mistake races; FE `eb9f871` AUTH-01 + heading + 401 scope |
+| Verification gap close-out (2026-09-10) | **landed** | BE `c6a1666` / `db55bab`; FE `eb9f871` / `87f7018` |
 | Python Playground (distinct from assessed) | **landed FE** | `/practice/python` + `/practice/playground` |
 | Playground API | **landed BE** (learning-runtime) | `POST /api/v1/coding/playground/run` honest unavailable |
 | Visual foundation (compact shells/tokens) | **started FE** | Source Sans 3, denser controls, standard/focused/assessment shells |
@@ -57,7 +57,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 |-----|--------|----------|
 | Playground heading | Fixed | Header title is `<p>`; page keeps single main `h1`; e2e uses `getByRole('main').getByRole('heading', { level: 1 })` |
 | AUTH-01 | Strengthened | Real `/applications` note via API; SPA switch; delayed A success + A 401 after B; no sessionStorage-only markers; logout requires visible Logout |
-| Stale 401 after switch | Fixed | `api/client.ts` ignores 401 when request Authorization ? current token |
+| Stale 401 after switch | Fixed | `api/client.ts` ignores 401 when request Authorization does not match current token |
 | Lesson verification | Replaced | `test_lesson_attempt_verification_via_service` hits `/lessons/{id}/attempt` + completion gate |
 | Mistake concurrency | Extended | Same-event replay retained; distinct-event barrier race + item-create IntegrityError recovery |
 
@@ -82,10 +82,11 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 | Check | Result | When |
 |-------|--------|------|
-| `npm run lint` (frontend) | pass (existing warnings only) | Sprint 1 verification |
-| `npm run build` (frontend) | pass (CI) | PR #5 |
-| `pytest` (backend) | Sprint 1 suites green (`test_auth_hardening`, `test_sprint1_reliability` incl. concurrency) | learning-runtime CI |
-| Playwright CI | **green** on PR #4 (`d76da28`) and PR #5 (`00bab63`) ? pytest + lint/build + Playwright E2E | PR #4/#5 |
+| `npm run lint` (frontend) | pass (existing warnings only) | gap close `eb9f871` |
+| `npm run build` (frontend) | pass locally | gap close `eb9f871` |
+| `pytest` sprint1 + playground | **9 passed** locally | BE `c6a1666` |
+| Playwright AUTH-01 / playground | pending combined worktree run | after tip push |
+| Historical Playwright CI | green on older tips PR #4 `d76da28` / PR #5 `00bab63` | does **not** cover this checkpoint |
 
 ## Blockers
 
