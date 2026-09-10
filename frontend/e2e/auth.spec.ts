@@ -240,8 +240,8 @@ test.describe('Auth', () => {
       const client = w.__jobReadyApiClient
       if (!client) throw new Error('missing __jobReadyApiClient for AUTH-01 probes')
       w.__auth01Probes = [
-        client.get('/applications', { params: { auth01_probe: '1' } }),
-        client.get('/mistakes/summary', { params: { auth01_probe: '1' } }),
+        client.get('/api/v1/applications', { params: { auth01_probe: '1' } }),
+        client.get('/api/v1/mistakes/summary', { params: { auth01_probe: '1' } }),
       ]
     })
     await expect.poll(() => applicationsProbeParked && summaryProbeParked).toBe(true)
