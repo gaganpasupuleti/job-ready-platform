@@ -35,6 +35,52 @@ test.describe('Auth', () => {
     await expect(page).toHaveURL(/\/login/)
   })
 
+  test('failed logout still clears local session', async ({ page }) => {
+    await loginAs(page, fixtures.users.student)
+    await page.route('**/api/v1/auth/logout**', async (route) => {
+      await route.fulfill({ status: 500, contentType: 'application/json', body: '{"detail":"logout failed"}' })
+    })
+    await logout(page)
+    await page.goto('/practice')
+    await expect(page).toHaveURL(/\/login/)
+  })
+
+  test('stale 401 clears private cache and redirects to login', async ({ page }) => {
+    await loginAs(page, fixtures.users.student)
+    await page.goto('/mistakes')
+    await expect(page.getByRole('heading', { name: /mistake/i })).toBeVisible({ timeout: 15_000 })
+    await page.route('**/api/v1/**', async (route) => {
+      if (/\/auth\/(login|register)\b/.test(route.request().url())) {
+        await route.continue()
+        return
+      }
+      await route.fulfill({ status: 401, contentType: 'application/json', body: '{"detail":"expired"}' })
+    })
+    await page.goto('/jobs/applications')
+    await expect(page).toHaveURL(/\/login/, { timeout: 15_000 })
+  })
+
+  test('cross-tab token clear signs out this tab', async ({ page }) => {
+    await loginAs(page, fixtures.users.student)
+    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
+    // Simulate another tab clearing the auth token.
+    await page.evaluate(() => {
+      const key = 'jrp_access_token'
+      const oldValue = localStorage.getItem(key)
+      localStorage.removeItem(key)
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key,
+          oldValue,
+          newValue: null,
+          storageArea: localStorage,
+        }),
+      )
+    })
+    await page.goto('/practice')
+    await expect(page).toHaveURL(/\/login/, { timeout: 15_000 })
+  })
+
   test('AUTH-01 account switch does not flash prior private progress', async ({ page }) => {
     const suffix = Date.now().toString(36).slice(-6)
     const markerA = `PRIVATE_MARKER_A_${suffix}`

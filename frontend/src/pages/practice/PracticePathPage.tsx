@@ -47,7 +47,7 @@ export function PracticePathPage() {
             <Badge variant={data.availability === 'available' ? 'success' : 'warning'}>
               {data.availability === 'available' ? 'Available' : 'Coming Soon'}
             </Badge>
-            <Badge>{data.progress_percent}% progress</Badge>
+            <Badge data-testid="path-progress">{data.progress_percent}% progress</Badge>
           </div>
         </div>
         <Button variant="primary" onClick={() => start.mutate()} disabled={start.isPending}>

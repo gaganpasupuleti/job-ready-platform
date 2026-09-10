@@ -6,13 +6,13 @@ Shared contracts and operational dependencies for JobReady Sprint 1+.
 |------------|-------|--------|-------|
 | Judge0 coding execution | Backend + ops | **Disabled in prod** (expected) | FE must not fake success; workbench shows unavailable honestly |
 | SQL sandbox | Backend | Live when runner/admin DSN configured | Isolated from app DB; role bootstrap on boot |
-| Alembic head | Backend | `014_phase12_listing_type` on hotfix/PR #3 | Prod DB already stamped 014; master lacked file until PR #3 |
+| Alembic head | Backend | `014` on PR #4 tip (`feb8d65` ancestry); `015_mistake_source_events` on learning-runtime | **Do not merge PR #3 after PR #4** — duplicate 014 risk. Close #3 or mark superseded. |
 | Seed / admin bootstrap | Backend | Sprint 1 hardening | No default `admin@jobready.dev` / `Admin123!` when `APP_ENV=production` |
 | Login abuse throttle | Backend | Sprint 1 | Redis-backed; degraded allow if Redis down (documented) |
-| Mistake Book | Backend + FE | Sprint 1 | Live record on wrong SQL submit; idempotent backfill by submission/event id |
+| Mistake Book | Backend + FE | Sprint 1 | Live record on wrong SQL/coding submit; DB-enforced event idempotency (`mistake_source_events`) + concurrency tests |
 | Readiness formula | Backend | Sprint 1 → `formula_version` | Missing required skills in denominator; unsafe aliases removed; not a hiring probability |
 | Trusted lesson achievement | Backend | Sprint 1 scoped | Do not trust client `is_correct` for verified completion |
-| AUTH-01 query cache | Frontend | Sprint 1 | Clear/scope TanStack Query on login/logout/register |
+| AUTH-01 query cache | Frontend | Sprint 1 | Clear/scope TanStack Query on login/logout/register; 401 + cross-tab token clear |
 | Primary nav | Frontend | Sprint 1 | Smaller student primary set; deep links remain |
 
 ## Readiness UI contract
@@ -33,4 +33,5 @@ Shared contracts and operational dependencies for JobReady Sprint 1+.
 ## Ops follow-ups (not Sprint 1)
 
 - Move migrate/seed/backfill off container CMD into an explicit release command.
-- Gk merge of PR #3 + production redeploy only after gates pass.
+- Gk merge order: prefer **PR #4** (includes 014) + **PR #5**; treat **PR #3** as superseded once #4 is accepted — do not land duplicate 014.
+- Production redeploy only after Gk gate.

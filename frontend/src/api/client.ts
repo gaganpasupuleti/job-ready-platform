@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { apiConfig, AUTH_TOKEN_KEY } from '@/api/config'
+import { clearAuthQueryCache } from '@/queryClient'
 
 export const apiClient = axios.create({
   baseURL: apiConfig.baseURL,
@@ -25,6 +26,7 @@ apiClient.interceptors.response.use(
 
     if (status === 401 && !isAuthEndpoint) {
       localStorage.removeItem(AUTH_TOKEN_KEY)
+      clearAuthQueryCache()
       if (typeof window !== 'undefined') {
         const path = window.location.pathname
         if (!path.startsWith('/login') && !path.startsWith('/register')) {

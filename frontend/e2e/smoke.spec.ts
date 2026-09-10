@@ -68,8 +68,12 @@ test.describe('Smoke routes', () => {
       await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 15_000 })
     }
     await page.goto('/ai/rag')
-    const text = (await page.locator('body').innerText()).toLowerCase()
-    expect(text).toMatch(/rag|retrieval|vector|embedding/)
+    await expect(page.getByRole('heading', { name: /^RAG$/i }).first()).toBeVisible({
+      timeout: 15_000,
+    })
+    await expect(
+      page.getByText(/retrieval|embedding|vector|chunking|grounding|production RAG/i).first(),
+    ).toBeVisible()
   })
 
   test('cloud devops cyber smoke', async ({ page }) => {
