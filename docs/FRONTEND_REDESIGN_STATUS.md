@@ -38,6 +38,17 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | #5 | `00bab6388b8d6f6847898a2e9d75099fdb0d62c7` | [34431716792](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/34431716792) | pytest + lint/build + Playwright **success** |
 | #3 | Alembic 014 only | — | Superseded by #4 ancestry; comment recorded; do not double-merge |
 | Integ worktree | `sprint1-integ-local-only` @ `f5126f1` (local-only, not pushed) | FE+BE paired checkout | Contains 014+015 + AUTH-01 `queryClient` |
+
+## Phase 2 — Coding experience (in progress)
+
+| Checkpoint | Status | Notes |
+|------------|--------|-------|
+| Sprint 1 verification | **GREEN** | PR #4/#5 Playwright + pytest + lint |
+| Python Playground (distinct from assessed) | **landed FE** | `/practice/python` + `/practice/playground` |
+| Playground API | **landed BE** (learning-runtime) | `POST /api/v1/coding/playground/run` honest unavailable |
+| Assessed coding workspace polish | pending | Monaco DSA already has Run/Submit/drafts; compact assessment chrome next |
+| E2E | `frontend/e2e/playground.spec.ts` | load + unavailable no fake stdout |
+
 ## Explicitly deferred
 
 - Full Master Plan Phase 2â€“5 (playground UX, MCQ exam shell, GSAP, whole-product restyle)

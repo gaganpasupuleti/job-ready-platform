@@ -13,6 +13,8 @@ from app.schemas.coding import (
     CodingProgressSummary,
     ExecutionResponse,
     ExecutionStatusResponse,
+    PlaygroundRunRequest,
+    PlaygroundRunResponse,
     RunSubmitRequest,
     SubmissionDetail,
     SubmissionListResponse,
@@ -37,6 +39,16 @@ async def execution_status(
     service: CodingService = Depends(_coding_service),
 ) -> ExecutionStatusResponse:
     return await service.get_execution_status()
+
+
+@router.post("/playground/run", response_model=PlaygroundRunResponse)
+async def playground_run(
+    payload: PlaygroundRunRequest,
+    user: User = Depends(get_current_user),
+    service: CodingService = Depends(_coding_service),
+) -> PlaygroundRunResponse:
+    """Python/coding playground — not assessed; never fakes success when Judge0 is down."""
+    return await service.playground_run(user, payload)
 
 
 @router.get("/languages")
