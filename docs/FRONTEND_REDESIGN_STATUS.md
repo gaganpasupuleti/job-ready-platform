@@ -82,11 +82,12 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 | Check | Result | When |
 |-------|--------|------|
-| `npm run lint` (frontend) | pass (existing warnings only) | gap close `eb9f871` |
-| `npm run build` (frontend) | pass locally | gap close `eb9f871` |
-| `pytest` sprint1 + playground | **9 passed** locally | BE `c6a1666` |
-| Playwright AUTH-01 / playground | pending combined worktree run | after tip push |
+| `npm run lint` (frontend) | pass (existing warnings only) | gap close + MCQ `30378ee` |
+| `npm run build` (frontend) | pass locally | FE tip + integration |
+| `pytest` sprint1 + playground + auth hardening | **12 passed** in integ `08e4444` base | integration worktree |
+| Playwright AUTH-01 / playground | **skipped locally** | API bind on `:8000` unhealthy / Redis refused; CI must re-run on PR tips |
 | Historical Playwright CI | green on older tips PR #4 `d76da28` / PR #5 `00bab63` | does **not** cover this checkpoint |
+| Integration revision | `7057e87` (`tmp/sprint1-integration`, local-only) | BE `23b5793` ? FE `30378ee` |
 
 ## Blockers
 
