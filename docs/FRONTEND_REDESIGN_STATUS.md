@@ -82,17 +82,23 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 | Check | Result | When |
 |-------|--------|------|
-| `npm run lint` (frontend) | pass (existing warnings only) | gap close + MCQ `30378ee` |
-| `npm run build` (frontend) | pass locally | FE tip + integration |
-| `pytest` sprint1 + playground + auth hardening | **12 passed** in integ `08e4444` base | integration worktree |
-| Playwright AUTH-01 / playground | **skipped locally** | API bind on `:8000` unhealthy / Redis refused; CI must re-run on PR tips |
-| Historical Playwright CI | green on older tips PR #4 `d76da28` / PR #5 `00bab63` | does **not** cover this checkpoint |
-| Integration revision | `7057e87` (`tmp/sprint1-integration`, local-only) | BE `23b5793` ? FE `30378ee` |
+| Local stack restore | **up** | Native Postgres `:5432`; portable Redis `:6379`; SQL sandbox DB on same Postgres (`:5432`, not Docker `:5433`); uvicorn `:8000`; Vite `:5173` |
+| Health | `database/redis/sql_sandbox=ok`, `judge0=disabled` | `GET /api/v1/health` |
+| Documented `docker compose` | **unavailable locally** | `docker` not on PATH; WSL2 Hyper-V not installed (`HCS_E_HYPERV_NOT_INSTALLED`) |
+| `pytest` sprint1 + playground + auth hardening | **12 passed** | integ worktree against local DB |
+| Playwright auth + playground (desktop) | **11 passed** | AUTH-01 fixed (probe `/api/v1/...` + query marker); live stack |
+| Frontend tip | `5352613` | PR #5 |
+| Backend tip | `dbc03e7` | PR #4 |
+| Integration revision | `16d40b9` (`tmp/sprint1-integration`, local-only) | BE∪FE |
+
+## Uvicorn exit root cause (prior session)
+
+Fatal bind error was **not** Redis. Evidence from failed start attempt: `Application startup complete` then `ERROR: [Errno 10048] ... bind on address ('127.0.0.1', 8000)` (port already held by a hung python). Redis `ConnectionError` lines were non-fatal warnings in lifespan. Later healthy process was killed while hung (`Stop-Process`), producing clean exit.
 
 ## Blockers
 
-1. **PR #3** ([Alembic 014](https://github.com/gaganpasupuleti/job-ready-platform/pull/3)) ? OPEN & CI green. Safe resolution: **close or skip merge** once PR #4 lands (already contains identical 014 ancestry). Do **not** merge both as separate 014 introductions.
-2. Boot-time `alembic upgrade` + seed + readiness backfill in Dockerfile remains an ops follow-up (not removed this sprint).
+1. **PR #3** (Alembic 014) — OPEN. Prefer close/skip once PR #4 lands; do not double-merge 014.
+2. Docker Desktop / WSL2 Hyper-V missing — cannot use documented `infra/docker-compose.yml` until installed; local workaround uses native Postgres + portable Redis.
 3. Gk gate before any master merge / Railway redeploy.
 
 ## File change log (filled as work lands)
