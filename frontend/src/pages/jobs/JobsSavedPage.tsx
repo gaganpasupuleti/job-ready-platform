@@ -9,13 +9,17 @@ import {
   PracticeHeader,
 } from '@/components/practice-workspace/PracticeWorkspace'
 import { JobCardView } from '@/features/jobs/JobCard'
+import { useAuth } from '@/hooks/useAuth'
 import { fetchSavedJobs, saveJob, unsaveJob } from '@/services/jobService'
 
 export function JobsSavedPage() {
+  const { user } = useAuth()
+  const uid = user?.id
   const queryClient = useQueryClient()
   const { data, isLoading, error } = useQuery({
-    queryKey: ['jobs-saved'],
+    queryKey: ['jobs-saved', uid],
     queryFn: fetchSavedJobs,
+    enabled: Boolean(uid),
   })
 
   const toggleMutation = useMutation({

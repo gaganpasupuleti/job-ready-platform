@@ -23,6 +23,7 @@ import { SubmissionsPage } from '@/pages/submissions/SubmissionsPage'
 import { CodingPage } from '@/pages/practice/CodingPage'
 import { DsaPage } from '@/pages/practice/DsaPage'
 import { DsaProblemPage } from '@/pages/practice/DsaProblemPage'
+import { PythonPlaygroundPage } from '@/pages/practice/PythonPlaygroundPage'
 import { McqPage } from '@/pages/practice/McqPage'
 import { PracticeResultsPage } from '@/pages/practice/PracticeResultsPage'
 import { PracticeSessionPage } from '@/pages/practice/PracticeSessionPage'
@@ -154,6 +155,8 @@ export function AppRoutes() {
         <Route path="practice/dsa" element={<DsaPage />} />
         <Route path="practice/dsa/:problemId" element={<DsaProblemPage />} />
         <Route path="practice/coding" element={<CodingPage />} />
+        <Route path="practice/python" element={<PythonPlaygroundPage />} />
+        <Route path="practice/playground" element={<PythonPlaygroundPage />} />
         <Route path="practice/sql" element={<SqlPage />} />
         <Route path="practice/sql/:slug" element={<SqlProblemPage />} />
         <Route path="submissions" element={<SubmissionsPage />} />

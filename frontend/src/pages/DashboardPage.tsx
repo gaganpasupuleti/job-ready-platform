@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Card, CardHeader } from '@/components/common/Card'
 import { EmptyState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
 import { StatCard } from '@/features/dashboard/StatCard'
+import { useAuth } from '@/hooks/useAuth'
 import { fetchAiHome } from '@/services/aiService'
 import { fetchCodingProgress } from '@/services/codingService'
 import { fetchInterviewProgress } from '@/services/interviewService'
@@ -15,26 +16,52 @@ import { fetchSqlProgress } from '@/services/sqlService'
 import type { DashboardCard } from '@/types'
 
 export function DashboardPage() {
+  const { user } = useAuth()
+  const uid = user?.id
   const { data: continueItems, isLoading: continueLoading } = useQuery({
-    queryKey: ['continue-learning'],
+    queryKey: ['continue-learning', uid],
     queryFn: fetchContinueLearning,
+    enabled: Boolean(uid),
   })
-  const { data: coding } = useQuery({ queryKey: ['coding-progress'], queryFn: fetchCodingProgress })
-  const { data: sql } = useQuery({ queryKey: ['sql-progress'], queryFn: fetchSqlProgress })
-  const { data: ai } = useQuery({ queryKey: ['ai-home'], queryFn: fetchAiHome })
-  const { data: projects } = useQuery({ queryKey: ['projects'], queryFn: fetchProjects })
+  const { data: coding } = useQuery({
+    queryKey: ['coding-progress', uid],
+    queryFn: fetchCodingProgress,
+    enabled: Boolean(uid),
+  })
+  const { data: sql } = useQuery({
+    queryKey: ['sql-progress', uid],
+    queryFn: fetchSqlProgress,
+    enabled: Boolean(uid),
+  })
+  const { data: ai } = useQuery({
+    queryKey: ['ai-home', uid],
+    queryFn: fetchAiHome,
+    enabled: Boolean(uid),
+  })
+  const { data: projects } = useQuery({
+    queryKey: ['projects', uid],
+    queryFn: fetchProjects,
+    enabled: Boolean(uid),
+  })
   const { data: interview } = useQuery({
-    queryKey: ['interview-progress'],
+    queryKey: ['interview-progress', uid],
     queryFn: fetchInterviewProgress,
+    enabled: Boolean(uid),
   })
   const { data: jobsSummary } = useQuery({
-    queryKey: ['jobs-summary'],
+    queryKey: ['jobs-summary', uid],
     queryFn: fetchJobsSummary,
+    enabled: Boolean(uid),
   })
-  const { data: readiness } = useQuery({ queryKey: ['readiness'], queryFn: fetchReadiness })
+  const { data: readiness } = useQuery({
+    queryKey: ['readiness', uid],
+    queryFn: fetchReadiness,
+    enabled: Boolean(uid),
+  })
   const { data: mistakeSummary } = useQuery({
-    queryKey: ['mistakes-summary'],
+    queryKey: ['mistakes-summary', uid],
     queryFn: fetchMistakeSummary,
+    enabled: Boolean(uid),
   })
 
   const cards: DashboardCard[] = [
@@ -76,20 +103,20 @@ export function DashboardPage() {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h1 className="text-lg font-semibold text-[var(--color-text)]">Welcome back</h1>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+        <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">Welcome back</h1>
+        <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
           Continue learning, practice stats, target role readiness, and recommended next actions.
         </p>
       </div>
 
       {(readiness?.recommended_actions?.length ?? 0) > 0 && (
-        <Card>
+        <Card padding="sm">
           <CardHeader title="Recommended Next" />
           <Link
             to={readiness!.recommended_actions[0].href}
-            className="block rounded-md border border-[var(--color-border)] p-3 hover:border-[var(--color-accent)]"
+            className="block rounded-[var(--radius-control)] border border-[var(--color-border)] p-2.5 hover:border-[var(--color-accent)]"
           >
             <p className="text-sm font-medium">{readiness!.recommended_actions[0].title}</p>
             <p className="text-xs text-[var(--color-text-muted)]">
@@ -99,11 +126,11 @@ export function DashboardPage() {
         </Card>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <Link to="/readiness" className="block">
-          <Card>
+          <Card padding="sm">
             <CardHeader title="Target Role Readiness" />
-            <p className="text-2xl font-semibold">
+            <p className="text-xl font-semibold">
               {readiness?.has_minimum_evidence && readiness.score != null
                 ? `${Math.round(readiness.score)}%`
                 : 'Building profile'}
@@ -114,9 +141,9 @@ export function DashboardPage() {
           </Card>
         </Link>
         <Link to="/mistakes" className="block">
-          <Card>
+          <Card padding="sm">
             <CardHeader title="Mistakes to Review" />
-            <p className="text-2xl font-semibold">{mistakeSummary?.open_count ?? 0}</p>
+            <p className="text-xl font-semibold">{mistakeSummary?.open_count ?? 0}</p>
             <p className="text-xs text-[var(--color-text-muted)]">open items</p>
           </Card>
         </Link>

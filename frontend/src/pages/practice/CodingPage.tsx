@@ -59,7 +59,11 @@ export function CodingPage() {
       />
 
       <p className="text-xs text-[var(--color-text-muted)]">
-        Problems open in the shared workspace at{' '}
+        Freeform Python (not graded):{' '}
+        <Link to="/practice/python" className="text-[var(--color-accent)] hover:underline">
+          Python Playground
+        </Link>
+        . Assessed problems open in the shared workspace at{' '}
         <Link to="/practice/dsa" className="text-[var(--color-accent)] hover:underline">
           DSA Practice
         </Link>

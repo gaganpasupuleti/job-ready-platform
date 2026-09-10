@@ -25,7 +25,7 @@ export function PracticeSessionPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [questionNumber, setQuestionNumber] = useState(1)
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null)
+  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>([])
   const [markedForReview, setMarkedForReview] = useState(false)
   const [feedback, setFeedback] = useState<AnswerFeedback | null>(null)
   const [answered, setAnswered] = useState(false)
@@ -58,7 +58,7 @@ export function PracticeSessionPage() {
   useEffect(() => {
     const data = questionQuery.data
     if (!data) return
-    setSelectedOptionId(data.selected_option_ids?.[0] ?? null)
+    setSelectedOptionIds(data.selected_option_ids ?? [])
     setMarkedForReview(Boolean(data.marked_for_review))
     setFeedback(null)
     setAnswered(Boolean(data.answered))
@@ -75,7 +75,7 @@ export function PracticeSessionPage() {
       submitAnswer(
         sessionId,
         questionNumber,
-        selectedOptionId ? [selectedOptionId] : [],
+        selectedOptionIds,
         Math.floor((Date.now() - startTime) / 1000),
       ),
     onSuccess: (response) => {
@@ -112,15 +112,22 @@ export function PracticeSessionPage() {
       queryClient.invalidateQueries({ queryKey: ['practice-question', sessionId, questionNumber] }),
   })
 
-  const handleSelectOption = (optionId: string) => {
+  const handleSelectOption = (optionId: string, multi: boolean) => {
     if (!isExam && answered) return
-    setSelectedOptionId(optionId)
-    if (isExam) {
-      autosaveMutation.mutate({
-        selectedOptionIds: [optionId],
-        markedForReview: markedForReview,
-      })
-    }
+    setSelectedOptionIds((prev) => {
+      const next = multi
+        ? prev.includes(optionId)
+          ? prev.filter((id) => id !== optionId)
+          : [...prev, optionId]
+        : [optionId]
+      if (isExam) {
+        autosaveMutation.mutate({
+          selectedOptionIds: next,
+          markedForReview,
+        })
+      }
+      return next
+    })
   }
 
   const handleToggleReview = () => {
@@ -128,7 +135,7 @@ export function PracticeSessionPage() {
     setMarkedForReview(next)
     if (isExam) {
       autosaveMutation.mutate({
-        selectedOptionIds: selectedOptionId ? [selectedOptionId] : [],
+        selectedOptionIds,
         markedForReview: next,
       })
     }
@@ -144,14 +151,16 @@ export function PracticeSessionPage() {
   }
 
   const isPractice = session.mode === 'practice'
-  const canSubmit = !answered && selectedOptionId
+  const isMulti = data.question.question_type === 'multiple_choice'
+  const canSubmit = !answered && selectedOptionIds.length > 0
   const isLast = questionNumber >= session.question_count
 
   return (
-    <div className="mx-auto max-w-5xl space-y-4">
+    <div className="mx-auto max-w-5xl space-y-4 px-1 py-2">
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--color-text-muted)]">
         <span>
           {session.mode} mode · {session.answered_count}/{session.question_count} answered
+          {isMulti ? ' · select all that apply' : ''}
         </span>
         <div className="flex items-center gap-3">
           {isExam && secondsLeft != null && (
@@ -161,6 +170,16 @@ export function PracticeSessionPage() {
               }`}
             >
               Time left: {formatCountdown(secondsLeft)}
+            </span>
+          )}
+          {isExam && autosaveMutation.isPending && (
+            <span className="text-[var(--color-text-subtle)]" role="status">
+              Saving…
+            </span>
+          )}
+          {isExam && autosaveMutation.isSuccess && !autosaveMutation.isPending && (
+            <span className="text-[var(--color-text-subtle)]" role="status">
+              Saved
             </span>
           )}
           <span>{Math.round((questionNumber / session.question_count) * 100)}% complete</span>
@@ -178,20 +197,21 @@ export function PracticeSessionPage() {
           <div className="mt-4 space-y-2">
             {data.question.options.map((option) => {
               let variant: 'default' | 'correct' | 'incorrect' = 'default'
+              const selected = selectedOptionIds.includes(option.id)
               if (feedback) {
                 const match = feedback.options.find((item) => item.id === option.id)
                 if (match?.is_correct) variant = 'correct'
-                else if (selectedOptionId === option.id) variant = 'incorrect'
+                else if (selected) variant = 'incorrect'
               }
               return (
                 <QuestionOption
                   key={option.id}
                   id={option.id}
                   text={option.option_text}
-                  selected={selectedOptionId === option.id}
+                  selected={selected}
                   disabled={!isExam && answered}
                   variant={variant}
-                  onSelect={() => handleSelectOption(option.id)}
+                  onSelect={() => handleSelectOption(option.id, isMulti)}
                 />
               )
             })}
@@ -238,11 +258,11 @@ export function PracticeSessionPage() {
             </Button>
 
             <div className="flex gap-2">
-              {selectedOptionId && (
+              {selectedOptionIds.length > 0 && (
                 <Button
                   variant="ghost"
                   onClick={() => {
-                    setSelectedOptionId(null)
+                    setSelectedOptionIds([])
                     if (isExam) {
                       autosaveMutation.mutate({ selectedOptionIds: [], markedForReview })
                     }

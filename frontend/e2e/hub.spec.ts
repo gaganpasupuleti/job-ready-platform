@@ -37,19 +37,27 @@ test.describe('Dashboard and Practice Hub', () => {
 
   test('practice path progress is idempotent', async ({ page }) => {
     await page.goto(`/practice/paths/${fixtures.path.slug}`)
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
-    const progress = page.getByText(/%|progress/i).first()
-    await expect(progress).toBeVisible()
-    const before = await page.locator('body').innerText()
-    const complete = page.getByRole('button', { name: /mark complete|complete/i }).first()
+    // Prefer test id; fall back to visible progress copy if Badge attrs regress.
+    const progress = page.getByTestId('path-progress').or(page.getByText(/%\s*progress/i).first())
+    await expect(progress).toBeVisible({ timeout: 20_000 })
+    const before = (await progress.innerText()).trim()
+    expect(before).toMatch(/%\s*progress/i)
+    const complete = page.getByRole('button', { name: /^(done|mark complete|complete)$/i }).first()
     if (await complete.isEnabled().catch(() => false)) {
       await complete.click()
       await page.waitForTimeout(500)
-      await complete.click()
+      const again = page.getByRole('button', { name: /^(done|completed|mark complete|complete)$/i }).first()
+      if (await again.isEnabled().catch(() => false)) {
+        await again.click()
+      }
       await page.reload()
-      const after = await page.locator('body').innerText()
-      expect(after).toBeTruthy()
-      expect(before).toBeTruthy()
+      await expect(
+        page.getByTestId('path-progress').or(page.getByText(/%\s*progress/i).first()),
+      ).toBeVisible({ timeout: 20_000 })
     }
+    const after = (
+      await page.getByTestId('path-progress').or(page.getByText(/%\s*progress/i).first()).innerText()
+    ).trim()
+    expect(after).toMatch(/%\s*progress/i)
   })
 })

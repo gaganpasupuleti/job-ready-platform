@@ -18,6 +18,8 @@ import type {
 
   LanguageInfo,
 
+  PlaygroundRunResponse,
+
   ProblemProgressStatus,
 
   SubmissionDetail,
@@ -217,6 +219,15 @@ export async function fetchExecutionStatus() {
 
   return data
 
+}
+
+export async function runPlayground(sourceCode: string, languageId: number, stdin = '') {
+  const { data } = await apiClient.post<PlaygroundRunResponse>(apiEndpoints.coding.playgroundRun, {
+    source_code: sourceCode,
+    language_id: languageId,
+    stdin,
+  })
+  return data
 }
 
 

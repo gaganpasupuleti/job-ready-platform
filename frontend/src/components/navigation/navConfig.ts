@@ -26,69 +26,43 @@ import {
 
 import type { NavSection } from '@/types'
 
+/** Primary student destinations (Sprint 1 shell). Deep links stay in More. */
 export const navigationConfig: NavSection[] = [
   {
-    title: 'Main',
-    items: [{ label: 'Dashboard', path: '/', icon: 'LayoutDashboard' }],
+    title: 'Today',
+    items: [
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Practice', path: '/practice', icon: 'Target' },
+      { label: 'Learn', path: '/learn', icon: 'ListChecks' },
+      { label: 'Mistakes', path: '/mistakes', icon: 'FileQuestion' },
+      { label: 'Jobs', path: '/jobs', icon: 'Briefcase' },
+    ],
   },
   {
-    title: 'Practice',
+    title: 'Practice tracks',
     items: [
-      { label: 'Practice Hub', path: '/practice', icon: 'Target' },
-      { label: 'Courses', path: '/learn', icon: 'ListChecks' },
-      { label: 'Projects', path: '/practice/projects', icon: 'Wrench' },
-      { label: 'Aptitude / CRT', path: '/practice/aptitude', icon: 'Brain' },
+      { label: 'SQL', path: '/practice/sql', icon: 'Database' },
       { label: 'DSA', path: '/practice/dsa', icon: 'Code2' },
       { label: 'Coding', path: '/practice/coding', icon: 'Terminal' },
-      { label: 'SQL', path: '/practice/sql', icon: 'Database' },
+      { label: 'Python Playground', path: '/practice/python', icon: 'Terminal' },
       { label: 'Technical MCQs', path: '/practice/mcq', icon: 'FileQuestion' },
+      { label: 'Aptitude / CRT', path: '/practice/aptitude', icon: 'Brain' },
+      { label: 'Projects', path: '/practice/projects', icon: 'Wrench' },
     ],
   },
   {
-    title: 'AI Era',
+    title: 'More',
     items: [
+      { label: 'Job Readiness', path: '/readiness', icon: 'Target' },
       { label: 'AI Home', path: '/ai', icon: 'Sparkles' },
-      { label: 'Generative AI', path: '/ai/genai', icon: 'Bot' },
       { label: 'Prompt Engineering', path: '/ai/prompt-engineering', icon: 'MessageSquare' },
-      { label: 'RAG', path: '/ai/rag', icon: 'Database' },
-      { label: 'AI Agents', path: '/ai/agents', icon: 'Users' },
-      { label: 'MCP', path: '/ai/mcp', icon: 'Server' },
-      { label: 'AI Progress', path: '/ai/progress', icon: 'Target' },
-    ],
-  },
-  {
-    title: 'Infrastructure',
-    items: [
       { label: 'Cloud', path: '/cloud', icon: 'Cloud' },
       { label: 'DevOps', path: '/devops', icon: 'Wrench' },
       { label: 'Cybersecurity', path: '/cybersecurity', icon: 'Shield' },
-    ],
-  },
-  {
-    title: 'Career',
-    items: [
       { label: 'Interview Prep', path: '/interviews', icon: 'Users' },
-      { label: 'Company Prep', path: '/company-prep', icon: 'Building2' },
-      { label: 'Assessments', path: '/assessments', icon: 'ListChecks' },
-      { label: 'Contests', path: '/contests', icon: 'Trophy' },
-    ],
-  },
-  {
-    title: 'Jobs',
-    items: [
-      { label: 'Browse Jobs', path: '/jobs', icon: 'Briefcase' },
-      { label: 'Recommended Jobs', path: '/jobs/recommended', icon: 'Target' },
-      { label: 'Saved Jobs', path: '/jobs/saved', icon: 'Bookmark' },
-      { label: 'Applications', path: '/jobs/applications', icon: 'Award' },
-    ],
-  },
-  {
-    title: 'Progress',
-    items: [
-      { label: 'Job Readiness', path: '/readiness', icon: 'Target' },
-      { label: 'Mistake Book', path: '/mistakes', icon: 'FileQuestion' },
       { label: 'Bookmarks', path: '/bookmarks', icon: 'Bookmark' },
-      { label: 'Leaderboard', path: '/leaderboard', icon: 'Flame' },
+      { label: 'Recommended Jobs', path: '/jobs/recommended', icon: 'Target' },
+      { label: 'Applications', path: '/jobs/applications', icon: 'Award' },
     ],
   },
 ]

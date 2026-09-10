@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react'
+import type { HTMLAttributes, ReactNode } from 'react'
 
 import { cn } from '@/utils/cn'
 
-interface BadgeProps {
+interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   children: ReactNode
   variant?: 'default' | 'accent' | 'success' | 'warning'
   className?: string
@@ -15,14 +15,15 @@ const variants = {
   warning: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
 }
 
-export function Badge({ children, variant = 'default', className }: BadgeProps) {
+export function Badge({ children, variant = 'default', className, ...rest }: BadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+        'inline-flex items-center rounded-[var(--radius-control)] px-1.5 py-0.5 text-[11px] font-medium leading-4',
         variants[variant],
         className,
       )}
+      {...rest}
     >
       {children}
     </span>

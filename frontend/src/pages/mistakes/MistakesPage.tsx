@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import { ErrorState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
+import { useAuth } from '@/hooks/useAuth'
 import {
   fetchMistakeSummary,
   fetchMistakes,
@@ -15,18 +16,25 @@ import {
 const FILTERS = ['all', 'mcq', 'sql', 'coding', 'prompt', 'scenario', 'interview'] as const
 
 export function MistakesPage() {
+  const { user } = useAuth()
+  const uid = user?.id
   const [sourceFilter, setSourceFilter] = useState<string>('all')
   const [view, setView] = useState('recent')
   const queryClient = useQueryClient()
 
-  const { data: summary } = useQuery({ queryKey: ['mistakes-summary'], queryFn: fetchMistakeSummary })
+  const { data: summary } = useQuery({
+    queryKey: ['mistakes-summary', uid],
+    queryFn: fetchMistakeSummary,
+    enabled: Boolean(uid),
+  })
   const { data, isLoading, error } = useQuery({
-    queryKey: ['mistakes', sourceFilter, view],
+    queryKey: ['mistakes', uid, sourceFilter, view],
     queryFn: () =>
       fetchMistakes({
         source_type: sourceFilter === 'all' ? undefined : sourceFilter,
         view,
       }),
+    enabled: Boolean(uid),
   })
 
   const invalidate = () => {
