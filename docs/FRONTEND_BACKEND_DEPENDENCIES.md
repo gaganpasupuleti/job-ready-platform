@@ -11,9 +11,11 @@ Shared contracts and operational dependencies for JobReady Sprint 1+.
 | Login abuse throttle | Backend | Sprint 1 | Redis-backed; degraded allow if Redis down (documented) |
 | Mistake Book | Backend + FE | Sprint 1 | Live record on wrong SQL/coding submit; DB-enforced event idempotency (`mistake_source_events`) + concurrency tests |
 | Readiness formula | Backend | Sprint 1 → `formula_version` | Missing required skills in denominator; unsafe aliases removed; not a hiring probability |
-| Trusted lesson achievement | Backend | Sprint 1 scoped | Do not trust client `is_correct` for verified completion |
-| AUTH-01 query cache | Frontend | Sprint 1 | Clear/scope TanStack Query on login/logout/register; 401 + cross-tab token clear |
+| Trusted lesson achievement | Backend | Sprint 1 + gap close | Do not trust client `is_correct`; require matching owned accepted SUBMIT; completion_requires_submit gated |
+| AUTH-01 query cache | Frontend | Sprint 1 + gap close | Clear/scope TanStack Query on login/logout/register; stale prior-account 401 must not clear current session |
 | Primary nav | Frontend | Sprint 1 | Smaller student primary set; deep links remain |
+| Visual shells | Frontend | Phase foundation started | `data-shell=standard|focused|assessment` via AppLayout |
+| Playground run | Backend + FE | Phase 2 checkpoint | Non-assessed; honest unavailable when Judge0 off |
 
 ## Readiness UI contract
 
