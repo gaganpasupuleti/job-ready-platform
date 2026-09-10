@@ -149,14 +149,17 @@ test.describe('Auth', () => {
 
     let delayedSuccessHandled = false
     let delayed401Handled = false
+    let applicationsProbeParked = false
+    let summaryProbeParked = false
 
     await page.route('**/api/v1/applications**', async (route) => {
+      const url = route.request().url()
       const authHeader = route.request().headers()['authorization'] ?? ''
+      const isProbe =
+        authHeader === `Bearer ${tokenA}` && /[?&]auth01_probe=1(?:&|$)/.test(url)
       // Only hold the detached A probe — let normal UI traffic continue.
-      if (
-        authHeader === `Bearer ${tokenA}` &&
-        route.request().headers()['x-auth01-probe'] === '1'
-      ) {
+      if (isProbe) {
+        applicationsProbeParked = true
         const mode = await takeDelayedA()
         delayedSuccessHandled = true
         if (mode === 'unauthorized') {
@@ -192,11 +195,12 @@ test.describe('Auth', () => {
     })
 
     await page.route('**/api/v1/mistakes/summary**', async (route) => {
+      const url = route.request().url()
       const authHeader = route.request().headers()['authorization'] ?? ''
-      if (
-        authHeader === `Bearer ${tokenA}` &&
-        route.request().headers()['x-auth01-probe'] === '1'
-      ) {
+      const isProbe =
+        authHeader === `Bearer ${tokenA}` && /[?&]auth01_probe=1(?:&|$)/.test(url)
+      if (isProbe) {
+        summaryProbeParked = true
         const mode = await takeDelayedA()
         if (mode === 'unauthorized') {
           delayed401Handled = true
@@ -228,17 +232,19 @@ test.describe('Auth', () => {
     // Detached axios probes survive logout's queryClient.clear(); Authorization is A.
     await page.evaluate(() => {
       const w = window as unknown as {
-        __jobReadyApiClient: {
+        __jobReadyApiClient?: {
           get: (url: string, cfg?: object) => Promise<unknown>
         }
         __auth01Probes?: Promise<unknown>[]
       }
       const client = w.__jobReadyApiClient
+      if (!client) throw new Error('missing __jobReadyApiClient for AUTH-01 probes')
       w.__auth01Probes = [
-        client.get('/applications', { headers: { 'X-Auth01-Probe': '1' } }),
-        client.get('/mistakes/summary', { headers: { 'X-Auth01-Probe': '1' } }),
+        client.get('/applications', { params: { auth01_probe: '1' } }),
+        client.get('/mistakes/summary', { params: { auth01_probe: '1' } }),
       ]
     })
+    await expect.poll(() => applicationsProbeParked && summaryProbeParked).toBe(true)
 
     // Same-document switch: logout → register B (no page.goto / reload / new context).
     await logout(page)
