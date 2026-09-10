@@ -100,10 +100,27 @@ class MistakeService:
         except IntegrityError:
             if event_uuid is None:
                 raise
+            # Same-event race: another session already recorded this event.
             prior = await self._item_for_event(user_id, source_type, event_uuid)
-            if prior is None:
-                raise
-            item = prior
+            if prior is not None:
+                item = prior
+            else:
+                # Distinct-event race: item row was created by a peer; attach this event.
+                item = await self._recover_item_create_conflict(
+                    user_id=user_id,
+                    source_type=source_type,
+                    source_id=source_id,
+                    title=title,
+                    summary=summary,
+                    skill_id=skill_id,
+                    topic_id=topic_id,
+                    mistake_type=mistake_type,
+                    context=context,
+                    retry_href=retry_href,
+                    event_uuid=event_uuid,
+                    reopen_if_resolved=reopen_if_resolved,
+                    now=now,
+                )
 
         if commit:
             await self.db.commit()
@@ -111,6 +128,75 @@ class MistakeService:
         else:
             await self.db.flush()
         return item
+
+    async def _recover_item_create_conflict(
+        self,
+        *,
+        user_id: UUID,
+        source_type: MistakeSourceType,
+        source_id: UUID,
+        title: str,
+        summary: str | None,
+        skill_id: UUID | None,
+        topic_id: UUID | None,
+        mistake_type: str,
+        context: dict[str, Any] | None,
+        retry_href: str | None,
+        event_uuid: UUID,
+        reopen_if_resolved: bool,
+        now: datetime,
+    ) -> MistakeItem:
+        """Recover when item unique constraint fires before this event row exists."""
+        existing = (
+            await self.db.execute(
+                select(MistakeItem).where(
+                    MistakeItem.user_id == user_id,
+                    MistakeItem.source_type == source_type,
+                    MistakeItem.source_id == source_id,
+                )
+            )
+        ).scalar_one_or_none()
+        if existing is None:
+            from app.core.exceptions import AppException  # noqa: PLC0415
+
+            raise AppException(
+                "Could not recover mistake item after create conflict",
+                status_code=500,
+            )
+
+        try:
+            async with self.db.begin_nested():
+                # Re-enter item update path under row lock + attach event.
+                item = await self._upsert_item(
+                    user_id=user_id,
+                    source_type=source_type,
+                    source_id=source_id,
+                    title=title,
+                    summary=summary,
+                    skill_id=skill_id,
+                    topic_id=topic_id,
+                    mistake_type=mistake_type,
+                    context=context,
+                    retry_href=retry_href,
+                    event_uuid=event_uuid,
+                    reopen_if_resolved=reopen_if_resolved,
+                    now=now,
+                )
+                self.db.add(
+                    MistakeSourceEvent(
+                        user_id=user_id,
+                        source_type=source_type,
+                        source_event_id=event_uuid,
+                        mistake_item_id=item.id,
+                    )
+                )
+                await self.db.flush()
+                return item
+        except IntegrityError:
+            prior = await self._item_for_event(user_id, source_type, event_uuid)
+            if prior is None:
+                raise
+            return prior
 
     async def _item_for_event(
         self,
