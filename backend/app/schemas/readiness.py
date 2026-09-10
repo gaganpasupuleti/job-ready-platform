@@ -76,7 +76,7 @@ class ReadinessOverview(BaseModel):
     message: str | None = None
     formula_version: str = "2.0.0"
     formula_label: str = "skill_coverage_v2"
-    overall_score_ready: bool = True
+    overall_score_ready: bool = False
     is_hiring_probability: bool = False
 
 

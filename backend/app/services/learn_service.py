@@ -557,19 +557,38 @@ class LearnService:
         verified_correct: bool | None = None
         if submission_id is not None:
             from app.models.coding import CodingSubmission
-            from app.models.coding_enums import SubmissionStatus
+            from app.models.coding_enums import SubmissionStatus, SubmissionType
 
             submission = await self.db.get(CodingSubmission, submission_id)
+            lesson_problem_id = getattr(lesson, "coding_problem_id", None)
+            matches_lesson = (
+                lesson_problem_id is not None
+                and submission is not None
+                and submission.problem_id == lesson_problem_id
+            )
+            is_graded_submit = (
+                submission is not None
+                and submission.submission_type == SubmissionType.SUBMIT
+            )
             if (
                 submission is not None
                 and submission.user_id == user.id
+                and matches_lesson
+                and is_graded_submit
                 and submission.status == SubmissionStatus.ACCEPTED
             ):
                 verified_correct = True
-            elif submission is not None and submission.user_id == user.id:
+            elif (
+                submission is not None
+                and submission.user_id == user.id
+                and matches_lesson
+                and is_graded_submit
+            ):
                 verified_correct = False
             else:
+                # Unrelated / RUN / wrong-owner submissions never verify achievement.
                 submission_id = None
+                verified_correct = None
 
         self.db.add(
             LessonAttempt(

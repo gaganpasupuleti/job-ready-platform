@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import uuid as uuid_lib
 from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.coding import CodingProblem, CodingSubmission
@@ -17,12 +19,21 @@ from app.models.interview_session import InterviewQuestionReview
 from app.models.practice import PracticeAnswer, PracticeSession
 from app.models.prompt import PromptChallenge, PromptSubmission
 from app.models.question import Question, QuestionOption
-from app.models.readiness import MistakeItem
+from app.models.readiness import MistakeItem, MistakeSourceEvent
 from app.models.readiness_enums import MistakeSourceType, MistakeStatus
 from app.models.sql_practice import SqlProblem, SqlSubmission
 from app.models.sql_enums import SqlSubmissionStatus
 from app.models.tagging import QuestionSkill, Skill
 from app.models.user import User
+
+
+def _event_uuid(source_event_id: UUID | str) -> UUID:
+    if isinstance(source_event_id, UUID):
+        return source_event_id
+    try:
+        return UUID(str(source_event_id))
+    except ValueError:
+        return uuid_lib.uuid5(uuid_lib.NAMESPACE_URL, f"mistake-event:{source_event_id}")
 
 
 class MistakeService:
@@ -48,74 +59,52 @@ class MistakeService:
     ) -> MistakeItem:
         """Upsert a mistake keyed by (user, source_type, source_id).
 
-        When ``source_event_id`` is provided (e.g. submission id), replaying the
-        same event is a no-op: no count bump, timestamp change, or status reopen.
+        When ``source_event_id`` is provided, uniqueness is enforced in
+        ``mistake_source_events``. Concurrent replays of the same event are no-ops.
         """
         now = datetime.now(UTC)
-        event_key = str(source_event_id) if source_event_id is not None else None
-        existing = (
-            await self.db.execute(
-                select(MistakeItem).where(
-                    MistakeItem.user_id == user_id,
-                    MistakeItem.source_type == source_type,
-                    MistakeItem.source_id == source_id,
+        event_uuid = _event_uuid(source_event_id) if source_event_id is not None else None
+
+        if event_uuid is not None:
+            prior = await self._item_for_event(user_id, source_type, event_uuid)
+            if prior is not None:
+                return prior
+
+        try:
+            async with self.db.begin_nested():
+                item = await self._upsert_item(
+                    user_id=user_id,
+                    source_type=source_type,
+                    source_id=source_id,
+                    title=title,
+                    summary=summary,
+                    skill_id=skill_id,
+                    topic_id=topic_id,
+                    mistake_type=mistake_type,
+                    context=context,
+                    retry_href=retry_href,
+                    event_uuid=event_uuid,
+                    reopen_if_resolved=reopen_if_resolved,
+                    now=now,
                 )
-            )
-        ).scalar_one_or_none()
-        if existing:
-            ctx = dict(existing.latest_context_json or {})
-            seen = {str(x) for x in (ctx.get("source_event_ids") or [])}
-            if event_key and event_key in seen:
-                return existing
+                if event_uuid is not None:
+                    self.db.add(
+                        MistakeSourceEvent(
+                            user_id=user_id,
+                            source_type=source_type,
+                            source_event_id=event_uuid,
+                            mistake_item_id=item.id,
+                        )
+                    )
+                    await self.db.flush()
+        except IntegrityError:
+            if event_uuid is None:
+                raise
+            prior = await self._item_for_event(user_id, source_type, event_uuid)
+            if prior is None:
+                raise
+            item = prior
 
-            if event_key:
-                seen.add(event_key)
-                ctx["source_event_ids"] = sorted(seen)
-            if context:
-                # Preserve event ids while merging latest context.
-                event_ids = ctx.get("source_event_ids")
-                ctx.update(context)
-                if event_ids is not None:
-                    ctx["source_event_ids"] = event_ids
-
-            existing.occurrence_count += 1
-            existing.last_seen_at = now
-            existing.summary = summary or existing.summary
-            existing.latest_context_json = ctx
-            existing.retry_href = retry_href or existing.retry_href
-            if (
-                reopen_if_resolved
-                and existing.status == MistakeStatus.RESOLVED
-            ):
-                existing.status = MistakeStatus.OPEN
-            if commit:
-                await self.db.commit()
-                await self.db.refresh(existing)
-            else:
-                await self.db.flush()
-            return existing
-
-        initial_ctx = dict(context or {})
-        if event_key:
-            initial_ctx["source_event_ids"] = [event_key]
-
-        item = MistakeItem(
-            user_id=user_id,
-            source_type=source_type,
-            source_id=source_id,
-            skill_id=skill_id,
-            topic_id=topic_id,
-            title=title,
-            summary=summary,
-            mistake_type=mistake_type,
-            first_seen_at=now,
-            last_seen_at=now,
-            occurrence_count=1,
-            status=MistakeStatus.OPEN,
-            latest_context_json=initial_ctx or None,
-            retry_href=retry_href,
-        )
-        self.db.add(item)
         if commit:
             await self.db.commit()
             await self.db.refresh(item)
@@ -123,6 +112,98 @@ class MistakeService:
             await self.db.flush()
         return item
 
+    async def _item_for_event(
+        self,
+        user_id: UUID,
+        source_type: MistakeSourceType,
+        event_uuid: UUID,
+    ) -> MistakeItem | None:
+        row = (
+            await self.db.execute(
+                select(MistakeSourceEvent).where(
+                    MistakeSourceEvent.user_id == user_id,
+                    MistakeSourceEvent.source_type == source_type,
+                    MistakeSourceEvent.source_event_id == event_uuid,
+                )
+            )
+        ).scalar_one_or_none()
+        if row is None:
+            return None
+        return await self.db.get(MistakeItem, row.mistake_item_id)
+
+    async def _upsert_item(
+        self,
+        *,
+        user_id: UUID,
+        source_type: MistakeSourceType,
+        source_id: UUID,
+        title: str,
+        summary: str | None,
+        skill_id: UUID | None,
+        topic_id: UUID | None,
+        mistake_type: str,
+        context: dict[str, Any] | None,
+        retry_href: str | None,
+        event_uuid: UUID | None,
+        reopen_if_resolved: bool,
+        now: datetime,
+    ) -> MistakeItem:
+        existing = (
+            await self.db.execute(
+                select(MistakeItem)
+                .where(
+                    MistakeItem.user_id == user_id,
+                    MistakeItem.source_type == source_type,
+                    MistakeItem.source_id == source_id,
+                )
+                .with_for_update()
+            )
+        ).scalar_one_or_none()
+
+        if existing is None:
+            initial_ctx = dict(context or {})
+            if event_uuid is not None:
+                initial_ctx["source_event_ids"] = [str(event_uuid)]
+            item = MistakeItem(
+                user_id=user_id,
+                source_type=source_type,
+                source_id=source_id,
+                skill_id=skill_id,
+                topic_id=topic_id,
+                title=title,
+                summary=summary,
+                mistake_type=mistake_type,
+                first_seen_at=now,
+                last_seen_at=now,
+                occurrence_count=1,
+                status=MistakeStatus.OPEN,
+                latest_context_json=initial_ctx or None,
+                retry_href=retry_href,
+            )
+            self.db.add(item)
+            await self.db.flush()
+            return item
+
+        ctx = dict(existing.latest_context_json or {})
+        if event_uuid is not None:
+            seen = {str(x) for x in (ctx.get("source_event_ids") or [])}
+            seen.add(str(event_uuid))
+            ctx["source_event_ids"] = sorted(seen)
+        if context:
+            event_ids = ctx.get("source_event_ids")
+            ctx.update(context)
+            if event_ids is not None:
+                ctx["source_event_ids"] = event_ids
+
+        existing.occurrence_count += 1
+        existing.last_seen_at = now
+        existing.summary = summary or existing.summary
+        existing.latest_context_json = ctx
+        existing.retry_href = retry_href or existing.retry_href
+        if reopen_if_resolved and existing.status == MistakeStatus.RESOLVED:
+            existing.status = MistakeStatus.OPEN
+        await self.db.flush()
+        return existing
     async def record_sql_wrong(
         self,
         *,

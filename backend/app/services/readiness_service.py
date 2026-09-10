@@ -81,7 +81,7 @@ class ReadinessService:
                 "why_breakdown": [],
                 "formula_version": FORMULA_VERSION,
                 "formula_label": FORMULA_LABEL,
-                "overall_score_ready": True,
+                "overall_score_ready": False,
                 "is_hiring_probability": False,
             }
 
@@ -91,6 +91,7 @@ class ReadinessService:
         core_covered = 0
         total_activity = 0
         diversities: list[int] = []
+        assessed_count = 0
 
         from app.readiness.skill_mapping import normalize_skill_key  # noqa: PLC0415
 
@@ -106,6 +107,7 @@ class ReadinessService:
             imp_w = IMPORTANCE_WEIGHTS.get(imp, 0.5) * float(req.weight or 1.0)
             weighted_items.append((eff, imp_w))
             if ev:
+                assessed_count += 1
                 total_activity += ev.activity_count
                 diversities.append(len(ev.sources))
             status = "missing"
@@ -143,6 +145,9 @@ class ReadinessService:
             total_activity, max(diversities) if diversities else 0
         )
         has_min = total_activity >= MIN_ROLE_EVIDENCE_ITEMS and bool(weighted_items)
+        # Overall % is ready only when minimum evidence exists and at least one
+        # required skill has been assessed (not just empty-coverage zeros).
+        overall_score_ready = bool(has_min and assessed_count > 0 and score is not None)
 
         strong = [s["skill_name"] for s in skill_rows if s["status"] == "strong"]
         developing = [s["skill_name"] for s in skill_rows if s["status"] in ("developing", "needs_work")]
@@ -173,7 +178,7 @@ class ReadinessService:
             "why_breakdown": why,
             "formula_version": FORMULA_VERSION,
             "formula_label": FORMULA_LABEL,
-            "overall_score_ready": True,
+            "overall_score_ready": overall_score_ready,
             "is_hiring_probability": False,
         }
 
@@ -195,7 +200,7 @@ class ReadinessService:
                 "trend": [],
                 "formula_version": FORMULA_VERSION,
                 "formula_label": FORMULA_LABEL,
-                "overall_score_ready": True,
+                "overall_score_ready": False,
                 "is_hiring_probability": False,
                 "message": "Select a target role in Jobs preferences to see role readiness.",
             }
