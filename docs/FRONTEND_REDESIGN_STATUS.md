@@ -5,7 +5,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | Field | Value |
 |-------|-------|
 | Workstream | dual (`feature/jobready-frontend-experience-v4`, `feature/jobready-learning-runtime-v4`) |
-| Phase | Phase 0 + Sprint 1 reliability gates → **verification close-out in progress** |
+| Phase | Phase 0 + Sprint 1 reliability gates → **Sprint 1 verification **GREEN** (2026-09-10)** |
 | Base | FE: `origin/master` @ `7155ce0`; BE: includes `feb8d65` Alembic 014 tip (PR #3 supersedable by PR #4 ancestry) |
 | Premium UI inspect | `feature/jobready-ui-skeleton-premium` @ `c217e4e` — frontend-only; reuse tokens/shells/nav selectively later; **not** base for Sprint 1 |
 | Master merge / deploy | **blocked** — Gk owns release; do **not** merge to master or deploy from this stream |
@@ -29,6 +29,15 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | Playwright (historical red) | PR #5 @ `85a28c5`: hub path progress + AI RAG smoke; PR #4 @ `ef188d5`: logout navigation race | Fixed in follow-up commits; re-run CI required |
 | Integration | Local worktree merge FE∪BE for paired verify — **not pushed**, not merged to master | see Checks |
 
+
+## CI green evidence (2026-09-10 UTC)
+
+| PR | Branch tip | Actions run | Result |
+|----|------------|-------------|--------|
+| #4 | `d76da28d8476fcb1976c6c7d55e22d81a6f03627` | [34431721897](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/34431721897) | pytest + lint/build + Playwright **success** |
+| #5 | `00bab6388b8d6f6847898a2e9d75099fdb0d62c7` | [34431716792](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/34431716792) | pytest + lint/build + Playwright **success** |
+| #3 | Alembic 014 only | � | Superseded by #4 ancestry; comment recorded; do not double-merge |
+| Integ worktree | `sprint1-integ-local-only` @ `f5126f1` (local-only, not pushed) | FE+BE paired checkout | Contains 014+015 + AUTH-01 `queryClient` |
 ## Explicitly deferred
 
 - Full Master Plan Phase 2–5 (playground UX, MCQ exam shell, GSAP, whole-product restyle)
@@ -53,7 +62,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | `npm run lint` (frontend) | pass (existing warnings only) | Sprint 1 verification |
 | `npm run build` (frontend) | pass (CI) | PR #5 |
 | `pytest` (backend) | Sprint 1 suites green (`test_auth_hardening`, `test_sprint1_reliability` incl. concurrency) | learning-runtime CI |
-| Playwright CI | **re-running** after logout/path/RAG/AUTH harden | PR #4/#5 |
+| Playwright CI | **green** on PR #4 (`d76da28`) and PR #5 (`00bab63`) � pytest + lint/build + Playwright E2E | PR #4/#5 |
 
 ## Blockers
 
