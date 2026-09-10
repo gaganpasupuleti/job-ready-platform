@@ -41,7 +41,7 @@ test.describe('Dashboard and Practice Hub', () => {
     const progress = page.getByText(/%|progress/i).first()
     await expect(progress).toBeVisible()
     const before = await page.locator('body').innerText()
-    const complete = page.getByRole('button', { name: /mark complete|complete/i }).first()
+    const complete = page.getByRole('button', { name: /^(done|mark complete|complete)$/i }).first()
     if (await complete.isEnabled().catch(() => false)) {
       await complete.click()
       await page.waitForTimeout(500)

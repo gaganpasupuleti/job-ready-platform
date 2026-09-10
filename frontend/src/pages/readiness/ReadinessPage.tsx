@@ -27,7 +27,7 @@ export function ReadinessPage() {
   if (error || !data) return <ErrorState message="Could not load readiness profile." />
 
   const showOverall =
-    data.overall_score_ready !== false &&
+    data.overall_score_ready === true &&
     data.is_hiring_probability !== true &&
     data.has_minimum_evidence &&
     data.score != null

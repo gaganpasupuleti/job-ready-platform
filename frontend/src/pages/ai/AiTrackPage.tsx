@@ -65,6 +65,10 @@ export function AiTrackPage({ track }: { track: keyof typeof TRACKS }) {
   const config = TRACKS[track]
   return (
     <div className="space-y-4">
+      <div>
+        <h1 className="text-lg font-semibold text-[var(--color-text)]">{config.title}</h1>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">{config.description}</p>
+      </div>
       {track === 'prompt-engineering' && (
         <p className="text-sm text-[var(--color-text-muted)]">
           Interactive challenges:{' '}

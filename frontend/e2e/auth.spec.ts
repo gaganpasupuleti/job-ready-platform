@@ -37,11 +37,12 @@ test.describe('Auth', () => {
 
   test('AUTH-01 account switch does not flash prior private progress', async ({ page }) => {
     const suffix = Date.now().toString(36).slice(-6)
+    const markerA = `PRIVATE_MARKER_A_${suffix}`
     const userA = {
       email: `e2e.cache.a.${suffix}@jobready.dev`,
       username: `e2ecachea${suffix}`,
       password: 'E2eStudent123!',
-      fullName: 'Cache User A',
+      fullName: `Cache User A ${markerA}`,
     }
     const userB = {
       email: `e2e.cache.b.${suffix}@jobready.dev`,
@@ -54,23 +55,46 @@ test.describe('Auth', () => {
     await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible({
       timeout: 20_000,
     })
-    // Seed private-looking cached surfaces for user A
+
+    // Seed identifiable private progress for user A inside the same SPA session.
+    await page.goto('/jobs/applications')
+    await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 15_000 })
+    await page.evaluate((marker) => {
+      // Force a distinctive cached React Query entry that would flash if not cleared.
+      const cacheKey = JSON.stringify(['AUTH01_PRIVATE', marker])
+      sessionStorage.setItem(cacheKey, marker)
+      ;(window as unknown as { __AUTH01_MARKER__?: string }).__AUTH01_MARKER__ = marker
+    }, markerA)
+
+    // Hold dashboard queries so a stale cache would still be visible after switch.
+    await page.route('**/api/v1/mistakes/summary**', async (route) => {
+      await new Promise((r) => setTimeout(r, 800))
+      await route.continue()
+    })
     await page.goto('/mistakes')
     await expect(page.getByRole('heading', { name: /mistake/i })).toBeVisible({ timeout: 15_000 })
-    await page.goto('/')
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
+    await expect(page.getByText(markerA)).toHaveCount(0)
 
+    // Same-document account switch (no full browser restart).
     await logout(page)
     await registerUser(page, userB)
     await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible({
       timeout: 20_000,
     })
 
-    // User B must not see User A's identity or leftover private summary flash
+    // Immediate checks before delayed private responses settle.
+    await expect(page.getByText(markerA)).toHaveCount(0)
     await expect(page.getByText(userA.fullName, { exact: false })).toHaveCount(0)
     await expect(page.getByText(userA.email, { exact: false })).toHaveCount(0)
+
     await page.goto('/mistakes')
     await expect(page.getByRole('heading', { name: /mistake/i })).toBeVisible({ timeout: 15_000 })
+    await expect(page.getByText(markerA)).toHaveCount(0)
+    await expect(page.getByText(userA.email, { exact: false })).toHaveCount(0)
+
+    await page.goto('/jobs/applications')
+    await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 15_000 })
+    await expect(page.getByText(markerA)).toHaveCount(0)
     await expect(page.getByText(userA.email, { exact: false })).toHaveCount(0)
   })
 

@@ -15,7 +15,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | Stream | Focus | Status |
 |--------|-------|--------|
 | Backend | §26 A–E: auth bootstrap, mistakes, readiness, trusted completion, alembic 014 tip | **done** on learning-runtime branch |
-| Frontend | AUTH-01 cache isolation; primary nav reduction; honesty for readiness/mistakes UI | **done** on experience-v4 branch |
+| Frontend | AUTH-01 cache isolation; primary nav reduction; honesty for readiness/mistakes UI | **done** + follow-up CI/AUTH-01 hardening |
 
 ## Explicitly deferred
 
