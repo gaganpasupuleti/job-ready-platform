@@ -335,6 +335,15 @@ class SqlPracticeService:
             from app.services.project_sync import complete_linked_project_tasks
 
             await complete_linked_project_tasks(self.db, user.id, sql_problem_id=problem.id)
+        elif status == SqlSubmissionStatus.WRONG_ANSWER:
+            from app.services.mistake_service import MistakeService
+
+            await MistakeService(self.db).record_sql_wrong(
+                user_id=user.id,
+                problem=problem,
+                submission=submission,
+                commit=False,
+            )
         await self.db.commit()
 
         return SqlSubmitResponse(

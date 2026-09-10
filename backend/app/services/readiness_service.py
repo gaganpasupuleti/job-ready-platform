@@ -16,6 +16,8 @@ from app.models.readiness_enums import EvidenceStrength, RoleSkillImportance
 from app.models.tagging import JobRole, Skill
 from app.models.user import User
 from app.readiness.formulas import (
+    FORMULA_LABEL,
+    FORMULA_VERSION,
     IMPORTANCE_WEIGHTS,
     MIN_ROLE_EVIDENCE_ITEMS,
     effective_score,
@@ -77,6 +79,10 @@ class ReadinessService:
                 "developing_skills": [],
                 "missing_skills": [],
                 "why_breakdown": [],
+                "formula_version": FORMULA_VERSION,
+                "formula_label": FORMULA_LABEL,
+                "overall_score_ready": False,
+                "is_hiring_probability": False,
             }
 
         skill_rows: list[dict[str, Any]] = []
@@ -85,6 +91,7 @@ class ReadinessService:
         core_covered = 0
         total_activity = 0
         diversities: list[int] = []
+        assessed_count = 0
 
         from app.readiness.skill_mapping import normalize_skill_key  # noqa: PLC0415
 
@@ -94,11 +101,13 @@ class ReadinessService:
             )
             readiness = ev.score if ev else 0.0
             strength = ev.evidence_strength if ev else EvidenceStrength.LOW
+            # Unassessed / missing skills contribute 0 to the denominator (honest coverage).
             eff = effective_score(readiness, strength) if ev else 0.0
             imp = req.importance.value if hasattr(req.importance, "value") else str(req.importance)
             imp_w = IMPORTANCE_WEIGHTS.get(imp, 0.5) * float(req.weight or 1.0)
+            weighted_items.append((eff, imp_w))
             if ev:
-                weighted_items.append((eff, imp_w))
+                assessed_count += 1
                 total_activity += ev.activity_count
                 diversities.append(len(ev.sources))
             status = "missing"
@@ -123,6 +132,7 @@ class ReadinessService:
                     "effective_score": eff,
                     "evidence_strength": strength.value,
                     "status": status,
+                    "assessed": bool(ev),
                     "sources": [
                         {"source": s.source, "score": s.score, "activity_count": s.activity_count}
                         for s in (ev.sources if ev else [])
@@ -135,6 +145,9 @@ class ReadinessService:
             total_activity, max(diversities) if diversities else 0
         )
         has_min = total_activity >= MIN_ROLE_EVIDENCE_ITEMS and bool(weighted_items)
+        # Overall % is ready only when minimum evidence exists and at least one
+        # required skill has been assessed (not just empty-coverage zeros).
+        overall_score_ready = bool(has_min and assessed_count > 0 and score is not None)
 
         strong = [s["skill_name"] for s in skill_rows if s["status"] == "strong"]
         developing = [s["skill_name"] for s in skill_rows if s["status"] in ("developing", "needs_work")]
@@ -148,6 +161,7 @@ class ReadinessService:
                 "readiness": s["readiness"],
                 "effective_score": s["effective_score"],
                 "evidence_strength": s["evidence_strength"],
+                "assessed": s["assessed"],
             }
             for s in skill_rows
         ]
@@ -162,6 +176,10 @@ class ReadinessService:
             "developing_skills": developing,
             "missing_skills": missing,
             "why_breakdown": why,
+            "formula_version": FORMULA_VERSION,
+            "formula_label": FORMULA_LABEL,
+            "overall_score_ready": overall_score_ready,
+            "is_hiring_probability": False,
         }
 
     async def get_overview(self, user: User) -> dict[str, Any]:
@@ -180,6 +198,10 @@ class ReadinessService:
                 "missing_skills": [],
                 "why_breakdown": [],
                 "trend": [],
+                "formula_version": FORMULA_VERSION,
+                "formula_label": FORMULA_LABEL,
+                "overall_score_ready": False,
+                "is_hiring_probability": False,
                 "message": "Select a target role in Jobs preferences to see role readiness.",
             }
         reqs = await self._requirements_with_skills(role.id)

@@ -32,6 +32,8 @@ from app.schemas.coding import (
     ExecutionResponse,
     ExecutionStatusResponse,
     LanguageInfo,
+    PlaygroundRunRequest,
+    PlaygroundRunResponse,
     RunSubmitRequest,
     SampleTestCasePublic,
     SubmissionDetail,
@@ -107,6 +109,49 @@ class CodingService:
             provider=snap.provider,
             message=snap.message,
             languages=snap.languages,
+        )
+
+    async def playground_run(
+        self,
+        user: User,
+        payload: PlaygroundRunRequest,
+    ) -> PlaygroundRunResponse:
+        """Freeform run (not graded). Distinct from assessed problem run/submit."""
+        _ = user  # auth-gated at API; reserved for future rate limits / history
+        if not self.is_execution_available():
+            return PlaygroundRunResponse(
+                status="service_unavailable",
+                available=False,
+                message="Code execution is currently unavailable. Judge0 is disabled or unreachable.",
+            )
+        self._validate_language(payload.language_id)
+        self._validate_source_code(payload.source_code)
+        self._validate_stdin(payload.stdin or "")
+
+        from app.services.code_execution.interface import ExecutionRequest
+
+        result = await self.executor.execute(
+            ExecutionRequest(
+                source_code=payload.source_code,
+                language_id=payload.language_id,
+                stdin=payload.stdin or "",
+                cpu_time_limit=float(settings.judge0_max_cpu_time_seconds),
+                wall_time_limit=float(settings.judge0_max_wall_time_seconds),
+                memory_limit_kb=int(settings.judge0_max_memory_kb),
+            )
+        )
+        status = (result.status or "internal_error").lower()
+        if status in {"ok", "accepted", "success"}:
+            status = "accepted"
+        return PlaygroundRunResponse(
+            status=status,
+            stdout=result.stdout or "",
+            stderr=result.stderr or "",
+            compile_output=result.compile_output,
+            execution_time_ms=(result.time * 1000.0) if result.time is not None else None,
+            memory_kb=float(result.memory) if result.memory is not None else None,
+            available=True,
+            message=None,
         )
 
     def _validate_language(self, language_id: int) -> str:
@@ -460,6 +505,15 @@ class CodingService:
                 from app.services.project_sync import complete_linked_project_tasks
 
                 await complete_linked_project_tasks(self.db, user.id, coding_problem_id=problem.id)
+            elif submission.status == SubmissionStatus.WRONG_ANSWER:
+                from app.services.mistake_service import MistakeService
+
+                await MistakeService(self.db).record_coding_wrong(
+                    user_id=user.id,
+                    problem=problem,
+                    submission=submission,
+                    commit=False,
+                )
 
         public_results = [self._public_result(r, test_cases) for r in results]
 

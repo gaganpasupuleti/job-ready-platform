@@ -22,7 +22,7 @@ TAG_TO_SKILL: dict[str, str] = {
     "gcp": "gcp",
     "snowflake": "snowflake",
     "spark": "spark",
-    "flink": "spark",
+    "flink": "flink",
     "docker": "docker",
     "kubernetes": "kubernetes",
     "terraform": "terraform",
@@ -41,21 +41,18 @@ TAG_TO_SKILL: dict[str, str] = {
     "prompt": "prompt-engineering",
 }
 
+# Safe aliases only — do not map unrelated skills (e.g. powerbi→sql, communication→python).
 SKILL_ALIASES: dict[str, str] = {
     "postgresql": "sql",
     "postgres": "sql",
     "mysql": "sql",
-    "powerbi": "sql",
-    "power-bi": "sql",
     "apache-spark": "spark",
-    "apache flink": "spark",
     "generative ai": "rag",
     "prompt engineering": "prompt-engineering",
     "ai agents": "agents",
     "data engineering": "sql",
     "data modeling": "sql",
     "etl": "sql",
-    "communication": "python",
 }
 
 

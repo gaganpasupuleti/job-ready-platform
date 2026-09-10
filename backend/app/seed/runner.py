@@ -1,9 +1,12 @@
 import asyncio
+import logging
 import re
 from uuid import uuid4
 
 from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.core.security import hash_password
 from app.db.session import AsyncSessionLocal, engine
 from app.models.enums import Difficulty, QuestionType, UserRole
@@ -12,6 +15,79 @@ from app.models.tagging import Company, JobRole, QuestionRole, QuestionSkill, Sk
 from app.models.taxonomy import Category, Domain, Topic
 from app.models.user import User
 from app.seed.taxonomy_data import COMPANIES, JOB_ROLES, SKILLS, TAXONOMY
+
+logger = logging.getLogger(__name__)
+
+_DEV_DEFAULT_ADMIN_EMAIL = "admin@jobready.dev"
+_DEV_DEFAULT_ADMIN_PASSWORD = "Admin123!"
+
+
+def _is_production() -> bool:
+    return settings.app_env.lower() in {"production", "prod"}
+
+
+async def ensure_seed_admin(session: AsyncSession) -> User | None:
+    """Resolve an admin for catalog `created_by` without inventing prod credentials.
+
+    - Reuse any existing admin.
+    - Else bootstrap only when ADMIN_BOOTSTRAP_EMAIL + ADMIN_BOOTSTRAP_PASSWORD are set.
+    - Else in non-production, create the well-known local admin.
+    - In production with no bootstrap env, never create default credentials.
+    """
+    existing_admin = (
+        await session.execute(select(User).where(User.role == UserRole.ADMIN).limit(1))
+    ).scalar_one_or_none()
+    if existing_admin is not None:
+        return existing_admin
+
+    bootstrap_email = (settings.admin_bootstrap_email or "").strip().lower()
+    bootstrap_password = settings.admin_bootstrap_password or ""
+    if bootstrap_email and bootstrap_password:
+        existing = (
+            await session.execute(select(User).where(User.email == bootstrap_email))
+        ).scalar_one_or_none()
+        if existing is not None:
+            if existing.role != UserRole.ADMIN:
+                existing.role = UserRole.ADMIN
+                await session.flush()
+            return existing
+        admin = User(
+            email=bootstrap_email,
+            username=bootstrap_email.split("@")[0][:50] or "admin",
+            full_name="Platform Admin",
+            password_hash=hash_password(bootstrap_password),
+            role=UserRole.ADMIN,
+            is_active=True,
+        )
+        session.add(admin)
+        await session.flush()
+        logger.info("Bootstrapped admin from ADMIN_BOOTSTRAP_* for %s", bootstrap_email)
+        return admin
+
+    if _is_production():
+        logger.warning(
+            "Production seed: refusing default admin credentials. "
+            "Set ADMIN_BOOTSTRAP_EMAIL and ADMIN_BOOTSTRAP_PASSWORD for explicit bootstrap."
+        )
+        return None
+
+    existing_dev = (
+        await session.execute(select(User).where(User.email == _DEV_DEFAULT_ADMIN_EMAIL))
+    ).scalar_one_or_none()
+    if existing_dev is not None:
+        return existing_dev
+
+    admin = User(
+        email=_DEV_DEFAULT_ADMIN_EMAIL,
+        username="admin",
+        full_name="Platform Admin",
+        password_hash=hash_password(_DEV_DEFAULT_ADMIN_PASSWORD),
+        role=UserRole.ADMIN,
+        is_active=True,
+    )
+    session.add(admin)
+    await session.flush()
+    return admin
 
 
 def slugify(value: str) -> str:
@@ -334,21 +410,7 @@ async def seed_all() -> None:
             print("Base seed data already exists. Skipping.")
             return
 
-        existing_admin = (
-            await session.execute(select(User).where(User.email == "admin@jobready.dev"))
-        ).scalar_one_or_none()
-        admin = existing_admin
-        if admin is None:
-            admin = User(
-                email="admin@jobready.dev",
-                username="admin",
-                full_name="Platform Admin",
-                password_hash=hash_password("Admin123!"),
-                role=UserRole.ADMIN,
-                is_active=True,
-            )
-            session.add(admin)
-            await session.flush()
+        admin = await ensure_seed_admin(session)
 
         domain_map: dict[str, Domain] = {}
         category_map: dict[str, Category] = {}
@@ -497,7 +559,7 @@ async def seed_all() -> None:
                 is_active=True,
                 is_premium=False,
                 is_sample=True,
-                created_by=admin.id,
+                created_by=admin.id if admin else None,
                 options=[
                     QuestionOption(
                         id=uuid4(),

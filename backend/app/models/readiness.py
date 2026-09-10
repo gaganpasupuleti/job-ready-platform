@@ -97,6 +97,38 @@ class MistakeItem(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     retry_href: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
 
+class MistakeSourceEvent(Base, UUIDPrimaryKeyMixin):
+    """DB-enforced identity for a single mistake-producing event (e.g. submission id)."""
+
+    __tablename__ = "mistake_source_events"
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id",
+            "source_type",
+            "source_event_id",
+            name="uq_mistake_source_event",
+        ),
+    )
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    source_type: Mapped[MistakeSourceType] = mapped_column(
+        Enum(MistakeSourceType, name="mistake_source_type", native_enum=False),
+        nullable=False,
+    )
+    source_event_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    mistake_item_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("mistake_items.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
 class UserRoleReadinessSnapshot(Base, UUIDPrimaryKeyMixin):
     __tablename__ = "user_role_readiness_snapshots"
 

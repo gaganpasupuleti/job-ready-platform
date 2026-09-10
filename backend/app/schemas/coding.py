@@ -106,6 +106,24 @@ class RunSubmitRequest(BaseModel):
     language_id: int
 
 
+class PlaygroundRunRequest(BaseModel):
+    source_code: str = Field(min_length=1)
+    language_id: int = 71
+    stdin: str = ""
+
+
+class PlaygroundRunResponse(BaseModel):
+    status: str
+    stdout: str = ""
+    stderr: str = ""
+    compile_output: str | None = None
+    execution_time_ms: float | None = None
+    memory_kb: int | None = None
+    available: bool = True
+    message: str | None = None
+
+
+
 class TestResultPublic(BaseModel):
     test_number: int
     name: str | None = None
