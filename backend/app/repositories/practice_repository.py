@@ -41,9 +41,14 @@ class PracticeRepository(BaseRepository):
     async def get_answer(
         self, session_id: UUID, question_id: UUID
     ) -> PracticeAnswer | None:
-        stmt = select(PracticeAnswer).where(
-            PracticeAnswer.session_id == session_id,
-            PracticeAnswer.question_id == question_id,
+        stmt = (
+            select(PracticeAnswer)
+            .where(
+                PracticeAnswer.session_id == session_id,
+                PracticeAnswer.question_id == question_id,
+            )
+            .order_by(PracticeAnswer.updated_at.desc())
+            .limit(1)
         )
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()

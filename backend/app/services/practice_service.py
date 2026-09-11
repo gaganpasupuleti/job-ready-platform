@@ -125,7 +125,7 @@ class PracticeService:
     async def get_session(self, user: User, session_id: UUID) -> SessionDetailResponse:
         session = await self._get_owned_session(user.id, session_id)
         await self._maybe_expire_exam(user, session)
-        answered_count = len([a for a in session.answers if a.answered_at is not None])
+        answered_count = self._count_responses(session)
         return self._session_detail(session, answered_count=answered_count)
 
     async def get_navigator(self, user: User, session_id: UUID) -> SessionNavigatorResponse:
@@ -137,7 +137,7 @@ class PracticeService:
             items.append(
                 NavigatorItem(
                     question_number=sq.question_number,
-                    answered=bool(answer and answer.answered_at is not None),
+                    answered=self._answer_has_response(answer),
                     marked_for_review=bool(answer and answer.marked_for_review),
                 )
             )
@@ -183,7 +183,7 @@ class PracticeService:
             question_number=question_number,
             total_questions=session.question_count,
             question=self._public_question(question, topic_name, skills),
-            answered=answered is not None and answered.answered_at is not None,
+            answered=self._answer_has_response(answered),
             bookmarked=bookmarked,
             marked_for_review=marked,
             selected_option_ids=selected_ids,
@@ -258,6 +258,7 @@ class PracticeService:
         if session.status == SessionStatus.COMPLETED:
             return await self.get_results(user, session_id)
 
+        await self._finalize_pending_answers(session)
         session.status = SessionStatus.COMPLETED
         session.completed_at = datetime.now(UTC)
         await self._refresh_session_counts(session)
@@ -423,6 +424,54 @@ class PracticeService:
             return False, -question.negative_marks
         return False, 0.0
 
+    @staticmethod
+    def _answer_has_response(answer: PracticeAnswer | None) -> bool:
+        if answer is None:
+            return False
+        if answer.answered_at is not None:
+            return True
+        return bool(answer.selected_option_ids)
+
+    def _count_responses(self, session: PracticeSession) -> int:
+        seen: set[UUID] = set()
+        for answer in session.answers:
+            if self._answer_has_response(answer):
+                seen.add(answer.question_id)
+        return len(seen)
+
+    async def _finalize_pending_answers(self, session: PracticeSession) -> None:
+        """Grade exam autosaves that never went through submit_answer."""
+        now = datetime.now(UTC)
+        for sq in session.questions:
+            answer = await self.practice_repo.get_answer(session.id, sq.question_id)
+            if answer is None or answer.answered_at is not None:
+                continue
+            if not answer.selected_option_ids:
+                continue
+            question = await self.question_repo.get_by_id(sq.question_id)
+            if question is None:
+                continue
+            selected_uuids = [UUID(value) for value in answer.selected_option_ids]
+            is_correct, marks_awarded = self._evaluate_answer(question, selected_uuids)
+            answer.is_correct = is_correct
+            answer.marks_awarded = marks_awarded
+            answer.answered_at = now
+            await self.practice_repo.save_answer(answer)
+
+    async def _refresh_owned_session(
+        self, session: PracticeSession, user_id: UUID
+    ) -> PracticeSession:
+        fresh = await self.practice_repo.get_session_for_user(session.id, user_id)
+        if fresh is None:
+            return session
+        session.status = fresh.status
+        session.completed_at = fresh.completed_at
+        session.score = fresh.score
+        session.correct_count = fresh.correct_count
+        session.incorrect_count = fresh.incorrect_count
+        session.unanswered_count = fresh.unanswered_count
+        return session
+
     async def _refresh_session_counts(self, session: PracticeSession) -> None:
         session = await self.practice_repo.get_session_for_user(session.id, session.user_id)
         if session is None:
@@ -445,6 +494,9 @@ class PracticeService:
             return
         if session.expires_at and datetime.now(UTC) >= session.expires_at:
             await self.complete_session(user, session.id)
+            # complete_session loads a separate instance; keep caller's object in sync
+            # so same-request late writes see COMPLETED and are rejected.
+            await self._refresh_owned_session(session, user.id)
 
     def _remaining_seconds(self, session: PracticeSession) -> int | None:
         if session.expires_at is None:

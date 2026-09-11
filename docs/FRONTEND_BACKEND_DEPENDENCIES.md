@@ -17,7 +17,8 @@ Shared contracts and operational dependencies for JobReady Sprint 1+.
 | Visual shells | Frontend | **Landed** compact foundation | `data-shell=standard|focused|assessment` via AppLayout; Source Sans 3 + `Field` controls |
 | Playground run | Backend + FE | Phase 2 checkpoint | Non-assessed; honest unavailable when Judge0 off |
 | Assessed coding Run/Submit | Backend + FE | Phase 2 polish landed FE | Monaco DSA sticky chrome; drafts local; Judge0 disabled honest |
-| MCQ exam resume | Frontend (+ existing session APIs) | Phase 2 polish landed FE | History Resume → `/practice/sessions/{id}` while `status=active` |
+| MCQ exam resume | Frontend (+ existing session APIs) | **Landed + verified** | History Resume → `/practice/sessions/{id}` while `status=active` |
+| MCQ exam finalize | Backend + FE | **Landed + verified** | Autosaves graded on complete/expiry; late writes rejected; no exam feedback leak |
 
 ## Readiness UI contract
 
