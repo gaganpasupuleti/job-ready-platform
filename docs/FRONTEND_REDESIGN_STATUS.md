@@ -152,7 +152,7 @@ Live coding execution/grading remains **blocked** (`enabled=false`, `available=f
 | Field | Value |
 |-------|-------|
 | Reference | `backend/design-reference/jobready-v4` (README + INTEGRATION_NOTES) |
-| FE tip after shell | `a08af51` / shell land `a979c2e` (base); 3cd1665 (3cd1665dafa31f6f6a817a92323556c1185be7f0) |
+| FE tip after shell | 4edecee (4edeceee286f46521812bf0ecd679b1f04cb306a); modules land 3cd1665 |
 | Shell | Horizontal **masthead** + JR monogram `jobready.` + primary nav + More drawer |
 | Tokens | Stone canvas `#E8EAE7` / surface `#F4F5F1` / steel accent `#40596B` |
 | Overview | Live continue/readiness — preserved |
