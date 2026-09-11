@@ -424,3 +424,309 @@
     grid-template-columns: 1fr;
   }
 }
+/* Module pages — Practice / Learn / Jobs */
+.module-page { max-width: 1256px; }
+.module-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.module-heading h1 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+.module-heading p { margin: 0.35rem 0 0; color: var(--color-text-muted); font-size: 0.9rem; }
+.module-heading .eyebrow {
+  margin: 0 0 0.25rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  font-size: 12px;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.back-link:hover { text-decoration: underline; }
+.module-panel { margin-top: 1.25rem; }
+.module-panel h2 {
+  margin: 0 0 0.55rem;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+.module-lede {
+  margin: -0.25rem 0 0.65rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+.v4-queue-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
+  text-decoration: none;
+  color: inherit;
+}
+.v4-queue-row + .v4-queue-row { margin-top: 0.4rem; }
+.v4-queue-row:hover { border-color: var(--color-accent); }
+.v4-queue-row.is-disabled { opacity: 0.6; pointer-events: none; }
+.v4-queue-row strong {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.queue-meta {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+.track-selectors {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  margin: 1.25rem 0 0.5rem;
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.track-selector {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+.track-selector.selected {
+  color: var(--color-accent);
+  font-weight: 600;
+  border-bottom-color: var(--color-accent);
+}
+.track-selector:hover { color: var(--color-accent); }
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip-link {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  text-decoration: none;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+.chip-link:hover { border-color: var(--color-accent); }
+.result-list { list-style: none; margin: 0; padding: 0; }
+.result-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+.result-list a { color: var(--color-accent); text-decoration: none; }
+.result-list span { color: var(--color-text-subtle); font-size: 0.75rem; }
+.empty-row { color: var(--color-text-muted); border: 0 !important; }
+.module-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+}
+.module-footer-links a { color: var(--color-accent); }
+
+.learn-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.curriculum-sidebar .label {
+  margin: 0 0 0.5rem;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+.curriculum-track {
+  display: block;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 0.4rem;
+}
+.curriculum-track strong { display: block; font-size: 0.85rem; }
+.curriculum-track span { font-size: 0.75rem; color: var(--color-text-muted); }
+.curriculum-track:hover { border-color: var(--color-accent); }
+.curriculum-hero h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.curriculum-hero > p { margin: 0 0 1rem; color: var(--color-text-muted); font-size: 0.9rem; }
+.course-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.course-tile {
+  display: block;
+  padding: 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
+  text-decoration: none;
+  color: inherit;
+}
+.course-tile:hover { border-color: var(--color-accent); }
+.course-tile p { margin: 0.4rem 0; font-size: 0.8rem; color: var(--color-text-muted); }
+.course-tile > span { font-size: 0.75rem; color: var(--color-text-subtle); }
+.module-stack { display: flex; flex-direction: column; gap: 0.85rem; }
+.module-row {
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
+  padding: 0.85rem 1rem;
+}
+.module-meta { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.65rem; }
+.module-meta h2 { margin: 0; font-size: 0.95rem; }
+.module-meta p { margin: 0.2rem 0 0; font-size: 0.8rem; color: var(--color-text-muted); }
+.module-number {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: 11px var(--font-mono);
+  color: var(--color-text-muted);
+}
+.module-number.done {
+  background: var(--color-accent-muted);
+  color: var(--color-accent);
+  border-color: transparent;
+}
+.lesson-list { list-style: none; margin: 0; padding: 0; }
+.lesson-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+.lesson-list span { font-size: 0.75rem; color: var(--color-text-subtle); }
+.lesson-list a { color: var(--color-accent); text-decoration: none; }
+.lesson-list .is-muted { color: var(--color-text-muted); }
+
+.jobs-portal .jobs-tabs {
+  display: flex;
+  gap: 1.25rem;
+  border-bottom: 1px solid var(--color-border-strong);
+  margin-bottom: 1.1rem;
+}
+.jobs-portal .jobs-tabs a {
+  padding: 0.75rem 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.jobs-portal .jobs-tabs a.active {
+  color: var(--color-accent);
+  font-weight: 600;
+  border-bottom-color: var(--color-accent);
+}
+.jobs-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.jobs-filter-bar input,
+.jobs-filter-bar select {
+  height: 2.25rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: var(--color-surface);
+  padding: 0 0.65rem;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+.jobs-summary-strip {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-bottom: 1rem;
+}
+.jobs-summary-strip article {
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
+  padding: 0.7rem 0.85rem;
+}
+.jobs-summary-strip p { margin: 0; font-size: 0.7rem; color: var(--color-text-muted); }
+.jobs-summary-strip strong {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 1.35rem;
+  font-weight: 650;
+}
+
+.studio-main {
+  background: var(--color-surface);
+}
+.studio-topline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 0.5rem;
+}
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.35rem 0.65rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-muted);
+}
+.problem-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .learn-layout { grid-template-columns: 1fr; }
+  .curriculum-sidebar { display: flex; gap: 0.4rem; overflow-x: auto; }
+  .curriculum-track { min-width: 180px; margin-bottom: 0; }
+}

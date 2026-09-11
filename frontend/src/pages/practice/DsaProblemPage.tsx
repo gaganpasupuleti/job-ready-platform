@@ -359,7 +359,7 @@ export function DsaProblemPage() {
 
   return (
     <div
-      className={`dsa-workbench flex flex-col gap-2 overflow-hidden px-3 py-2 sm:px-4 ${fullscreen ? 'fixed inset-0 z-40 bg-[var(--color-surface)] p-3' : 'h-[calc(100vh-2.75rem)]'}`}
+      className={`studio-main dsa-workbench flex flex-col gap-2 overflow-hidden px-3 py-2 sm:px-4 ${fullscreen ? 'fixed inset-0 z-40 bg-[var(--color-surface)] p-3' : 'h-[calc(100vh-2.75rem)]'}`}
     >
       <div className="sticky top-0 z-10 -mx-3 flex flex-col gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-3 py-2 backdrop-blur sm:-mx-4 sm:px-4">
         <PracticeHeader

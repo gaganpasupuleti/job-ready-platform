@@ -123,7 +123,7 @@ export function PracticeHeader({
   children?: ReactNode
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="studio-topline flex flex-wrap items-start justify-between gap-3">
       <div>
         <Link to={backTo} className="text-xs text-[var(--color-accent)] hover:underline">
           ← {backLabel}

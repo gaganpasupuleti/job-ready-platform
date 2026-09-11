@@ -75,9 +75,12 @@ export function JobDetailPage() {
 
   const salary = formatSalary(data.salary_min, data.salary_max, data.salary_currency)
   const applyUrl = data.apply_url || data.source_url
+  // Preparing (or no application yet) can still be marked applied. Pipeline statuses keep View application.
+  const canMarkApplied =
+    !data.application_status || data.application_status === 'preparing' || data.application_status === 'saved'
 
   return (
-    <div className="space-y-6">
+    <div className="jobs-detail space-y-5">
       <PracticeHeader backTo="/jobs" backLabel="Jobs hub" title={data.title}>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">{data.company_name}</p>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -111,9 +114,10 @@ export function JobDetailPage() {
         )}
         {data.application_id ? (
           <Link to={`/jobs/applications/${data.application_id}`}>
-            <Button variant="primary">View application</Button>
+            <Button variant="secondary">View application</Button>
           </Link>
-        ) : (
+        ) : null}
+        {canMarkApplied ? (
           <Button
             type="button"
             variant="primary"
@@ -122,7 +126,7 @@ export function JobDetailPage() {
           >
             Mark applied
           </Button>
-        )}
+        ) : null}
         {applyUrl && (
           <a href={applyUrl} target="_blank" rel="noopener noreferrer">
             <Button type="button">Apply externally</Button>

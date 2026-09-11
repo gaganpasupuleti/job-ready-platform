@@ -61,8 +61,8 @@ export function PythonPlaygroundPage() {
   }, [available, latest?.status, runMutation.isPending])
 
   return (
-    <div className="flex h-[calc(100vh-2.75rem)] min-h-[520px] flex-col gap-3 px-3 py-2 sm:px-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="studio-main flex h-[calc(100vh-2.75rem)] min-h-[520px] flex-col gap-3 px-3 py-2 sm:px-4">
+      <div className="studio-topline flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs text-[var(--color-text-muted)]">
             <Link to="/practice/coding" className="text-[var(--color-accent)] hover:underline">
@@ -101,8 +101,8 @@ export function PythonPlaygroundPage() {
       )}
 
       <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-        <section className="flex min-h-0 flex-col overflow-hidden rounded-md border border-[var(--color-border)] bg-[var(--color-surface)]">
-          <div className="flex h-10 items-center justify-between border-b border-[var(--color-border)] px-3">
+        <section className="flex min-h-0 flex-col overflow-hidden rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)]">
+          <div className="editor-toolbar flex h-10 items-center justify-between px-3">
             <span className="text-[13px] font-medium text-[var(--color-text)]">Editor · Python</span>
             <div className="flex items-center gap-2">
               <Button
