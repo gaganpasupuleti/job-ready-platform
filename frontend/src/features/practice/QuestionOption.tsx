@@ -22,7 +22,7 @@ export function QuestionOption({
       disabled={disabled}
       onClick={onSelect}
       className={cn(
-        'w-full rounded-md border px-3 py-2 text-left text-sm transition-colors disabled:opacity-70',
+        'w-full rounded-[var(--radius-control)] border px-3 py-2 text-left text-sm transition-colors disabled:opacity-70',
         variant === 'correct' && 'border-[var(--color-success)] bg-emerald-50 dark:bg-emerald-950',
         variant === 'incorrect' && 'border-[var(--color-danger)] bg-red-50 dark:bg-red-950',
         variant === 'default' &&

@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { Input } from '@/components/common/Field'
 import {
   fetchPracticeHub,
   searchPractice,
@@ -21,24 +22,23 @@ function PathCard({ path }: { path: PracticePathCard }) {
   return (
     <Link
       to={comingSoon ? '#' : pathHref(path)}
-      className={`block rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 transition hover:border-[var(--color-accent)] ${
+      className={`block rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition hover:border-[var(--color-accent)] ${
         comingSoon ? 'pointer-events-none opacity-60' : ''
       }`}
       onClick={(e) => comingSoon && e.preventDefault()}
     >
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        <h3 className="font-medium text-[var(--color-text)]">{path.title}</h3>
+      <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+        <h3 className="text-sm font-medium text-[var(--color-text)]">{path.title}</h3>
         <Badge>{path.difficulty}</Badge>
         {comingSoon ? <Badge variant="warning">Coming Soon</Badge> : <Badge variant="success">Available</Badge>}
       </div>
-      <p className="text-sm text-[var(--color-text-muted)]">{path.short_description}</p>
-      <p className="mt-2 text-xs text-[var(--color-text-subtle)]">
+      <p className="text-xs text-[var(--color-text-muted)]">{path.short_description}</p>
+      <p className="mt-1.5 text-[11px] text-[var(--color-text-subtle)]">
         {path.progress_percent > 0 ? `${path.progress_percent}% complete` : 'Not started'}
       </p>
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-[var(--color-text-subtle)]">
+      <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-[var(--color-text-subtle)]">
         {path.language && <span>{path.language}</span>}
         <span>{path.item_count} items</span>
-        {path.progress_percent > 0 && <span>{path.progress_percent}% done</span>}
         {path.progress_percent > 0 && !comingSoon && (
           <span className="font-medium text-[var(--color-accent)]">Continue</span>
         )}
@@ -69,24 +69,25 @@ export function PracticeHubPage() {
   }, [data, activeSection])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">Practice Hub</h2>
-        <p className="text-sm text-[var(--color-text-muted)]">
-          Guided paths for languages, DSA, algorithms, projects, and interview preparation. Original Job Ready
-          content — not a clone of any third-party platform.
+        <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">Practice Hub</h1>
+        <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
+          Guided paths for languages, DSA, algorithms, projects, and interview preparation.
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <input
-          className="w-full flex-1 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <Input
+          aria-label="Search practice content"
           placeholder="Search paths, courses, projects..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <Link to="/learn">
-          <Button variant="primary">Browse courses</Button>
+          <Button variant="primary" size="sm">
+            Browse courses
+          </Button>
         </Link>
       </div>
 

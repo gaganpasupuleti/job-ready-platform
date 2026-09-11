@@ -4,6 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
+import { Textarea } from '@/components/common/Field'
 import { CodeEditor } from '@/features/dsa/CodeEditor'
 import { useAuth } from '@/hooks/useAuth'
 import { fetchExecutionStatus, runPlayground } from '@/services/codingService'
@@ -71,14 +72,13 @@ export function PythonPlaygroundPage() {
             Playground
           </p>
           <h1
-            className="text-[22px] font-semibold leading-tight text-[var(--color-text)]"
+            className="text-base font-semibold leading-tight text-[var(--color-text)] sm:text-lg"
             data-testid="python-playground-heading"
           >
             Python Playground
           </h1>
-          <p className="mt-1 max-w-2xl text-[13px] text-[var(--color-text-muted)]">
-            Freeform Python execution with stdin. This is not an assessed problem — use DSA/Coding
-            problems for graded Run/Submit.
+          <p className="mt-0.5 max-w-2xl text-sm text-[var(--color-text-muted)]">
+            Freeform Python with stdin — not assessed. Use DSA/Coding problems for graded Run/Submit.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -144,12 +144,12 @@ export function PythonPlaygroundPage() {
             <label className="text-[12px] font-medium text-[var(--color-text-muted)]" htmlFor="stdin">
               Standard input
             </label>
-            <textarea
+            <Textarea
               id="stdin"
               value={stdin}
               onChange={(e) => setStdin(e.target.value)}
               rows={4}
-              className="mt-1 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface-muted)] p-2 font-mono text-[12px] text-[var(--color-text)]"
+              className="mt-1 font-mono text-xs"
               placeholder="Optional stdin for your program"
             />
           </div>

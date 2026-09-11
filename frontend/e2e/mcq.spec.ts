@@ -27,6 +27,27 @@ test.describe('MCQ practice and exam', () => {
   test('exam mode can be selected from aptitude catalog', async ({ page }) => {
     await page.goto('/practice/aptitude')
     await page.getByRole('button', { name: /^exam$/i }).click()
-    await expect(page.getByText(/answers and explanations are hidden/i)).toBeVisible()
+    await expect(page.getByText(/answers stay hidden|answers and explanations are hidden/i)).toBeVisible()
+  })
+
+  test('active exam can be resumed from recent practice', async ({ page }) => {
+    await page.goto('/practice/aptitude')
+    await page.getByRole('button', { name: fixtures.mcq_topic.name, exact: true }).click()
+    await page.getByRole('button', { name: /^easy$/i }).click()
+    await page.getByRole('combobox').selectOption('5')
+    await page.getByRole('button', { name: /^exam$/i }).click()
+    await page.getByRole('button', { name: /start session/i }).click()
+    await expect(page).toHaveURL(/\/practice\/sessions\//, { timeout: 20_000 })
+    const sessionUrl = page.url()
+    await page.goto('/practice/aptitude')
+    await expect(page.getByRole('heading', { name: /aptitude/i }).first()).toBeVisible()
+    const resume = page.getByRole('link', { name: /^resume$/i }).first()
+    await expect(resume).toBeVisible({ timeout: 15_000 })
+    await resume.click()
+    await expect(page).toHaveURL(/\/practice\/sessions\//, { timeout: 15_000 })
+    expect(page.url().replace(/\/$/, '')).toBe(sessionUrl.replace(/\/$/, ''))
+    await expect(page.getByText(/exam mode|time left|question navigator/i).first()).toBeVisible({
+      timeout: 15_000,
+    })
   })
 })

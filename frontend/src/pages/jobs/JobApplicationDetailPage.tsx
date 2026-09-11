@@ -39,7 +39,7 @@ const STATUS_OPTIONS: ApplicationStatus[] = [
 ]
 
 const inputClass =
-  'mt-1 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)]'
+  'mt-1 h-8 w-full rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 text-sm text-[var(--color-text)]'
 
 function formatDateTime(value: string | null) {
   if (!value) return '—'

@@ -23,10 +23,10 @@ export function CodingPage() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">Coding Practice</h2>
-        <p className="text-sm text-[var(--color-text-muted)]">
+        <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">Coding Practice</h1>
+        <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
           Language-focused practice using the same coding engine as DSA. Pick a language to filter
           problems with starter templates.
         </p>
@@ -34,16 +34,17 @@ export function CodingPage() {
 
       {progress && <CodingProgressSummary progress={progress} />}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Language filter">
         {SUPPORTED_LANGUAGES.map((lang) => (
           <button
             key={lang.id}
             type="button"
             onClick={() => setLanguageId(lang.id)}
-            className={`rounded-md border px-3 py-1.5 text-sm ${
+            aria-pressed={languageId === lang.id}
+            className={`h-7 rounded-[var(--radius-control)] border px-2.5 text-xs ${
               languageId === lang.id
                 ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
-                : 'border-[var(--color-border)] bg-[var(--color-surface)]'
+                : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
             }`}
           >
             {lang.shortLabel}

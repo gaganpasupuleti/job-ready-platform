@@ -27,34 +27,34 @@ export function PracticeResultsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">Practice Complete</h2>
-        <p className="text-sm text-[var(--color-text-muted)]">Review your performance below.</p>
+        <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">Practice Complete</h1>
+        <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">Review your performance below.</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Card padding="sm">
-          <p className="text-xs text-[var(--color-text-muted)]">Score</p>
-          <p className="text-2xl font-semibold">
+          <p className="text-[11px] text-[var(--color-text-muted)]">Score</p>
+          <p className="text-xl font-semibold">
             {data.session.correct_count} / {data.session.question_count}
           </p>
         </Card>
         <Card padding="sm">
-          <p className="text-xs text-[var(--color-text-muted)]">Accuracy</p>
-          <p className="text-2xl font-semibold">{formatPercent(data.accuracy)}</p>
+          <p className="text-[11px] text-[var(--color-text-muted)]">Accuracy</p>
+          <p className="text-xl font-semibold">{formatPercent(data.accuracy)}</p>
         </Card>
         <Card padding="sm">
-          <p className="text-xs text-[var(--color-text-muted)]">Incorrect</p>
-          <p className="text-2xl font-semibold">{data.session.incorrect_count}</p>
+          <p className="text-[11px] text-[var(--color-text-muted)]">Incorrect</p>
+          <p className="text-xl font-semibold">{data.session.incorrect_count}</p>
         </Card>
         <Card padding="sm">
-          <p className="text-xs text-[var(--color-text-muted)]">Unanswered</p>
-          <p className="text-2xl font-semibold">{data.session.unanswered_count}</p>
+          <p className="text-[11px] text-[var(--color-text-muted)]">Unanswered</p>
+          <p className="text-xl font-semibold">{data.session.unanswered_count}</p>
         </Card>
         <Card padding="sm">
-          <p className="text-xs text-[var(--color-text-muted)]">Time Taken</p>
-          <p className="text-2xl font-semibold">{formatDuration(data.time_taken_seconds)}</p>
+          <p className="text-[11px] text-[var(--color-text-muted)]">Time Taken</p>
+          <p className="text-xl font-semibold">{formatDuration(data.time_taken_seconds)}</p>
         </Card>
       </div>
 

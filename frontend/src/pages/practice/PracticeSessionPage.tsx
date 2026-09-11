@@ -156,8 +156,20 @@ export function PracticeSessionPage() {
   const isLast = questionNumber >= session.question_count
 
   return (
-    <div className="mx-auto max-w-5xl space-y-4 px-1 py-2">
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--color-text-muted)]">
+    <div
+      className={
+        isExam
+          ? 'mx-auto max-w-5xl space-y-3 px-1 py-2'
+          : 'mx-auto max-w-5xl space-y-4 px-1 py-2'
+      }
+    >
+      <div
+        className={
+          isExam
+            ? 'sticky top-0 z-10 -mx-1 flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-2 py-2 text-xs text-[var(--color-text-muted)] backdrop-blur'
+            : 'flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--color-text-muted)]'
+        }
+      >
         <span>
           {session.mode} mode · {session.answered_count}/{session.question_count} answered
           {isMulti ? ' · select all that apply' : ''}
@@ -186,15 +198,15 @@ export function PracticeSessionPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_220px]">
-        <Card padding="lg">
+      <div className="grid gap-3 lg:grid-cols-[1fr_200px]">
+        <Card padding="md">
           <QuestionCard
             question={data.question}
             questionNumber={data.question_number}
             totalQuestions={data.total_questions}
           />
 
-          <div className="mt-4 space-y-2">
+          <div className="mt-3 space-y-1.5" role="group" aria-label="Answer options">
             {data.question.options.map((option) => {
               let variant: 'default' | 'correct' | 'incorrect' = 'default'
               const selected = selectedOptionIds.includes(option.id)

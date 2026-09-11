@@ -6,6 +6,7 @@ import { Bookmark, History, Lightbulb, ListChecks, Terminal } from 'lucide-react
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
+import { Select } from '@/components/common/Field'
 import {
   EmptyState,
   ErrorState,
@@ -358,20 +359,21 @@ export function DsaProblemPage() {
 
   return (
     <div
-      className={`dsa-workbench flex flex-col gap-3 overflow-hidden ${fullscreen ? 'fixed inset-0 z-40 bg-[var(--color-bg)] p-4' : 'h-[calc(100vh-7rem)]'}`}
+      className={`dsa-workbench flex flex-col gap-2 overflow-hidden px-3 py-2 sm:px-4 ${fullscreen ? 'fixed inset-0 z-40 bg-[var(--color-surface)] p-3' : 'h-[calc(100vh-2.75rem)]'}`}
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="sticky top-0 z-10 -mx-3 flex flex-wrap items-start justify-between gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-3 py-2 backdrop-blur sm:-mx-4 sm:px-4">
         <PracticeHeader
           backTo={projectReturn ? `/projects/${projectReturn}` : '/practice/dsa'}
           backLabel="Back"
           title={problem.title}
         >
-          <div className="mt-1 flex flex-wrap gap-2">
+          <div className="mt-1 flex flex-wrap gap-1.5">
             <Badge>{problem.difficulty}</Badge>
             <PracticeStatusBadge status={problem.progress_status} />
+            <Badge>Assessed</Badge>
           </div>
         </PracticeHeader>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           {navigation?.previous && (
             <Link to={navigation.previous.href}>
               <Button variant="ghost" size="sm">
@@ -395,18 +397,18 @@ export function DsaProblemPage() {
             <Bookmark className="h-4 w-4" />
             {problem.bookmarked ? 'Bookmarked' : 'Bookmark'}
           </Button>
-          <select
+          <Select
             aria-label="Language"
             value={languageId}
             onChange={(e) => setLanguageId(Number(e.target.value))}
-            className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1.5 text-sm ring-1 ring-transparent focus:ring-[var(--color-accent)]"
+            className="h-7 w-auto min-w-[8rem]"
           >
             {langOptions.map((lang) => (
               <option key={lang.id} value={lang.id}>
                 {lang.name}
               </option>
             ))}
-          </select>
+          </Select>
           <Button variant="ghost" size="sm" onClick={() => setWrap((v) => !v)}>
             {wrap ? 'Unwrap' : 'Wrap'}
           </Button>
@@ -415,6 +417,7 @@ export function DsaProblemPage() {
           </Button>
           <Button
             variant="secondary"
+            size="sm"
             onClick={() => {
               if (sourceCode !== starterForLang && !window.confirm('Reset editor to starter code?'))
                 return
@@ -425,26 +428,30 @@ export function DsaProblemPage() {
           </Button>
           <Button
             variant="secondary"
-            className="min-w-[5.5rem] shadow-sm ring-1 ring-[var(--color-accent)]/30"
+            size="sm"
+            className="min-w-[4.5rem]"
             disabled={!executionAvailable || isRunning}
             onClick={() => runMutation.mutate()}
+            title="Run sample tests (not final grade)"
           >
             {runMutation.isPending ? 'Running...' : 'Run'}
           </Button>
           <Button
             variant="primary"
-            className="min-w-[5.5rem] shadow-sm ring-2 ring-[var(--color-accent)]/40"
+            size="sm"
+            className="min-w-[4.5rem]"
             disabled={!executionAvailable || isRunning}
             onClick={() => submitMutation.mutate()}
+            title="Submit for grading against hidden tests"
           >
             {submitMutation.isPending ? 'Submitting...' : 'Submit'}
           </Button>
         </div>
       </div>
       {!executionAvailable && (
-        <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-          Code execution is temporarily unavailable. You can still solve the problem in the editor,
-          save your draft, review samples, hints, and submissions.
+        <div className="rounded-[var(--radius-control)] border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+          Code execution is temporarily unavailable. Drafts still save locally; Run/Submit stay
+          disabled until Judge0 is enabled — no fake results are shown.
         </div>
       )}
       {actionError && bottomTab !== 'output' && <ErrorState message={actionError} />}
