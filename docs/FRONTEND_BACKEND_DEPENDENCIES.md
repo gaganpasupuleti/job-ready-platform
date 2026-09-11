@@ -14,8 +14,10 @@ Shared contracts and operational dependencies for JobReady Sprint 1+.
 | Trusted lesson achievement | Backend | Sprint 1 + gap close | Do not trust client `is_correct`; require matching owned accepted SUBMIT; completion_requires_submit gated |
 | AUTH-01 query cache | Frontend | Sprint 1 + gap close | Clear/scope TanStack Query on login/logout/register; stale prior-account 401 must not clear current session |
 | Primary nav | Frontend | Sprint 1 | Smaller student primary set; deep links remain |
-| Visual shells | Frontend | Phase foundation started | `data-shell=standard|focused|assessment` via AppLayout |
+| Visual shells | Frontend | **Landed** compact foundation | `data-shell=standard|focused|assessment` via AppLayout; Source Sans 3 + `Field` controls |
 | Playground run | Backend + FE | Phase 2 checkpoint | Non-assessed; honest unavailable when Judge0 off |
+| Assessed coding Run/Submit | Backend + FE | Phase 2 polish landed FE | Monaco DSA sticky chrome; drafts local; Judge0 disabled honest |
+| MCQ exam resume | Frontend (+ existing session APIs) | Phase 2 polish landed FE | History Resume → `/practice/sessions/{id}` while `status=active` |
 
 ## Readiness UI contract
 

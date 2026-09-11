@@ -39,17 +39,20 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | #3 | Alembic 014 only | ? | Superseded by #4 ancestry; comment recorded; do not double-merge |
 | Integ worktree | `sprint1-integ-local-only` @ `f5126f1` (local-only, not pushed) | FE+BE paired checkout | Contains 014+015 + AUTH-01 `queryClient` |
 
-## Phase 2 ? Coding experience (in progress)
+## Phase 2 — Coding + visual foundation (in progress)
 
 | Checkpoint | Status | Notes |
 |------------|--------|-------|
 | Sprint 1 verification | **GREEN** (prior CI) | PR #4/#5 Playwright + pytest + lint |
 | Verification gap close-out (2026-09-10) | **landed** | BE `c6a1666` / `db55bab`; FE `eb9f871` / `87f7018` |
+| Local stack restore re-verify (2026-09-11) | **GREEN** | Health ok; Redis PONG; Vite 200; keep stack running |
 | Python Playground (distinct from assessed) | **landed FE** | `/practice/python` + `/practice/playground` |
 | Playground API | **landed BE** (learning-runtime) | `POST /api/v1/coding/playground/run` honest unavailable |
-| Visual foundation (compact shells/tokens) | **started FE** | Source Sans 3, denser controls, standard/focused/assessment shells |
-| Assessed coding workspace polish | pending | Monaco DSA already has Run/Submit/drafts; compact assessment chrome next |
-| E2E | `frontend/e2e/playground.spec.ts` | main-scoped h1; unavailable no fake stdout |
+| Visual foundation (compact shells/tokens) | **landed FE** | Source Sans 3; `Field` controls; standard/focused/assessment shells; Dashboard/Practice/Coding/MCQ densified |
+| Assessed coding workspace polish | **landed FE** | Sticky Run/Submit chrome; Assessed badge; honest Judge0-off banner; drafts preserved |
+| MCQ exam recovery | **landed FE** | Recent Practice Resume for `active` sessions; autosave status; sticky exam chrome |
+| Screenshots + keyboard | **captured** | `frontend/e2e/artifacts/visual-foundation/` + `visual-foundation.spec.ts` |
+| E2E | playground + coding + mcq + visual | See Checks below |
 
 ## Verification gap close-out (this checkpoint)
 
@@ -63,7 +66,8 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 ## Explicitly deferred
 
-- Full Master Plan Phase 2?5 remainder (MCQ exam shell polish, GSAP, whole-product restyle)
+- Full Master Plan Phase 2–5 remainder (GSAP motion system, whole-product restyle beyond practice shells)
+- Retry Incorrect MCQ session API
 - Validated-jobs / PR #1 content expansion
 - Production Railway deploy / Judge0 enablement
 - Broad `learn_service.py` rewrite (only scoped `is_correct` trust fix in Sprint 1)
@@ -80,16 +84,19 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 ## Checks
 
-| Check | Result | When |
-|-------|--------|------|
-| Local stack restore | **up** | Native Postgres `:5432`; portable Redis `:6379`; SQL sandbox DB on same Postgres (`:5432`, not Docker `:5433`); uvicorn `:8000`; Vite `:5173` |
-| Health | `database/redis/sql_sandbox=ok`, `judge0=disabled` | `GET /api/v1/health` |
-| Documented `docker compose` | **unavailable locally** | `docker` not on PATH; WSL2 Hyper-V not installed (`HCS_E_HYPERV_NOT_INSTALLED`) |
-| `pytest` sprint1 + playground + auth hardening | **12 passed** | integ worktree against local DB |
-| Playwright auth + playground (desktop) | **11 passed** | AUTH-01 fixed (probe `/api/v1/...` + query marker); live stack |
-| Frontend tip | `5352613` | PR #5 |
-| Backend tip | `dbc03e7` | PR #4 |
-| Integration revision | `16d40b9` (`tmp/sprint1-integration`, local-only) | BE∪FE |
+| Check | Result | When / revision |
+|-------|--------|-----------------|
+| Local stack restore | **up** (kept running) | Native Postgres `:5432`; portable Redis `:6379`; SQL sandbox on same Postgres; uvicorn `:8000`; Vite `:5173` |
+| Health | `database/redis/sql_sandbox=ok`, `judge0=disabled` | `GET /api/v1/health` (re-checked 2026-09-11) |
+| Documented `docker compose` | **unavailable locally** | `docker` not on PATH; WSL2 Hyper-V not installed — workaround retained |
+| `pytest` sprint1 + playground + auth hardening | **12 passed** | integ worktree against local DB (reuse; BE tip unchanged) |
+| Playwright auth + playground (desktop) | **11/11 passed** | FE `21a811d` + BE `3870032` (pre-visual tip); AUTH-01 `/api/v1/...` probes |
+| Playwright remaining combined (desktop) | **12 passed, 2 skipped** | smoke+hub+mcq+coding on integ `4513da6` before coding manifest regen; coding skipped only while `e2e-manifest.json` missing |
+| Playwright coding + MCQ + visual (desktop) | **10/10 passed** | After regenerating `backend/e2e-manifest.json` (coding `echo-input`); includes exam Resume + shells + screenshots |
+| Screenshot artifacts | desktop + mobile | `frontend/e2e/artifacts/visual-foundation/*.png` |
+| Frontend tip | `9f22d19` | PR #5 `feature/jobready-frontend-experience-v4` |
+| Backend tip | `3870032` | PR #4 `feature/jobready-learning-runtime-v4` (unchanged this turn) |
+| Integration revision | `4513da6` + live FE sync | `tmp/sprint1-integration` local-only; not pushed |
 
 ## Uvicorn exit root cause (prior session)
 
@@ -120,13 +127,16 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 
 ### Frontend (`feature/jobready-frontend-experience-v4`)
 
-- `frontend/src/queryClient.ts` ? shared QueryClient + `clearAuthQueryCache`
-- `frontend/src/App.tsx`, `hooks/useAuth.tsx` ? clear cache on login/logout/register; cross-tab; failed logout
-- `frontend/src/api/client.ts` ? 401 clears token + query cache
-- `frontend/src/components/navigation/navConfig.ts` ? primary Today set + demoted deep links
+- `frontend/src/queryClient.ts` — shared QueryClient + `clearAuthQueryCache`
+- `frontend/src/App.tsx`, `hooks/useAuth.tsx` — clear cache on login/logout/register; cross-tab; failed logout
+- `frontend/src/api/client.ts` — 401 clears token + query cache
+- `frontend/src/components/navigation/navConfig.ts` — primary Today set + demoted deep links
 - Dashboard / Mistakes / Readiness / Jobs private queryKeys scoped with `user.id`
-- `frontend/src/pages/readiness/ReadinessPage.tsx` ? withhold misleading overall %; formula honesty
-- `frontend/src/pages/practice/PracticePathPage.tsx` ? always show `N% progress` (+ test id)
-- `frontend/e2e/auth.spec.ts` ? AUTH-01, failed logout, stale 401, cross-tab
-- `frontend/e2e/hub.spec.ts`, `smoke.spec.ts`, `helpers.ts` ? Playwright stability
+- `frontend/src/pages/readiness/ReadinessPage.tsx` — withhold misleading overall %; formula honesty
+- `frontend/src/pages/practice/PracticePathPage.tsx` — always show `N% progress` (+ test id)
+- `frontend/e2e/auth.spec.ts` — AUTH-01, failed logout, stale 401, cross-tab
+- `frontend/e2e/hub.spec.ts`, `smoke.spec.ts`, `helpers.ts` — Playwright stability
+- Visual foundation (2026-09-11): `Field.tsx`, compact `index.css` shells, Practice Hub/Coding/MCQ catalog/session/results, DSA sticky assessed chrome, Python playground density
+- MCQ Resume via `PracticeHistory` for `active` sessions; `e2e/mcq.spec.ts` resume coverage
+- `e2e/visual-foundation.spec.ts`, `e2e/visual-foundation-shots.spec.ts`, artifacts under `e2e/artifacts/visual-foundation/`
 - Ledgers mirrored across streams for PR reviewability
