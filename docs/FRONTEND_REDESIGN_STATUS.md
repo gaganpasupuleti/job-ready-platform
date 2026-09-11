@@ -39,7 +39,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | #3 | Alembic 014 only | ? | Superseded by #4 ancestry; comment recorded; do not double-merge |
 | Integ worktree | `sprint1-integ-local-only` @ `f5126f1` (local-only, not pushed) | FE+BE paired checkout | Contains 014+015 + AUTH-01 `queryClient` |
 
-## Phase 2 — Coding + visual foundation (in progress)
+## Phase 2 — Coding + visual + MCQ reliability (in progress)
 
 | Checkpoint | Status | Notes |
 |------------|--------|-------|
@@ -48,11 +48,63 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | Local stack restore re-verify (2026-09-11) | **GREEN** | Health ok; Redis PONG; Vite 200; keep stack running |
 | Python Playground (distinct from assessed) | **landed FE** | `/practice/python` + `/practice/playground` |
 | Playground API | **landed BE** (learning-runtime) | `POST /api/v1/coding/playground/run` honest unavailable |
-| Visual foundation (compact shells/tokens) | **landed FE** | Source Sans 3; `Field` controls; standard/focused/assessment shells; Dashboard/Practice/Coding/MCQ densified |
-| Assessed coding workspace polish | **landed FE** | Sticky Run/Submit chrome; Assessed badge; honest Judge0-off banner; drafts preserved |
-| MCQ exam recovery | **landed FE** | Recent Practice Resume for `active` sessions; autosave status; sticky exam chrome |
-| Screenshots + keyboard | **captured** | `frontend/e2e/artifacts/visual-foundation/` + `visual-foundation.spec.ts` |
-| E2E | playground + coding + mcq + visual | See Checks below |
+| Visual foundation (compact shells/tokens) | **verified FE** | Source Sans 3; `Field` controls; shells; densified screens + screenshot review fixes |
+| Assessed coding workspace polish | **verified FE (UI)** / **blocked (grading)** | Sticky Run/Submit; drafts; Judge0 off → Run/Submit 503, no fake grades |
+| MCQ exam reliability | **implemented + tested** | Finalize autosaves on complete; stale-session expire fix; flush/sequence; inline confirm; unique answered counts |
+| Screenshots + keyboard | **captured + reviewed** | UI fixes: answered % label, disabled button contrast, DSA toolbar wrap |
+| E2E | coding + mcq + visual | See Checks / Evidence reconcile |
+
+## Evidence reconcile (2026-09-11)
+
+### 10/10 visual+coding+mcq run (pre-reliability product tip)
+
+| Field | Value |
+|-------|-------|
+| What ran | `coding.spec` + `mcq.spec` + `visual-foundation.spec` + `visual-foundation-shots` (desktop project) |
+| Result | **10/10 passed** |
+| FE product commit exercised | `9f22d19` (compact UI + MCQ resume polish) |
+| FE tip then (ledger pins) | `6131cbd` local **ahead of** `origin/...` @ `21a811d` — **not** on remote PR head |
+| BE runtime tip | `3870032` (last BE **runtime** commit). Later BE commits `747aa82`/`de57fdd`/`…` are **docs-only** ledger mirrors |
+| Integ worktree | `4513da6` + live file sync of FE `9f22d19` tree (local-only) |
+| Manifest | regenerated `backend/e2e-manifest.json` (local, gitignored); coding `f2e249de-…` / `echo-input`; SHA256 prefix `91D6C81BD5996BAE` |
+
+### Reuse mapping
+
+| Prior result | Reuse? | Why |
+|--------------|--------|-----|
+| Auth+playground **11/11** @ FE `21a811d` + BE `3870032` | **Yes** for auth/playground until those files change | Reliability/visual edits did not touch AUTH-01 or playground run path |
+| pytest sprint1 **12 passed** @ BE `3870032` | **Partial** | Still valid for auth/mistakes/readiness; **new** `test_practice_exam_reliability.py` must be counted separately |
+| smoke/hub **12 passed / 2 coding skipped** (no manifest) | Superseded | Manifest regenerated; coding specs then executed |
+| Visual 10/10 @ product `9f22d19` | Baseline for UI | Follow-up reliability FE/BE commits add runtime MCQ fixes — re-ran coding+mcq **6/6** after those |
+
+### Local tip vs remote PR head (do not conflate)
+
+| Stream | Local tip (unpushed) | Remote tracking tip | Notes |
+|--------|----------------------|---------------------|-------|
+| FE `feature/jobready-frontend-experience-v4` | ahead (includes `9f22d19` + later) | `21a811d` | Unpushed work is **not** in GitHub PR #5 until pushed |
+| BE `feature/jobready-learning-runtime-v4` | ahead (docs + MCQ reliability) | `3870032` | Docs-only commits first; then runtime MCQ service/tests |
+
+## MCQ reliability acceptance matrix
+
+| Gate | Status | Evidence |
+|------|--------|----------|
+| Multi-select save/restore | **verified** (BE) | `test_exam_multi_select_autosave_restore` |
+| Rapid changes / stale responses | **implemented** (FE seq) / **partial** | FE `saveSeqRef` ignores stale autosave UI updates; DB unique constraint still deferred |
+| Pending saves on nav/Finish | **implemented** | `flushAutosave` before Next/navigator/complete; timed settle |
+| Refresh/resume w/o resetting deadline | **verified** | BE preserves `expires_at` on get; e2e Resume test |
+| Server expiry + reject late writes | **verified** | `test_exam_expiry_rejects_late_writes…` + in-memory session refresh after expire |
+| Idempotent finalize + authoritative results | **verified** | complete grades autosaves; double complete OK |
+| No answer leakage in active exam | **verified** | options omit `is_correct`; exam answer `feedback is None`; results gated |
+
+## Coding integration (Judge0)
+
+| Check | Result |
+|-------|--------|
+| `execution-status.available` | `false` |
+| `POST .../run` / `.../submit` | **503** |
+| Hidden tests in problem detail | **not leaked** (`test_cases` absent; samples only) |
+| Playwright coding specs | UI unavailable banner + **draft persistence** (not live grading) |
+| Blocker | **Judge0 disabled** — cannot verify live Run/Submit grading locally |
 
 ## Verification gap close-out (this checkpoint)
 
@@ -86,17 +138,15 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 | Check | Result | When / revision |
 |-------|--------|-----------------|
-| Local stack restore | **up** (kept running) | Native Postgres `:5432`; portable Redis `:6379`; SQL sandbox on same Postgres; uvicorn `:8000`; Vite `:5173` |
-| Health | `database/redis/sql_sandbox=ok`, `judge0=disabled` | `GET /api/v1/health` (re-checked 2026-09-11) |
-| Documented `docker compose` | **unavailable locally** | `docker` not on PATH; WSL2 Hyper-V not installed — workaround retained |
-| `pytest` sprint1 + playground + auth hardening | **12 passed** | integ worktree against local DB (reuse; BE tip unchanged) |
-| Playwright auth + playground (desktop) | **11/11 passed** | FE `21a811d` + BE `3870032` (pre-visual tip); AUTH-01 `/api/v1/...` probes |
-| Playwright remaining combined (desktop) | **12 passed, 2 skipped** | smoke+hub+mcq+coding on integ `4513da6` before coding manifest regen; coding skipped only while `e2e-manifest.json` missing |
-| Playwright coding + MCQ + visual (desktop) | **10/10 passed** | After regenerating `backend/e2e-manifest.json` (coding `echo-input`); includes exam Resume + shells + screenshots |
-| Screenshot artifacts | desktop + mobile | `frontend/e2e/artifacts/visual-foundation/*.png` |
-| Frontend tip | `e4d67c0` (product `9f22d19`) | PR #5 `feature/jobready-frontend-experience-v4` |
-| Backend tip | `747aa82` | PR #4 `feature/jobready-learning-runtime-v4` (ledger mirror; runtime code tip still `3870032`) |
-| Integration revision | `4513da6` + live FE sync | `tmp/sprint1-integration` local-only; not pushed |
+| Local stack | **up** (kept running) | Postgres `:5432`; Redis `:6379`; uvicorn `:8000`; Vite `:5173` |
+| Health | `database/redis/sql_sandbox=ok`, `judge0=disabled` | re-checked during reliability work |
+| Auth+playground Playwright | **11/11** (reuse) | FE `21a811d` + BE `3870032` |
+| Visual 10/10 Playwright | **passed** | FE product `9f22d19` + manifest `echo-input` / `91D6C81BD5996BAE` |
+| Coding+MCQ Playwright (post-reliability) | **6/6** | live integ; coding unavailable+draft; MCQ resume+autosave UI |
+| `pytest` exam reliability | **3/3** | `tests/test_practice_exam_reliability.py` |
+| Coding API grading | **blocked** | Run/Submit **503**; drafts/privacy OK |
+| FE remote PR #5 head | `21a811d` | local tip **ahead** (unpushed) |
+| BE remote PR #4 head | `3870032` | local tip **ahead** after MCQ reliability + ledger |
 
 ## Uvicorn exit root cause (prior session)
 
@@ -107,6 +157,7 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 1. **PR #3** (Alembic 014) — OPEN. Prefer close/skip once PR #4 lands; do not double-merge 014.
 2. Docker Desktop / WSL2 Hyper-V missing — cannot use documented `infra/docker-compose.yml` until installed; local workaround uses native Postgres + portable Redis.
 3. Gk gate before any master merge / Railway redeploy.
+4. **Judge0 disabled** — assessed coding Run/Submit grading cannot be verified end-to-end until an execution provider is enabled.
 
 ## File change log (filled as work lands)
 
@@ -124,6 +175,7 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 - `backend/app/readiness/formulas.py` + `readiness_service.py` + `schemas/readiness.py` ? denominator + formula version
 - `backend/app/services/learn_service.py` ? stop trusting client `is_correct` for verified achievement
 - `backend/tests/test_auth_hardening.py`, `test_sprint1_reliability.py`
+- MCQ exam reliability (2026-09-11): `practice_service` finalize autosaves on complete; refresh session after expire; navigator/answered counts treat selections as responses; `test_practice_exam_reliability.py`; `get_answer` latest-row limit
 
 ### Frontend (`feature/jobready-frontend-experience-v4`)
 
@@ -138,5 +190,6 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 - `frontend/e2e/hub.spec.ts`, `smoke.spec.ts`, `helpers.ts` — Playwright stability
 - Visual foundation (2026-09-11): `Field.tsx`, compact `index.css` shells, Practice Hub/Coding/MCQ catalog/session/results, DSA sticky assessed chrome, Python playground density
 - MCQ Resume via `PracticeHistory` for `active` sessions; `e2e/mcq.spec.ts` resume coverage
+- MCQ reliability FE: autosave sequencing/flush, answered-% chrome, inline Confirm submit, timer arming, completed→results redirect
 - `e2e/visual-foundation.spec.ts`, `e2e/visual-foundation-shots.spec.ts`, artifacts under `e2e/artifacts/visual-foundation/`
 - Ledgers mirrored across streams for PR reviewability

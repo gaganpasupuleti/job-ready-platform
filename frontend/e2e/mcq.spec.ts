@@ -50,4 +50,24 @@ test.describe('MCQ practice and exam', () => {
       timeout: 15_000,
     })
   })
+
+  test('exam selection autosaves and shows answered progress', async ({ page }) => {
+    await page.goto('/practice/aptitude')
+    await page.getByRole('button', { name: fixtures.mcq_topic.name, exact: true }).click()
+    await page.getByRole('button', { name: /^easy$/i }).click()
+    await page.getByRole('combobox').selectOption('5')
+    await page.getByRole('button', { name: /^exam$/i }).click()
+    await page.getByRole('button', { name: /start session/i }).click()
+    await expect(page).toHaveURL(/\/practice\/sessions\/[^/]+$/, { timeout: 20_000 })
+    await expect(page.getByRole('group', { name: /answer options/i })).toBeVisible({
+      timeout: 20_000,
+    })
+    const option = page.getByRole('group', { name: /answer options/i }).getByRole('button').first()
+    await option.click()
+    await expect(page.getByText(/^saved$/i)).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByText(/% answered/i)).toBeVisible()
+    await expect(page.getByText(/time left:/i)).toBeVisible()
+    await page.getByRole('button', { name: /submit exam/i }).click()
+    await expect(page.getByRole('button', { name: /confirm submit/i })).toBeVisible()
+  })
 })

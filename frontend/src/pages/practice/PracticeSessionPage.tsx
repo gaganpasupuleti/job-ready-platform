@@ -31,6 +31,14 @@ export function PracticeSessionPage() {
   const [answered, setAnswered] = useState(false)
   const [startTime] = useState(Date.now())
   const autoSubmittedRef = useRef(false)
+  const timerArmedRef = useRef(false)
+  const saveSeqRef = useRef(0)
+  const pendingSaveRef = useRef<Promise<unknown> | null>(null)
+  const selectedRef = useRef<string[]>([])
+  const markedRef = useRef(false)
+  const questionNumberRef = useRef(1)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
+  const [confirmSubmit, setConfirmSubmit] = useState(false)
 
   const sessionQuery = useQuery({
     queryKey: ['practice-session', sessionId],
@@ -56,6 +64,22 @@ export function PracticeSessionPage() {
   const secondsLeft = useCountdown(session?.expires_at, session?.remaining_seconds)
 
   useEffect(() => {
+    if (session?.status === 'completed' && sessionId) {
+      navigate(`/practice/sessions/${sessionId}/results`, { replace: true })
+    }
+  }, [session?.status, sessionId, navigate])
+
+  useEffect(() => {
+    selectedRef.current = selectedOptionIds
+  }, [selectedOptionIds])
+  useEffect(() => {
+    markedRef.current = markedForReview
+  }, [markedForReview])
+  useEffect(() => {
+    questionNumberRef.current = questionNumber
+  }, [questionNumber])
+
+  useEffect(() => {
     const data = questionQuery.data
     if (!data) return
     setSelectedOptionIds(data.selected_option_ids ?? [])
@@ -64,11 +88,84 @@ export function PracticeSessionPage() {
     setAnswered(Boolean(data.answered))
   }, [questionNumber, questionQuery.data])
 
+  const queueAutosave = (payload: {
+    selectedOptionIds: string[]
+    markedForReview: boolean
+    questionNumber?: number
+  }) => {
+    const seq = ++saveSeqRef.current
+    const qn = payload.questionNumber ?? questionNumberRef.current
+    setSaveStatus('saving')
+    const request = autosaveAnswer(
+      sessionId,
+      qn,
+      payload.selectedOptionIds,
+      payload.markedForReview,
+      Math.floor((Date.now() - startTime) / 1000),
+    )
+      .then(() => {
+        if (seq !== saveSeqRef.current) return
+        setSaveStatus('saved')
+        void queryClient.invalidateQueries({ queryKey: ['practice-navigator', sessionId] })
+        void queryClient.invalidateQueries({ queryKey: ['practice-session', sessionId] })
+      })
+      .catch(() => {
+        if (seq === saveSeqRef.current) setSaveStatus('idle')
+      })
+    pendingSaveRef.current = request
+    return request
+  }
+
+  const flushAutosave = async () => {
+    if (!isExam) return
+    const settle = async (pending: Promise<unknown> | null) => {
+      if (!pending) return
+      await Promise.race([
+        pending,
+        new Promise<void>((resolve) => {
+          window.setTimeout(resolve, 4000)
+        }),
+      ])
+    }
+    await settle(pendingSaveRef.current)
+    await queueAutosave({
+      selectedOptionIds: selectedRef.current,
+      markedForReview: markedRef.current,
+      questionNumber: questionNumberRef.current,
+    })
+    await settle(pendingSaveRef.current)
+  }
+
   useEffect(() => {
-    if (!isExam || secondsLeft == null || secondsLeft > 0 || autoSubmittedRef.current) return
+    if (isExam && secondsLeft != null && secondsLeft > 0) {
+      timerArmedRef.current = true
+    }
+  }, [isExam, secondsLeft])
+
+  useEffect(() => {
+    if (
+      !isExam ||
+      !session?.expires_at ||
+      session.status !== 'active' ||
+      !timerArmedRef.current ||
+      secondsLeft == null ||
+      secondsLeft > 0 ||
+      autoSubmittedRef.current
+    ) {
+      return
+    }
     autoSubmittedRef.current = true
-    completeSession(sessionId).then(() => navigate(`/practice/sessions/${sessionId}/results`))
-  }, [isExam, secondsLeft, sessionId, navigate])
+    void (async () => {
+      try {
+        await flushAutosave()
+      } catch {
+        /* expire path still completes */
+      }
+      await completeSession(sessionId)
+      navigate(`/practice/sessions/${sessionId}/results`)
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- flush uses latest refs
+  }, [isExam, secondsLeft, sessionId, navigate, session?.expires_at, session?.status])
 
   const answerMutation = useMutation({
     mutationFn: () =>
@@ -87,22 +184,15 @@ export function PracticeSessionPage() {
     onError: () => setFeedback(null),
   })
 
-  const autosaveMutation = useMutation({
-    mutationFn: (payload: { selectedOptionIds: string[]; markedForReview: boolean }) =>
-      autosaveAnswer(
-        sessionId,
-        questionNumber,
-        payload.selectedOptionIds,
-        payload.markedForReview,
-        Math.floor((Date.now() - startTime) / 1000),
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['practice-navigator', sessionId] })
-    },
-  })
-
   const completeMutation = useMutation({
-    mutationFn: () => completeSession(sessionId),
+    mutationFn: async () => {
+      try {
+        await flushAutosave()
+      } catch {
+        /* still finalize with last known server autosaves */
+      }
+      return completeSession(sessionId)
+    },
     onSuccess: () => navigate(`/practice/sessions/${sessionId}/results`),
   })
 
@@ -112,6 +202,11 @@ export function PracticeSessionPage() {
       queryClient.invalidateQueries({ queryKey: ['practice-question', sessionId, questionNumber] }),
   })
 
+  const goToQuestion = async (next: number) => {
+    if (isExam) await flushAutosave()
+    setQuestionNumber(next)
+  }
+
   const handleSelectOption = (optionId: string, multi: boolean) => {
     if (!isExam && answered) return
     setSelectedOptionIds((prev) => {
@@ -120,10 +215,11 @@ export function PracticeSessionPage() {
           ? prev.filter((id) => id !== optionId)
           : [...prev, optionId]
         : [optionId]
+      selectedRef.current = next
       if (isExam) {
-        autosaveMutation.mutate({
+        void queueAutosave({
           selectedOptionIds: next,
-          markedForReview,
+          markedForReview: markedRef.current,
         })
       }
       return next
@@ -133,9 +229,10 @@ export function PracticeSessionPage() {
   const handleToggleReview = () => {
     const next = !markedForReview
     setMarkedForReview(next)
+    markedRef.current = next
     if (isExam) {
-      autosaveMutation.mutate({
-        selectedOptionIds,
+      void queueAutosave({
+        selectedOptionIds: selectedRef.current,
         markedForReview: next,
       })
     }
@@ -143,6 +240,14 @@ export function PracticeSessionPage() {
 
   if (sessionQuery.isLoading || questionQuery.isLoading) {
     return <p className="text-sm text-[var(--color-text-muted)]">Loading session...</p>
+  }
+
+  if (sessionQuery.isError || questionQuery.isError) {
+    return (
+      <p className="text-sm text-[var(--color-danger)]">
+        Unable to load this session. It may have expired or been submitted — check Recent Practice.
+      </p>
+    )
   }
 
   const data = questionQuery.data
@@ -154,6 +259,8 @@ export function PracticeSessionPage() {
   const isMulti = data.question.question_type === 'multiple_choice'
   const canSubmit = !answered && selectedOptionIds.length > 0
   const isLast = questionNumber >= session.question_count
+  const answeredCount = Math.min(session.answered_count ?? 0, session.question_count)
+  const answeredPct = Math.round((answeredCount / Math.max(session.question_count, 1)) * 100)
 
   return (
     <div
@@ -171,10 +278,10 @@ export function PracticeSessionPage() {
         }
       >
         <span>
-          {session.mode} mode · {session.answered_count}/{session.question_count} answered
+          {session.mode} mode · {answeredCount}/{session.question_count} answered
           {isMulti ? ' · select all that apply' : ''}
         </span>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {isExam && secondsLeft != null && (
             <span
               className={`font-mono text-sm ${
@@ -184,17 +291,19 @@ export function PracticeSessionPage() {
               Time left: {formatCountdown(secondsLeft)}
             </span>
           )}
-          {isExam && autosaveMutation.isPending && (
+          {isExam && saveStatus === 'saving' && (
             <span className="text-[var(--color-text-subtle)]" role="status">
               Saving…
             </span>
           )}
-          {isExam && autosaveMutation.isSuccess && !autosaveMutation.isPending && (
+          {isExam && saveStatus === 'saved' && (
             <span className="text-[var(--color-text-subtle)]" role="status">
               Saved
             </span>
           )}
-          <span>{Math.round((questionNumber / session.question_count) * 100)}% complete</span>
+          <span>
+            Question {questionNumber}/{session.question_count} · {answeredPct}% answered
+          </span>
         </div>
       </div>
 
@@ -233,10 +342,12 @@ export function PracticeSessionPage() {
 
           {answerMutation.isError && (
             <p className="mt-3 text-sm text-[var(--color-danger)]">
-              {answerMutation.error instanceof Error ? answerMutation.error.message : 'Could not submit answer.'}
+              {answerMutation.error instanceof Error
+                ? answerMutation.error.message
+                : 'Could not submit answer.'}
             </p>
           )}
-          <div className="mt-6 flex flex-wrap items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
@@ -260,23 +371,29 @@ export function PracticeSessionPage() {
             )}
           </div>
 
-          <div className="mt-6 flex flex-wrap justify-between gap-2">
+          <div className="mt-4 flex flex-wrap justify-between gap-2">
             <Button
               variant="secondary"
-              disabled={questionNumber <= 1}
-              onClick={() => setQuestionNumber((n) => n - 1)}
+              size="sm"
+              disabled={questionNumber <= 1 || completeMutation.isPending}
+              onClick={() => void goToQuestion(questionNumber - 1)}
             >
               Previous
             </Button>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {selectedOptionIds.length > 0 && (
                 <Button
                   variant="ghost"
+                  size="sm"
                   onClick={() => {
                     setSelectedOptionIds([])
+                    selectedRef.current = []
                     if (isExam) {
-                      autosaveMutation.mutate({ selectedOptionIds: [], markedForReview })
+                      void queueAutosave({
+                        selectedOptionIds: [],
+                        markedForReview: markedRef.current,
+                      })
                     }
                   }}
                 >
@@ -286,22 +403,50 @@ export function PracticeSessionPage() {
               {isExam ? (
                 <>
                   {!isLast && (
-                    <Button variant="primary" onClick={() => setQuestionNumber((n) => n + 1)}>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      disabled={completeMutation.isPending}
+                      onClick={() => void goToQuestion(questionNumber + 1)}
+                    >
                       Next
                     </Button>
                   )}
                   {isLast && (
-                    <Button
-                      variant="primary"
-                      disabled={completeMutation.isPending}
-                      onClick={() => {
-                        if (window.confirm('Submit this exam? You cannot change answers after submitting.')) {
-                          completeMutation.mutate()
-                        }
-                      }}
-                    >
-                      {completeMutation.isPending ? 'Submitting...' : 'Submit Exam'}
-                    </Button>
+                    <>
+                      {!confirmSubmit ? (
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          disabled={completeMutation.isPending}
+                          onClick={() => setConfirmSubmit(true)}
+                        >
+                          Submit Exam
+                        </Button>
+                      ) : (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs text-[var(--color-text-muted)]">
+                            Submit final answers?
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={completeMutation.isPending}
+                            onClick={() => setConfirmSubmit(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            disabled={completeMutation.isPending}
+                            onClick={() => completeMutation.mutate()}
+                          >
+                            {completeMutation.isPending ? 'Submitting...' : 'Confirm submit'}
+                          </Button>
+                        </div>
+                      )}
+                    </>
                   )}
                 </>
               ) : (
@@ -309,6 +454,7 @@ export function PracticeSessionPage() {
                   {!answered && (
                     <Button
                       variant="primary"
+                      size="sm"
                       disabled={!canSubmit || answerMutation.isPending}
                       onClick={() => answerMutation.mutate()}
                     >
@@ -316,13 +462,18 @@ export function PracticeSessionPage() {
                     </Button>
                   )}
                   {answered && !isLast && (
-                    <Button variant="primary" onClick={() => setQuestionNumber((n) => n + 1)}>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => void goToQuestion(questionNumber + 1)}
+                    >
                       Next
                     </Button>
                   )}
                   {answered && isLast && (
                     <Button
                       variant="primary"
+                      size="sm"
                       disabled={completeMutation.isPending}
                       onClick={() => completeMutation.mutate()}
                     >
@@ -337,8 +488,8 @@ export function PracticeSessionPage() {
 
         {isExam && (
           <Card padding="md" className="h-fit">
-            <h3 className="mb-3 text-sm font-medium">Question navigator</h3>
-            <div className="grid grid-cols-5 gap-2">
+            <h3 className="mb-2 text-sm font-medium">Question navigator</h3>
+            <div className="grid grid-cols-5 gap-1.5">
               {navigatorQuery.data?.questions.map((item) => {
                 let cls =
                   'rounded border px-2 py-1 text-xs text-center cursor-pointer transition-colors'
@@ -356,7 +507,8 @@ export function PracticeSessionPage() {
                     key={item.question_number}
                     type="button"
                     className={cls}
-                    onClick={() => setQuestionNumber(item.question_number)}
+                    disabled={completeMutation.isPending}
+                    onClick={() => void goToQuestion(item.question_number)}
                     aria-label={`Question ${item.question_number}${item.answered ? ', answered' : ', unanswered'}${item.question_number === questionNumber ? ', current' : ''}`}
                   >
                     {item.question_number}
@@ -364,7 +516,7 @@ export function PracticeSessionPage() {
                 )
               })}
             </div>
-            <div className="mt-4 space-y-1 text-xs text-[var(--color-text-muted)]">
+            <div className="mt-3 space-y-1 text-xs text-[var(--color-text-muted)]">
               <p>
                 <span className="inline-block h-2 w-2 rounded-full bg-green-400" /> Answered
               </p>

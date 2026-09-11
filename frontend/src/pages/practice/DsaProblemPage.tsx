@@ -361,7 +361,7 @@ export function DsaProblemPage() {
     <div
       className={`dsa-workbench flex flex-col gap-2 overflow-hidden px-3 py-2 sm:px-4 ${fullscreen ? 'fixed inset-0 z-40 bg-[var(--color-surface)] p-3' : 'h-[calc(100vh-2.75rem)]'}`}
     >
-      <div className="sticky top-0 z-10 -mx-3 flex flex-wrap items-start justify-between gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-3 py-2 backdrop-blur sm:-mx-4 sm:px-4">
+      <div className="sticky top-0 z-10 -mx-3 flex flex-col gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-3 py-2 backdrop-blur sm:-mx-4 sm:px-4">
         <PracticeHeader
           backTo={projectReturn ? `/projects/${projectReturn}` : '/practice/dsa'}
           backLabel="Back"
@@ -395,13 +395,13 @@ export function DsaProblemPage() {
             aria-label="Bookmark problem"
           >
             <Bookmark className="h-4 w-4" />
-            {problem.bookmarked ? 'Bookmarked' : 'Bookmark'}
+            <span className="hidden sm:inline">{problem.bookmarked ? 'Bookmarked' : 'Bookmark'}</span>
           </Button>
           <Select
             aria-label="Language"
             value={languageId}
             onChange={(e) => setLanguageId(Number(e.target.value))}
-            className="h-7 w-auto min-w-[8rem]"
+            className="h-7 w-auto min-w-[7.5rem] max-w-[40vw]"
           >
             {langOptions.map((lang) => (
               <option key={lang.id} value={lang.id}>
@@ -412,7 +412,7 @@ export function DsaProblemPage() {
           <Button variant="ghost" size="sm" onClick={() => setWrap((v) => !v)}>
             {wrap ? 'Unwrap' : 'Wrap'}
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => setFullscreen((v) => !v)}>
+          <Button variant="ghost" size="sm" className="hidden sm:inline-flex" onClick={() => setFullscreen((v) => !v)}>
             {fullscreen ? 'Exit full screen' : 'Full screen'}
           </Button>
           <Button
