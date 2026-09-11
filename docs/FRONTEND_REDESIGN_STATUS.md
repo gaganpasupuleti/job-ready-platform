@@ -152,7 +152,7 @@ Live coding execution/grading remains **blocked** (`enabled=false`, `available=f
 | Field | Value |
 |-------|-------|
 | Reference | `backend/design-reference/jobready-v4` (README + INTEGRATION_NOTES) |
-| FE tip after shell | *(see latest commit)* |
+| FE tip after shell | $short ($sha) |
 | Shell | Horizontal **masthead** + JR monogram `jobready.` + primary nav (Overview/Practice/Learn/Playground/Assessments/Review/Jobs) + More drawer |
 | Tokens | Stone canvas `#E8EAE7` / surface `#F4F5F1` / steel accent `#40596B` |
 | Overview | Live continue/readiness/SQL/coding/mistakes — **no** preview fixtures or local quiz scoring |
