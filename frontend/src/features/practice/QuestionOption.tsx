@@ -20,6 +20,7 @@ export function QuestionOption({
     <button
       type="button"
       disabled={disabled}
+      aria-pressed={selected}
       onClick={onSelect}
       className={cn(
         'w-full rounded-[var(--radius-control)] border px-3 py-2 text-left text-sm transition-colors disabled:opacity-70',
