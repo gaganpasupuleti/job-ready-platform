@@ -1,48 +1,53 @@
 @import "tailwindcss";
+@import "./styles/jobready-v4-shell.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* V4 design system: stone canvas, graphite ink, steel accent (INTEGRATION_NOTES). */
 @theme {
-  --font-sans: "Source Sans 3", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Segoe UI", Inter, Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, ui-monospace, monospace;
 
-  --color-surface: #ffffff;
-  --color-surface-elevated: #f8fafc;
-  --color-surface-muted: #f1f5f9;
-  --color-border: #e2e8f0;
-  --color-border-strong: #cbd5e1;
-  --color-text: #0f172a;
-  --color-text-muted: #64748b;
-  --color-text-subtle: #94a3b8;
-  --color-accent: #1d4f91;
-  --color-accent-hover: #163a6b;
-  --color-accent-muted: #e8eef7;
-  --color-success: #047857;
-  --color-warning: #b45309;
-  --color-danger: #b91c1c;
+  --color-surface: #f4f5f1;
+  --color-surface-elevated: #f7f8f5;
+  --color-surface-muted: #e8eae7;
+  --color-border: #d2d8d2;
+  --color-border-strong: #bbc5bf;
+  --color-text: #303a3e;
+  --color-text-muted: #646e6d;
+  --color-text-subtle: #858d89;
+  --color-accent: #40596b;
+  --color-accent-hover: #344953;
+  --color-accent-muted: #dce3e6;
+  --color-success: #3f6b55;
+  --color-warning: #8a6a2f;
+  --color-danger: #8b3f3f;
 
-  --space-page: 1rem;
-  --space-page-lg: 1.25rem;
+  --space-page: 1.25rem;
+  --space-page-lg: 1.75rem;
   --control-height: 2rem;
   --control-height-sm: 1.75rem;
-  --radius-control: 0.375rem;
+  --radius-control: 0.3125rem;
+  --radius-lg: 0.375rem;
+  --radius-md: 0.375rem;
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #303a3e 8%, transparent);
 }
 
 .dark {
-  --color-surface: #0b1220;
-  --color-surface-elevated: #152033;
-  --color-surface-muted: #1c2a40;
-  --color-border: #2a3a52;
-  --color-border-strong: #3b4f6b;
-  --color-text: #f1f5f9;
-  --color-text-muted: #94a3b8;
-  --color-text-subtle: #64748b;
-  --color-accent: #6ea8fe;
-  --color-accent-hover: #93c0ff;
-  --color-accent-muted: #1a2f4d;
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-danger: #f87171;
+  --color-surface: #1e2629;
+  --color-surface-elevated: #252e32;
+  --color-surface-muted: #171d20;
+  --color-border: #3a464a;
+  --color-border-strong: #4d5b60;
+  --color-text: #e8eae7;
+  --color-text-muted: #a3adaa;
+  --color-text-subtle: #7d8885;
+  --color-accent: #8eacbf;
+  --color-accent-hover: #a8c2d1;
+  --color-accent-muted: #2a3840;
+  --color-success: #6f9f84;
+  --color-warning: #c4a35a;
+  --color-danger: #c76f6f;
 }
 
 * {
@@ -58,7 +63,7 @@ body,
 body {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   line-height: 1.45;
   background-color: var(--color-surface-muted);
   color: var(--color-text);
@@ -68,10 +73,9 @@ body {
 
 :focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  outline-offset: 4px;
 }
 
-/* Compact form controls (shared with Field.tsx utilities) */
 .jr-control {
   height: var(--control-height);
   width: 100%;
@@ -87,15 +91,32 @@ body {
   border-color: var(--color-accent);
 }
 
-/* Application shells */
-.app-shell-standard main {
-  padding: var(--space-page);
+.jr-subheader {
+  max-width: 1256px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0.85rem max(28px, calc((100vw - 1256px) / 2)) 0;
 }
 
-@media (min-width: 640px) {
-  .app-shell-standard main {
-    padding: var(--space-page-lg);
-  }
+.jr-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.jr-breadcrumb strong {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.app-shell-standard main {
+  padding: 1.25rem max(28px, calc((100vw - 1256px) / 2)) 3rem;
+  max-width: 1256px;
+  margin-inline: auto;
+  width: 100%;
 }
 
 .app-shell-focused {
@@ -107,6 +128,7 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  max-width: none;
 }
 
 .app-shell-assessment {
@@ -114,14 +136,8 @@ body {
 }
 
 .app-shell-assessment main {
-  padding: 0.75rem;
+  padding: 0.75rem max(20px, calc((100vw - 72rem) / 2));
   max-width: 72rem;
   margin-inline: auto;
   width: 100%;
-}
-
-@media (min-width: 640px) {
-  .app-shell-assessment main {
-    padding: 1rem 1.25rem;
-  }
 }

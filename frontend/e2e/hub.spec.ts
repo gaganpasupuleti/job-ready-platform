@@ -12,7 +12,9 @@ test.describe('Dashboard and Practice Hub', () => {
   test('dashboard loads without mock readiness or NaN', async ({ page }) => {
     const guard = attachConsoleGuard(page)
     await page.goto('/')
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: /a little practice\. real progress/i }),
+    ).toBeVisible()
     const body = await page.locator('body').innerText()
     expect(body).not.toMatch(/\bNaN\b/)
     expect(body).not.toMatch(/\[object Object\]/)

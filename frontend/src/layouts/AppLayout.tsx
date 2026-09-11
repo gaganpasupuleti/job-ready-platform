@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
-import { Header } from '@/components/layout/Header'
-import { Sidebar } from '@/components/layout/Sidebar'
+import { Masthead } from '@/components/layout/Masthead'
 import { navigationConfig } from '@/components/navigation/navConfig'
 import { cn } from '@/utils/cn'
 
@@ -12,14 +10,14 @@ function getPageTitle(pathname: string): string {
       if (item.path === pathname) return item.label
     }
   }
-  if (pathname === '/') return 'Dashboard'
+  if (pathname === '/') return 'Overview'
   if (pathname.startsWith('/practice/python') || pathname.startsWith('/practice/playground')) {
-    return 'Python Playground'
+    return 'Playground'
   }
   if (pathname.startsWith('/practice/dsa/')) return 'Coding workspace'
   if (pathname.startsWith('/practice/sql/')) return 'SQL workspace'
   if (pathname.startsWith('/practice/sessions/')) return 'Practice session'
-  return 'Job Ready Platform'
+  return 'JobReady'
 }
 
 type ShellMode = 'standard' | 'focused' | 'assessment'
@@ -45,34 +43,34 @@ function resolveShell(pathname: string): ShellMode {
 }
 
 export function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const location = useLocation()
   const title = getPageTitle(location.pathname)
   const shell = resolveShell(location.pathname)
-  const hideChromeTitle = shell === 'focused'
+  const compact = shell !== 'standard'
 
   return (
     <div
       className={cn(
-        'flex min-h-full bg-[var(--color-surface-muted)]',
+        'flex min-h-full flex-col bg-[var(--color-surface-muted)]',
         shell === 'standard' && 'app-shell-standard',
         shell === 'focused' && 'app-shell-focused',
         shell === 'assessment' && 'app-shell-assessment',
       )}
       data-shell={shell}
     >
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-      <div className="flex min-h-full min-w-0 flex-1 flex-col">
-        <Header
-          title={hideChromeTitle ? '' : title}
-          onMenuClick={() => setSidebarOpen(true)}
-          compact={shell !== 'standard'}
-        />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-      </div>
+      <Masthead compact={compact} />
+      {shell === 'standard' ? (
+        <div className="jr-subheader">
+          <p className="jr-breadcrumb">
+            <span>Workspace</span>
+            <span aria-hidden="true">/</span>
+            <strong>{title}</strong>
+          </p>
+        </div>
+      ) : null}
+      <main id="main-content" className="flex-1" tabIndex={-1}>
+        <Outlet />
+      </main>
     </div>
   )
 }

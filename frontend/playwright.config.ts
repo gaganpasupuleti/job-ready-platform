@@ -26,7 +26,7 @@ export default defineConfig({
     {
       name: 'mobile',
       use: { ...devices['Pixel 5'], viewport: { width: 390, height: 844 } },
-      testMatch: /responsive|auth\.spec|smoke\.spec/,
+      testMatch: /responsive|auth\.spec|smoke\.spec|hub\.spec|mcq\.spec|coding\.spec|jobs/,
     },
   ],
   webServer: process.env.E2E_SKIP_WEBSERVER

@@ -147,16 +147,30 @@ Duplicate uvicorn start failed with WinError **10048** (address already in use).
 
 Live coding execution/grading remains **blocked** (`enabled=false`, `available=false`, provider `none`). Unavailable/503 checks are **not** grading success evidence.
 
-## V3 design reconcile (repo tips only; standalone preview excluded)
+## V4 design-reference integration (2026-09-12)
 
-Reference: commits `790e76f`→`28e1212` (product experience v3); inspect tip `feature/jobready-ui-skeleton-premium` @ `c217e4e`. Lineage is **not** ancestral to `e58b89d` (parallel live-API v4). Folders like `codequest-ui-lab` / `jobready-ui` are **not** repository implementation.
+| Field | Value |
+|-------|-------|
+| Reference | `backend/design-reference/jobready-v4` (README + INTEGRATION_NOTES) |
+| FE tip after shell | *(see latest commit)* |
+| Shell | Horizontal **masthead** + JR monogram `jobready.` + primary nav (Overview/Practice/Learn/Playground/Assessments/Review/Jobs) + More drawer |
+| Tokens | Stone canvas `#E8EAE7` / surface `#F4F5F1` / steel accent `#40596B` |
+| Overview | Live continue/readiness/SQL/coding/mistakes — **no** preview fixtures or local quiz scoring |
+| Jobs | Existing live Jobs portal retained in nav (not preview `jobs-data.js`) |
+| Judge0 | Still **blocked**; coding e2e only asserts unavailable + drafts |
+| package.json / lockfile | **unchanged** (no reference Vite package swap) |
 
-| Route / surface | Status vs V3/premium |
-|-----------------|----------------------|
-| `/practice/sessions/*`, results, coding/DSA/SQL catalogs+workspaces, python playground | **aligned** (VF compact / polish only) |
-| `/`, `/login`, `/practice` hub, `/learn` list+detail, `/jobs` hub, `/readiness*` | **needs structural redesign** |
-| `/assessments*`, `/mock-interviews*`, `/resume-lab`, `/progress`, `/certificates*`, `/activity`, `/profile`, `/settings`, `/notes`, `/learning-paths*`, `/live-classes` | **missing from app** (or PlaceholderPage) |
-| `/admin/*` | **admin-only defer** |
+### Browser checks (reused API :8000 / Vite :5173 — no restart)
+
+| Suite | Result | Notes |
+|-------|--------|-------|
+| `npm run lint` | **0** (warnings only, pre-existing) | FE tip |
+| `npm run build` | **passed** | `tsc -b && vite build` |
+| Playwright desktop hub+mcq+coding | **11/11** | `E2E_SKIP_WEBSERVER=1` |
+| Playwright mobile hub+mcq | **9/9** | mobile project testMatch extended |
+| Playwright jobs desktop | **4/5** | `mark applied` failed (button missing on seeded job — data/state, not masthead) |
+
+Skipped / not claimed: reference preview sample-output grading; RapidAPI Judge0; full module restyle of Learn/SQL/DSA beyond shell.
 
 ## Verification gap close-out (this checkpoint)
 

@@ -26,15 +26,36 @@ import {
 
 import type { NavSection } from '@/types'
 
-/** Primary student destinations (Sprint 1 shell). Deep links stay in More. */
+/** Primary horizontal nav — mirrors design-reference/jobready-v4 masthead. */
+export const primaryNavItems: { label: string; path: string; match?: string[] }[] = [
+  { label: 'Overview', path: '/', match: ['/'] },
+  { label: 'Practice', path: '/practice', match: ['/practice'] },
+  { label: 'Learn', path: '/learn', match: ['/learn'] },
+  {
+    label: 'Playground',
+    path: '/practice/python',
+    match: ['/practice/python', '/practice/playground'],
+  },
+  {
+    label: 'Assessments',
+    path: '/practice/aptitude',
+    match: ['/practice/aptitude', '/practice/mcq', '/practice/sessions', '/assessments'],
+  },
+  { label: 'Review', path: '/mistakes', match: ['/mistakes'] },
+  { label: 'Jobs', path: '/jobs', match: ['/jobs'] },
+]
+
+/** Secondary destinations kept reachable (More drawer / footer links). */
 export const navigationConfig: NavSection[] = [
   {
     title: 'Today',
     items: [
-      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Overview', path: '/', icon: 'LayoutDashboard' },
       { label: 'Practice', path: '/practice', icon: 'Target' },
       { label: 'Learn', path: '/learn', icon: 'ListChecks' },
-      { label: 'Mistakes', path: '/mistakes', icon: 'FileQuestion' },
+      { label: 'Playground', path: '/practice/python', icon: 'Terminal' },
+      { label: 'Assessments', path: '/practice/aptitude', icon: 'FileQuestion' },
+      { label: 'Review', path: '/mistakes', icon: 'FileQuestion' },
       { label: 'Jobs', path: '/jobs', icon: 'Briefcase' },
     ],
   },
@@ -44,7 +65,6 @@ export const navigationConfig: NavSection[] = [
       { label: 'SQL', path: '/practice/sql', icon: 'Database' },
       { label: 'DSA', path: '/practice/dsa', icon: 'Code2' },
       { label: 'Coding', path: '/practice/coding', icon: 'Terminal' },
-      { label: 'Python Playground', path: '/practice/python', icon: 'Terminal' },
       { label: 'Technical MCQs', path: '/practice/mcq', icon: 'FileQuestion' },
       { label: 'Aptitude / CRT', path: '/practice/aptitude', icon: 'Brain' },
       { label: 'Projects', path: '/practice/projects', icon: 'Wrench' },
@@ -95,4 +115,13 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
 export function getNavIcon(name?: string) {
   if (!name) return LayoutDashboard
   return iconMap[name] ?? LayoutDashboard
+}
+
+export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
+  const matchers = item.match ?? [item.path]
+  if (item.path === '/') return pathname === '/'
+  return matchers.some((prefix) => {
+    if (prefix === '/') return pathname === '/'
+    return pathname === prefix || pathname.startsWith(`${prefix}/`)
+  })
 }
