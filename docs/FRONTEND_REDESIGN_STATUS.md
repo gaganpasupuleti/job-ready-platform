@@ -94,7 +94,7 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | Playwright remaining combined (desktop) | **12 passed, 2 skipped** | smoke+hub+mcq+coding on integ `4513da6` before coding manifest regen; coding skipped only while `e2e-manifest.json` missing |
 | Playwright coding + MCQ + visual (desktop) | **10/10 passed** | After regenerating `backend/e2e-manifest.json` (coding `echo-input`); includes exam Resume + shells + screenshots |
 | Screenshot artifacts | desktop + mobile | `frontend/e2e/artifacts/visual-foundation/*.png` |
-| Frontend tip (this commit) | see HEAD after commit | PR #5 `feature/jobready-frontend-experience-v4` |
+| Frontend tip | `9f22d19` | PR #5 `feature/jobready-frontend-experience-v4` |
 | Backend tip | `3870032` | PR #4 `feature/jobready-learning-runtime-v4` (unchanged this turn) |
 | Integration revision | `4513da6` + live FE sync | `tmp/sprint1-integration` local-only; not pushed |
 
