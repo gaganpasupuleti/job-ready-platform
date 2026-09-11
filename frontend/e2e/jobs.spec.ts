@@ -1,17 +1,34 @@
-import { expect, test } from '@playwright/test'
+import { expect, request as playwrightRequest, test } from '@playwright/test'
 
-import { loadManifest, loginAs } from './helpers'
+import {
+  archiveAdminJobs,
+  createIsolatedE2EJob,
+  loadManifest,
+  loginAs,
+} from './helpers'
 
 const fixtures = loadManifest()
+const createdJobIds: string[] = []
 
 test.describe('Jobs portal', () => {
   test.beforeEach(async ({ page }) => {
     await loginAs(page, fixtures.users.student)
   })
 
+  test.afterAll(async () => {
+    const ctx = await playwrightRequest.newContext()
+    try {
+      await archiveAdminJobs(ctx, [...createdJobIds])
+      createdJobIds.length = 0
+    } finally {
+      await ctx.dispose()
+    }
+  })
+
   test('browse search and open job detail', async ({ page }) => {
     await page.goto('/jobs')
     await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible({ timeout: 20_000 })
+    await expect(page.getByText(/\d+ jobs? found/i)).toBeVisible({ timeout: 20_000 })
     await page.getByPlaceholder('Keywords').fill('Data Engineer')
     await page.getByRole('button', { name: /^search$/i }).click()
     const jobLink = page.getByRole('link', { name: /data engineer/i }).first()
@@ -36,73 +53,41 @@ test.describe('Jobs portal', () => {
   })
 
   test('mark applied and application detail', async ({ page, request }) => {
-    const token = await page.evaluate(() => localStorage.getItem('jrp_access_token'))
-    expect(token).toBeTruthy()
-    const api = process.env.E2E_API_URL || 'http://127.0.0.1:8000/api/v1'
-    const headers = { Authorization: `Bearer ${token}` }
+    const target = await createIsolatedE2EJob(request)
+    createdJobIds.push(target.id)
 
-    const listed = await request.get(`${api}/jobs?limit=50`, { headers })
-    expect(listed.ok()).toBeTruthy()
-    const listJson = await listed.json()
-    const candidates = (listJson.items as { id: string; slug: string; title: string }[]).filter(
-      (item) =>
-        item.slug &&
-        !item.slug.startsWith('admin-manual') &&
-        !item.slug.includes('python-developer-sync'),
-    )
+    try {
+      await page.goto(`/jobs/${target.slug}`)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
+      const applyBtn = page.getByRole('button', { name: /mark applied/i })
+      await expect(applyBtn).toBeVisible({ timeout: 15_000 })
+      await applyBtn.click()
+      await expect(page).toHaveURL(/\/jobs\/applications\/[^/]+/, { timeout: 15_000 })
 
-    let target: {
-      id: string
-      slug: string
-      title: string
-      application_status: string | null
-    } | null = null
-    for (const item of candidates) {
-      const detailRes = await request.get(`${api}/jobs/${item.id}`, { headers })
-      expect(detailRes.ok()).toBeTruthy()
-      const detail = await detailRes.json()
-      const status = detail.application_status as string | null
-      if (!status || status === 'preparing' || status === 'saved') {
-        target = {
-          id: detail.id,
-          slug: detail.slug,
-          title: detail.title,
-          application_status: status,
-        }
-        break
-      }
+      await expect(page.getByText(/^applied$/i).first()).toBeVisible({ timeout: 15_000 })
+
+      await page.goto('/jobs/applications')
+      await expect(page.getByRole('heading', { name: /applications/i }).first()).toBeVisible({
+        timeout: 15_000,
+      })
+      const titleMatcher = new RegExp(target.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
+      await expect(page.getByText(titleMatcher).first()).toBeVisible({ timeout: 15_000 })
+
+      await page.goto(`/jobs/${target.slug}`)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
+      await expect(page.getByText(/^applied$/i).first()).toBeVisible()
+      await expect(page.getByRole('link', { name: /view application/i })).toBeVisible()
+      await expect(page.getByRole('button', { name: /mark applied/i })).toHaveCount(0)
+
+      await page.reload()
+      await expect(page.getByText(/^applied$/i).first()).toBeVisible({ timeout: 15_000 })
+      await expect(page.getByRole('link', { name: /view application/i })).toBeVisible()
+    } finally {
+      // Per-test teardown so a failed assert still archives only this run's job.
+      await archiveAdminJobs(request, [target.id])
+      const idx = createdJobIds.indexOf(target.id)
+      if (idx >= 0) createdJobIds.splice(idx, 1)
     }
-    expect(target, 'need at least one seeded job without an applied+ application').toBeTruthy()
-
-    await page.goto(`/jobs/${target!.slug}`)
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
-    const applyBtn = page.getByRole('button', { name: /mark applied/i })
-    await expect(applyBtn).toBeVisible({ timeout: 15_000 })
-    await applyBtn.click()
-    await expect(page).toHaveURL(/\/jobs\/applications\/[^/]+/, { timeout: 15_000 })
-
-    // Persisted status on application detail
-    await expect(page.getByText(/^applied$/i).first()).toBeVisible({ timeout: 15_000 })
-
-    // Applications list includes this role
-    await page.goto('/jobs/applications')
-    await expect(page.getByRole('heading', { name: /applications/i }).first()).toBeVisible({
-      timeout: 15_000,
-    })
-    const titleMatcher = new RegExp(target!.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
-    await expect(page.getByText(titleMatcher).first()).toBeVisible({ timeout: 15_000 })
-
-    // Refresh job detail: applied badge + View application (Mark applied hidden)
-    await page.goto(`/jobs/${target!.slug}`)
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
-    await expect(page.getByText(/^applied$/i).first()).toBeVisible()
-    await expect(page.getByRole('link', { name: /view application/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /mark applied/i })).toHaveCount(0)
-
-    // Hard refresh still persists
-    await page.reload()
-    await expect(page.getByText(/^applied$/i).first()).toBeVisible({ timeout: 15_000 })
-    await expect(page.getByRole('link', { name: /view application/i })).toBeVisible()
   })
 
   test('recommended page without match score', async ({ page }) => {

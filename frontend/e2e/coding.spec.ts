@@ -1,17 +1,21 @@
 import { expect, test } from '@playwright/test'
 
-import { loadManifest, loginAs } from './helpers'
+import { ensureCodingFixture, loadManifest, loginAs, type CodingFixture } from './helpers'
 
 const fixtures = loadManifest()
+let coding: CodingFixture
 
 test.describe('Coding / DSA with Judge0 disabled', () => {
+  test.beforeAll(async ({ request }) => {
+    coding = await ensureCodingFixture(request, fixtures.coding)
+  })
+
   test.beforeEach(async ({ page }) => {
     await loginAs(page, fixtures.users.student)
   })
 
   test('workspace loads with execution unavailable banner', async ({ page }) => {
-    test.skip(!fixtures.coding.id, 'No coding problem seeded')
-    await page.goto(`/practice/dsa/${fixtures.coding.id}`)
+    await page.goto(`/practice/dsa/${coding.id}`)
     await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toBeVisible({
       timeout: 30_000,
     })
@@ -24,21 +28,20 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
   })
 
   test('draft persists while execution is off', async ({ page }) => {
-    test.skip(!fixtures.coding.id, 'No coding problem seeded')
-    await page.goto(`/practice/dsa/${fixtures.coding.id}`)
+    await page.goto(`/practice/dsa/${coding.id}`)
     await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toBeVisible({
       timeout: 30_000,
     })
     const marker = `# e2e-draft-${Date.now()}`
     await page.evaluate(
       ({ problemId, markerText }) => {
-        const keys = Object.keys(localStorage).filter((k) => k.includes(problemId) && k.startsWith('coding-draft:'))
-        const key =
-          keys[0] ||
-          `coding-draft:anon:${problemId}:71`
+        const keys = Object.keys(localStorage).filter(
+          (k) => k.includes(problemId) && k.startsWith('coding-draft:'),
+        )
+        const key = keys[0] || `coding-draft:anon:${problemId}:71`
         localStorage.setItem(key, `${markerText}\nprint("persisted")`)
       },
-      { problemId: fixtures.coding.id!, markerText: marker },
+      { problemId: coding.id, markerText: marker },
     )
     await page.reload()
     const codeTab = page.getByRole('button', { name: /^code$/i })

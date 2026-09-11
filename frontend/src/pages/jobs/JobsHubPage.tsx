@@ -64,9 +64,6 @@ export function JobsHubPage() {
     setSearchParams(next)
   }
 
-  if (isLoading) return <LoadingState label="Loading jobs" />
-  if (error) return <ErrorState message="Unable to load jobs." />
-
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.limit)) : 1
 
   return (
@@ -80,7 +77,7 @@ export function JobsHubPage() {
       </header>
 
       <nav className="jobs-tabs" aria-label="Jobs sections">
-        <Link to="/jobs" className="active">
+        <Link to="/jobs" className="active" aria-current="page">
           Browse
         </Link>
         <Link to="/jobs/recommended">Relevant</Link>
@@ -118,52 +115,58 @@ export function JobsHubPage() {
       )}
 
       <div className="jobs-filter-bar">
-          <input
-            className={inputClass}
-            placeholder="Keywords"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            aria-label="Keywords"
-          />
-          <input
-            className={inputClass}
-            placeholder="Role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            aria-label="Role"
-          />
-          <input
-            className={inputClass}
-            placeholder="Skill"
-            value={skill}
-            onChange={(e) => setSkill(e.target.value)}
-            aria-label="Skill"
-          />
-          <input
-            className={inputClass}
-            placeholder="Company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            aria-label="Company"
-          />
-          <select
-            className={inputClass}
-            value={sort}
-            aria-label="Sort jobs"
-            onChange={(e) => {
-              const next = new URLSearchParams(searchParams)
-              next.set('sort', e.target.value)
-              setSearchParams(next)
-            }}
-          >
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="company">Company</option>
-          </select>
-          <Button type="button" variant="primary" onClick={applyFilters}>Search</Button>
-        </div>
+        <input
+          className={inputClass}
+          placeholder="Keywords"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          aria-label="Keywords"
+        />
+        <input
+          className={inputClass}
+          placeholder="Role"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          aria-label="Role"
+        />
+        <input
+          className={inputClass}
+          placeholder="Skill"
+          value={skill}
+          onChange={(e) => setSkill(e.target.value)}
+          aria-label="Skill"
+        />
+        <input
+          className={inputClass}
+          placeholder="Company"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+          aria-label="Company"
+        />
+        <select
+          className={inputClass}
+          value={sort}
+          aria-label="Sort jobs"
+          onChange={(e) => {
+            const next = new URLSearchParams(searchParams)
+            next.set('sort', e.target.value)
+            setSearchParams(next)
+          }}
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="company">Company</option>
+        </select>
+        <Button type="button" variant="primary" onClick={applyFilters}>
+          Search
+        </Button>
+      </div>
 
-      {data && data.items.length > 0 ? (
+      {isLoading ? (
+        <LoadingState label="Loading jobs" />
+      ) : error ? (
+        <ErrorState message="Unable to load jobs." />
+      ) : data && data.items.length > 0 ? (
         <>
           <p className="text-sm text-[var(--color-text-muted)]">
             {data.total} job{data.total !== 1 ? 's' : ''} found
@@ -206,3 +209,4 @@ export function JobsHubPage() {
     </div>
   )
 }
+
