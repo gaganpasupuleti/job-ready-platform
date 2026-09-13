@@ -7,9 +7,14 @@
 3. **No job alerts** — users must browse/save jobs manually.
 4. **Redis optional** — catalog cache may skip when Redis is down.
 5. **JWT in localStorage** — not HttpOnly cookies yet.
-6. **CSP not set** — Monaco/Vite asset risk; `nosniff`, `Referrer-Policy`, `X-Frame-Options` are set.
+6. **CSP not set** — scoped out of the jobs-first pilot. Monaco and the Jobs shell share one HTML document, so a Jobs-only CSP is not available. `nosniff`, `Referrer-Policy`, and `X-Frame-Options` stay set.
 7. **Leaderboard / contests / assessments** — future placeholders, not product features.
-8. **Main JS bundle ~700kB+** — Monaco; lazy-loading deferred.
+8. **Main JS bundle** — measured production build is one 781 kB JS chunk (gzip 205 kB). Monaco is in that document. Splitting is outside the jobs-first pilot.
+
+Scoped with the jobs-first candidate (do not treat coding lock as production-ready):
+
+- **Retry Incorrect** — still deferred. It does not block signup → Jobs → save → explicit Mark applied.
+- **`validated_jobs`** — leftover table, 0 rows locally, no current app consumer. Do not drop it to match Alembic table counts. See `docs/JOBS_PILOT_RELEASE.md`.
 
 ## Ops / environment
 

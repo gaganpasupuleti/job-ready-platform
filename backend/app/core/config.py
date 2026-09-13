@@ -41,7 +41,9 @@ class Settings(BaseSettings):
     judge0_api_key: str = ""
     judge0_auth_header: str = "X-Auth-Token"
     judge0_auth_token: str = ""
-    judge0_enabled: bool = True
+    # Stay false unless a private Judge0 host is intentionally configured.
+    # A missing env var must not enable coding execution for the jobs-first pilot.
+    judge0_enabled: bool = False
     judge0_timeout_seconds: int = 30
     judge0_poll_interval_ms: int = 500
     judge0_max_poll_seconds: int = 45
