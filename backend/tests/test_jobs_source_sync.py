@@ -2,6 +2,7 @@
 
 from datetime import UTC, datetime
 from decimal import Decimal
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
@@ -9,15 +10,26 @@ from sqlalchemy import func, select
 
 from app.db.session import AsyncSessionLocal
 from app.models.job import Job, JobApplication, SavedJob
-from app.models.job_enums import JobStatus
+from app.models.job_enums import ApplicationStatus, JobStatus
 from app.models.job import JobPublicationDecision
 from app.services.jobs_source_sync import (
+    ReviewedIdentity,
     SourceJob,
+    SyncPlan,
     application_url,
+    apply_named_plan,
     apply_plan,
+    assert_application_target,
+    assert_catalog_roles,
+    assert_named_plan_unchanged,
+    database_identity,
     decision_key,
     exclusion_reasons,
+    format_target_identity,
     load_publication_decisions,
+    parse_reviewed_batch,
+    parse_target_confirmation,
+    plan_named_batch,
     plan_sync,
     record_publication_decision,
     source_identity,
@@ -334,3 +346,350 @@ async def test_collector_refresh_does_not_erase_or_republish(client, student_aut
         assert stored is not None and stored.status == JobStatus.ARCHIVED
         assert decision.decision == "withhold"
         assert (await db.get(JobApplication, application_id)).job_id == job_id
+
+
+def test_reviewed_batch_parser_requires_pairs():
+    names = parse_reviewed_batch("indeed/CQJ-1\n# note\n\nnaukri/CQJ-2\n")
+    assert names == [
+        ReviewedIdentity("indeed", "CQJ-1"),
+        ReviewedIdentity("naukri", "CQJ-2"),
+    ]
+    with pytest.raises(ValueError, match="empty"):
+        parse_reviewed_batch("# only a comment\n")
+    with pytest.raises(ValueError, match="repeats"):
+        parse_reviewed_batch("indeed/CQJ-1\nindeed/CQJ-1\n")
+
+
+def test_named_plan_is_not_a_complete_snapshot():
+    keep = uuid4()
+    other = uuid4()
+    accepted = _row(job_id="CQJ-KEEP", source="indeed")
+    expired = _row(job_id="CQJ-OLD", source="indeed", link_status="expired")
+    unpublished = _row(job_id="CQJ-NONE", source="indeed")
+    withheld = _row(job_id="CQJ-HOLD", source="indeed")
+    plan = plan_named_batch(
+        [accepted, expired, unpublished, withheld, _row(job_id="CQJ-OUT", source="indeed")],
+        {
+            source_identity("CQJ-KEEP"): keep,
+            source_identity("CQJ-OUT"): other,
+        },
+        {
+            decision_key("indeed", "CQJ-KEEP"): "publish",
+            decision_key("indeed", "CQJ-OLD"): "publish",
+            decision_key("indeed", "CQJ-HOLD"): "withhold",
+        },
+        [
+            ReviewedIdentity("indeed", "CQJ-KEEP"),
+            ReviewedIdentity("indeed", "CQJ-OLD"),
+            ReviewedIdentity("indeed", "CQJ-NONE"),
+            ReviewedIdentity("indeed", "CQJ-HOLD"),
+            ReviewedIdentity("indeed", "CQJ-MISSING"),
+        ],
+    )
+    assert plan.named_only is True
+    assert plan.complete is False
+    assert plan.archive_ids == []
+    assert plan.eligible == 1
+    assert plan.updates == [(keep, accepted)]
+    assert plan.inserts == []
+    assert other not in plan.archive_ids
+    rejected = {job_id: reasons for _source, job_id, reasons in plan.rejected}
+    assert "link_not_active" in rejected["CQJ-OLD"]
+    assert "no_publication_decision" in rejected["CQJ-NONE"]
+    assert "publication_withheld" in rejected["CQJ-HOLD"]
+    assert rejected["CQJ-MISSING"] == "named_not_in_source"
+
+
+@pytest.mark.asyncio
+async def test_named_batch_rerun_keeps_ids_and_rejects_unpublished(client, student_auth):
+    headers, _ = student_auth
+    accepted_key = f"CQJ-NAMED-{uuid4().hex[:8]}"
+    withheld_key = f"CQJ-HOLD-{uuid4().hex[:8]}"
+    foreign_id = uuid4()
+    other_owned_key = f"CQJ-OTHER-{uuid4().hex[:8]}"
+    names = [
+        ReviewedIdentity("indeed", accepted_key),
+        ReviewedIdentity("indeed", withheld_key),
+        ReviewedIdentity("indeed", "CQJ-EXPIRED"),
+        ReviewedIdentity("indeed", "CQJ-UNREVIEWED"),
+    ]
+    rows = [
+        _row(job_id=accepted_key, source="indeed", title="Named role"),
+        _row(job_id=withheld_key, source="indeed"),
+        _row(job_id="CQJ-EXPIRED", source="indeed", link_status="expired"),
+        _row(job_id="CQJ-UNREVIEWED", source="indeed"),
+        _row(job_id=other_owned_key, source="indeed", title="Leave this owned row"),
+    ]
+    async with AsyncSessionLocal() as db:
+        await record_publication_decision(db, source="indeed", job_id=accepted_key, decision="publish")
+        await record_publication_decision(db, source="indeed", job_id=withheld_key, decision="withhold")
+        await record_publication_decision(db, source="indeed", job_id="CQJ-EXPIRED", decision="publish")
+        other = plan_sync(
+            [_row(job_id=other_owned_key, source="indeed")],
+            {},
+            complete=True,
+            decisions={decision_key("indeed", other_owned_key): "publish"},
+        )
+        await apply_plan(db, other)
+        other_job = (
+            await db.execute(select(Job).where(Job.external_id == source_identity(other_owned_key)))
+        ).scalar_one()
+        other_id = other_job.id
+        foreign = Job(
+            id=foreign_id,
+            slug=f"catalog-keep-{uuid4().hex[:8]}",
+            external_id=None,
+            title="Unrelated catalog listing",
+            normalized_title="unrelated catalog listing",
+            description="Not a jobs-server identity.",
+            status=JobStatus.ACTIVE,
+            is_active=True,
+            content_hash=uuid4().hex,
+            first_seen_at=datetime.now(UTC),
+            last_seen_at=datetime.now(UTC),
+        )
+        db.add(foreign)
+        await db.commit()
+        decisions = await load_publication_decisions(db)
+        first = plan_named_batch(
+            rows,
+            {source_identity(other_owned_key): other_id},
+            decisions,
+            names,
+        )
+        assert first.archive_ids == []
+        assert len(first.inserts) == 1
+        await apply_named_plan(db, first)
+        created = (
+            await db.execute(select(Job).where(Job.external_id == source_identity(accepted_key)))
+        ).scalar_one()
+        created_id = created.id
+        hold = (
+            await db.execute(select(Job).where(Job.external_id == source_identity(withheld_key)))
+        ).scalar_one_or_none()
+        assert hold is None
+
+    saved = await client.post(f"/api/v1/jobs/{created_id}/save", headers=headers)
+    assert saved.status_code == 204, saved.text
+    applied = await client.post(f"/api/v1/jobs/{created_id}/apply", headers=headers)
+    assert applied.status_code == 200, applied.text
+    application_id = applied.json()["id"]
+    async with AsyncSessionLocal() as db:
+        owned = await db.get(JobApplication, application_id)
+        assert owned is not None
+        catalog_application = JobApplication(
+            user_id=owned.user_id,
+            job_id=foreign_id,
+            status=ApplicationStatus.APPLIED,
+        )
+        other_application = JobApplication(
+            user_id=owned.user_id,
+            job_id=other_id,
+            status=ApplicationStatus.APPLIED,
+        )
+        db.add(catalog_application)
+        db.add(other_application)
+        await db.commit()
+        catalog_application_id = catalog_application.id
+        other_application_id = other_application.id
+
+    revised = _row(
+        job_id=accepted_key,
+        source="indeed",
+        title="Named role revised",
+        apply_url="https://example.com/apply/named-revised",
+    )
+    async with AsyncSessionLocal() as db:
+        decisions = await load_publication_decisions(db)
+        assert decisions[decision_key("indeed", withheld_key)] == "withhold"
+        again = plan_named_batch(
+            [revised, *rows[1:]],
+            {
+                source_identity(accepted_key): created_id,
+                source_identity(other_owned_key): other_id,
+            },
+            decisions,
+            names,
+        )
+        assert again.inserts == []
+        assert len(again.updates) == 1
+        assert again.archive_ids == []
+        await apply_named_plan(db, again)
+        stored = await db.get(Job, created_id)
+        assert stored is not None
+        assert stored.id == created_id
+        assert stored.title == "Named role revised"
+        assert stored.status == JobStatus.ACTIVE
+        preserved = await db.get(JobApplication, application_id)
+        assert preserved is not None
+        assert str(preserved.id) == str(application_id)
+        assert preserved.job_id == created_id
+        catalog_application_row = await db.get(JobApplication, catalog_application_id)
+        other_application_row = await db.get(JobApplication, other_application_id)
+        assert catalog_application_row is not None and catalog_application_row.job_id == foreign_id
+        assert other_application_row is not None and other_application_row.job_id == other_id
+        assert (
+            await db.execute(select(SavedJob).where(SavedJob.job_id == created_id))
+        ).scalar_one().job_id == created_id
+        untouched = await db.get(Job, other_id)
+        catalog = await db.get(Job, foreign_id)
+        assert untouched is not None and untouched.id == other_id and untouched.status == JobStatus.ACTIVE
+        assert catalog is not None and catalog.id == foreign_id and catalog.is_active is True
+        expired = (
+            await db.execute(select(Job).where(Job.external_id == source_identity("CQJ-EXPIRED")))
+        ).scalar_one_or_none()
+        assert expired is None
+
+    stale = SyncPlan(complete=True, named_only=True, seen=1)
+    with pytest.raises(RuntimeError, match="complete snapshot"):
+        await apply_named_plan(None, stale)  # type: ignore[arg-type]
+
+
+@pytest.mark.asyncio
+async def test_rejected_named_batch_does_not_write():
+    plan = SyncPlan(
+        complete=False,
+        named_only=True,
+        seen=1,
+        rejected=[("indeed", "CQJ-UNREVIEWED", "no_publication_decision")],
+    )
+    result = await apply_named_plan(None, plan)  # type: ignore[arg-type]
+    assert result.inserted == 0
+    assert result.updated == 0
+    assert result.archived == 0
+
+
+def test_target_confirmation_rejects_swap_without_leaking_credentials():
+    secret = "batch-importer-secret"
+    apply_url = f"postgresql://appuser:{secret}@app.internal:5432/jobready_db"
+    source_url = f"postgresql://source:{secret}@source.internal:5432/railway"
+    application_url = f"postgresql://appuser:{secret}@app.internal:5432/jobready_db"
+    assert database_identity(apply_url) == ("app.internal", 5432, "jobready_db")
+    assert secret not in format_target_identity(apply_url)
+    identity = assert_application_target(
+        apply_url=apply_url,
+        source_url=source_url,
+        application_url=application_url,
+        confirmation="app.internal:5432/jobready_db",
+    )
+    assert identity == "host=app.internal port=5432 database=jobready_db"
+    assert secret not in identity
+    with pytest.raises(SystemExit, match="does not match") as mismatch:
+        assert_application_target(
+            apply_url=apply_url,
+            source_url=source_url,
+            application_url=application_url,
+            confirmation=f"postgresql://appuser:{secret}@app.internal:5432/jobready_db",
+        )
+    assert secret not in str(mismatch.value)
+    with pytest.raises(SystemExit, match="swapped") as swapped:
+        assert_application_target(
+            apply_url=source_url,
+            source_url=application_url,
+            application_url=application_url,
+            confirmation="source.internal:5432/railway",
+        )
+    assert secret not in str(swapped.value)
+    with pytest.raises(SystemExit, match="Jobs source"):
+        assert_application_target(
+            apply_url=source_url,
+            source_url=source_url,
+            application_url=source_url,
+            confirmation="source.internal:5432/railway",
+        )
+    with pytest.raises(ValueError):
+        parse_target_confirmation("app.internal:5432/jobready_db extra")
+
+
+def test_catalog_role_swap_is_refused():
+    assert_catalog_roles(
+        apply_has_decisions=True,
+        source_has_validated_jobs=True,
+        source_has_decisions=False,
+    )
+    with pytest.raises(SystemExit, match="publication decisions"):
+        assert_catalog_roles(
+            apply_has_decisions=False,
+            source_has_validated_jobs=True,
+            source_has_decisions=False,
+        )
+    with pytest.raises(SystemExit, match="source target has application"):
+        assert_catalog_roles(
+            apply_has_decisions=True,
+            source_has_validated_jobs=False,
+            source_has_decisions=True,
+        )
+
+
+def test_changed_plan_aborts_before_write():
+    reviewed = SyncPlan(
+        complete=False,
+        named_only=True,
+        seen=1,
+        eligible=1,
+        inserts=[_row(job_id="CQJ-KEEP", source="indeed")],
+    )
+    current = SyncPlan(
+        complete=False,
+        named_only=True,
+        seen=1,
+        rejected=[("indeed", "CQJ-KEEP", "link_not_active")],
+    )
+    assert_named_plan_unchanged(reviewed, reviewed)
+    with pytest.raises(SystemExit, match="changed before write"):
+        assert_named_plan_unchanged(reviewed, current)
+
+
+def test_cli_does_not_print_target_credentials(tmp_path):
+    import os
+    import subprocess
+    import sys
+
+    batch = tmp_path / "reviewed.txt"
+    batch.write_text("indeed/CQJ-REVIEWED\n", encoding="utf-8")
+    secret = "cli-target-secret"
+    env = os.environ.copy()
+    env["JOBS_APPLY_DATABASE_URL"] = f"postgresql://appuser:{secret}@app.internal:5432/jobready_db"
+    env["JOBS_SOURCE_DATABASE_URL"] = f"postgresql://source:{secret}@source.internal:5432/railway"
+    env["DATABASE_URL"] = f"postgresql://appuser:{secret}@app.internal:5432/jobready_db"
+    script = Path(__file__).resolve().parents[1] / "scripts" / "sync_jobs_source.py"
+    confirmed = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--batch",
+            str(batch),
+            "--confirm-target",
+            "other.internal:5432/jobready_db",
+        ],
+        cwd=script.parents[1],
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    leaked = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--batch",
+            str(batch),
+            "--confirm-target",
+            "app.internal:5432/jobready_db",
+            "--target-url",
+            f"postgresql://appuser:{secret}@app.internal:5432/jobready_db",
+        ],
+        cwd=script.parents[1],
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    for result in (confirmed, leaked):
+        blob = result.stdout + result.stderr
+        assert result.returncode == 2
+        assert secret not in blob
+        assert "postgresql://" not in blob
+        assert "appuser" not in blob
+    assert "does not match" in confirmed.stdout
+    assert "must not be passed as an argument" in leaked.stdout

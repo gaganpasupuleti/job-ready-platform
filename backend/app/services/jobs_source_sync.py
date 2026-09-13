@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any
+from urllib.parse import urlparse
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
@@ -60,6 +61,12 @@ class SourceJob:
     currency: str | None = None
 
 
+@dataclass(frozen=True)
+class ReviewedIdentity:
+    source: str
+    job_id: str
+
+
 @dataclass
 class SyncPlan:
     complete: bool
@@ -68,8 +75,10 @@ class SyncPlan:
     exclusions: dict[str, int] = field(default_factory=dict)
     flagged: dict[str, int] = field(default_factory=dict)
     archive_ids: list[UUID] = field(default_factory=list)
+    rejected: list[tuple[str, str, str]] = field(default_factory=list)
     eligible: int = 0
     seen: int = 0
+    named_only: bool = False
 
 
 @dataclass(frozen=True)
@@ -88,6 +97,128 @@ def source_identity(job_id: str) -> str:
 
 def decision_key(source: str, job_id: str) -> str:
     return f"{(source or '').strip().lower()}:{job_id.strip()}"
+
+
+def database_identity(database_url: str) -> tuple[str, int, str]:
+    """Return host, port, and database name. Never include user, password, or query."""
+    raw = (database_url or "").strip()
+    raw = raw.replace("postgresql+asyncpg://", "postgresql://", 1)
+    raw = raw.replace("postgres://", "postgresql://", 1)
+    parsed = urlparse(raw)
+    database = (parsed.path or "").lstrip("/").split("?")[0]
+    host = (parsed.hostname or "").lower()
+    if not host or not database or "@" in host:
+        raise ValueError("target identity is incomplete")
+    return (host, parsed.port or 5432, database)
+
+
+def format_target_identity(database_url: str) -> str:
+    host, port, database = database_identity(database_url)
+    return f"host={host} port={port} database={database}"
+
+
+def parse_target_confirmation(value: str) -> tuple[str, int, str]:
+    """Parse host:port/database. A confirmation must not carry credentials."""
+    text = (value or "").strip()
+    if not text or "@" in text or "://" in text or " " in text:
+        raise ValueError("target confirmation must be host:port/database")
+    host_port, separator, database = text.partition("/")
+    host, port_separator, port_text = host_port.partition(":")
+    if not separator or not port_separator or not host or not database or "/" in database:
+        raise ValueError("target confirmation must be host:port/database")
+    if not port_text.isdigit():
+        raise ValueError("target confirmation must be host:port/database")
+    return (host.lower(), int(port_text), database)
+
+
+def assert_application_target(
+    *,
+    apply_url: str,
+    source_url: str,
+    application_url: str,
+    confirmation: str,
+) -> str:
+    """Confirm the write target without echoing a DSN, and refuse a swapped source."""
+    try:
+        confirmed = parse_target_confirmation(confirmation)
+        identity = database_identity(apply_url)
+    except ValueError as exc:
+        raise SystemExit("APPLY_REFUSED target confirmation does not match") from exc
+    if confirmed != identity:
+        raise SystemExit("APPLY_REFUSED target confirmation does not match")
+    if not (application_url or "").strip() or not (source_url or "").strip() or not (apply_url or "").strip():
+        raise SystemExit("APPLY_REFUSED application and source targets must both be configured")
+    try:
+        same_as_source = database_identity(apply_url) == database_identity(source_url)
+        source_is_application = database_identity(source_url) == database_identity(application_url)
+        apply_is_application = database_identity(apply_url) == database_identity(application_url)
+    except ValueError as exc:
+        raise SystemExit("APPLY_REFUSED target identity is incomplete") from exc
+    if same_as_source:
+        raise SystemExit("APPLY_REFUSED target is the Jobs source database")
+    if source_is_application:
+        raise SystemExit("APPLY_REFUSED source and application targets appear swapped")
+    if not apply_is_application:
+        raise SystemExit("APPLY_REFUSED apply target is not the application database")
+    return format_target_identity(apply_url)
+
+
+def assert_catalog_roles(
+    *,
+    apply_has_decisions: bool,
+    source_has_validated_jobs: bool,
+    source_has_decisions: bool,
+) -> None:
+    """Refuse a write when the connected catalogs are missing or swapped.
+
+    The application database owns publication decisions. The Jobs source owns
+    validated_jobs and must not own those decisions. A leftover validated_jobs
+    table on the application database is not itself a swap.
+    """
+    if source_has_decisions:
+        raise SystemExit("APPLY_REFUSED source target has application publication decisions")
+    if not source_has_validated_jobs:
+        raise SystemExit("APPLY_REFUSED source target has no validated_jobs catalog")
+    if not apply_has_decisions:
+        raise SystemExit("APPLY_REFUSED application target has no publication decisions")
+
+
+def named_plan_signature(plan: SyncPlan) -> tuple:
+    return (
+        tuple((row.source, row.job_id) for row in plan.inserts),
+        tuple((str(job_id), row.source, row.job_id) for job_id, row in plan.updates),
+        tuple(plan.rejected),
+    )
+
+
+def assert_named_plan_unchanged(reviewed: SyncPlan, current: SyncPlan) -> None:
+    if named_plan_signature(reviewed) != named_plan_signature(current):
+        raise SystemExit("APPLY_REFUSED eligibility or decisions changed before write")
+
+
+def parse_reviewed_batch(text: str) -> list[ReviewedIdentity]:
+    """Parse source/job_id lines. A reviewed batch is never implied by the catalog."""
+    names: list[ReviewedIdentity] = []
+    seen: set[tuple[str, str]] = set()
+    for raw in text.splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        if "/" not in line:
+            raise ValueError(f"reviewed batch line must be source/job_id: {line}")
+        source, job_id = line.split("/", 1)
+        source = source.strip().lower()
+        job_id = job_id.strip()
+        if not source or not job_id or "/" in job_id or " " in source or " " in job_id:
+            raise ValueError(f"reviewed batch line must be source/job_id: {line}")
+        key = (source, job_id)
+        if key in seen:
+            raise ValueError(f"reviewed batch repeats {source}/{job_id}")
+        seen.add(key)
+        names.append(ReviewedIdentity(source=source, job_id=job_id))
+    if not names:
+        raise ValueError("reviewed batch is empty")
+    return names
 
 
 async def load_publication_decisions(db: AsyncSession) -> dict[str, str]:
@@ -254,6 +385,45 @@ def plan_sync(
     return plan
 
 
+def plan_named_batch(
+    rows: list[SourceJob],
+    existing_by_external_id: dict[str, UUID],
+    decisions: dict[str, str],
+    names: list[ReviewedIdentity],
+) -> SyncPlan:
+    """Upsert only named identities. A subset is not a complete snapshot.
+
+    Recheck the current decision and content/link rules for each named pair.
+    Missing, withheld, expired, or otherwise ineligible names are rejected.
+    Unnamed jobs are not archived.
+    """
+    if not names:
+        raise ValueError("reviewed batch is empty")
+    by_key = {(row.source.strip().lower(), row.job_id.strip()): row for row in rows}
+    plan = SyncPlan(complete=False, named_only=True, seen=len(names))
+    for name in names:
+        row = by_key.get((name.source, name.job_id))
+        if row is None:
+            plan.exclusions["named_not_in_source"] = plan.exclusions.get("named_not_in_source", 0) + 1
+            plan.rejected.append((name.source, name.job_id, "named_not_in_source"))
+            continue
+        reasons = exclusion_reasons(row, decisions.get(decision_key(name.source, name.job_id)))
+        if classification_mismatch(row):
+            plan.flagged["classification_mismatch"] = plan.flagged.get("classification_mismatch", 0) + 1
+        if reasons:
+            for reason in reasons:
+                plan.exclusions[reason] = plan.exclusions.get(reason, 0) + 1
+            plan.rejected.append((name.source, name.job_id, ",".join(reasons)))
+            continue
+        plan.eligible += 1
+        existing_id = existing_by_external_id.get(source_identity(name.job_id))
+        if existing_id is None:
+            plan.inserts.append(row)
+        else:
+            plan.updates.append((existing_id, row))
+    return plan
+
+
 def _join(values: list[str]) -> str | None:
     return "\n".join(values) if values else None
 
@@ -291,6 +461,38 @@ async def apply_plan(db: AsyncSession, plan: SyncPlan) -> ApplyResult:
         updated=len(plan.updates),
         archived=archived,
         skipped_foreign=skipped_foreign,
+        eligible=plan.eligible,
+        seen=plan.seen,
+    )
+
+
+async def apply_named_plan(db: AsyncSession, plan: SyncPlan) -> ApplyResult:
+    """Write only the named inserts and updates. Never archive from a subset."""
+    if not plan.named_only or plan.complete:
+        raise RuntimeError("refusing to apply a named batch as a complete snapshot")
+    if plan.archive_ids:
+        raise RuntimeError("refusing to archive from a named batch")
+    if plan.seen == 0:
+        raise RuntimeError("refusing to apply an empty reviewed batch")
+    if not plan.inserts and not plan.updates:
+        return ApplyResult(
+            inserted=0,
+            updated=0,
+            archived=0,
+            skipped_foreign=0,
+            eligible=0,
+            seen=plan.seen,
+        )
+    for row in plan.inserts:
+        await _upsert(db, None, row)
+    for job_id, row in plan.updates:
+        await _upsert(db, job_id, row)
+    await db.commit()
+    return ApplyResult(
+        inserted=len(plan.inserts),
+        updated=len(plan.updates),
+        archived=0,
+        skipped_foreign=0,
         eligible=plan.eligible,
         seen=plan.seen,
     )
