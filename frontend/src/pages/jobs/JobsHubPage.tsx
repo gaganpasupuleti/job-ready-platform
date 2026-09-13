@@ -85,6 +85,7 @@ export function JobsHubPage() {
         <Link to="/jobs/applications">
           Applications{summary ? ` (${summary.applications_total})` : ''}
         </Link>
+        <Link to="/jobs/preferences">Preferences</Link>
       </nav>
 
       {summary && (

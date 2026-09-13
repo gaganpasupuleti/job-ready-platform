@@ -5,6 +5,7 @@ import {
   loadManifest,
   loginAs,
   logout,
+  openPrimaryNav,
   registerUser,
   registerUserInApp,
   seedPrivateApplicationNote,
@@ -26,9 +27,12 @@ test.describe('Auth', () => {
 
   test('login reaches dashboard and persists after reload', async ({ page }) => {
     await loginAs(page, fixtures.users.student)
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible()
     await page.reload()
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible()
+    await page.goto('/')
+    await expect(page.getByRole('heading', { name: /a little practice/i })).toBeVisible()
+    await expect(page.getByText(/welcome back/i)).toBeVisible()
   })
 
   test('protected route redirects when logged out', async ({ page }) => {
@@ -78,7 +82,7 @@ test.describe('Auth', () => {
 
   test('cross-tab token clear signs out this tab', async ({ page }) => {
     await loginAs(page, fixtures.users.student)
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible()
     await page.evaluate(() => {
       const key = 'jrp_access_token'
       const oldValue = localStorage.getItem(key)
@@ -113,7 +117,7 @@ test.describe('Auth', () => {
     }
 
     await registerUser(page, userA)
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible({
+    await expect(page.getByRole('heading', { name: /job preferences/i })).toBeVisible({
       timeout: 20_000,
     })
 
@@ -121,6 +125,7 @@ test.describe('Auth', () => {
     expect(seeded.applicationId).toBeTruthy()
 
     // Render + cache A's private note through the real UI (SPA navigation).
+    await openPrimaryNav(page)
     await page.getByRole('link', { name: /^jobs$/i }).click()
     await expect(page).toHaveURL(/\/jobs/)
     await page.getByRole('link', { name: /applications/i }).first().click()
@@ -249,7 +254,7 @@ test.describe('Auth', () => {
     // Same-document switch: logout → register B (no page.goto / reload / new context).
     await logout(page)
     await registerUserInApp(page, userB)
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible({
+    await expect(page.getByRole('heading', { name: /job preferences/i })).toBeVisible({
       timeout: 20_000,
     })
 
@@ -261,6 +266,7 @@ test.describe('Auth', () => {
     await expect(page.getByText(markerA)).toHaveCount(0)
     await expect(page.getByText(userA.email, { exact: false })).toHaveCount(0)
 
+    await openPrimaryNav(page)
     await page.getByRole('link', { name: /^jobs$/i }).click()
     await page.getByRole('link', { name: /applications/i }).first().click()
     await expect(page).toHaveURL(/\/jobs\/applications/)
@@ -291,7 +297,7 @@ test.describe('Auth', () => {
       password: 'E2eStudent123!',
       fullName: 'E2E Fresh Student',
     })
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible({
+    await expect(page.getByRole('heading', { name: /job preferences/i })).toBeVisible({
       timeout: 20_000,
     })
   })

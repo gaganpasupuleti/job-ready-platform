@@ -26,23 +26,19 @@ import {
 
 import type { NavSection } from '@/types'
 
-/** Primary horizontal nav — mirrors design-reference/jobready-v4 masthead. */
+/** Primary horizontal nav — Jobs is the jobs-first destination; other routes stay. */
 export const primaryNavItems: { label: string; path: string; match?: string[] }[] = [
+  { label: 'Jobs', path: '/jobs', match: ['/jobs'] },
   { label: 'Overview', path: '/', match: ['/'] },
   { label: 'Practice', path: '/practice', match: ['/practice'] },
   { label: 'Learn', path: '/learn', match: ['/learn'] },
-  {
-    label: 'Playground',
-    path: '/practice/python',
-    match: ['/practice/python', '/practice/playground'],
-  },
+  { label: 'Playground', path: '/practice/python', match: ['/practice/python', '/practice/playground'] },
   {
     label: 'Assessments',
     path: '/practice/aptitude',
     match: ['/practice/aptitude', '/practice/mcq', '/practice/sessions', '/assessments'],
   },
   { label: 'Review', path: '/mistakes', match: ['/mistakes'] },
-  { label: 'Jobs', path: '/jobs', match: ['/jobs'] },
 ]
 
 /** Secondary destinations kept reachable (More drawer / footer links). */
@@ -50,13 +46,13 @@ export const navigationConfig: NavSection[] = [
   {
     title: 'Today',
     items: [
+      { label: 'Jobs', path: '/jobs', icon: 'Briefcase' },
       { label: 'Overview', path: '/', icon: 'LayoutDashboard' },
       { label: 'Practice', path: '/practice', icon: 'Target' },
       { label: 'Learn', path: '/learn', icon: 'ListChecks' },
       { label: 'Playground', path: '/practice/python', icon: 'Terminal' },
       { label: 'Assessments', path: '/practice/aptitude', icon: 'FileQuestion' },
       { label: 'Review', path: '/mistakes', icon: 'FileQuestion' },
-      { label: 'Jobs', path: '/jobs', icon: 'Briefcase' },
     ],
   },
   {
@@ -86,6 +82,10 @@ export const navigationConfig: NavSection[] = [
     ],
   },
 ]
+
+export const JOBS_HOME = '/jobs'
+export const JOBS_PREFERENCES = '/jobs/preferences'
+export const JOBS_ONBOARDING_KEY = 'jr_jobs_onboarding'
 
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   LayoutDashboard,

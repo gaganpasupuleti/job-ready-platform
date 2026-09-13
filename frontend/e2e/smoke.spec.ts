@@ -116,7 +116,7 @@ test.describe('Admin smoke', () => {
     await page.goto('/admin/questions')
     // AdminRoute sends non-admins to the dashboard
     await expect(page).toHaveURL(/\/($|\?)/)
-    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible()
+    await expect(page.getByText(/welcome back/i)).toBeVisible()
 
     await page.evaluate(() => localStorage.clear())
     await loginAs(page, fixtures.users.admin)

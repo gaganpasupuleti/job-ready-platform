@@ -27,6 +27,13 @@ function formatSalary(min: string | null, max: string | null, currency: string |
   return `Up to ${cur} ${max}`
 }
 
+function formatWhen(value: string | null) {
+  if (!value) return null
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return null
+  return date.toLocaleString()
+}
+
 export function JobDetailPage() {
   const { jobId } = useParams<{ jobId: string }>()
   const navigate = useNavigate()
@@ -75,6 +82,12 @@ export function JobDetailPage() {
 
   const salary = formatSalary(data.salary_min, data.salary_max, data.salary_currency)
   const applyUrl = data.apply_url || data.source_url
+  const freshness = [
+    data.source_name ? `Source: ${data.source_name}` : null,
+    data.posted_at ? `Posted ${formatWhen(data.posted_at)}` : null,
+    data.last_seen_at ? `Last seen ${formatWhen(data.last_seen_at)}` : null,
+    data.expires_at ? `Expires ${formatWhen(data.expires_at)}` : null,
+  ].filter(Boolean)
   // Preparing (or no application yet) can still be marked applied. Pipeline statuses keep View application.
   const canMarkApplied =
     !data.application_status || data.application_status === 'preparing' || data.application_status === 'saved'
@@ -127,10 +140,14 @@ export function JobDetailPage() {
             Mark applied
           </Button>
         ) : null}
-        {applyUrl && (
+        {applyUrl ? (
           <a href={applyUrl} target="_blank" rel="noopener noreferrer">
             <Button type="button">Apply externally</Button>
           </a>
+        ) : (
+          <p className="text-sm text-[var(--color-text-muted)]">
+            No application URL is listed for this job.
+          </p>
         )}
         {data.company_prep_url && (
           <Link to={data.company_prep_url}>
@@ -143,6 +160,15 @@ export function JobDetailPage() {
           </Link>
         )}
       </div>
+
+      {applyUrl && (
+        <p className="text-sm text-[var(--color-text-muted)]">
+          Apply externally opens the employer link. It does not mark this job applied.
+        </p>
+      )}
+      {freshness.length > 0 && (
+        <p className="text-sm text-[var(--color-text-muted)]">{freshness.join(' · ')}</p>
+      )}
 
       {(prepareMutation.isSuccess || applyMutation.isSuccess) && (
         <SuccessState title="Application updated" />

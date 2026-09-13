@@ -50,6 +50,7 @@ import { JobsApplicationsPage } from '@/pages/jobs/JobsApplicationsPage'
 import { JobApplicationDetailPage } from '@/pages/jobs/JobApplicationDetailPage'
 import { JobDetailPage } from '@/pages/jobs/JobDetailPage'
 import { JobsHubPage } from '@/pages/jobs/JobsHubPage'
+import { JobsPreferencesPage } from '@/pages/jobs/JobsPreferencesPage'
 import { JobsRecommendedPage } from '@/pages/jobs/JobsRecommendedPage'
 import { JobsSavedPage } from '@/pages/jobs/JobsSavedPage'
 import { ReadinessPage } from '@/pages/readiness/ReadinessPage'
@@ -177,6 +178,7 @@ export function AppRoutes() {
         <Route path="company-prep" element={<CompanyPrepPage />} />
         <Route path="company-prep/:slug" element={<CompanyPrepDetailPage />} />
         <Route path="jobs" element={<JobsHubPage />} />
+        <Route path="jobs/preferences" element={<JobsPreferencesPage />} />
         <Route path="jobs/recommended" element={<JobsRecommendedPage />} />
         <Route path="jobs/saved" element={<JobsSavedPage />} />
         <Route path="jobs/applications" element={<JobsApplicationsPage />} />

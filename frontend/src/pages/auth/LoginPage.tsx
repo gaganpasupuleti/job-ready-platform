@@ -5,6 +5,7 @@ import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
 import { FieldLabel, Input } from '@/components/common/Field'
 import { useAuth } from '@/hooks/useAuth'
+import { JOBS_HOME } from '@/components/navigation/navConfig'
 import { DEV_AUTO_LOGIN } from '@/mocks/dev-auth'
 
 export function LoginPage() {
@@ -20,7 +21,7 @@ export function LoginPage() {
   const from =
     (location.state as { from?: string } | null)?.from ??
     (fromQuery && fromQuery.startsWith('/') ? fromQuery : null) ??
-    '/'
+    JOBS_HOME
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()

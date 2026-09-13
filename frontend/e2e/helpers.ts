@@ -291,12 +291,28 @@ export async function registerUser(
 }
 
 export async function logout(page: Page) {
-  const logoutBtn = page.getByRole('button', { name: /logout/i })
+  const logoutBtn = page.getByRole('button', { name: /^logout$/i })
+  if (!(await logoutBtn.isVisible().catch(() => false))) {
+    const profileLogout = page.getByRole('button', { name: /log out/i })
+    await expect(profileLogout, 'Logout control must be present for real sign-out').toBeVisible({
+      timeout: 8_000,
+    })
+    await profileLogout.click()
+    await page.waitForURL(/\/login/, { timeout: 15_000 })
+    return
+  }
   await expect(logoutBtn, 'Logout control must be present for real sign-out').toBeVisible({
     timeout: 8_000,
   })
   await logoutBtn.click()
   await page.waitForURL(/\/login/, { timeout: 15_000 })
+}
+
+export async function openPrimaryNav(page: Page) {
+  const jobs = page.getByRole('navigation', { name: /main navigation/i }).getByRole('link', { name: /^jobs$/i })
+  if (await jobs.isVisible().catch(() => false)) return
+  const menu = page.getByRole('button', { name: /open navigation/i })
+  if (await menu.isVisible().catch(() => false)) await menu.click()
 }
 
 export async function registerUserInApp(

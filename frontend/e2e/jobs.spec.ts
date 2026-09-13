@@ -104,3 +104,67 @@ test.describe('Jobs portal', () => {
     await expect(page).toHaveURL(/\/($|\?)/)
   })
 })
+
+test.describe('Jobs-first student journey', () => {
+  test('signup preferences browse save external apply then mark applied', async ({ page }) => {
+    const suffix = Date.now().toString(36).slice(-6)
+    await page.goto('/register')
+    await page.getByLabel('Full name').fill(`Pilot ${suffix}`)
+    await page.getByLabel('Email').fill(`e2e.jobs.${suffix}@jobready.dev`)
+    await page.getByLabel('Username').fill(`e2ejobs${suffix}`)
+    await page.getByLabel('Password').fill('E2eStudent123!')
+    await page.getByRole('button', { name: /register/i }).click()
+    await expect(page.getByRole('heading', { name: /job preferences/i })).toBeVisible({
+      timeout: 20_000,
+    })
+    await page.getByLabel('Role').selectOption({ label: 'Data Engineer' })
+    await page.getByLabel('Preferred locations').fill('Hyderabad')
+    await page.getByRole('button', { name: /save and browse jobs/i }).click()
+    await expect(page).toHaveURL(/\/jobs$/)
+    await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible()
+
+    await page.getByPlaceholder('Keywords').fill('Data Engineer')
+    await page.getByRole('button', { name: /^search$/i }).click()
+    const jobLink = page.getByRole('link', { name: /data engineer/i }).first()
+    await expect(jobLink).toBeVisible({ timeout: 15_000 })
+    await jobLink.click()
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+
+    const saveBtn = page.getByRole('button', { name: /save job/i })
+    await saveBtn.click()
+    await expect(page.getByRole('button', { name: /^saved$/i })).toBeVisible()
+
+    const applyLink = page.getByRole('link', { name: /apply externally/i })
+    if (await applyLink.count()) {
+      const applyPosts: string[] = []
+      page.on('request', (request) => {
+        if (request.method() === 'POST' && /\/jobs\/[^/]+\/apply/.test(request.url())) {
+          applyPosts.push(request.url())
+        }
+      })
+      await applyLink.evaluate((node) => {
+        node.setAttribute('target', '_self')
+        node.addEventListener('click', (event) => event.preventDefault())
+      })
+      await applyLink.click()
+      await expect(page.getByRole('button', { name: /mark applied/i })).toBeVisible()
+      expect(applyPosts).toEqual([])
+    }
+
+    await page.getByRole('button', { name: /mark applied/i }).click()
+    await expect(page).toHaveURL(/\/jobs\/applications\/[^/]+/, { timeout: 15_000 })
+    await expect(page.getByText(/^applied$/i).first()).toBeVisible()
+  })
+
+  test('jobs controls stay reachable on a phone viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await loginAs(page, fixtures.users.student)
+    await page.goto('/jobs')
+    await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible({ timeout: 20_000 })
+    await page.getByRole('button', { name: /open navigation/i }).click()
+    await expect(page.getByRole('navigation', { name: /main navigation/i }).getByRole('link', { name: /^jobs$/i })).toBeVisible()
+    await page.goto('/jobs/data-engineer-remote-infosys')
+    await expect(page.getByRole('button', { name: /save job|^saved$/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /mark applied|view application/i })).toBeVisible()
+  })
+})

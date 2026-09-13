@@ -641,7 +641,8 @@
 
 .jobs-portal .jobs-tabs {
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
   border-bottom: 1px solid var(--color-border-strong);
   margin-bottom: 1.1rem;
 }
