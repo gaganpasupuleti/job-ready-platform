@@ -38,7 +38,8 @@ export type E2EManifest = {
 export type CodingFixture = { id: string; slug: string; title: string }
 
 export function apiBaseUrl(): string {
-  return process.env.E2E_API_URL || 'http://127.0.0.1:8000/api/v1'
+  const raw = (process.env.E2E_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '')
+  return raw.endsWith('/api/v1') ? raw : `${raw}/api/v1`
 }
 
 const fallbackManifest: E2EManifest = {

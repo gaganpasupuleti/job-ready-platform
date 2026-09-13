@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { loadManifest, loginAs } from './helpers'
+import { apiBaseUrl, loadManifest, loginAs } from './helpers'
 
 const fixtures = loadManifest()
 
@@ -107,7 +107,7 @@ test.describe('MCQ practice and exam', () => {
     await page.goto('/practice/aptitude')
     const token = await page.evaluate(() => localStorage.getItem('jrp_access_token'))
     expect(token).toBeTruthy()
-    const api = process.env.E2E_API_URL || 'http://127.0.0.1:8000/api/v1'
+    const api = apiBaseUrl()
     const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
 
     const catalog = await request.get(`${api}/practice/catalog`, { headers })
