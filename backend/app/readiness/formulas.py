@@ -8,8 +8,8 @@ from typing import Literal
 from app.models.readiness_enums import EvidenceStrength, SkillReadinessStatus
 
 # Bump when scoring semantics change. Not a hiring-probability model.
-FORMULA_VERSION = "2.0.0"
-FORMULA_LABEL = "skill_coverage_v2"
+FORMULA_VERSION = "2.1.0"
+FORMULA_LABEL = "assessed_competence_v2.1"
 
 # Default source weights (per-skill overrides may apply in SkillEvidenceService)
 DEFAULT_SOURCE_WEIGHTS: dict[str, float] = {
@@ -18,8 +18,9 @@ DEFAULT_SOURCE_WEIGHTS: dict[str, float] = {
     "sql": 0.20,
     "prompt": 0.15,
     "scenario": 0.15,
-    "course": 0.05,
-    "project": 0.20,
+    # Self-reported progress must not move assessed competence.
+    "course": 0.0,
+    "project": 0.0,
     "interview": 0.10,
     "practice_path": 0.10,
 }

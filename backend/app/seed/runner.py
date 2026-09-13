@@ -47,10 +47,16 @@ async def ensure_seed_admin(session: AsyncSession) -> User | None:
             await session.execute(select(User).where(User.email == bootstrap_email))
         ).scalar_one_or_none()
         if existing is not None:
-            if existing.role != UserRole.ADMIN:
-                existing.role = UserRole.ADMIN
-                await session.flush()
-            return existing
+            # Never escalate an existing student (or any non-admin) into admin
+            # just because their email matches ADMIN_BOOTSTRAP_EMAIL.
+            if existing.role == UserRole.ADMIN:
+                return existing
+            logger.error(
+                "Refusing to promote existing %s account %s via ADMIN_BOOTSTRAP_EMAIL",
+                existing.role,
+                bootstrap_email,
+            )
+            return None
         admin = User(
             email=bootstrap_email,
             username=bootstrap_email.split("@")[0][:50] or "admin",

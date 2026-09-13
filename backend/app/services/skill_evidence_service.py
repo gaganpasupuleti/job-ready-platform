@@ -40,6 +40,20 @@ from app.readiness.skill_mapping import (
 )
 
 
+ASSESSED_EVIDENCE_SOURCES = {
+    EvidenceSourceType.MCQ.value,
+    EvidenceSourceType.SQL.value,
+    EvidenceSourceType.CODING.value,
+    EvidenceSourceType.PROMPT.value,
+    EvidenceSourceType.SCENARIO.value,
+    EvidenceSourceType.INTERVIEW.value,
+}
+SELF_REPORTED_SOURCES = {
+    EvidenceSourceType.PROJECT.value,
+    EvidenceSourceType.COURSE.value,
+}
+
+
 @dataclass
 class SourceBreakdown:
     source: str
@@ -60,6 +74,7 @@ class SkillEvidence:
     last_activity_at: datetime | None = None
     sources: list[SourceBreakdown] = field(default_factory=list)
     status: str = "no_evidence"
+    counts_toward_competence: bool = True
 
 
 class SkillEvidenceService:
@@ -349,7 +364,9 @@ class SkillEvidenceService:
         buckets: dict[str, list[tuple[float, datetime | None]]] = {}
         for skills_list, progress, updated_at in rows:
             skills = skills_list if isinstance(skills_list, list) else []
-            keys = [normalize_skill_key(str(s)) for s in skills] or ["python"]
+            keys = [normalize_skill_key(str(s)) for s in skills if str(s).strip()]
+            if not keys:
+                continue
             for key in keys:
                 buckets.setdefault(key, []).append((float(progress or 0), updated_at))
         result: dict[str, SourceBreakdown] = {}
@@ -425,7 +442,15 @@ class SkillEvidenceService:
             ]:
                 if key in bucket:
                     sources.append(bucket[key])
-            score, activity, last_at, diversity = self._combine_sources(key, sources)
+            assessed = [
+                s
+                for s in sources
+                if s.source in ASSESSED_EVIDENCE_SOURCES and s.source not in SELF_REPORTED_SOURCES
+            ]
+            # Project/course completion is self-reported and must not move competence.
+            if not assessed:
+                continue
+            score, activity, last_at, diversity = self._combine_sources(key, assessed)
             strength = evidence_strength_from_signals(activity, diversity)
             from app.readiness.formulas import effective_score  # noqa: PLC0415
 
@@ -442,6 +467,7 @@ class SkillEvidenceService:
                 last_activity_at=last_at,
                 sources=sources,
                 status=st.value,
+                counts_toward_competence=True,
             )
         return out
 

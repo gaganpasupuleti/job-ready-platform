@@ -117,7 +117,6 @@ class CodingService:
         payload: PlaygroundRunRequest,
     ) -> PlaygroundRunResponse:
         """Freeform run (not graded). Distinct from assessed problem run/submit."""
-        _ = user  # auth-gated at API; reserved for future rate limits / history
         if not self.is_execution_available():
             return PlaygroundRunResponse(
                 status="service_unavailable",
@@ -127,19 +126,21 @@ class CodingService:
         self._validate_language(payload.language_id)
         self._validate_source_code(payload.source_code)
         self._validate_stdin(payload.stdin or "")
+        await enforce_rate_limit(user.id, kind="run")
 
         from app.services.code_execution.interface import ExecutionRequest
 
-        result = await self.executor.execute(
-            ExecutionRequest(
-                source_code=payload.source_code,
-                language_id=payload.language_id,
-                stdin=payload.stdin or "",
-                cpu_time_limit=float(settings.judge0_max_cpu_time_seconds),
-                wall_time_limit=float(settings.judge0_max_wall_time_seconds),
-                memory_limit_kb=int(settings.judge0_max_memory_kb),
+        async with concurrency_slot(user.id):
+            result = await self.executor.execute(
+                ExecutionRequest(
+                    source_code=payload.source_code,
+                    language_id=payload.language_id,
+                    stdin=payload.stdin or "",
+                    cpu_time_limit=float(settings.judge0_max_cpu_time_seconds),
+                    wall_time_limit=float(settings.judge0_max_wall_time_seconds),
+                    memory_limit_kb=int(settings.judge0_max_memory_kb),
+                )
             )
-        )
         status = (result.status or "internal_error").lower()
         if status in {"ok", "accepted", "success"}:
             status = "accepted"

@@ -74,8 +74,8 @@ class ReadinessOverview(BaseModel):
     trend: list[TrendPoint] = Field(default_factory=list)
     recommended_actions: list[RecommendationAction] = Field(default_factory=list)
     message: str | None = None
-    formula_version: str = "2.0.0"
-    formula_label: str = "skill_coverage_v2"
+    formula_version: str = "2.1.0"
+    formula_label: str = "assessed_competence_v2.1"
     overall_score_ready: bool = False
     is_hiring_probability: bool = False
 

@@ -99,6 +99,8 @@ class ReadinessService:
             ev = evidence_map.get(normalize_skill_key(skill.slug)) or evidence_map.get(
                 normalize_skill_key(skill.name)
             )
+            if ev is not None and not ev.counts_toward_competence:
+                ev = None
             readiness = ev.score if ev else 0.0
             strength = ev.evidence_strength if ev else EvidenceStrength.LOW
             # Unassessed / missing skills contribute 0 to the denominator (honest coverage).

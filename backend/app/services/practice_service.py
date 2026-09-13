@@ -146,12 +146,15 @@ class PracticeService:
     async def autosave_answer(
         self, user: User, session_id: UUID, question_number: int, payload: AutosaveRequest
     ) -> dict[str, bool]:
-        session = await self._get_owned_session(user.id, session_id)
+        session = await self._lock_owned_session(user.id, session_id)
         await self._maybe_expire_exam(user, session)
+        session = await self._lock_owned_session(user.id, session_id)
         if session.status != SessionStatus.ACTIVE:
             raise AppException("Session is not active", status_code=400)
         sq = self._get_session_question(session, question_number)
         existing = await self.practice_repo.get_answer(session.id, sq.question_id)
+        if existing and existing.answered_at is not None:
+            raise AppException("Answer already finalized", status_code=409)
         answer = existing or PracticeAnswer(session_id=session.id, question_id=sq.question_id)
         answer.selected_option_ids = [str(x) for x in payload.selected_option_ids]
         answer.marked_for_review = payload.marked_for_review
@@ -254,7 +257,7 @@ class PracticeService:
         )
 
     async def complete_session(self, user: User, session_id: UUID) -> SessionResultsResponse:
-        session = await self._get_owned_session(user.id, session_id)
+        session = await self._lock_owned_session(user.id, session_id)
         if session.status == SessionStatus.COMPLETED:
             return await self.get_results(user, session_id)
 
@@ -376,6 +379,12 @@ class PracticeService:
 
     async def _get_owned_session(self, user_id: UUID, session_id: UUID) -> PracticeSession:
         session = await self.practice_repo.get_session_for_user(session_id, user_id)
+        if session is None:
+            raise AppException("Session not found", status_code=404)
+        return session
+
+    async def _lock_owned_session(self, user_id: UUID, session_id: UUID) -> PracticeSession:
+        session = await self.practice_repo.lock_session_for_user(session_id, user_id)
         if session is None:
             raise AppException("Session not found", status_code=404)
         return session

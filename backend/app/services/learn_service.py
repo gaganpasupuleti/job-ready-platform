@@ -971,6 +971,7 @@ class LearnService:
         task = next((t for t in ordered if t.id == task_id), None)
         if task is None:
             raise AppException("Task not found on this project", status_code=404)
+        await self._require_assessment_evidence(user.id, task)
 
         row = (
             await self.db.execute(
@@ -1004,6 +1005,91 @@ class LearnService:
             "completed_task_id": str(task_id),
             "href": project_href(project.slug),
         }
+
+    async def _require_assessment_evidence(self, user_id: UUID, task: ProjectTask) -> None:
+        """Block manual completion when the task requires a solved engine result."""
+        from app.models.coding import CodingProblemProgress
+        from app.models.coding_enums import ProblemProgressStatus
+        from app.models.practice import PracticeAnswer, PracticeSession
+        from app.models.sql_enums import SqlProgressStatus
+        from app.models.sql_practice import SqlProblemProgress
+
+        task_type = task.task_type.value if hasattr(task.task_type, "value") else str(task.task_type)
+        linked_coding = task.coding_problem_id is not None or task_type == ProjectTaskType.CODING.value
+        linked_sql = task.sql_problem_id is not None or task_type == ProjectTaskType.SQL.value
+        linked_mcq = task.question_id is not None or task_type == ProjectTaskType.MCQ.value
+        if not (linked_coding or linked_sql or linked_mcq):
+            return
+
+        if task.coding_problem_id is not None:
+            progress = (
+                await self.db.execute(
+                    select(CodingProblemProgress).where(
+                        CodingProblemProgress.user_id == user_id,
+                        CodingProblemProgress.problem_id == task.coding_problem_id,
+                        CodingProblemProgress.status == ProblemProgressStatus.SOLVED,
+                    )
+                )
+            ).scalar_one_or_none()
+            if progress is None:
+                raise AppException(
+                    "Complete the linked coding problem before marking this task done.",
+                    status_code=409,
+                )
+        elif task_type == ProjectTaskType.CODING.value:
+            raise AppException(
+                "This coding task has no linked problem to verify.",
+                status_code=409,
+            )
+
+        if task.sql_problem_id is not None:
+            progress = (
+                await self.db.execute(
+                    select(SqlProblemProgress).where(
+                        SqlProblemProgress.user_id == user_id,
+                        SqlProblemProgress.problem_id == task.sql_problem_id,
+                        SqlProblemProgress.status == SqlProgressStatus.SOLVED,
+                    )
+                )
+            ).scalar_one_or_none()
+            if progress is None:
+                raise AppException(
+                    "Complete the linked SQL problem before marking this task done.",
+                    status_code=409,
+                )
+        elif task_type == ProjectTaskType.SQL.value:
+            raise AppException(
+                "This SQL task has no linked problem to verify.",
+                status_code=409,
+            )
+
+        if task.question_id is not None or (
+            task_type == ProjectTaskType.MCQ.value and task.topic_id is not None
+        ):
+            stmt = (
+                select(PracticeAnswer.id)
+                .join(PracticeSession, PracticeSession.id == PracticeAnswer.session_id)
+                .where(
+                    PracticeSession.user_id == user_id,
+                    PracticeAnswer.is_correct.is_(True),
+                    PracticeAnswer.answered_at.is_not(None),
+                )
+            )
+            if task.question_id is not None:
+                stmt = stmt.where(PracticeAnswer.question_id == task.question_id)
+            else:
+                stmt = stmt.where(PracticeSession.topic_id == task.topic_id)
+            correct = (await self.db.execute(stmt.limit(1))).scalar_one_or_none()
+            if correct is None:
+                raise AppException(
+                    "A correct assessed answer is required before marking this task done.",
+                    status_code=409,
+                )
+        elif task_type == ProjectTaskType.MCQ.value:
+            raise AppException(
+                "This MCQ task has no linked question to verify.",
+                status_code=409,
+            )
 
     async def start_path(self, path_id: UUID, user: User) -> dict:
         path = await self.db.get(PracticePath, path_id)

@@ -27,6 +27,20 @@ class PracticeRepository(BaseRepository):
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def lock_session_for_user(self, session_id: UUID, user_id: UUID) -> PracticeSession | None:
+        """Lock the session row so autosave and completion cannot interleave writes."""
+        stmt = (
+            select(PracticeSession)
+            .where(PracticeSession.id == session_id, PracticeSession.user_id == user_id)
+            .options(
+                selectinload(PracticeSession.questions),
+                selectinload(PracticeSession.answers),
+            )
+            .with_for_update()
+        )
+        result = await self.db.execute(stmt)
+        return result.scalar_one_or_none()
+
     async def save_session(self, session: PracticeSession) -> PracticeSession:
         await self.db.commit()
         await self.db.refresh(session)

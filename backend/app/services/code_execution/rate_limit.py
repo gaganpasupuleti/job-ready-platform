@@ -42,28 +42,32 @@ async def enforce_rate_limit(user_id: UUID, *, kind: str) -> None:
 
 @asynccontextmanager
 async def concurrency_slot(user_id: UUID) -> AsyncIterator[None]:
-    """Bound concurrent executions per user. Always releases the slot."""
+    """Bound concurrent executions per user. Always releases a slot we acquired.
+
+    Acquisition failures are handled before ``yield``. Exceptions from the
+    body must propagate; catching them and yielding again is illegal and
+    would hide the original error.
+    """
     max_c = settings.coding_max_concurrent_executions_per_user
     key = f"coding:concurrent:{user_id}"
     acquired = False
-    if max_c <= 0:
-        yield
-        return
+    if max_c > 0:
+        try:
+            redis = await get_redis()
+            count = await redis.incr(key)
+            acquired = True
+            await redis.expire(key, 120)
+            if count > max_c:
+                raise AppException(
+                    "Too many concurrent executions. Wait for the current run to finish.",
+                    status_code=429,
+                )
+        except AppException:
+            raise
+        except Exception:
+            logger.warning("Concurrency guard failed — allowing request", exc_info=True)
+            acquired = False
     try:
-        redis = await get_redis()
-        count = await redis.incr(key)
-        acquired = True
-        await redis.expire(key, 120)
-        if count > max_c:
-            raise AppException(
-                "Too many concurrent executions. Wait for the current run to finish.",
-                status_code=429,
-            )
-        yield
-    except AppException:
-        raise
-    except Exception:
-        logger.warning("Concurrency guard failed — allowing request", exc_info=True)
         yield
     finally:
         if acquired:
