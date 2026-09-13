@@ -19,7 +19,9 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
     await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toBeVisible({
       timeout: 30_000,
     })
-    await expect(page.getByText(/execution is temporarily unavailable|currently unavailable/i)).toBeVisible()
+    await expect(
+      page.getByText('Code execution is coming soon. You can write code and save drafts.'),
+    ).toBeVisible()
     await expect(page.getByRole('button', { name: /^run$/i })).toBeDisabled()
     await expect(page.getByRole('button', { name: /^submit$/i })).toBeDisabled()
     const codeTab = page.getByRole('button', { name: /^code$/i })
@@ -47,5 +49,28 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
     const codeTab = page.getByRole('button', { name: /^code$/i })
     if (await codeTab.count()) await codeTab.click()
     await expect(page.getByText(marker)).toBeVisible({ timeout: 15_000 })
+  })
+
+  test('keyboard shortcuts cannot run or submit while execution is locked', async ({ page }) => {
+    await page.goto(`/practice/dsa/${coding.id}`)
+    await expect(
+      page.getByText('Code execution is coming soon. You can write code and save drafts.'),
+    ).toBeVisible()
+    const run = page.getByRole('button', { name: /^run$/i })
+    const submit = page.getByRole('button', { name: /^submit$/i })
+    await expect(run).toBeDisabled()
+    await expect(submit).toBeDisabled()
+    await page.locator('.monaco-editor:visible').first().click()
+    let executionCalls = 0
+    page.on('request', (request) => {
+      if (/\/run$|\/submit$/.test(request.url()) && request.method() === 'POST') {
+        executionCalls += 1
+      }
+    })
+    await page.keyboard.press('Control+Enter')
+    await page.keyboard.press('Control+Shift+Enter')
+    await expect(run).toBeDisabled()
+    await expect(submit).toBeDisabled()
+    expect(executionCalls).toBe(0)
   })
 })

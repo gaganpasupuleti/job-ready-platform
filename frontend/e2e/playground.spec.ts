@@ -39,10 +39,20 @@ test.describe('Python Playground', () => {
     })
     await page.goto('/practice/python')
     await expect(
-      page.getByRole('main').getByRole('status').filter({ hasText: /judge0 disabled|executor unavailable/i }),
+      page.getByText('Code execution is coming soon. You can write code and save drafts.').first(),
     ).toBeVisible({
       timeout: 15_000,
     })
-    await expect(page.getByRole('button', { name: /^run$/i })).toBeDisabled()
+    const run = page.getByRole('button', { name: /^run$/i })
+    await expect(run).toBeDisabled()
+    await page.locator('.monaco-editor').first().click()
+    let runCalls = 0
+    page.on('request', (request) => {
+      if (request.url().includes('/playground/run') && request.method() === 'POST') runCalls += 1
+    })
+    await page.keyboard.press('Control+Enter')
+    await expect(run).toBeDisabled()
+    expect(runCalls).toBe(0)
+    await expect(page.getByText(/stdout/i)).toHaveCount(0)
   })
 })

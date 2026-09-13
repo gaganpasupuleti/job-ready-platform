@@ -21,6 +21,8 @@ import {
 } from '@/components/practice-workspace/PracticeWorkspace'
 import {
   apiErrorMessage,
+  CODE_EXECUTION_LOCKED_MESSAGE,
+  useLockExecutionShortcuts,
   useWorkspaceShortcuts,
 } from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { getMonacoLanguage } from '@/constants/languages'
@@ -109,7 +111,8 @@ export function DsaProblemPage() {
   )
 
   const executionAvailable =
-    problem?.execution_available !== false && executionStatus?.available !== false
+    problem?.execution_available !== false && executionStatus?.available === true
+  useLockExecutionShortcuts(!executionAvailable)
 
   const runMutation = useMutation({
     mutationFn: () => runCode(problemId, sourceCode, languageId),
@@ -300,7 +303,7 @@ export function DsaProblemPage() {
               description={
                 executionAvailable
                   ? 'Run sample tests or submit when ready.'
-                  : 'Results will appear here after an execution provider is enabled.'
+                  : CODE_EXECUTION_LOCKED_MESSAGE
               }
             />
           ))}
@@ -349,7 +352,7 @@ export function DsaProblemPage() {
               description={
                 executionAvailable
                   ? 'Run or submit to see execution output.'
-                  : 'Results will appear here after an execution provider is enabled.'
+                  : CODE_EXECUTION_LOCKED_MESSAGE
               }
             />
           ))}
@@ -450,8 +453,7 @@ export function DsaProblemPage() {
       </div>
       {!executionAvailable && (
         <div className="rounded-[var(--radius-control)] border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-          Code execution is temporarily unavailable. Drafts still save locally; Run/Submit stay
-          disabled until Judge0 is enabled — no fake results are shown.
+          {CODE_EXECUTION_LOCKED_MESSAGE}
         </div>
       )}
       {actionError && bottomTab !== 'output' && <ErrorState message={actionError} />}

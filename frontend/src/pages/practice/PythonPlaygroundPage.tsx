@@ -5,6 +5,10 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Textarea } from '@/components/common/Field'
+import {
+  CODE_EXECUTION_LOCKED_MESSAGE,
+  useLockExecutionShortcuts,
+} from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { CodeEditor } from '@/features/dsa/CodeEditor'
 import { useAuth } from '@/hooks/useAuth'
 import { fetchExecutionStatus, runPlayground } from '@/services/codingService'
@@ -31,7 +35,8 @@ export function PythonPlaygroundPage() {
     refetchInterval: 30_000,
   })
 
-  const available = executionStatus?.available !== false
+  const available = executionStatus?.available === true
+  useLockExecutionShortcuts(!available)
 
   useEffect(() => {
     if (!user?.id) return
@@ -95,8 +100,7 @@ export function PythonPlaygroundPage() {
           className="rounded-md border border-amber-300/60 bg-amber-50 px-3 py-2 text-[13px] text-amber-900 dark:border-amber-700/50 dark:bg-amber-950/40 dark:text-amber-100"
           role="status"
         >
-          {executionStatus?.message ||
-            'Judge0 is disabled or unreachable. Code will not be executed and no fake output is shown.'}
+          {CODE_EXECUTION_LOCKED_MESSAGE}
         </div>
       )}
 
@@ -156,12 +160,17 @@ export function PythonPlaygroundPage() {
 
           <div className="min-h-0 flex-1 overflow-auto rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
             <h2 className="text-[14px] font-semibold text-[var(--color-text)]">Output</h2>
-            {!latest && !runMutation.isPending && (
+            {!available && (
+              <p className="mt-2 text-[13px] text-[var(--color-text-muted)]">
+                {CODE_EXECUTION_LOCKED_MESSAGE}
+              </p>
+            )}
+            {available && !latest && !runMutation.isPending && (
               <p className="mt-2 text-[13px] text-[var(--color-text-muted)]">
                 Run your code to see stdout, stderr, and compile diagnostics.
               </p>
             )}
-            {latest && (
+            {available && latest && (
               <div className="mt-2 space-y-3 text-[13px]">
                 <div className="flex flex-wrap gap-2">
                   <Badge variant={latest.available === false ? 'warning' : 'default'}>

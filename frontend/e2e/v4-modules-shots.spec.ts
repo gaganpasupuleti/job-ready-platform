@@ -53,7 +53,9 @@ test.describe('V4 module visual shots', () => {
     await expect(page.getByRole('heading', { name: /python playground/i })).toBeVisible({
       timeout: 20_000,
     })
-    await expect(page.getByText(/currently unavailable|temporarily unavailable/i).first()).toBeVisible()
+    await expect(
+      page.getByText('Code execution is coming soon. You can write code and save drafts.').first(),
+    ).toBeVisible()
     await expect(page.locator('.monaco-editor').first()).toBeVisible({ timeout: 45_000 })
     await page.screenshot({
       path: path.join(outDir, `${project}-python-playground.png`),
@@ -67,7 +69,9 @@ test.describe('V4 module visual shots', () => {
     await expect(page.locator('.studio-main, .dsa-workbench').first()).toBeVisible({
       timeout: 20_000,
     })
-    await expect(page.getByText(/currently unavailable|temporarily unavailable/i).first()).toBeVisible()
+    await expect(
+      page.getByText('Code execution is coming soon. You can write code and save drafts.').first(),
+    ).toBeVisible()
     const codeTab = page.getByRole('button', { name: /^code$/i })
     if (await codeTab.count()) await codeTab.click()
     await expect(page.locator('.monaco-editor').first()).toBeVisible({ timeout: 45_000 })
