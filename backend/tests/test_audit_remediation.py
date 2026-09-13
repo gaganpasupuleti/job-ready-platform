@@ -41,6 +41,48 @@ async def test_bootstrap_does_not_promote_existing_student(monkeypatch):
     session.flush.assert_not_called()
 
 
+@pytest.mark.asyncio
+async def test_restrict_runner_revokes_app_database_connect(monkeypatch):
+    from app.services.sql_execution import roles as roles_mod
+
+    executed: list[str] = []
+
+    class _Conn:
+        async def execute(self, sql):
+            executed.append(sql)
+
+        async def fetchval(self, _sql):
+            return "jobready"
+
+        async def close(self):
+            return None
+
+    async def _connect(_dsn):
+        return _Conn()
+
+    monkeypatch.setattr(settings, "sql_execution_enabled", True)
+    monkeypatch.setattr(settings, "sql_sandbox_runner_role", "jobready_sql_runner")
+    monkeypatch.setattr(
+        settings,
+        "database_url",
+        "postgresql+asyncpg://jobready:secret@localhost:5432/jobready_db",
+    )
+    monkeypatch.setattr(
+        roles_mod,
+        "admin_dsn",
+        lambda: "postgresql://jobready_sql_admin:secret@localhost:5432/jobready_sql_sandbox",
+    )
+    monkeypatch.setattr(roles_mod.asyncpg, "connect", _connect)
+
+    await roles_mod.restrict_runner_from_app_database()
+    joined = "\n".join(executed)
+    assert "REVOKE CONNECT ON DATABASE" in joined
+    assert "jobready_db" in joined
+    assert "jobready_sql_runner" in joined
+    assert "FROM PUBLIC" in joined
+    assert "GRANT CONNECT ON DATABASE" in joined
+
+
 def test_self_reported_sources_do_not_weight_competence():
     assert DEFAULT_SOURCE_WEIGHTS["project"] == 0.0
     assert DEFAULT_SOURCE_WEIGHTS["course"] == 0.0

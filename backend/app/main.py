@@ -41,9 +41,13 @@ async def lifespan(app: FastAPI):
 
     if settings.sql_execution_enabled:
         try:
-            from app.services.sql_execution.roles import ensure_sandbox_roles
+            from app.services.sql_execution.roles import (
+                ensure_sandbox_roles,
+                restrict_runner_from_app_database,
+            )
 
             await ensure_sandbox_roles()
+            await restrict_runner_from_app_database()
         except Exception:
             logger.exception(
                 "SQL sandbox role bootstrap failed — SQL practice may be unavailable"

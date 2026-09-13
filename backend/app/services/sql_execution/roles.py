@@ -7,11 +7,12 @@ runner role. Student queries always use the runner DSN (see pools.runner_dsn).
 from __future__ import annotations
 
 import logging
+from urllib.parse import urlparse
 
 import asyncpg
 
 from app.core.config import settings
-from app.services.sql_execution.pools import admin_dsn
+from app.services.sql_execution.pools import admin_dsn, to_asyncpg_dsn
 
 logger = logging.getLogger(__name__)
 
@@ -81,8 +82,59 @@ async def ensure_sandbox_roles() -> None:
         await conn.execute(
             f"REVOKE CREATE ON DATABASE {_quote_ident(db_name)} FROM {role_sql}"
         )
+        timeout_ms = max(1, int(settings.sql_query_timeout_ms))
+        await conn.execute(
+            f"ALTER ROLE {role_sql} SET statement_timeout = {_quote_literal(str(timeout_ms))}"
+        )
     except Exception:
         logger.exception("SQL sandbox role bootstrap failed")
+        raise
+    finally:
+        await conn.close()
+
+
+def _database_name(url: str) -> str:
+    return urlparse(to_asyncpg_dsn(url)).path.lstrip("/").split("?")[0]
+
+
+async def restrict_runner_from_app_database() -> None:
+    """Deny the sandbox runner CONNECT on the application database.
+
+    Native Postgres hosts both databases in one cluster, so a role created
+    for the sandbox can otherwise inherit PUBLIC CONNECT on jobready_db.
+    Docker-isolated sandboxes do not contain the app database; this is a
+    no-op when the two DSNs name the same database.
+    """
+    if not settings.sql_execution_enabled:
+        return
+    role = settings.sql_sandbox_runner_role
+    if not role:
+        return
+    app_db = _database_name(settings.database_url)
+    sandbox_db = _database_name(admin_dsn())
+    if not app_db or app_db == sandbox_db:
+        logger.info("App and sandbox databases are not distinct; skip CONNECT revoke")
+        return
+
+    try:
+        conn = await asyncpg.connect(to_asyncpg_dsn(settings.database_url))
+    except Exception:
+        logger.exception("App database unreachable — cannot restrict runner CONNECT")
+        return
+
+    role_sql = _quote_ident(role)
+    db_sql = _quote_ident(app_db)
+    try:
+        await conn.execute(f"REVOKE CONNECT ON DATABASE {db_sql} FROM PUBLIC")
+        await conn.execute(f"REVOKE CONNECT ON DATABASE {db_sql} FROM {role_sql}")
+        owner = await conn.fetchval("SELECT current_user")
+        if owner:
+            await conn.execute(
+                f"GRANT CONNECT ON DATABASE {db_sql} TO {_quote_ident(str(owner))}"
+            )
+        logger.info("Revoked sandbox runner CONNECT on application database %s", app_db)
+    except Exception:
+        logger.exception("Failed to revoke runner CONNECT on %s", app_db)
         raise
     finally:
         await conn.close()
