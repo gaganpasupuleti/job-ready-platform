@@ -542,7 +542,11 @@ class LearnService:
     ) -> dict:
         lesson = await self._get_lesson_or_404(lesson_id)
         data = dict(payload or {})
-        is_correct = data.pop("is_correct", None)
+        # Client may self-report correctness; never treat that as verified achievement.
+        self_reported_correct = data.pop("is_correct", None)
+        if self_reported_correct is not None:
+            data["self_reported_correct"] = bool(self_reported_correct)
+
         submission_id = data.pop("coding_submission_id", None)
         if isinstance(submission_id, str):
             try:
@@ -550,12 +554,48 @@ class LearnService:
             except ValueError:
                 submission_id = None
 
+        verified_correct: bool | None = None
+        if submission_id is not None:
+            from app.models.coding import CodingSubmission
+            from app.models.coding_enums import SubmissionStatus, SubmissionType
+
+            submission = await self.db.get(CodingSubmission, submission_id)
+            lesson_problem_id = getattr(lesson, "coding_problem_id", None)
+            matches_lesson = (
+                lesson_problem_id is not None
+                and submission is not None
+                and submission.problem_id == lesson_problem_id
+            )
+            is_graded_submit = (
+                submission is not None
+                and submission.submission_type == SubmissionType.SUBMIT
+            )
+            if (
+                submission is not None
+                and submission.user_id == user.id
+                and matches_lesson
+                and is_graded_submit
+                and submission.status == SubmissionStatus.ACCEPTED
+            ):
+                verified_correct = True
+            elif (
+                submission is not None
+                and submission.user_id == user.id
+                and matches_lesson
+                and is_graded_submit
+            ):
+                verified_correct = False
+            else:
+                # Unrelated / RUN / wrong-owner submissions never verify achievement.
+                submission_id = None
+                verified_correct = None
+
         self.db.add(
             LessonAttempt(
                 user_id=user.id,
                 lesson_id=lesson.id,
                 payload_json=data,
-                is_correct=bool(is_correct) if is_correct is not None else None,
+                is_correct=verified_correct,
                 coding_submission_id=submission_id,
             )
         )
@@ -579,7 +619,11 @@ class LearnService:
         return {
             "attempts": progress.attempts,
             "status": progress.status.value,
-            "is_correct": bool(is_correct) if is_correct is not None else None,
+            "is_correct": verified_correct,
+            "self_reported_correct": bool(self_reported_correct)
+            if self_reported_correct is not None
+            else None,
+            "verified": verified_correct is True,
         }
 
     async def feedback(self, lesson_id: UUID, user: User, payload: LessonFeedbackIn) -> dict:
@@ -927,6 +971,7 @@ class LearnService:
         task = next((t for t in ordered if t.id == task_id), None)
         if task is None:
             raise AppException("Task not found on this project", status_code=404)
+        await self._require_assessment_evidence(user.id, task)
 
         row = (
             await self.db.execute(
@@ -960,6 +1005,91 @@ class LearnService:
             "completed_task_id": str(task_id),
             "href": project_href(project.slug),
         }
+
+    async def _require_assessment_evidence(self, user_id: UUID, task: ProjectTask) -> None:
+        """Block manual completion when the task requires a solved engine result."""
+        from app.models.coding import CodingProblemProgress
+        from app.models.coding_enums import ProblemProgressStatus
+        from app.models.practice import PracticeAnswer, PracticeSession
+        from app.models.sql_enums import SqlProgressStatus
+        from app.models.sql_practice import SqlProblemProgress
+
+        task_type = task.task_type.value if hasattr(task.task_type, "value") else str(task.task_type)
+        linked_coding = task.coding_problem_id is not None or task_type == ProjectTaskType.CODING.value
+        linked_sql = task.sql_problem_id is not None or task_type == ProjectTaskType.SQL.value
+        linked_mcq = task.question_id is not None or task_type == ProjectTaskType.MCQ.value
+        if not (linked_coding or linked_sql or linked_mcq):
+            return
+
+        if task.coding_problem_id is not None:
+            progress = (
+                await self.db.execute(
+                    select(CodingProblemProgress).where(
+                        CodingProblemProgress.user_id == user_id,
+                        CodingProblemProgress.problem_id == task.coding_problem_id,
+                        CodingProblemProgress.status == ProblemProgressStatus.SOLVED,
+                    )
+                )
+            ).scalar_one_or_none()
+            if progress is None:
+                raise AppException(
+                    "Complete the linked coding problem before marking this task done.",
+                    status_code=409,
+                )
+        elif task_type == ProjectTaskType.CODING.value:
+            raise AppException(
+                "This coding task has no linked problem to verify.",
+                status_code=409,
+            )
+
+        if task.sql_problem_id is not None:
+            progress = (
+                await self.db.execute(
+                    select(SqlProblemProgress).where(
+                        SqlProblemProgress.user_id == user_id,
+                        SqlProblemProgress.problem_id == task.sql_problem_id,
+                        SqlProblemProgress.status == SqlProgressStatus.SOLVED,
+                    )
+                )
+            ).scalar_one_or_none()
+            if progress is None:
+                raise AppException(
+                    "Complete the linked SQL problem before marking this task done.",
+                    status_code=409,
+                )
+        elif task_type == ProjectTaskType.SQL.value:
+            raise AppException(
+                "This SQL task has no linked problem to verify.",
+                status_code=409,
+            )
+
+        if task.question_id is not None or (
+            task_type == ProjectTaskType.MCQ.value and task.topic_id is not None
+        ):
+            stmt = (
+                select(PracticeAnswer.id)
+                .join(PracticeSession, PracticeSession.id == PracticeAnswer.session_id)
+                .where(
+                    PracticeSession.user_id == user_id,
+                    PracticeAnswer.is_correct.is_(True),
+                    PracticeAnswer.answered_at.is_not(None),
+                )
+            )
+            if task.question_id is not None:
+                stmt = stmt.where(PracticeAnswer.question_id == task.question_id)
+            else:
+                stmt = stmt.where(PracticeSession.topic_id == task.topic_id)
+            correct = (await self.db.execute(stmt.limit(1))).scalar_one_or_none()
+            if correct is None:
+                raise AppException(
+                    "A correct assessed answer is required before marking this task done.",
+                    status_code=409,
+                )
+        elif task_type == ProjectTaskType.MCQ.value:
+            raise AppException(
+                "This MCQ task has no linked question to verify.",
+                status_code=409,
+            )
 
     async def start_path(self, path_id: UUID, user: User) -> dict:
         path = await self.db.get(PracticePath, path_id)
@@ -1475,6 +1605,7 @@ class LearnService:
         return row[0], row[1], row[2]
 
     async def _has_successful_attempt(self, user_id: UUID, lesson_id: UUID) -> bool:
+        """Verified achievement only — client self-reports never set is_correct=True."""
         count = await self.db.scalar(
             select(func.count())
             .select_from(LessonAttempt)

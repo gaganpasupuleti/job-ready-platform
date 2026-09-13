@@ -33,7 +33,9 @@ from app.schemas.job import (
     JobDetail,
     JobListResponse,
     JobPracticeLink,
+    JobPreferencePublic,
     JobPreferenceUpdate,
+    JobRoleOption,
     JobRolePublic,
     JobSkillPublic,
     JobsSummary,
@@ -45,6 +47,11 @@ from app.services.job_normalization import validate_url
 
 def _utcnow() -> datetime:
     return datetime.now(UTC)
+
+
+def _not_expired():
+    """Student browse hides listings whose recorded expiry is already past."""
+    return or_(Job.expires_at.is_(None), Job.expires_at >= _utcnow())
 
 
 class JobService:
@@ -126,6 +133,7 @@ class JobService:
             is_remote=job.is_remote,
             top_skills=list(skills),
             is_saved=job.id in saved,
+            has_apply_url=bool(job.apply_url and job.apply_url.strip()),
         )
 
     async def list_jobs(
@@ -150,7 +158,7 @@ class JobService:
     ) -> JobListResponse:
         limit = min(max(limit, 1), 50)
         page = max(page, 1)
-        stmt = select(Job).where(Job.status == JobStatus.ACTIVE)
+        stmt = select(Job).where(Job.status == JobStatus.ACTIVE, _not_expired())
         if q:
             pattern = f"%{q.strip()}%"
             stmt = stmt.where(
@@ -288,6 +296,7 @@ class JobService:
             apply_url=job.apply_url,
             posted_at=job.posted_at,
             expires_at=job.expires_at,
+            last_seen_at=job.last_seen_at,
             status=job.status,
             is_remote=job.is_remote,
             source_name=source_name,
@@ -489,6 +498,27 @@ class JobService:
             follow_ups_overdue=int(overdue or 0),
         )
 
+    async def get_preference(self, user: User) -> JobPreferencePublic:
+        pref = (
+            await self.db.execute(
+                select(UserJobPreference).where(UserJobPreference.user_id == user.id)
+            )
+        ).scalar_one_or_none()
+        role = None
+        if pref and pref.target_role_id:
+            role = await self.db.get(JobRole, pref.target_role_id)
+        roles = (
+            await self.db.execute(select(JobRole).order_by(JobRole.name.asc()))
+        ).scalars().all()
+        return JobPreferencePublic(
+            completed=pref is not None,
+            target_role_slug=role.slug if role else None,
+            target_role_name=role.name if role else None,
+            preferred_locations=list(pref.preferred_locations_json or []) if pref else [],
+            remote_preference=pref.remote_preference if pref else None,
+            roles=[JobRoleOption(slug=item.slug, name=item.name) for item in roles],
+        )
+
     async def update_preference(self, user: User, payload: JobPreferenceUpdate) -> None:
         pref = (
             await self.db.execute(
@@ -498,13 +528,16 @@ class JobService:
         if pref is None:
             pref = UserJobPreference(id=uuid4(), user_id=user.id)
             self.db.add(pref)
-        if payload.target_role_slug:
-            role = (
-                await self.db.execute(
-                    select(JobRole).where(JobRole.slug == payload.target_role_slug)
-                )
-            ).scalar_one_or_none()
-            pref.target_role_id = role.id if role else None
+        if "target_role_slug" in payload.model_fields_set:
+            if payload.target_role_slug:
+                role = (
+                    await self.db.execute(
+                        select(JobRole).where(JobRole.slug == payload.target_role_slug)
+                    )
+                ).scalar_one_or_none()
+                pref.target_role_id = role.id if role else None
+            else:
+                pref.target_role_id = None
         if payload.preferred_locations is not None:
             pref.preferred_locations_json = payload.preferred_locations
         if payload.remote_preference is not None:

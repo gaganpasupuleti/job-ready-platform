@@ -14,16 +14,32 @@ from app.utils.redis import get_redis
 logger = logging.getLogger(__name__)
 
 
-async def enforce_rate_limit(user_id: UUID, *, kind: str) -> None:
-    """kind: 'run' | 'submit'. Raises 429 when over limit."""
-    limit = (
+def _rate_limit(namespace: str, kind: str) -> int:
+    if namespace == "sql":
+        return (
+            settings.sql_runs_per_minute
+            if kind == "run"
+            else settings.sql_submits_per_minute
+        )
+    return (
         settings.coding_runs_per_minute
         if kind == "run"
         else settings.coding_submits_per_minute
     )
+
+
+def _concurrency_limit(namespace: str) -> int:
+    if namespace == "sql":
+        return settings.sql_max_concurrent_executions_per_user
+    return settings.coding_max_concurrent_executions_per_user
+
+
+async def enforce_rate_limit(user_id: UUID, *, kind: str, namespace: str = "coding") -> None:
+    """kind: 'run' | 'submit'. Raises 429 when over limit."""
+    limit = _rate_limit(namespace, kind)
     if limit <= 0:
         return
-    key = f"coding:rate:{kind}:{user_id}"
+    key = f"{namespace}:rate:{kind}:{user_id}"
     try:
         redis = await get_redis()
         count = await redis.incr(key)
@@ -41,29 +57,40 @@ async def enforce_rate_limit(user_id: UUID, *, kind: str) -> None:
 
 
 @asynccontextmanager
-async def concurrency_slot(user_id: UUID) -> AsyncIterator[None]:
-    """Bound concurrent executions per user. Always releases the slot."""
-    max_c = settings.coding_max_concurrent_executions_per_user
-    key = f"coding:concurrent:{user_id}"
+async def concurrency_slot(user_id: UUID, *, namespace: str = "coding") -> AsyncIterator[None]:
+    """Bound concurrent executions per user. Always releases a slot we acquired.
+
+    Acquisition failures are handled before ``yield``. Exceptions from the
+    body must propagate; catching them and yielding again is illegal and
+    would hide the original error.
+    """
+    max_c = _concurrency_limit(namespace)
+    key = f"{namespace}:concurrent:{user_id}"
     acquired = False
-    if max_c <= 0:
-        yield
-        return
+    if max_c > 0:
+        try:
+            redis = await get_redis()
+            count = await redis.incr(key)
+            acquired = True
+            await redis.expire(key, 120)
+            if count > max_c:
+                # The increment is not a held slot. Release it before rejecting
+                # so a denied request cannot exhaust the user's cap.
+                try:
+                    await redis.decr(key)
+                except Exception:
+                    logger.warning("Failed to release rejected concurrency slot", exc_info=True)
+                acquired = False
+                raise AppException(
+                    "Too many concurrent executions. Wait for the current run to finish.",
+                    status_code=429,
+                )
+        except AppException:
+            raise
+        except Exception:
+            logger.warning("Concurrency guard failed — allowing request", exc_info=True)
+            acquired = False
     try:
-        redis = await get_redis()
-        count = await redis.incr(key)
-        acquired = True
-        await redis.expire(key, 120)
-        if count > max_c:
-            raise AppException(
-                "Too many concurrent executions. Wait for the current run to finish.",
-                status_code=429,
-            )
-        yield
-    except AppException:
-        raise
-    except Exception:
-        logger.warning("Concurrency guard failed — allowing request", exc_info=True)
         yield
     finally:
         if acquired:

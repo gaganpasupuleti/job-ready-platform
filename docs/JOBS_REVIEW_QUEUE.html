@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>JobReady manual review queue</title>
+  <style>
+    body { font-family: Segoe UI, sans-serif; margin: 2rem; line-height: 1.4; color: #172033; }
+    h1 { font-size: 1.4rem; }
+    p, li { max-width: 52rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0 2rem; }
+    th, td { border: 1px solid #d5dbe3; padding: 0.55rem 0.65rem; vertical-align: top; text-align: left; }
+    th { background: #f4f6f8; }
+    a { word-break: break-all; }
+    .note { color: #5c6770; }
+  </style>
+</head>
+<body>
+  <h1>Review queue. Publication choice is not link verification.</h1>
+  <p>Collector approval behavior is unknown. A decision is application-owned <code>publish</code> or <code>withhold</code> on <code>job_publication_decisions</code>, keyed by source <code>indeed</code> and the exact <code>job_id</code>. That row is local. It is not written onto the Jobs server and does not change source content. A later source status does not clear <code>withhold</code>. The decision table has no reason column; the reason below is recorded next to the job ID, not as source content.</p>
+  <p>An unchecked link is not verified. Two local publish rows are integration evidence only. They are not a public launch batch. The other seven IDs stay undecided.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Decision key</th>
+        <th>title</th>
+        <th>company</th>
+        <th>posted</th>
+        <th>Open — not verified</th>
+        <th>What is still unchecked</th>
+        <th>Decision</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>indeed / CQJ-20260909-0097</td>
+        <td>Devops Interns</td>
+        <td>Unikwork</td>
+        <td>2026-09-08</td>
+        <td>
+          <a href="https://unikwork.com/career-details/eyJpdiI6InE0K3dGbFpOODlLNkxkelk3L0tmdlE9PSIsInZhbHVlIjoiWUlGSmNPWDI4Q0srWk0rZStxYU5TZz09IiwibWFjIjoiYzE1MzBiZTdmNTQ4Y2RjYjlmMTk3ZjE4NWRhYTc0NTNmYWNiNDEwOGRjMGUzNmZkMmYzMDVkOGYzYzVkZmFmYSIsInRhZyI6IiJ9">Employer page</a><br>
+          <a href="https://in.indeed.com/viewjob?jk=83211278d115c7c7">Indeed</a>
+        </td>
+        <td>Not imported. Reason for withhold: conflicting prior selection and source link_status=expired. Current posting availability has not been independently confirmed. Earlier fetch showed the title only. That is not a browser close.</td>
+        <td>withhold recorded — page not verified</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260909-0303</td>
+        <td>Junior Data Engineer</td>
+        <td>AHL - Saaf AI</td>
+        <td>2026-09-07</td>
+        <td>
+          <a href="https://jobs.ashbyhq.com/AHL-SaafAI/ed53ed8f-00aa-4fe6-b177-e1679143e32c">Ashby</a><br>
+          <a href="https://in.indeed.com/viewjob?jk=a3fac1971c7af381">Indeed</a>
+        </td>
+        <td>Posting body was not in the earlier fetch. Requisition identity and open state are unchecked. Imported anyway from the catalog row; that does not verify the Ashby page.</td>
+        <td>publish recorded — page not verified</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260909-0071</td>
+        <td>Python Full Stack Developer</td>
+        <td>Young Minds Technology Solutions Pvt Ltd</td>
+        <td>2026-09-08</td>
+        <td><a href="https://in.indeed.com/viewjob?jk=801ddca2ad29b100">Indeed</a></td>
+        <td>Indeed shell only. Listing identity and open state are unchecked. Recorded apply URL is http and was not opened. The import used the https Indeed URL. That does not verify the page.</td>
+        <td>publish recorded — page not verified</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260906-0057</td>
+        <td>Full stack intern</td>
+        <td>ASCENT E-DIGIT SOLUTIONS PVT LTD</td>
+        <td>2026-09-05</td>
+        <td><a href="https://in.indeed.com/viewjob?jk=96484bab41d90856">Indeed</a></td>
+        <td>Indeed shell only. Open internship versus training ad is unchecked. Recorded apply URL is http and was not opened. An import would use the https Indeed URL.</td>
+        <td>not recorded</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260831-0092</td>
+        <td>Full Stack Python Developer Intern</td>
+        <td>Kyle Solutions Private Limited</td>
+        <td>2026-08-29</td>
+        <td><a href="https://in.indeed.com/viewjob?jk=368d94045f51f1e4">Indeed</a></td>
+        <td>Indeed shell only. Role and open state are unchecked. Recorded apply URL is http and was not opened. An import would use the https Indeed URL.</td>
+        <td>not recorded</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260709-0143</td>
+        <td>Data Analyst Project Intern</td>
+        <td>ByteDance</td>
+        <td>2026-07-06</td>
+        <td>
+          <a href="https://joinbytedance.com/search/7654066732550785333">ByteDance careers</a><br>
+          <a href="https://in.indeed.com/viewjob?jk=eb1095f4d42d82ca">Indeed</a>
+        </td>
+        <td>Host matched only. Requisition 7654066732550785333 as this intern role, and open state, are unchecked. Catalog summary mentions training and quality.</td>
+        <td>not recorded</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260903-0068</td>
+        <td>Software Intern</td>
+        <td>Blue Ripples Technologies</td>
+        <td>2026-09-02</td>
+        <td>
+          <a href="https://blueripples.zohorecruit.com/jobs/Careers/446326000011053008/Software-Intern?source=CareerSite">Zoho Recruit</a><br>
+          <a href="https://in.indeed.com/viewjob?jk=f0752dd4d9d7e1df">Indeed</a>
+        </td>
+        <td>Job title was absent from the earlier fetch. Requisition identity is unchecked.</td>
+        <td>not recorded</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260822-0090</td>
+        <td>PYTHON DJANGO DEVELOPER</td>
+        <td>bluegen solutions</td>
+        <td>2026-08-22</td>
+        <td><a href="https://in.indeed.com/viewjob?jk=86342340a3d3ba69">Indeed</a></td>
+        <td>Indeed shell only. Fresher developer role and open state are unchecked. Recorded apply URL is http and was not opened. An import would use the https Indeed URL.</td>
+        <td>not recorded</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260822-0093</td>
+        <td>Python Full Stack Developer Intern</td>
+        <td>CLUSTOR COMPUTING</td>
+        <td>2026-08-21</td>
+        <td><a href="https://in.indeed.com/viewjob?jk=d1d57530d9d11067">Indeed</a></td>
+        <td>Indeed shell only. Internship identity and open state are unchecked. Recorded apply URL is http and was not opened. An import would use the https Indeed URL.</td>
+        <td>not recorded</td>
+      </tr>
+      <tr>
+        <td>indeed / CQJ-20260909-0073</td>
+        <td>Python Developer</td>
+        <td>Zooye Info Technologies</td>
+        <td>2026-09-08</td>
+        <td><a href="https://in.indeed.com/viewjob?jk=fac62e57f0030fa3">Indeed</a></td>
+        <td>Indeed challenge/shell only. Fresher Python role and open state are unchecked. Recorded apply URL is http and was not opened. An import would use the https Indeed URL.</td>
+        <td>not recorded</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Local publish evidence — not a launch batch</h2>
+  <p class="note">Publication choice is separate from link verification. Both rows stay explicitly unverified. Do not treat them as checked because they were imported.</p>
+
+  <h3>indeed / CQJ-20260909-0303 — publish recorded, unverified</h3>
+  <ul>
+    <li>Source job_url: <a href="https://in.indeed.com/viewjob?jk=a3fac1971c7af381">https://in.indeed.com/viewjob?jk=a3fac1971c7af381</a></li>
+    <li>Source apply_url: <a href="https://jobs.ashbyhq.com/AHL-SaafAI/ed53ed8f-00aa-4fe6-b177-e1679143e32c?utm_source=7v8zJkJJNG">https://jobs.ashbyhq.com/AHL-SaafAI/ed53ed8f-00aa-4fe6-b177-e1679143e32c?utm_source=7v8zJkJJNG</a></li>
+    <li>Stored source_url: same as source job_url. Stored apply_url: same as source apply_url, including the query string.</li>
+    <li>Frontend job page: <code>/jobs/fbb29d11-1e95-4f1f-8019-70cdb30f30ec</code> (slug <code>junior-data-engineer-ahl-saaf-ai-CQJ20260</code> also resolves).</li>
+    <li>Frontend destination for Apply externally: the stored apply_url, opened in a new tab via <code>target="_blank"</code>. No fallback ran. <code>validate_url</code> only strips whitespace and rejects <code>javascript:</code> or <code>data:</code>. It did not rewrite this URL. The shorter Ashby link in the table above omits the source query; the imported destination keeps it.</li>
+    <li>Mark applied is a local status. It does not open this URL.</li>
+  </ul>
+  <p>Browser checklist — all unchecked. Verification remains blocked because the earlier fetch did not show the posting body.</p>
+  <ul>
+    <li>Correct employer and title: unchecked. Catalog says Junior Data Engineer, AHL - Saaf AI.</li>
+    <li>Posting content visible: unchecked.</li>
+    <li>Application action available: unchecked.</li>
+  </ul>
+
+  <h3>indeed / CQJ-20260909-0071 — publish recorded, unverified</h3>
+  <ul>
+    <li>Source job_url: <a href="https://in.indeed.com/viewjob?jk=801ddca2ad29b100">https://in.indeed.com/viewjob?jk=801ddca2ad29b100</a></li>
+    <li>Source apply_url: <code>http://in.indeed.com/job/python-full-stack-developer-801ddca2ad29b100</code> — not opened. Not used as the frontend destination because it is not https.</li>
+    <li>Stored source_url and stored apply_url are both the https job_url above. Fallback: <code>application_url</code> ignores a non-https apply_url and uses the https job_url. The http URL was not upgraded in place.</li>
+    <li>Frontend job page: <code>/jobs/59ab4197-850f-4948-b0b6-2023d95b8cec</code> (slug <code>python-full-stack-developer-young-minds-technology-solutions-pvt-ltd-CQJ20260</code> also resolves).</li>
+    <li>Frontend destination for Apply externally: <a href="https://in.indeed.com/viewjob?jk=801ddca2ad29b100">https://in.indeed.com/viewjob?jk=801ddca2ad29b100</a>, new tab. That is the stored apply_url. Mark applied does not open it.</li>
+  </ul>
+  <p>Browser checklist — all unchecked. Verification remains blocked because Indeed previously returned a shell, not the posting.</p>
+  <ul>
+    <li>Correct employer and title: unchecked. Catalog says Python Full Stack Developer, Young Minds Technology Solutions Pvt Ltd.</li>
+    <li>Posting content visible: unchecked.</li>
+    <li>Application action available: unchecked.</li>
+  </ul>
+
+  <h2>Inaccessible</h2>
+  <p class="note">Board or host blocked the earlier fetch. Not closed, not verified. Do not refetch.</p>
+  <ul>
+    <li>Naukri: CQJ-20260712-0857, CQJ-20260712-0821, CQJ-20260909-0089, CQJ-20260831-0104, CQJ-20260831-0075, CQJ-20260816-0559, CQJ-20260719-0426, CQJ-20260719-0487, CQJ-20260719-0414, CQJ-20260712-1249, CQJ-20260712-1218</li>
+    <li>CQJ-20260831-0306 Crypto Mize careers blocked</li>
+    <li>CQJ-20260630-0023 UPS careers blocked</li>
+    <li>CQJ-20260906-0064 medindia apply URL 403</li>
+  </ul>
+
+  <h2>Broken recorded apply URL</h2>
+  <p>CQJ-20260903-0064 Arihant AI <a href="https://arihantai.com/jobs/python-odoo-developer-internship-42">https://arihantai.com/jobs/python-odoo-developer-internship-42</a> returned 404. That does not prove the job is closed. Indeed copy: <a href="https://in.indeed.com/viewjob?jk=fb92d2f3a38d0b3b">https://in.indeed.com/viewjob?jk=fb92d2f3a38d0b3b</a></p>
+
+  <h2>Unsuitable from catalog text</h2>
+  <p class="note">Already not proposed for publish: civil lab, electrical substation, tax, financial analyst, data-center technician, voice-process caller, and the Python training offer. Manufacturing QC Inspector CQJ-20260712-1082 stays unpublished.</p>
+</body>
+</html>

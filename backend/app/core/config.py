@@ -41,7 +41,9 @@ class Settings(BaseSettings):
     judge0_api_key: str = ""
     judge0_auth_header: str = "X-Auth-Token"
     judge0_auth_token: str = ""
-    judge0_enabled: bool = True
+    # Stay false unless a private Judge0 host is intentionally configured.
+    # A missing env var must not enable coding execution for the jobs-first pilot.
+    judge0_enabled: bool = False
     judge0_timeout_seconds: int = 30
     judge0_poll_interval_ms: int = 500
     judge0_max_poll_seconds: int = 45
@@ -82,9 +84,24 @@ class Settings(BaseSettings):
     sql_max_rows: int = 500
     sql_submit_max_rows: int = 10000
     sql_max_query_length: int = 20000
+    sql_runs_per_minute: int = 10
+    sql_submits_per_minute: int = 5
+    sql_max_concurrent_executions_per_user: int = 1
+
+    # Read-only DSN for the Railway "Jobs server" catalog. Empty disables sync.
+    # Never point this at the application database. Do not commit the password.
+    jobs_source_database_url: str = ""
 
     jwt_secret_key: str = _UNSAFE_JWT_DEFAULT
     jwt_access_token_expire_minutes: int = 60 * 24
+
+    # Login abuse controls (Redis-backed; process-local fallback if Redis unavailable)
+    login_max_failures: int = 10
+    login_failure_window_seconds: int = 300
+
+    # Explicit admin bootstrap (never use hardcoded defaults in production)
+    admin_bootstrap_email: str = ""
+    admin_bootstrap_password: str = ""
 
     practice_catalog_cache_ttl_seconds: int = 300
     practice_catalog_cache_key: str = "practice:catalog"

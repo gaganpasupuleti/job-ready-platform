@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.job import Job, JobRoleMap, JobSkill, UserJobPreference
@@ -169,9 +170,16 @@ class JobMatchService:
         sort: str = "coverage",
         limit: int = 20,
     ) -> list[dict]:
+        now = datetime.now(UTC)
         jobs = (
             await self.db.execute(
-                select(Job).where(Job.status == "active").order_by(Job.posted_at.desc().nulls_last()).limit(50)
+                select(Job)
+                .where(
+                    Job.status == "active",
+                    or_(Job.expires_at.is_(None), Job.expires_at >= now),
+                )
+                .order_by(Job.posted_at.desc().nulls_last())
+                .limit(50)
             )
         ).scalars().all()
         results: list[dict] = []

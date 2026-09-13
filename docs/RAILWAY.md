@@ -23,7 +23,11 @@ Recommended:
 - `SQL_EXECUTION_ENABLED=true` with sandbox URLs when SQL practice is on
 - `SQL_SANDBOX_ADMIN_DATABASE_URL`
 - `SQL_SANDBOX_RUNNER_DATABASE_URL` (or derived runner password/role)
-- `JUDGE0_ENABLED=false` until a privileged Judge0 VM exists (see `docs/JUDGE0_DEPLOYMENT.md`)
+- `JUDGE0_ENABLED=false` until a privileged Judge0 VM exists (see `docs/JUDGE0_DEPLOYMENT.md`). The jobs-first pilot must ship with this false. The code default is also false. Do not set `JUDGE0_URL` to this Windows localhost.
+
+Jobs-first migration, backup, and smoke steps: `docs/JOBS_PILOT_RELEASE.md`.
+
+The service named `Jobs server` is a separate PostgreSQL catalog (`railway.public.validated_jobs`), not the application database. Read it with `JOBS_SOURCE_DATABASE_URL` on the API host only. Do not write that database from the app, and do not print its credentials.
 
 ## Health
 

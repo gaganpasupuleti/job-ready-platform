@@ -41,8 +41,8 @@ from app.services.job_normalization import (
     normalize_work_mode,
     parse_csv_skills,
     parse_experience,
+    require_https_job_url,
     slugify_job,
-    validate_url,
     extract_skill_names,
 )
 from app.services.job_service import JobService
@@ -153,11 +153,8 @@ class AdminJobService:
             description_snippet=desc,
         )
         try:
-            apply_url = validate_url(payload.apply_url) if payload.apply_url else None
-        except ValueError as exc:
-            raise AppException(str(exc), status_code=400) from exc
-        try:
-            source_url = validate_url(payload.source_url) if payload.source_url else None
+            apply_url = require_https_job_url(payload.apply_url)
+            source_url = require_https_job_url(payload.source_url)
         except ValueError as exc:
             raise AppException(str(exc), status_code=400) from exc
         manual = await self._ensure_source("manual", JobSourceType.MANUAL)
@@ -230,10 +227,13 @@ class AdminJobService:
             val = getattr(payload, field, None)
             if val is not None:
                 setattr(job, field, val)
-        if payload.source_url is not None:
-            job.source_url = validate_url(payload.source_url) if payload.source_url else None
-        if payload.apply_url is not None:
-            job.apply_url = validate_url(payload.apply_url) if payload.apply_url else None
+        try:
+            if payload.source_url is not None:
+                job.source_url = require_https_job_url(payload.source_url)
+            if payload.apply_url is not None:
+                job.apply_url = require_https_job_url(payload.apply_url)
+        except ValueError as exc:
+            raise AppException(str(exc), status_code=400) from exc
         if payload.status is not None:
             job.status = payload.status
             job.is_active = payload.status == JobStatus.ACTIVE
@@ -515,8 +515,8 @@ class AdminJobService:
                 work_mode=normalize_work_mode(row.get("work_mode"), None),
                 experience_min_years=exp_min,
                 experience_max_years=exp_max,
-                source_url=validate_url(row.get("source_url")) if row.get("source_url") else None,
-                apply_url=validate_url(row.get("apply_url")) if row.get("apply_url") else None,
+                source_url=require_https_job_url(row.get("source_url")),
+                apply_url=require_https_job_url(row.get("apply_url")),
                 first_seen_at=now,
                 last_seen_at=now,
                 status=JobStatus.ACTIVE,

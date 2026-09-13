@@ -257,28 +257,31 @@ class SqlSandboxExecutor:
                 await conn.execute("SET default_transaction_read_only = on")
 
                 async with conn.transaction(readonly=True):
-                    # Outer LIMIT only for display truncation on Run.
-                    # Submit fetches up to submit_max_rows; exceeding fails safely.
-                    fetch_limit = row_limit + (0 if for_submit else 1)
+                    # Fetch one extra row so Submit can detect overflow without
+                    # treating a full page as "fits". Run truncates that extra row.
+                    fetch_limit = int(row_limit) + 1
                     wrapped = (
                         f"SELECT * FROM ({query.rstrip().rstrip(';')}) AS _q "
-                        f"LIMIT {int(fetch_limit)}"
+                        f"LIMIT {fetch_limit}"
                     )
-                    records = await conn.fetch(wrapped)
+                    stmt = await conn.prepare(wrapped)
+                    column_names = [attr.name for attr in stmt.get_attributes()]
+                    records = await stmt.fetch()
 
                 elapsed = (time.perf_counter() - started) * 1000
 
                 if for_submit and len(records) > row_limit:
                     return SqlRunResult(
                         error="Query result exceeds the maximum allowed row count.",
+                        columns=column_names,
                         execution_time_ms=round(elapsed, 2),
                     )
 
                 truncated = (not for_submit) and len(records) > row_limit
-                if not for_submit:
+                if truncated:
                     records = records[:row_limit]
 
-                columns = list(records[0].keys()) if records else []
+                columns = column_names or (list(records[0].keys()) if records else [])
                 rows = [[_serialize(v) for v in list(r.values())] for r in records]
                 return SqlRunResult(
                     columns=columns,
@@ -337,9 +340,17 @@ class MockSqlSandboxExecutor:
         if key in self._results:
             return self._results[key]
 
-        if tables and tables[0].get("rows"):
+        if tables:
             cols = [c["column_name"] for c in tables[0]["columns"]]
-            rows = [[r.get(c) for c in cols] for r in tables[0]["rows"][: max_rows or 500]]
+            source_rows = tables[0].get("rows") or []
+            limit = max_rows or 500
+            if for_submit and len(source_rows) > limit:
+                return SqlRunResult(
+                    error="Query result exceeds the maximum allowed row count.",
+                    columns=cols,
+                    execution_time_ms=1.0,
+                )
+            rows = [[r.get(c) for c in cols] for r in source_rows[:limit]]
             return SqlRunResult(columns=cols, rows=rows, row_count=len(rows), execution_time_ms=1.0)
 
         return SqlRunResult(columns=[], rows=[], row_count=0, execution_time_ms=1.0)

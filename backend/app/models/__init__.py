@@ -73,7 +73,7 @@ from app.models.sql_practice import (
     SqlProblemTable,
     SqlSubmission,
 )
-from app.models.readiness import MistakeItem, RoleSkillRequirement, UserRoleReadinessSnapshot
+from app.models.readiness import MistakeItem, MistakeSourceEvent, RoleSkillRequirement, UserRoleReadinessSnapshot
 from app.models.readiness_enums import (
     EvidenceSourceType,
     EvidenceStrength,
@@ -151,6 +151,7 @@ __all__ = [
     "ScenarioProgress",
     "RoleSkillRequirement",
     "MistakeItem",
+    "MistakeSourceEvent",
     "UserRoleReadinessSnapshot",
     "RoleSkillImportance",
     "MistakeSourceType",

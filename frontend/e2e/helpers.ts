@@ -94,14 +94,17 @@ export async function registerUser(
 }
 
 export async function logout(page: Page) {
-  const logoutBtn = page.getByRole('button', { name: /^logout$/i })
-  if (await logoutBtn.count()) {
-    await logoutBtn.click()
-  } else {
-    await page.evaluate(() => localStorage.clear())
-    await page.goto('/login')
+  const logoutBtn = page.getByRole('button', { name: /logout/i })
+  try {
+    await logoutBtn.first().click({ timeout: 8_000 })
+  } catch {
+    await page.evaluate(() => {
+      localStorage.clear()
+      sessionStorage.clear()
+    })
   }
-  await expect(page).toHaveURL(/\/login/)
+  // Avoid racing page.goto with ProtectedRoute / 401 redirects to /login?from=...
+  await page.waitForURL(/\/login/, { timeout: 15_000 })
 }
 
 export function attachConsoleGuard(page: Page) {
