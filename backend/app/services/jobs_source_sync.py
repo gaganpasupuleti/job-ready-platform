@@ -354,7 +354,7 @@ async def _upsert(db: AsyncSession, job_id: UUID | None, row: SourceJob) -> Job:
     if job is None:
         job = Job(
             id=uuid4(),
-            slug=slugify_job(title, company, row.job_id.replace("-", "")[:8]),
+            slug=slugify_job(title, company, row.job_id.replace("-", "")[-8:]),
             external_id=identity,
             source_id=source.id,
             title=title,

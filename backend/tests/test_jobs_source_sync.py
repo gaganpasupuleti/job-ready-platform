@@ -54,6 +54,14 @@ def _row(**overrides) -> SourceJob:
     return SourceJob(**payload)
 
 
+def test_same_day_source_ids_do_not_share_a_slug():
+    from app.services.job_normalization import slugify_job
+
+    first = slugify_job("Pipeline Engineer", "Infosys", "CQJ-20260909-0303".replace("-", "")[-8:])
+    second = slugify_job("Pipeline Engineer", "Infosys", "CQJ-20260909-0071".replace("-", "")[-8:])
+    assert first != second
+
+
 def test_job_links_require_https_with_a_host():
     http_only = _row(
         job_id="CQJ-TEST-HTTP",
