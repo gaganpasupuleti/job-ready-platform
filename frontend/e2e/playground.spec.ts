@@ -17,7 +17,7 @@ test.describe('Python Playground', () => {
     })
     await expect(mainHeading).toBeVisible({ timeout: 15_000 })
     await expect(mainHeading).toHaveCount(1)
-    await expect(page.getByText(/not an assessed problem/i)).toBeVisible()
+    await expect(page.getByText(/not assessed/i)).toBeVisible()
     await expect(page.getByRole('button', { name: /^run$/i })).toBeVisible()
     await expect(page.getByRole('button', { name: /^reset$/i })).toBeVisible()
     await expect(page.getByLabel(/standard input/i)).toBeVisible()

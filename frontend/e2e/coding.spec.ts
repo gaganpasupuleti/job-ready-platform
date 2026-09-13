@@ -20,7 +20,9 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
       timeout: 30_000,
     })
     await expect(
-      page.getByText('Code execution is coming soon. You can write code and save drafts.'),
+      page.getByRole('status').filter({
+        hasText: 'Code execution is coming soon. You can write code and save drafts.',
+      }),
     ).toBeVisible()
     await expect(page.getByRole('button', { name: /^run$/i })).toBeDisabled()
     await expect(page.getByRole('button', { name: /^submit$/i })).toBeDisabled()
@@ -54,7 +56,9 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
   test('keyboard shortcuts cannot run or submit while execution is locked', async ({ page }) => {
     await page.goto(`/practice/dsa/${coding.id}`)
     await expect(
-      page.getByText('Code execution is coming soon. You can write code and save drafts.'),
+      page.getByRole('status').filter({
+        hasText: 'Code execution is coming soon. You can write code and save drafts.',
+      }),
     ).toBeVisible()
     const run = page.getByRole('button', { name: /^run$/i })
     const submit = page.getByRole('button', { name: /^submit$/i })
