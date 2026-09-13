@@ -72,6 +72,9 @@ class PracticeSessionQuestion(Base, UUIDPrimaryKeyMixin):
 
 class PracticeAnswer(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "practice_answers"
+    __table_args__ = (
+        UniqueConstraint("session_id", "question_id", name="uq_practice_answer_session_question"),
+    )
 
     session_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("practice_sessions.id", ondelete="CASCADE"), index=True

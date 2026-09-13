@@ -56,6 +56,13 @@ FORBIDDEN_NODE_TYPES: tuple[type, ...] = tuple(
     if (cls := getattr(exp, name, None)) is not None
 )
 
+# UNION / INTERSECT / EXCEPT are read-only set operations, not multi-statement batches.
+READONLY_QUERY_ROOTS: tuple[type, ...] = tuple(
+    cls
+    for name in ("Select", "Union", "Intersect", "Except")
+    if (cls := getattr(exp, name, None)) is not None
+)
+
 # Tables that must not be queried for reconnaissance
 FORBIDDEN_TABLE_NAMES = frozenset(
     {
@@ -166,8 +173,11 @@ def validate_sql_query(query: str, *, max_length: int = 20000) -> str | None:
 
     root = statements[0]
 
-    if not isinstance(root, exp.Select):
-        return "Only a single read-only SELECT (or WITH ... SELECT) query is allowed."
+    if not isinstance(root, READONLY_QUERY_ROOTS):
+        return (
+            "Only a single read-only SELECT, WITH ... SELECT, "
+            "or UNION/INTERSECT/EXCEPT query is allowed."
+        )
 
     for node in root.walk():
         for forbidden in FORBIDDEN_NODE_TYPES:

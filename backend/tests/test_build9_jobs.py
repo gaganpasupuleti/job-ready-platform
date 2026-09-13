@@ -142,3 +142,31 @@ async def test_url_validation_rejects_javascript(client, admin_auth):
         },
     )
     assert bad.status_code == 400
+    http_apply = await client.post(
+        "/api/v1/admin/jobs",
+        headers=headers,
+        json={
+            "title": "HTTP Apply Job",
+            "company_name": "Acme Labs",
+            "description": "Testing that job links must be https.",
+            "apply_url": "http://example.com/apply",
+        },
+    )
+    assert http_apply.status_code == 400
+    created = await client.post(
+        "/api/v1/admin/jobs",
+        headers=headers,
+        json={
+            "title": "HTTPS Apply Job",
+            "company_name": "Acme Labs",
+            "description": "Testing that a valid https apply link is accepted.",
+            "apply_url": "https://example.com/apply",
+        },
+    )
+    assert created.status_code == 200
+    edited = await client.patch(
+        f"/api/v1/admin/jobs/{created.json()['id']}",
+        headers=headers,
+        json={"apply_url": "http://example.com/apply"},
+    )
+    assert edited.status_code == 400

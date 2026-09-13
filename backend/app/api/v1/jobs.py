@@ -16,6 +16,7 @@ from app.schemas.job import (
     ApplicationUpdate,
     JobDetail,
     JobListResponse,
+    JobPreferencePublic,
     JobPreferenceUpdate,
     JobsSummary,
     SavedJobItem,
@@ -95,6 +96,23 @@ async def recommended_jobs(
     return await service.recommended(user, limit=limit, sort=sort)
 
 
+@router.get("/preferences", response_model=JobPreferencePublic)
+async def get_preferences(
+    user: User = Depends(get_current_user),
+    service: JobService = Depends(_svc),
+) -> JobPreferencePublic:
+    return await service.get_preference(user)
+
+
+@router.put("/preferences", status_code=204)
+async def update_preferences(
+    payload: JobPreferenceUpdate,
+    user: User = Depends(get_current_user),
+    service: JobService = Depends(_svc),
+) -> None:
+    await service.update_preference(user, payload)
+
+
 @router.get("/{job_id}/match")
 async def job_match(
     job_id: UUID,
@@ -149,12 +167,3 @@ async def start_preparing(
     service: JobService = Depends(_svc),
 ) -> ApplicationDetail:
     return await service.create_application_preparing(user, job_id)
-
-
-@router.put("/preferences", status_code=204)
-async def update_preferences(
-    payload: JobPreferenceUpdate,
-    user: User = Depends(get_current_user),
-    service: JobService = Depends(_svc),
-) -> None:
-    await service.update_preference(user, payload)

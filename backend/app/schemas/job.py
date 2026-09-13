@@ -51,6 +51,7 @@ class JobCard(BaseModel):
     is_remote: bool | None = None
     top_skills: list[str] = []
     is_saved: bool = False
+    has_apply_url: bool = False
     requirement_coverage: float | None = None
     has_sufficient_mapping: bool | None = None
     missing_skill_count: int | None = None
@@ -94,6 +95,7 @@ class JobDetail(BaseModel):
     apply_url: str | None = None
     posted_at: datetime | None = None
     expires_at: datetime | None = None
+    last_seen_at: datetime | None = None
     status: JobStatus
     is_remote: bool | None = None
     source_name: str | None = None
@@ -176,6 +178,20 @@ class JobsSummary(BaseModel):
     follow_ups_due: int
     follow_ups_today: int
     follow_ups_overdue: int
+
+
+class JobRoleOption(BaseModel):
+    slug: str
+    name: str
+
+
+class JobPreferencePublic(BaseModel):
+    completed: bool = False
+    target_role_slug: str | None = None
+    target_role_name: str | None = None
+    preferred_locations: list[str] = []
+    remote_preference: WorkMode | None = None
+    roles: list[JobRoleOption] = []
 
 
 class JobPreferenceUpdate(BaseModel):
