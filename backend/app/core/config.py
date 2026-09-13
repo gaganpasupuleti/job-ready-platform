@@ -82,6 +82,9 @@ class Settings(BaseSettings):
     sql_max_rows: int = 500
     sql_submit_max_rows: int = 10000
     sql_max_query_length: int = 20000
+    sql_runs_per_minute: int = 10
+    sql_submits_per_minute: int = 5
+    sql_max_concurrent_executions_per_user: int = 1
 
     jwt_secret_key: str = _UNSAFE_JWT_DEFAULT
     jwt_access_token_expire_minutes: int = 60 * 24

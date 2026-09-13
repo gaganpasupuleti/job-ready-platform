@@ -33,6 +33,7 @@ from app.schemas.sql_practice import (
     TopicBreakdown,
 )
 from app.schemas.workspace import WorkspaceNavItem, WorkspaceNavigation
+from app.services.code_execution.rate_limit import concurrency_slot, enforce_rate_limit
 from app.services.sql_execution import (
     compare_results,
     get_sql_executor,
@@ -208,11 +209,13 @@ class SqlPracticeService:
         if not problem or not problem.is_active:
             raise AppException("SQL problem not found", status_code=404)
 
+        await enforce_rate_limit(user.id, kind="run", namespace="sql")
         safety = validate_sql_query(query, max_length=settings.sql_max_query_length)
         if safety:
             return SqlRunResponse(error=safety, status="sql_error")
 
-        result = await self.executor.execute(query, self._dataset_payload(problem))
+        async with concurrency_slot(user.id, namespace="sql"):
+            result = await self.executor.execute(query, self._dataset_payload(problem))
         if result.disabled:
             raise AppException(result.error or "SQL execution unavailable", status_code=503)
         if result.timed_out:
@@ -253,6 +256,7 @@ class SqlPracticeService:
         if not problem or not problem.is_active:
             raise AppException("SQL problem not found", status_code=404)
 
+        await enforce_rate_limit(user.id, kind="submit", namespace="sql")
         safety = validate_sql_query(query, max_length=settings.sql_max_query_length)
         if safety:
             submission = SqlSubmission(
@@ -273,9 +277,10 @@ class SqlPracticeService:
             )
 
         # Submit: evaluate full result up to submit_max_rows (no display truncation)
-        result = await self.executor.execute(
-            query, self._dataset_payload(problem), for_submit=True
-        )
+        async with concurrency_slot(user.id, namespace="sql"):
+            result = await self.executor.execute(
+                query, self._dataset_payload(problem), for_submit=True
+            )
 
         if result.timed_out:
             status = SqlSubmissionStatus.TIMEOUT
