@@ -17,6 +17,7 @@ import type {
   JobDetail,
   JobListFilters,
   JobListResponse,
+  JobPreferencePublic,
   JobPreferenceUpdate,
   JobSourcePublic,
   JobsSummary,
@@ -65,6 +66,11 @@ export async function markJobApplied(jobId: string) {
 
 export async function startJobPreparing(jobId: string) {
   const { data } = await apiClient.post<ApplicationDetail>(apiEndpoints.jobs.prepare(jobId))
+  return data
+}
+
+export async function fetchJobPreferences() {
+  const { data } = await apiClient.get<JobPreferencePublic>(apiEndpoints.jobs.preferences)
   return data
 }
 

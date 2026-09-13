@@ -21,10 +21,11 @@ test.describe('Responsive workspaces', () => {
   test('mobile menu opens and closes', async ({ page }) => {
     await loginAs(page, fixtures.users.student)
     await page.goto('/')
-    const menu = page.getByRole('button', { name: /menu|open navigation|toggle/i }).first()
-    if (!(await menu.count())) {
-      test.skip(true, 'No mobile menu control')
-    }
+    const menu = page.getByRole('button', { name: /open navigation/i })
+    await expect(
+      menu,
+      'Mobile masthead must expose Open navigation on supported routes',
+    ).toBeVisible({ timeout: 15_000 })
     await menu.click()
     await page.getByRole('link', { name: /practice/i }).first().click()
     await expect(page).toHaveURL(/\/practice/)

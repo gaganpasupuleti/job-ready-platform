@@ -4,7 +4,7 @@ Shared contracts and operational dependencies for JobReady Sprint 1+.
 
 | Capability | Owner | Status | Notes |
 |------------|-------|--------|-------|
-| Judge0 coding execution | Backend + ops | **Disabled in prod** (expected) | FE must not fake success; workbench shows unavailable honestly |
+| Judge0 coding execution | Backend + ops | **Local + tip: disabled / unavailable** | Self-hosted CE only; no RapidAPI. Local Docker/WSL2 missing → keep `JUDGE0_ENABLED=false`; Run/Submit **503**. FE must not fake success. |
 | SQL sandbox | Backend | Live when runner/admin DSN configured | Isolated from app DB; role bootstrap on boot |
 | Alembic head | Backend | `014` on PR #4 tip (`feb8d65` ancestry); `015_mistake_source_events` on learning-runtime | **Do not merge PR #3 after PR #4** — duplicate 014 risk. Close #3 or mark superseded. |
 | Seed / admin bootstrap | Backend | Sprint 1 hardening | No default `admin@jobready.dev` / `Admin123!` when `APP_ENV=production` |

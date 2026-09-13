@@ -6,34 +6,41 @@ import { Button } from '@/components/common/Button'
 import { useAuth } from '@/hooks/useAuth'
 import { useHealth } from '@/hooks/usePlatform'
 import { useTheme } from '@/hooks/useTheme'
+import { cn } from '@/utils/cn'
 
 interface HeaderProps {
   onMenuClick: () => void
   title: string
+  compact?: boolean
 }
 
-export function Header({ onMenuClick, title }: HeaderProps) {
+export function Header({ onMenuClick, title, compact = false }: HeaderProps) {
   const { theme, toggleTheme } = useTheme()
   const { user, logout } = useAuth()
   const { data: health, isSuccess, isError } = useHealth()
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-4 backdrop-blur sm:px-6">
-      <div className="flex items-center gap-3">
+    <header
+      className={cn(
+        'sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-3 backdrop-blur sm:px-4',
+        compact ? 'h-11' : 'h-12',
+      )}
+    >
+      <div className="flex min-w-0 items-center gap-2">
         <button
           type="button"
-          className="rounded-md p-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] lg:hidden"
+          className="rounded-[var(--radius-control)] p-1.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] lg:hidden"
           onClick={onMenuClick}
           aria-label="Open navigation"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-4 w-4" />
         </button>
-        <div>
-          <h1 className="text-sm font-semibold text-[var(--color-text)] sm:text-base">{title}</h1>
-        </div>
+        {title ? (
+          <p className="truncate text-sm font-semibold text-[var(--color-text)]">{title}</p>
+        ) : null}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         {user && (user.role === 'admin' || user.role === 'trainer') && (
           <Link to="/admin/questions" className="hidden text-xs text-[var(--color-accent)] sm:block">
             Admin

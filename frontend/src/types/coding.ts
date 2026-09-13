@@ -128,6 +128,17 @@ export interface CodingProblemDetail {
   } | null
 }
 
+export interface PlaygroundRunResponse {
+  status: string
+  stdout: string
+  stderr: string
+  compile_output?: string | null
+  execution_time_ms?: number | null
+  memory_kb?: number | null
+  available: boolean
+  message?: string | null
+}
+
 
 
 export interface TestResult {

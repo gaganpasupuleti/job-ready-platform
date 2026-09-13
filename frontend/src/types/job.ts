@@ -48,6 +48,7 @@ export interface JobCard {
   is_remote: boolean | null
   top_skills: string[]
   is_saved: boolean
+  has_apply_url?: boolean
   requirement_coverage?: number | null
   has_sufficient_mapping?: boolean | null
   missing_skill_count?: number | null
@@ -91,6 +92,7 @@ export interface JobDetail {
   apply_url: string | null
   posted_at: string | null
   expires_at: string | null
+  last_seen_at: string | null
   status: JobStatus
   is_remote: boolean | null
   source_name: string | null
@@ -173,6 +175,20 @@ export interface JobsSummary {
   follow_ups_due: number
   follow_ups_today: number
   follow_ups_overdue: number
+}
+
+export interface JobRoleOption {
+  slug: string
+  name: string
+}
+
+export interface JobPreferencePublic {
+  completed: boolean
+  target_role_slug: string | null
+  target_role_name: string | null
+  preferred_locations: string[]
+  remote_preference: WorkMode | null
+  roles: JobRoleOption[]
 }
 
 export interface JobPreferenceUpdate {

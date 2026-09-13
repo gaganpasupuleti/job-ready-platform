@@ -586,7 +586,7 @@ export function SqlProblemPage() {
   )
 
   return (
-    <div className="flex h-[calc(100vh-7rem)] min-h-[28rem] flex-col overflow-hidden">
+    <div className="studio-main flex h-[calc(100vh-7rem)] min-h-[28rem] flex-col overflow-hidden">
       <SqlWorkbenchLayout
         topBar={topBar}
         objectExplorer={objectExplorer}

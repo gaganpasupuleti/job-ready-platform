@@ -20,6 +20,8 @@ import {
   fetchAdminImportRuns,
   fetchAdminJobs,
   fetchAdminJobSources,
+  fetchJob,
+  updateAdminJob,
   validateJobImport,
 } from '@/services/jobService'
 import type { ImportPreviewResponse, JobCard } from '@/types/job'
@@ -35,6 +37,12 @@ export function AdminJobsPage() {
   const [title, setTitle] = useState('')
   const [company, setCompany] = useState('')
   const [description, setDescription] = useState('')
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editTitle, setEditTitle] = useState('')
+  const [editCompany, setEditCompany] = useState('')
+  const [editDescription, setEditDescription] = useState('')
+  const [editApplyUrl, setEditApplyUrl] = useState('')
+  const [editLocation, setEditLocation] = useState('')
 
   const [preview, setPreview] = useState<ImportPreviewResponse | null>(null)
   const [uploadFilename, setUploadFilename] = useState('')
@@ -78,6 +86,26 @@ export function AdminJobsPage() {
     mutationFn: archiveAdminJob,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-jobs'] }),
   })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: Parameters<typeof updateAdminJob>[1] }) =>
+      updateAdminJob(id, payload),
+    onSuccess: () => {
+      setEditingId(null)
+      queryClient.invalidateQueries({ queryKey: ['admin-jobs'] })
+      queryClient.invalidateQueries({ queryKey: ['job'] })
+    },
+  })
+
+  const beginEdit = async (job: JobCard) => {
+    const detail = await fetchJob(job.slug)
+    setEditingId(job.id)
+    setEditTitle(detail.title)
+    setEditCompany(detail.company_name)
+    setEditDescription(detail.description)
+    setEditApplyUrl(detail.apply_url ?? '')
+    setEditLocation(detail.location_text ?? '')
+  }
 
   const validateMutation = useMutation({
     mutationFn: validateJobImport,
@@ -189,8 +217,8 @@ export function AdminJobsPage() {
             ) : jobsData && jobsData.items.length > 0 ? (
               <div className="space-y-2">
                 {jobsData.items.map((job: JobCard) => (
+                  <div key={job.id} className="space-y-2">
                   <div
-                    key={job.id}
                     className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-[var(--color-border)] p-3"
                   >
                     <div>
@@ -199,8 +227,15 @@ export function AdminJobsPage() {
                       </Link>
                       <p className="text-xs text-[var(--color-text-muted)]">{job.company_name}</p>
                       <Badge className="mt-1">{job.status}</Badge>
+                      {job.has_apply_url === false && (
+                        <Badge className="mt-1">No apply URL</Badge>
+                      )}
                     </div>
-                    {job.status !== 'archived' && (
+                    <div className="flex gap-2">
+                      <Button type="button" size="sm" onClick={() => void beginEdit(job)}>
+                        Edit
+                      </Button>
+                      {job.status !== 'archived' && (
                       <Button
                         type="button"
                         size="sm"
@@ -210,6 +245,40 @@ export function AdminJobsPage() {
                         Archive
                       </Button>
                     )}
+                    </div>
+                  </div>
+                  {editingId === job.id && (
+                    <form
+                      className="mt-2 grid gap-2 rounded-md border border-[var(--color-border)] p-3"
+                      onSubmit={(event) => {
+                        event.preventDefault()
+                        updateMutation.mutate({
+                          id: job.id,
+                          payload: {
+                            title: editTitle.trim(),
+                            company_name: editCompany.trim(),
+                            description: editDescription.trim(),
+                            apply_url: editApplyUrl.trim(),
+                            location_text: editLocation.trim(),
+                          },
+                        })
+                      }}
+                    >
+                      <input className={inputClass} aria-label="Edit title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+                      <input className={inputClass} aria-label="Edit company" value={editCompany} onChange={(e) => setEditCompany(e.target.value)} />
+                      <textarea className={inputClass} aria-label="Edit description" rows={3} value={editDescription} onChange={(e) => setEditDescription(e.target.value)} />
+                      <input className={inputClass} aria-label="Edit apply URL" placeholder="https://" value={editApplyUrl} onChange={(e) => setEditApplyUrl(e.target.value)} />
+                      <input className={inputClass} aria-label="Edit location" value={editLocation} onChange={(e) => setEditLocation(e.target.value)} />
+                      <div className="flex gap-2">
+                        <Button type="submit" size="sm" variant="primary" disabled={updateMutation.isPending}>
+                          Save changes
+                        </Button>
+                        <Button type="button" size="sm" onClick={() => setEditingId(null)}>
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  )}
                   </div>
                 ))}
               </div>

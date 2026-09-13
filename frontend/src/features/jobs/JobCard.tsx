@@ -81,6 +81,11 @@ export function JobCardView({
         <p className="text-xs text-[var(--color-text-muted)]">Not enough mapped requirements</p>
       )}
 
+      {job.posted_at && (
+        <p className="text-xs text-[var(--color-text-muted)]">
+          Posted {new Date(job.posted_at).toLocaleDateString()}
+        </p>
+      )}
       {job.top_skills.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {job.top_skills.slice(0, 5).map((skill) => (

@@ -101,6 +101,7 @@ export const apiEndpoints = {
     progress: '/api/v1/coding/progress',
     languages: '/api/v1/coding/languages',
     executionStatus: '/api/v1/coding/execution-status',
+    playgroundRun: '/api/v1/coding/playground/run',
     navigation: (id: string) => `/api/v1/coding/problems/${id}/navigation`,
     bookmarks: '/api/v1/coding/bookmarks',
   },

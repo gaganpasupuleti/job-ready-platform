@@ -23,6 +23,7 @@ import { SubmissionsPage } from '@/pages/submissions/SubmissionsPage'
 import { CodingPage } from '@/pages/practice/CodingPage'
 import { DsaPage } from '@/pages/practice/DsaPage'
 import { DsaProblemPage } from '@/pages/practice/DsaProblemPage'
+import { PythonPlaygroundPage } from '@/pages/practice/PythonPlaygroundPage'
 import { McqPage } from '@/pages/practice/McqPage'
 import { PracticeResultsPage } from '@/pages/practice/PracticeResultsPage'
 import { PracticeSessionPage } from '@/pages/practice/PracticeSessionPage'
@@ -49,6 +50,7 @@ import { JobsApplicationsPage } from '@/pages/jobs/JobsApplicationsPage'
 import { JobApplicationDetailPage } from '@/pages/jobs/JobApplicationDetailPage'
 import { JobDetailPage } from '@/pages/jobs/JobDetailPage'
 import { JobsHubPage } from '@/pages/jobs/JobsHubPage'
+import { JobsPreferencesPage } from '@/pages/jobs/JobsPreferencesPage'
 import { JobsRecommendedPage } from '@/pages/jobs/JobsRecommendedPage'
 import { JobsSavedPage } from '@/pages/jobs/JobsSavedPage'
 import { ReadinessPage } from '@/pages/readiness/ReadinessPage'
@@ -154,6 +156,8 @@ export function AppRoutes() {
         <Route path="practice/dsa" element={<DsaPage />} />
         <Route path="practice/dsa/:problemId" element={<DsaProblemPage />} />
         <Route path="practice/coding" element={<CodingPage />} />
+        <Route path="practice/python" element={<PythonPlaygroundPage />} />
+        <Route path="practice/playground" element={<PythonPlaygroundPage />} />
         <Route path="practice/sql" element={<SqlPage />} />
         <Route path="practice/sql/:slug" element={<SqlProblemPage />} />
         <Route path="submissions" element={<SubmissionsPage />} />
@@ -174,6 +178,7 @@ export function AppRoutes() {
         <Route path="company-prep" element={<CompanyPrepPage />} />
         <Route path="company-prep/:slug" element={<CompanyPrepDetailPage />} />
         <Route path="jobs" element={<JobsHubPage />} />
+        <Route path="jobs/preferences" element={<JobsPreferencesPage />} />
         <Route path="jobs/recommended" element={<JobsRecommendedPage />} />
         <Route path="jobs/saved" element={<JobsSavedPage />} />
         <Route path="jobs/applications" element={<JobsApplicationsPage />} />

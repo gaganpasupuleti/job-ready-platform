@@ -64,6 +64,14 @@ export function ErrorState({ message }: { message: string }) {
   )
 }
 
+export function SavingState({ label = 'Saving…' }: { label?: string }) {
+  return (
+    <p className="text-xs text-[var(--color-text-muted)]" role="status" aria-live="polite">
+      {label}
+    </p>
+  )
+}
+
 export function SuccessState({
   title,
   children,
@@ -115,12 +123,14 @@ export function PracticeHeader({
   children?: ReactNode
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="studio-topline flex flex-wrap items-start justify-between gap-3">
       <div>
         <Link to={backTo} className="text-xs text-[var(--color-accent)] hover:underline">
           ← {backLabel}
         </Link>
-        <h1 className="mt-1 text-lg font-semibold text-[var(--color-text)]">{title}</h1>
+        <h1 className="mt-0.5 text-base font-semibold leading-tight text-[var(--color-text)] sm:text-lg">
+          {title}
+        </h1>
         {children}
       </div>
     </div>
@@ -146,10 +156,10 @@ export function PracticeTabs({
           aria-selected={value === tab.id}
           onClick={() => onChange(tab.id)}
           className={cn(
-            'rounded-t-md px-3 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]',
+            'rounded-t-[var(--radius-control)] px-2.5 py-1.5 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]',
             value === tab.id
-              ? 'border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]'
-              : 'text-[var(--color-text-muted)]',
+              ? 'border-b-2 border-[var(--color-accent)] font-medium text-[var(--color-accent)]'
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
           )}
         >
           {tab.label}

@@ -347,7 +347,9 @@ test.describe('DSA workbench QA', () => {
     const ready = await judge0Ready(page)
     if (!ready) {
       await expect(
-        page.getByText(/execution is temporarily unavailable|currently unavailable/i),
+        page.getByRole('status').filter({
+          hasText: 'Code execution is coming soon. You can write code and save drafts.',
+        }),
       ).toBeVisible()
       await expect(page.getByRole('button', { name: /^run$/i })).toBeDisabled()
       await expect(page.getByRole('button', { name: /^submit$/i })).toBeDisabled()

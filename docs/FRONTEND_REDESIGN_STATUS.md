@@ -100,11 +100,81 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 
 | Check | Result |
 |-------|--------|
-| `execution-status.available` | `false` |
-| `POST .../run` / `.../submit` | **503** |
-| Hidden tests in problem detail | **not leaked** (`test_cases` absent; samples only) |
+| `execution-status.available` | `false` (`enabled=false`, `provider=none`) |
+| `POST .../run` / `.../submit` | **503** (`language_id`+`source_code`; re-checked 2026-09-12) |
+| Hidden tests in problem detail | **not leaked** (`test_cases` absent; `sample_test_cases` only — echo-input) |
+| Live correct/WA/CE/RE/TLE | **not run** — no authorized provider reachable |
 | Playwright coding specs | UI unavailable banner + **draft persistence** (not live grading) |
-| Blocker | **Judge0 disabled** — cannot verify live Run/Submit grading locally |
+| Blocker | **Live grading explicitly blocked** — see Judge0 local gate below |
+
+### Judge0 local gate (2026-09-12) — why no real provider
+
+| Fact | Detail |
+|------|--------|
+| App config | `JUDGE0_ENABLED=false` in root + `backend/.env` (integ + BE tip). Defaults would probe `http://localhost:2358` only if enabled. |
+| Authorized providers | **Self-hosted Judge0 CE only** (`Judge0CodeExecutionService`). No RapidAPI/SaaS client in repo. |
+| Local listener `:2358` | None |
+| Docker | Not installed (`docker` missing from PATH) |
+| WSL2 | Hyper-V / Virtual Machine Platform missing (`HCS_E_HYPERV_NOT_INSTALLED`) — cannot host privileged Judge0 workers |
+| Mock executor | **Must not** be treated as live grading evidence |
+
+**Concrete setup to unblock (pick one):**
+
+1. **Remote VPS (documented path):** Follow `docs/JUDGE0_DEPLOYMENT.md` — Ubuntu 22.04 + privileged Docker + Judge0 CE **v1.13.1** (`infra/judge0/docker-compose.yml`), TLS reverse proxy, set Railway/local `JUDGE0_ENABLED=true`, `JUDGE0_URL`, `JUDGE0_AUTH_TOKEN`. Verify with `docs/JUDGE0_VERIFICATION.md` / `pytest tests/test_judge0_live.py` (`JUDGE0_LIVE_TESTS=1`).
+2. **Local Linux Docker host:** Enable Hyper-V + install Docker Desktop/WSL2 **or** use a remote Linux box; `cp infra/judge0/.env.example infra/judge0/.env` (fill `JUDGE0_POSTGRES_PASSWORD`, `JUDGE0_REDIS_PASSWORD`, `JUDGE0_AUTH_TOKEN`); `docker compose up -d` from `infra/judge0`; point app `JUDGE0_URL=http://localhost:2358` + matching token; flip `JUDGE0_ENABLED=true`.
+
+Until (1) or (2) is live: keep `JUDGE0_ENABLED=false`; Run/Submit stay **503**; do not enable mocks for acceptance.
+
+## Fresh MCQ validation on tip pair (2026-09-12) — not historical reuse
+
+| Gate | Result | Evidence @ FE `e58b89d`+delta / BE `4efa280` on integ stack |
+|------|--------|--------------------------------------------------------------|
+| Stack provenance | **confirmed** | API cwd `jobready-sprint1-int/backend` (PID reload worker); Vite cwd `…/frontend`; tip file SHA256 MATCH for practice reliability + session UI; Vite serves `flushAutosave`/`saveSeqRef`; `JUDGE0_ENABLED=false` |
+| Immediate submit while autosave pending | **verified** | Live API finalize+idempotent complete; Playwright confirm→results |
+| Refresh/resume + multi-select | **verified** | Live API 2-option restore; Playwright refresh `aria-pressed`; resume e2e |
+| Expiry + late write | **verified** | Live API late autosave **400** after forced expiry; pytest |
+| Repeated final submission | **verified** | Live double `complete`; ownership (other user **404**) |
+| Playwright `e2e/mcq.spec.ts` | **6/6** then **2/2 rerun** | See ledger note on FE tip inclusion |
+| pytest `test_practice_exam_reliability.py` | **3/3 passed** (fresh) | integ backend = BE tip hashes |
+
+**6/6 inclusion note:** The 2026-09-12 6/6 run already included `aria-pressed` on `QuestionOption` and the new confirm-submit + multi-select tests (synced into integ before that run). After review, asserts were strengthened to require **Practice Complete**, **Score N / M**, **Accuracy**, and unselected `aria-pressed=false`; those two tests were **rerun 2/2 passed** (2026-09-12) against the same PIDs — not a full 6/6 redo.
+
+### Port bind note (not an outage)
+
+Duplicate uvicorn start failed with WinError **10048** (address already in use). Existing healthy listener on `:8000` continued serving. Treat as **duplicate-start**, not application downtime.
+
+### Judge0
+
+Live coding execution/grading remains **blocked** (`enabled=false`, `available=false`, provider `none`). Unavailable/503 checks are **not** grading success evidence.
+
+## V4 design-reference integration (2026-09-12)
+
+| Field | Value |
+|-------|-------|
+| Reference | `backend/design-reference/jobready-v4` (README + INTEGRATION_NOTES) |
+| FE tip after shell | 4edecee (4edeceee286f46521812bf0ecd679b1f04cb306a); modules land 3cd1665 |
+| Shell | Horizontal **masthead** + JR monogram `jobready.` + primary nav + More drawer |
+| Tokens | Stone canvas `#E8EAE7` / surface `#F4F5F1` / steel accent `#40596B` |
+| Overview | Live continue/readiness — preserved |
+| Practice hub / Learn | V4 queue rows, track selectors, curriculum layout — **live APIs** |
+| Studios | `studio-main` / `studio-topline` / `editor-toolbar` on DSA/SQL/Python — Monaco/drafts/Run-Submit preserved; Judge0 unavailable honest |
+| Jobs | Live hub tabs + filter bar; Mark applied when preparing/saved/none; post-apply View application |
+| Judge0 | Still **blocked** (separate infra); coding e2e = unavailable + drafts only |
+| package.json / lockfile | **unchanged** |
+
+### Browser checks (reused API PID 20912 / Vite PID 25088)
+
+| Suite | Kind | Result | Notes |
+|-------|------|--------|-------|
+| lint / build | functional | **passed** | FE tip |
+| desktop hub+mcq+coding+jobs+shots | functional + visual | **15 passed / 2 skipped** | jobs mark-applied fixed; shots under `e2e/artifacts/v4-modules/` |
+| mark applied desktop+mobile | functional | **2/2** | dynamic clean listing; persist + refresh asserts |
+| mobile hub+jobs+shots (excl. dirty apply flake) | mixed | hub/shots OK; apply fixed on rerun | |
+| Judge0 live grading | — | **not run** | provider unreachable |
+
+**Functional vs visual:** Jobs apply/persist, hub search, MCQ, coding unavailable+drafts = functional. `v4-modules-shots` PNGs = visual comparison artifacts vs reference (manual review).
+
+Skipped / not claimed: enabling Judge0; importing preview `jobs-data.js`; BE ledger commits.
 
 ## Verification gap close-out (this checkpoint)
 
@@ -142,11 +212,13 @@ Sprint ledger for JobReady Master Plan Phase 0 + Reliability Sprint 1.
 | Health | `database/redis/sql_sandbox=ok`, `judge0=disabled` | re-checked during reliability work |
 | Auth+playground Playwright | **11/11** (reuse) | FE `21a811d` + BE `3870032` |
 | Visual 10/10 Playwright | **passed** | FE product `9f22d19` + manifest `echo-input` / `91D6C81BD5996BAE` |
-| Coding+MCQ Playwright (post-reliability) | **6/6** | live integ; coding unavailable+draft; MCQ resume+autosave UI |
-| `pytest` exam reliability | **3/3** | `tests/test_practice_exam_reliability.py` |
-| Coding API grading | **blocked** | Run/Submit **503**; drafts/privacy OK |
-| FE remote PR #5 head | `21a811d` | local tip **ahead** (unpushed) |
-| BE remote PR #4 head | `3870032` | local tip **ahead** after MCQ reliability + ledger |
+| Coding+MCQ Playwright (historical post-reliability) | **6/6** | prior integ; coding unavailable+draft |
+| MCQ Playwright **fresh** @ tips | **6/6** | 2026-09-12; reused Vite :5173 (`E2E_SKIP_WEBSERVER=1`); FE tip + `QuestionOption` aria-pressed |
+| `pytest` exam reliability **fresh** | **3/3** | 2026-09-12; BE `4efa280` hashes; live API gates also OK |
+| Coding API grading | **blocked** | Judge0 disabled — **not** counted as grading success |
+| Uvicorn bind 10048 | **duplicate-start** | Existing :8000 stayed healthy; failed second start only |
+| FE local tip | `e58b89d` | ahead of remote `21a811d` (**unpushed**) |
+| BE local tip | `4efa280` | ahead of remote `3870032` (**unpushed**) |
 
 ## Uvicorn exit root cause (prior session)
 
@@ -157,7 +229,7 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 1. **PR #3** (Alembic 014) — OPEN. Prefer close/skip once PR #4 lands; do not double-merge 014.
 2. Docker Desktop / WSL2 Hyper-V missing — cannot use documented `infra/docker-compose.yml` until installed; local workaround uses native Postgres + portable Redis.
 3. Gk gate before any master merge / Railway redeploy.
-4. **Judge0 disabled** — assessed coding Run/Submit grading cannot be verified end-to-end until an execution provider is enabled.
+4. **Judge0 live grading** — blocked until self-hosted CE is reachable (Docker/WSL2 or VPS). `JUDGE0_ENABLED` stays false; mocks are not acceptance evidence.
 
 ## File change log (filled as work lands)
 
@@ -191,5 +263,7 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 - Visual foundation (2026-09-11): `Field.tsx`, compact `index.css` shells, Practice Hub/Coding/MCQ catalog/session/results, DSA sticky assessed chrome, Python playground density
 - MCQ Resume via `PracticeHistory` for `active` sessions; `e2e/mcq.spec.ts` resume coverage
 - MCQ reliability FE: autosave sequencing/flush, answered-% chrome, inline Confirm submit, timer arming, completed→results redirect
+- `QuestionOption` `aria-pressed` for selected state; `e2e/mcq.spec.ts` confirm-submit→results + multi-select refresh restore
 - `e2e/visual-foundation.spec.ts`, `e2e/visual-foundation-shots.spec.ts`, artifacts under `e2e/artifacts/visual-foundation/`
 - Ledgers mirrored across streams for PR reviewability
+- 2026-09-12: stack provenance confirmed (integ cwd + tip SHA MATCH); bind 10048 documented as duplicate-start
