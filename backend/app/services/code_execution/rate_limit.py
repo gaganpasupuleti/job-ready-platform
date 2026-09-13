@@ -58,6 +58,13 @@ async def concurrency_slot(user_id: UUID) -> AsyncIterator[None]:
             acquired = True
             await redis.expire(key, 120)
             if count > max_c:
+                # The increment is not a held slot. Release it before rejecting
+                # so a denied request cannot exhaust the user's cap.
+                try:
+                    await redis.decr(key)
+                except Exception:
+                    logger.warning("Failed to release rejected concurrency slot", exc_info=True)
+                acquired = False
                 raise AppException(
                     "Too many concurrent executions. Wait for the current run to finish.",
                     status_code=429,
