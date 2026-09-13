@@ -2,8 +2,8 @@
 
 The source is PostgreSQL database `railway`, schema `public`, table
 `validated_jobs`. It is not the application's `validated_jobs` table.
-Publication requires an explicit approved status. PENDING and NEEDS_REVIEW
-stay unpublished.
+Publication requires an application-owned decision of `publish`. Source
+PENDING, NEEDS_REVIEW, APPROVED, and PUBLISHED do not publish or withdraw.
 """
 
 from __future__ import annotations
@@ -19,14 +19,15 @@ from uuid import UUID, uuid4
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.job import Job, JobSource
+from app.models.job import Job, JobPublicationDecision, JobSource
 from app.models.job_enums import JobSourceType, JobStatus
 from app.models.tagging import Company
-from app.services.job_normalization import job_content_hash, normalize_title, slugify_job, validate_url
+from app.services.job_normalization import https_job_url, job_content_hash, normalize_title, slugify_job
 
 SOURCE_SLUG_PREFIX = "jobs-server"
 EXTERNAL_PREFIX = "jobs-server:"
-APPROVED_STATUSES = frozenset({"APPROVED", "PUBLISHED"})
+PUBLISH = "publish"
+WITHHOLD = "withhold"
 ACTIVE_LINK_STATUS = "active"
 _MANUFACTURING_QC = re.compile(r"\b(?:qc|quality)\s+inspector\b|\bdrawing quality\b", re.I)
 _SOFTWARE_QA = re.compile(r"qa|quality assurance|testing", re.I)
@@ -85,6 +86,47 @@ def source_identity(job_id: str) -> str:
     return f"{EXTERNAL_PREFIX}{job_id.strip()}"
 
 
+def decision_key(source: str, job_id: str) -> str:
+    return f"{(source or '').strip().lower()}:{job_id.strip()}"
+
+
+async def load_publication_decisions(db: AsyncSession) -> dict[str, str]:
+    rows = (await db.execute(select(JobPublicationDecision))).scalars().all()
+    return {decision_key(row.source, row.source_job_id): row.decision for row in rows}
+
+
+async def record_publication_decision(
+    db: AsyncSession,
+    *,
+    source: str,
+    job_id: str,
+    decision: str,
+) -> None:
+    if decision not in {PUBLISH, WITHHOLD}:
+        raise ValueError("publication decision must be publish or withhold")
+    board = source.strip().lower()
+    existing = (
+        await db.execute(
+            select(JobPublicationDecision).where(
+                JobPublicationDecision.source == board,
+                JobPublicationDecision.source_job_id == job_id.strip(),
+            )
+        )
+    ).scalar_one_or_none()
+    if existing is None:
+        db.add(
+            JobPublicationDecision(
+                id=uuid4(),
+                source=board,
+                source_job_id=job_id.strip(),
+                decision=decision,
+            )
+        )
+    else:
+        existing.decision = decision
+    await db.commit()
+
+
 def integration_owned(external_id: str | None) -> bool:
     """Only rows published by this catalog sync may be archived by it."""
     return bool(external_id and external_id.startswith(EXTERNAL_PREFIX))
@@ -125,12 +167,7 @@ def classification_mismatch(row: SourceJob) -> bool:
 
 
 def https_url(value: str | None) -> str | None:
-    if not value:
-        return None
-    text = value.strip()
-    if text.lower().startswith("https://"):
-        return validate_url(text)
-    return None
+    return https_job_url(value)
 
 
 def application_url(row: SourceJob) -> str | None:
@@ -152,12 +189,17 @@ def description_text(row: SourceJob) -> str | None:
     return None
 
 
-def exclusion_reasons(row: SourceJob) -> list[str]:
+def exclusion_reasons(row: SourceJob, decision: str | None = None) -> list[str]:
+    """Content checks plus an application-owned publish decision.
+
+    Source approved_status and manual_review_needed are not this gate. A
+    collector refresh can change those fields without a proven preserve rule.
+    """
     reasons: list[str] = []
-    if (row.approved_status or "").strip() not in APPROVED_STATUSES:
-        reasons.append("not_explicitly_approved")
-    if row.manual_review_needed is not False:
-        reasons.append("manual_review_open")
+    if decision == WITHHOLD:
+        reasons.append("publication_withheld")
+    elif decision != PUBLISH:
+        reasons.append("no_publication_decision")
     if (row.link_status or "").strip() != ACTIVE_LINK_STATUS:
         reasons.append("link_not_active")
     if not application_url(row):
@@ -178,13 +220,16 @@ def plan_sync(
     existing_by_external_id: dict[str, UUID],
     *,
     complete: bool,
+    decisions: dict[str, str] | None = None,
 ) -> SyncPlan:
+    """decisions is keyed by decision_key(source, job_id). Missing means unpublished."""
+    chosen = decisions or {}
     plan = SyncPlan(complete=complete, seen=len(rows))
     seen_identities: set[str] = set()
     for row in rows:
         identity = source_identity(row.job_id)
         seen_identities.add(identity)
-        reasons = exclusion_reasons(row)
+        reasons = exclusion_reasons(row, chosen.get(decision_key(row.source, row.job_id)))
         if classification_mismatch(row):
             plan.flagged["classification_mismatch"] = plan.flagged.get("classification_mismatch", 0) + 1
         if reasons:

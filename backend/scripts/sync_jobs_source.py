@@ -20,7 +20,12 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.models.job import Job
 from app.services.jobs_source_reader import fetch_source_jobs, public_proxy_dsn
-from app.services.jobs_source_sync import EXTERNAL_PREFIX, apply_plan, plan_sync
+from app.services.jobs_source_sync import (
+    EXTERNAL_PREFIX,
+    apply_plan,
+    load_publication_decisions,
+    plan_sync,
+)
 
 DISPOSABLE_DATABASE = "jobready_sync_disposable"
 
@@ -114,10 +119,12 @@ async def main() -> int:
     assert_disposable_local(target_url, args.target_database.strip())
     print("TARGET", describe_target(target_url))
     existing = await _owned_existing(target_url)
-    plan = plan_sync(rows, existing, complete=True)
     engine = create_async_engine(target_url)
     session_factory = async_sessionmaker(engine, expire_on_commit=False)
     try:
+        async with session_factory() as db:
+            decisions = await load_publication_decisions(db)
+        plan = plan_sync(rows, existing, complete=True, decisions=decisions)
         async with session_factory() as db:
             result = await apply_plan(db, plan)
     finally:

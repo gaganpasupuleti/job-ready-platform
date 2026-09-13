@@ -6,6 +6,7 @@ import hashlib
 import re
 from decimal import Decimal
 from typing import Any
+from urllib.parse import urlparse
 
 from app.models.job_enums import EmploymentType, JobRoleMappingSource, JobSkillImportance, WorkMode
 
@@ -69,6 +70,27 @@ def validate_url(url: str | None) -> str | None:
     if not (lower.startswith("http://") or lower.startswith("https://")):
         raise ValueError("URL must use http or https")
     return u
+
+
+def https_job_url(url: str | None) -> str | None:
+    """Return a job link only when it is https and has a host. Otherwise None."""
+    if not url or not str(url).strip():
+        return None
+    text = str(url).strip()
+    parsed = urlparse(text)
+    if parsed.scheme.lower() != "https" or not parsed.hostname:
+        return None
+    return text
+
+
+def require_https_job_url(url: str | None) -> str | None:
+    """Admin job links must be valid https. Empty clears the field."""
+    if url is None or not str(url).strip():
+        return None
+    stored = https_job_url(url)
+    if stored is None:
+        raise ValueError("URL must be a valid https URL")
+    return stored
 
 
 def parse_experience(text: str | None) -> tuple[int | None, int | None]:

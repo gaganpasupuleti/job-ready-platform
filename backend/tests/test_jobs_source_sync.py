@@ -10,18 +10,23 @@ from sqlalchemy import func, select
 from app.db.session import AsyncSessionLocal
 from app.models.job import Job, JobApplication, SavedJob
 from app.models.job_enums import JobStatus
+from app.models.job import JobPublicationDecision
 from app.services.jobs_source_sync import (
     SourceJob,
+    application_url,
     apply_plan,
+    decision_key,
     exclusion_reasons,
+    load_publication_decisions,
     plan_sync,
+    record_publication_decision,
     source_identity,
 )
 
 
 def _row(**overrides) -> SourceJob:
     payload = dict(
-        job_id="CQJ-TEST-0001",
+        job_id="CQJ-TEST-QC",
         source="naukri",
         title="Data Engineer",
         company="Infosys",
@@ -49,9 +54,23 @@ def _row(**overrides) -> SourceJob:
     return SourceJob(**payload)
 
 
-def test_pending_and_review_stay_unpublished():
-    pending = _row(approved_status="PENDING", manual_review_needed=False)
-    review = _row(approved_status="NEEDS_REVIEW", manual_review_needed=True)
+def test_job_links_require_https_with_a_host():
+    http_only = _row(
+        job_id="CQJ-TEST-HTTP",
+        apply_url="http://example.com/apply",
+        job_url="http://example.com/job",
+    )
+    assert application_url(http_only) is None
+    assert "no_usable_application_url" in exclusion_reasons(http_only, "publish")
+    hostless = _row(job_id="CQJ-TEST-HOST", apply_url="https://", job_url="https://")
+    assert application_url(hostless) is None
+    usable = _row(apply_url="http://example.com/apply", job_url="https://example.com/job")
+    assert application_url(usable) == "https://example.com/job"
+
+
+def test_source_status_alone_does_not_publish():
+    pending = _row(job_id="CQJ-TEST-PEND", approved_status="PENDING", manual_review_needed=False)
+    approved = _row(job_id="CQJ-TEST-OK", approved_status="APPROVED", manual_review_needed=False)
     qc = _row(
         approved_status="APPROVED",
         manual_review_needed=False,
@@ -61,17 +80,23 @@ def test_pending_and_review_stay_unpublished():
         role_family="qa-testing",
         jd_clean="Drawing quality check on the shop floor.",
     )
-    assert "not_explicitly_approved" in exclusion_reasons(pending)
-    assert "manual_review_open" in exclusion_reasons(review)
-    assert "classification_mismatch" in exclusion_reasons(qc)
-    plan = plan_sync([pending, review, qc], {}, complete=True)
-    assert plan.eligible == 0
-    assert plan.inserts == []
+    assert "no_publication_decision" in exclusion_reasons(pending, None)
+    assert "no_publication_decision" in exclusion_reasons(approved, None)
+    assert "publication_withheld" in exclusion_reasons(approved, "withhold")
+    assert "classification_mismatch" in exclusion_reasons(qc, "publish")
+    plan = plan_sync(
+        [pending, approved, qc],
+        {},
+        complete=True,
+        decisions={decision_key("naukri", approved.job_id): "publish", decision_key("naukri", qc.job_id): "publish"},
+    )
+    assert plan.eligible == 1
+    assert plan.inserts == [approved]
 
 
 def test_posted_date_is_not_the_sync_date():
     row = _row()
-    assert exclusion_reasons(row) == []
+    assert exclusion_reasons(row, "publish") == []
     assert row.date_posted != row.synced_at
     assert row.date_posted != row.scraped_created_at
 
@@ -97,7 +122,12 @@ async def test_zero_eligible_snapshot_unpublishes_only_owned_jobs():
     owned_key = f"CQJ-OWN-{uuid4().hex[:8]}"
     foreign_id = uuid4()
     async with AsyncSessionLocal() as db:
-        created = plan_sync([_row(job_id=owned_key)], {}, complete=True)
+        created = plan_sync(
+            [_row(job_id=owned_key)],
+            {},
+            complete=True,
+            decisions={decision_key("naukri", owned_key): "publish"},
+        )
         await apply_plan(db, created)
         owned = (
             await db.execute(select(Job).where(Job.external_id == source_identity(owned_key)))
@@ -152,7 +182,12 @@ async def test_second_sync_updates_same_job_and_keeps_application(client, studen
     job_key = f"CQJ-TEST-{uuid4().hex[:8]}"
     first = _row(job_id=job_key, title="Pipeline Engineer")
     async with AsyncSessionLocal() as db:
-        created = plan_sync([first], {}, complete=True)
+        created = plan_sync(
+            [first],
+            {},
+            complete=True,
+            decisions={decision_key("naukri", job_key): "publish"},
+        )
         await apply_plan(db, created)
         job = (
             await db.execute(select(Job).where(Job.external_id == source_identity(job_key)))
@@ -178,7 +213,12 @@ async def test_second_sync_updates_same_job_and_keeps_application(client, studen
     )
     async with AsyncSessionLocal() as db:
         existing = {source_identity(job_key): job_id}
-        again = plan_sync([revised], existing, complete=True)
+        again = plan_sync(
+            [revised],
+            existing,
+            complete=True,
+            decisions={decision_key("naukri", job_key): "publish"},
+        )
         assert len(again.inserts) == 0
         assert len(again.updates) == 1
         await apply_plan(db, again)
@@ -205,7 +245,12 @@ async def test_second_sync_updates_same_job_and_keeps_application(client, studen
 
     pending = _row(job_id=job_key, approved_status="PENDING", manual_review_needed=False)
     async with AsyncSessionLocal() as db:
-        withdrawn = plan_sync([pending], {source_identity(job_key): job_id}, complete=True)
+        withdrawn = plan_sync(
+            [pending],
+            {source_identity(job_key): job_id},
+            complete=True,
+            decisions={decision_key("naukri", job_key): "withhold"},
+        )
         assert job_id in withdrawn.archive_ids
         result = await apply_plan(db, withdrawn)
         assert result.archived == 1
@@ -217,3 +262,67 @@ async def test_second_sync_updates_same_job_and_keeps_application(client, studen
         app_row = await db.get(JobApplication, application_id)
         assert app_row is not None
         assert app_row.job_id == job_id
+
+
+@pytest.mark.asyncio
+async def test_collector_refresh_does_not_erase_or_republish(client, student_auth):
+    headers, _ = student_auth
+    job_key = f"CQJ-REFRESH-{uuid4().hex[:8]}"
+    source_row = _row(
+        job_id=job_key,
+        approved_status="PENDING",
+        manual_review_needed=False,
+        title=f"Acceptance {job_key}",
+    )
+    async with AsyncSessionLocal() as db:
+        await record_publication_decision(db, source="naukri", job_id=job_key, decision="publish")
+        decisions = await load_publication_decisions(db)
+        created = plan_sync([source_row], {}, complete=True, decisions=decisions)
+        await apply_plan(db, created)
+        job = (
+            await db.execute(select(Job).where(Job.external_id == source_identity(job_key)))
+        ).scalar_one()
+        job_id = job.id
+
+    listed = await client.get("/api/v1/jobs", headers=headers, params={"q": job_key})
+    assert listed.status_code == 200
+    assert any(item["id"] == str(job_id) for item in listed.json()["items"])
+    detail = await client.get(f"/api/v1/jobs/{job_id}", headers=headers)
+    assert detail.status_code == 200
+    assert detail.json()["apply_url"] == source_row.apply_url
+    assert (await client.post(f"/api/v1/jobs/{job_id}/save", headers=headers)).status_code == 204
+    applied = await client.post(f"/api/v1/jobs/{job_id}/apply", headers=headers)
+    assert applied.status_code == 200
+    application_id = applied.json()["id"]
+
+    refreshed = _row(
+        job_id=job_key,
+        approved_status="NEEDS_REVIEW",
+        manual_review_needed=True,
+        title="Data Engineer refreshed",
+    )
+    async with AsyncSessionLocal() as db:
+        decisions = await load_publication_decisions(db)
+        assert decisions[decision_key("naukri", job_key)] == "publish"
+        again = plan_sync([refreshed], {source_identity(job_key): job_id}, complete=True, decisions=decisions)
+        await apply_plan(db, again)
+        stored = await db.get(Job, job_id)
+        assert stored is not None and stored.status == JobStatus.ACTIVE
+        assert stored.title == "Data Engineer refreshed"
+        assert (await db.get(JobApplication, application_id)).job_id == job_id
+
+    async with AsyncSessionLocal() as db:
+        await record_publication_decision(db, source="naukri", job_id=job_key, decision="withhold")
+        decisions = await load_publication_decisions(db)
+        later = _row(job_id=job_key, approved_status="APPROVED", manual_review_needed=False)
+        withheld = plan_sync([later], {source_identity(job_key): job_id}, complete=True, decisions=decisions)
+        await apply_plan(db, withheld)
+        stored = await db.get(Job, job_id)
+        decision = (
+            await db.execute(
+                select(JobPublicationDecision).where(JobPublicationDecision.source_job_id == job_key)
+            )
+        ).scalar_one()
+        assert stored is not None and stored.status == JobStatus.ARCHIVED
+        assert decision.decision == "withhold"
+        assert (await db.get(JobApplication, application_id)).job_id == job_id

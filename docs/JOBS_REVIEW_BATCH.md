@@ -22,18 +22,7 @@ Checked 2026-09-13 20:34 IST (15:04 UTC) with a browser-like GET, 12 second time
 
 Indeed 200 responses were job-board page shells. Title text in the shell or URL is not evidence the application still targets that open job. Naukri and several employer hosts returned 403. Those rows are manual checks. A 404 on one recorded apply URL is not treated as “job closed.”
 
-Proposed source writes: **none**.
-
-```sql
--- NOT EXECUTED. Do not run.
--- UPDATE public.validated_jobs
--- SET approved_status = 'APPROVED', updated_at = now()
--- WHERE job_id IN (/* Gk-approved ids only */)
---   AND approved_status = 'PENDING'
---   AND manual_review_needed IS FALSE;
-```
-
-The `IN` list is empty until a later manual check confirms the open posting.
+Proposed source writes: **none**. Publication, when Gk confirms a row, is an application decision keyed by source and `job_id`. It is not an update to `approved_status`.
 
 ## Batch (39)
 
@@ -98,6 +87,4 @@ Manufacturing QC rows, including `CQJ-20260712-1082` Walk-in Qc Inspector, were 
 
 ## After Gk confirms a subset
 
-1. Write only those `job_id` values to `approved_status='APPROVED'` on the source, keeping `manual_review_needed=false`.
-2. Do not bulk-update the other 731 pending rows.
-3. Then a local disposable apply can publish that snapshot. Production apply stays disabled until that reviewed list exists.
+Do not write `approved_status` on the source. Record `publish` or `withhold` in `job_publication_decisions` for the source board and `job_id`. A later collector refresh must not delete that row. The short open-in-browser queue is `docs/JOBS_REVIEW_QUEUE.md`.

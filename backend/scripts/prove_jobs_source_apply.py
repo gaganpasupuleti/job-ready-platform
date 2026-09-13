@@ -25,7 +25,14 @@ from app.models.job import Job, JobApplication, SavedJob
 from app.models.job_enums import ApplicationStatus, JobStatus
 from app.models.enums import UserRole
 from app.models.user import User
-from app.services.jobs_source_sync import SourceJob, apply_plan, plan_sync, source_identity
+from app.services.jobs_source_sync import (
+    SourceJob,
+    apply_plan,
+    load_publication_decisions,
+    plan_sync,
+    record_publication_decision,
+    source_identity,
+)
 from sync_jobs_source import DISPOSABLE_DATABASE, assert_disposable_local, describe_target
 
 ADMIN_URL = os.environ.get("JOBS_APPLY_ADMIN_URL", "").strip()
@@ -132,7 +139,17 @@ async def main() -> int:
     factory = async_sessionmaker(engine, expire_on_commit=False)
     try:
         async with factory() as db:
-            first = await apply_plan(db, plan_sync([_row(owned_key, approved="APPROVED")], {}, complete=True))
+            await record_publication_decision(db, source="naukri", job_id=owned_key, decision="publish")
+            decisions = await load_publication_decisions(db)
+            first = await apply_plan(
+                db,
+                plan_sync(
+                    [_row(owned_key, approved="PENDING")],
+                    {},
+                    complete=True,
+                    decisions=decisions,
+                ),
+            )
             job = (
                 await db.execute(select(Job).where(Job.external_id == source_identity(owned_key)))
             ).scalar_one()
@@ -174,14 +191,18 @@ async def main() -> int:
             application_id = application.id
             foreign_id = foreign.id
         print("SEED_INSERTS", first.inserted)
+        async with factory() as db:
+            await record_publication_decision(db, source="naukri", job_id=owned_key, decision="withhold")
+            decisions = await load_publication_decisions(db)
         nonempty = [
-            _row(owned_key, approved="PENDING"),
+            _row(owned_key, approved="APPROVED"),
             _row("CQJ-DISP-OTHER", approved="NEEDS_REVIEW"),
         ]
         plan = plan_sync(
             nonempty,
             {source_identity(owned_key): job_id, "jobs-server:missing": foreign_id},
             complete=True,
+            decisions=decisions,
         )
         async with factory() as db:
             result = await apply_plan(db, plan)

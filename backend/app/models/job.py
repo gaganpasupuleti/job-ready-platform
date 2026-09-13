@@ -305,3 +305,20 @@ class UserJobPreference(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         Enum(WorkMode, name="user_remote_preference", native_enum=False, values_callable=lambda enum: [e.value for e in enum]),
         nullable=True,
     )
+
+
+class JobPublicationDecision(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+    """Application-owned publish/withhold for a collector-managed source row.
+
+    The Jobs server collector is not in this workspace. Do not store this
+    decision on validated_jobs. Source approved_status is not this gate.
+    """
+
+    __tablename__ = "job_publication_decisions"
+    __table_args__ = (
+        UniqueConstraint("source", "source_job_id", name="uq_job_publication_source_job"),
+    )
+
+    source: Mapped[str] = mapped_column(String(40), nullable=False)
+    source_job_id: Mapped[str] = mapped_column(String(80), nullable=False)
+    decision: Mapped[str] = mapped_column(String(16), nullable=False)
