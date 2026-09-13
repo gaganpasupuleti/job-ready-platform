@@ -27,6 +27,8 @@ Recommended:
 
 Jobs-first migration, backup, and smoke steps: `docs/JOBS_PILOT_RELEASE.md`.
 
+The service named `Jobs server` is a separate PostgreSQL catalog (`railway.public.validated_jobs`), not the application database. Read it with `JOBS_SOURCE_DATABASE_URL` on the API host only. Do not write that database from the app, and do not print its credentials.
+
 ## Health
 
 `GET /api/v1/health` returns coarse checks (`database`, `redis`, `sql_sandbox`, `judge0`) without DSNs or passwords.

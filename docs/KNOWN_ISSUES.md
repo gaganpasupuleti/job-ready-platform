@@ -14,7 +14,8 @@
 Scoped with the jobs-first candidate (do not treat coding lock as production-ready):
 
 - **Retry Incorrect** — still deferred. It does not block signup → Jobs → save → explicit Mark applied.
-- **`validated_jobs`** — leftover table, 0 rows locally, no current app consumer. Do not drop it to match Alembic table counts. See `docs/JOBS_PILOT_RELEASE.md`.
+- **`validated_jobs`** — local leftover table, 0 rows, no app reader. Not the Railway `Jobs server` catalog. Do not drop it. See `docs/JOBS_PILOT_RELEASE.md`.
+- **Jobs catalog approval** — Railway `public.validated_jobs` has 5321 rows and 0 explicitly approved records. `PENDING` stays unpublished. The first review batch proposes no source writes. See `docs/JOBS_REVIEW_BATCH.md`.
 
 ## Ops / environment
 

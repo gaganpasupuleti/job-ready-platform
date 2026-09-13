@@ -88,6 +88,10 @@ class Settings(BaseSettings):
     sql_submits_per_minute: int = 5
     sql_max_concurrent_executions_per_user: int = 1
 
+    # Read-only DSN for the Railway "Jobs server" catalog. Empty disables sync.
+    # Never point this at the application database. Do not commit the password.
+    jobs_source_database_url: str = ""
+
     jwt_secret_key: str = _UNSAFE_JWT_DEFAULT
     jwt_access_token_expire_minutes: int = 60 * 24
 

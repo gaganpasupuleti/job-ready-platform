@@ -19,6 +19,16 @@ Set these on the API host. Do not copy this Windows `.env`.
 
 No new paid vendor is required for this pilot. Do not add a paid job feed or scraper. Hosting cost is whatever already pays for the API, static frontend, Postgres, and optional Redis. A Judge0 VM is not part of this deploy.
 
+The source catalog is the existing Railway service named `Jobs server`. That name is not the database engine. It is PostgreSQL 18, database `railway`, schema `public`, table `validated_jobs` — a different database from the application Postgres. Do not point `JOBS_SOURCE_DATABASE_URL` at the application database. Leave the password unset in git. The source session is read-only.
+
+Publication requires an explicit `APPROVED` or `PUBLISHED` status, `manual_review_needed` false, an active link, a usable https application URL, a title and company, and source description text. `PENDING` is not approval. A 2026-09-13 read-only dry-run saw 5321 rows and 0 eligible. Do not bypass approval to fill the listing.
+
+The Jobs server does not set those statuses. It is a Postgres volume with no triggers, functions, comments, or check constraint on `approved_status`. This application has no catalog review screen. The only documented writer is the external CodeQuest collector (`push_validated_to_job_ready`), which is not in this repository. The older sync in `aa4c311` (`docs/VALIDATED_JOBS_SYNC.md` on that commit) imported every active link and did not treat approval as a gate. That older meaning is not the publication rule. Do not invent a `REJECTED` status or treat `PENDING` as approved.
+
+Observed pairs, 2026-09-13: `NEEDS_REVIEW` with `manual_review_needed=true` (4590); `PENDING` with the flag false (731). `APPROVED` and `PUBLISHED` have never been stored. The first review batch is `docs/JOBS_REVIEW_BATCH.md`. Its proposed source update is empty. Do not write source statuses from this app.
+
+`--apply` refuses production and source writes. A local apply is allowed only for database `jobready_sync_disposable` on localhost, and it still does not write the source. An empty or failed fetch must not archive local jobs. A nonempty snapshot with zero eligible rows unpublishes only jobs whose `external_id` starts with `jobs-server:`.
+
 ## Migration order
 
 1. Take a backup of the application database (`pg_dump` of `jobready_db` or the hosted equivalent). Keep it off the laptop if this is the public cutover.
@@ -51,4 +61,8 @@ Rollback: restore the backup. `alembic downgrade 015_mistake_source_events` only
 
 ## `validated_jobs`
 
-Local `jobready_db` has public.validated_jobs, owner `jobready`, 0 rows, unique `job_id`, no foreign keys and no views. Current backend models, Alembic revisions, and repo scripts do not read or write it. Treat it as leftover ingestion storage, not a required pilot table. Do not drop it only to match Alembic's table count.
+Two different tables share this name.
+
+The catalog is Railway `Jobs server` / database `railway` / `public.validated_jobs` (5321 rows as of 2026-09-13). Unique source identity is text `job_id`. The app stores a published copy as `jobs.external_id = jobs-server:{job_id}` and upserts that same row, so saved jobs and applications keep their job id. Sync credentials stay on the API host. The CSV importer is not this path: it has no approval gate.
+
+Local `jobready_db.public.validated_jobs` is a different leftover table: owner `jobready`, 0 rows, no foreign keys, and no current app reader. Do not treat it as the catalog, and do not drop it only to match Alembic's table count.
