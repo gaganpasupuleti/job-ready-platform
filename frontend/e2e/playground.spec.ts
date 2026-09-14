@@ -9,49 +9,29 @@ test.describe('Python Playground', () => {
     await loginAs(page, fixtures.users.student)
   })
 
-  test('playground loads with clear non-assessed labeling', async ({ page }) => {
+  test('playground stays locked with no run control', async ({ page }) => {
     await page.goto('/practice/python')
     const mainHeading = page.getByRole('main').getByRole('heading', {
       level: 1,
-      name: 'Python Playground',
+      name: 'Python',
     })
     await expect(mainHeading).toBeVisible({ timeout: 15_000 })
     await expect(mainHeading).toHaveCount(1)
-    await expect(page.getByText(/not assessed/i)).toBeVisible()
-    await expect(page.getByRole('button', { name: /^run$/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /^reset$/i })).toBeVisible()
-    await expect(page.getByLabel(/standard input/i)).toBeVisible()
+    await expect(page.getByText('Python execution is locked. This page does not run or grade code.')).toBeVisible()
+    await expect(page.getByRole('button', { name: /^run$/i })).toHaveCount(0)
+    await expect(page.locator('.monaco-editor')).toHaveCount(0)
   })
 
-  test('unavailable executor does not fabricate stdout', async ({ page }) => {
-    await page.route('**/api/v1/coding/execution-status**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          enabled: false,
-          available: false,
-          provider: 'none',
-          message: 'Judge0 disabled in test',
-          languages: [],
-        }),
-      })
-    })
-    await page.goto('/practice/python')
-    await expect(
-      page.getByText('Code execution is coming soon. You can write code and save drafts.').first(),
-    ).toBeVisible({
-      timeout: 15_000,
-    })
-    const run = page.getByRole('button', { name: /^run$/i })
-    await expect(run).toBeDisabled()
-    await page.locator('.monaco-editor').first().click()
+  test('locked page does not call the runner', async ({ page }) => {
     let runCalls = 0
     page.on('request', (request) => {
       if (request.url().includes('/playground/run') && request.method() === 'POST') runCalls += 1
     })
+    await page.goto('/practice/python')
+    await expect(page.getByText('Python execution is locked. This page does not run or grade code.')).toBeVisible({
+      timeout: 15_000,
+    })
     await page.keyboard.press('Control+Enter')
-    await expect(run).toBeDisabled()
     expect(runCalls).toBe(0)
     await expect(page.getByText(/stdout/i)).toHaveCount(0)
   })
