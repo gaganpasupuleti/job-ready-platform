@@ -63,6 +63,16 @@ from app.models.prompt import (
     PromptSubmissionCaseResult,
 )
 from app.models.practice import Bookmark, PracticeAnswer, PracticeSession, PracticeSessionQuestion
+from app.models.studio import (
+    Assignment,
+    AssignmentReview,
+    AssignmentSubmission,
+    ContentBatchItem,
+    ContentPack,
+    ContentPackQuestion,
+    LearningMaterial,
+    LearningMaterialRead,
+)
 from app.models.question import Question, QuestionOption
 from app.models.sql_practice import (
     SqlExpectedResult,

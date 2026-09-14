@@ -118,6 +118,7 @@ class SqlPracticeRepository:
         *,
         solved: bool,
         execution_time_ms: float | None = None,
+        content_version: int | None = None,
     ) -> SqlProblemProgress:
         progress = await self.get_progress(user_id, problem_id)
         now = datetime.now(timezone.utc)
@@ -131,6 +132,7 @@ class SqlPracticeRepository:
                 last_attempt_at=now,
                 first_solved_at=now if solved else None,
                 best_execution_time_ms=execution_time_ms if solved else None,
+                content_version=content_version,
             )
             self.db.add(progress)
         else:
@@ -138,18 +140,24 @@ class SqlPracticeRepository:
             progress.last_attempt_at = now
             if progress.first_attempted_at is None:
                 progress.first_attempted_at = now
+            version_changed = (
+                content_version is not None and progress.content_version != content_version
+            )
             if solved:
-                if progress.status != SqlProgressStatus.SOLVED:
+                if progress.status != SqlProgressStatus.SOLVED or version_changed:
                     progress.status = SqlProgressStatus.SOLVED
-                    progress.first_solved_at = now
+                    if progress.first_solved_at is None or version_changed:
+                        progress.first_solved_at = now
                 if execution_time_ms is not None:
                     if (
                         progress.best_execution_time_ms is None
                         or execution_time_ms < progress.best_execution_time_ms
                     ):
                         progress.best_execution_time_ms = execution_time_ms
-            elif progress.status != SqlProgressStatus.SOLVED:
+            elif version_changed or progress.status != SqlProgressStatus.SOLVED:
                 progress.status = SqlProgressStatus.ATTEMPTED
+            if content_version is not None:
+                progress.content_version = content_version
         await self.db.flush()
         return progress
 

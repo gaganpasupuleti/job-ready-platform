@@ -213,7 +213,8 @@ export function PracticeHubPage() {
         <Link to="/practice/mcq">Subject quizzes</Link>
         <Link to="/practice/projects">Projects</Link>
         <Link to="/practice/projects">Projects hub</Link>
-        <Link to="/practice/python">Playground</Link>
+        <Link to="/practice/playground">Playground</Link>
+        <Link to="/learn/quizzes/pack-crt-shared">CRT pack</Link>
       </nav>
     </div>
   )

@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "assignments": [
+    {
+      "key": "jb-assign-ticket-summary",
+      "title": "Reject a blank ticket title in Java",
+      "families": [
+        "java-backend"
+      ],
+      "skills": [
+        "java",
+        "methods"
+      ],
+      "mode": "manual_review",
+      "minutes": 50,
+      "audience": "Fresher",
+      "goal": "Write a TicketSummary type that keeps an id and a title, and refuses a blank title. Do not invent Untitled.",
+      "requirements": [
+        "Write the Java on your own computer or on paper. This site will not compile it.",
+        "A public class named TicketSummary belongs in a file you can name TicketSummary.java.",
+        "A null title and a title that is empty after trim both throw IllegalArgumentException with a reason that names title.",
+        "Do not require a paid library or an API key.",
+        "Do not claim this website ran the program."
+      ],
+      "deliverables": [
+        "The class text, or an HTTPS URL to a file a reviewer can open without a login wall",
+        "One accepted call: id 4 and title \" VPN \" stores id 4 and title VPN",
+        "One rejected call: title \"   \" throws and does not store a title"
+      ],
+      "hints": [
+        "Check null before calling trim",
+        "Use equals only if you compare titles; this assignment is about refusing a blank one"
+      ],
+      "prerequisites": [
+        "jb-class-and-main",
+        "jb-methods-and-blank-title"
+      ],
+      "rubric": [
+        {
+          "criterion": "Stores id and a trimmed non-blank title",
+          "points": 25
+        },
+        {
+          "criterion": "Rejects null and an all-space title with a reason that names title",
+          "points": 25
+        },
+        {
+          "criterion": "Does not invent Untitled or another replacement",
+          "points": 15
+        },
+        {
+          "criterion": "Accepted example and rejected example match the code",
+          "points": 20
+        },
+        {
+          "criterion": "States that this site did not compile or run the file",
+          "points": 15
+        }
+      ],
+      "sql_problem_slug": null,
+      "brief": "Input data: id 4 with title \" VPN \", and a second call with title \"   \". Also consider null. Constraints: local or written Java only; no Spring; no paid plugin; HTTPS URL if you submit a URL. Estimated effort 50 minutes. A reviewer reads the text. The online runner stays locked.",
+      "version": 1
+    },
+    {
+      "key": "fr-assign-ticket-form",
+      "title": "A controlled ticket title field",
+      "families": [
+        "frontend-react"
+      ],
+      "skills": [
+        "react",
+        "state"
+      ],
+      "mode": "manual_review",
+      "minutes": 45,
+      "audience": "Fresher",
+      "goal": "Write a small React function that shows a ticket title from props and edits a draft title in state.",
+      "requirements": [
+        "The card shows the title prop. Do not invent a title when the prop is missing.",
+        "The draft field is a controlled input: value and onChange.",
+        "After setTitle, do not claim the same line already sees the new value.",
+        "This site will not render the component. No paid plugin.",
+        "Submit text or an HTTPS URL a reviewer can open."
+      ],
+      "deliverables": [
+        "The component text, or an HTTPS URL",
+        "The prop example title=\"Printer\"",
+        "The state and input lines for the draft title",
+        "One sentence on what title holds on the line after setTitle(\"VPN\") if it was empty"
+      ],
+      "hints": [
+        "className if you add a CSS class",
+        "Do not fetch /tickets inside this component"
+      ],
+      "prerequisites": [
+        "fr-component-props",
+        "fr-state-input"
+      ],
+      "rubric": [
+        {
+          "criterion": "Shows the title prop and does not invent a missing one",
+          "points": 20
+        },
+        {
+          "criterion": "Draft input is controlled with value and onChange",
+          "points": 30
+        },
+        {
+          "criterion": "Correctly states that the next line still sees the old title",
+          "points": 20
+        },
+        {
+          "criterion": "Does not claim this site rendered the component",
+          "points": 15
+        },
+        {
+          "criterion": "Submission is text or an HTTPS URL a reviewer can open",
+          "points": 15
+        }
+      ],
+      "sql_problem_slug": null,
+      "brief": "Input data: parent title Printer, then a typed draft that should become VPN only on the next render. Constraints: local text only; this app will not mount React; no API key. Estimated effort 45 minutes. Manual review.",
+      "version": 1
+    },
+    {
+      "key": "fs-assign-read-the-log",
+      "title": "Read the six-row ticket log",
+      "families": [
+        "fullstack-web"
+      ],
+      "skills": [
+        "http",
+        "status-codes"
+      ],
+      "mode": "manual_review",
+      "minutes": 40,
+      "audience": "Fresher",
+      "goal": "Count the statuses in the supplied log and explain one 400 and one 500 without swapping them.",
+      "requirements": [
+        "Use only the six rows in the brief. Do not add a request.",
+        "Count 200, 201, 400, 404, and 500 separately.",
+        "Name one field the page can show and one field the API received on the 201.",
+        "State that this app does not execute the page or the API.",
+        "Submit text. An HTTPS URL is allowed only if it is not required to complete the count."
+      ],
+      "deliverables": [
+        "Status counts",
+        "Two sentences: why row 4 is 400, and why row 6 is 500",
+        "One page field and one API field from the 201 row"
+      ],
+      "hints": [
+        "201 is not a 200",
+        "The query string is not used in this log"
+      ],
+      "prerequisites": [
+        "fs-request-response",
+        "fs-two-programs"
+      ],
+      "rubric": [
+        {
+          "criterion": "Status counts match the six rows, with 200 and 201 separate",
+          "points": 30
+        },
+        {
+          "criterion": "400 and 500 explanations are not swapped",
+          "points": 25
+        },
+        {
+          "criterion": "Names a page field without treating it as stored JSON",
+          "points": 15
+        },
+        {
+          "criterion": "Names a field the 201 response actually returned",
+          "points": 15
+        },
+        {
+          "criterion": "States that this app did not send the requests",
+          "points": 15
+        }
+      ],
+      "sql_problem_slug": null,
+      "brief": "Input data, and the only rows you may use:\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |\n\nConstraints: no extra rows; no hosted API call; no paid tool. Estimated effort 40 minutes. Manual review of the written counts. This site will not send these requests.",
+      "version": 2
+    }
+  ]
+}

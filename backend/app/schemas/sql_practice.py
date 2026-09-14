@@ -69,6 +69,7 @@ class SqlProblemDetail(BaseModel):
     bookmarked: bool = False
     solution_unlocked: bool = False
     execution_available: bool = True
+    content_version: int = 1
 
 
 class SqlRunRequest(BaseModel):
@@ -97,6 +98,7 @@ class SqlSubmitResponse(BaseModel):
     truncated: bool = False
     error: str | None = None
     solution_unlocked: bool = False
+    content_version: int | None = None
 
 
 class SqlSubmissionListItem(BaseModel):
@@ -109,6 +111,7 @@ class SqlSubmissionListItem(BaseModel):
     status: SqlSubmissionStatus
     result_row_count: int | None = None
     execution_time_ms: float | None = None
+    content_version: int | None = None
     submitted_at: datetime
 
 
@@ -124,6 +127,7 @@ class SqlSubmissionDetail(BaseModel):
     execution_time_ms: float | None = None
     error_message: str | None = None
     feedback: dict[str, Any] | None = None
+    content_version: int | None = None
     submitted_at: datetime
 
 

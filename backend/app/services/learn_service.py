@@ -130,6 +130,15 @@ def project_href(project_slug: str) -> str:
     return f"/projects/{project_slug}"
 
 
+def _task_brief(task: ProjectTask) -> dict:
+    from app.content.version_snapshots import task_brief_snapshot
+
+    version = None
+    if isinstance(task.reference_json, dict):
+        version = task.reference_json.get("version")
+    return task_brief_snapshot(task, version)
+
+
 def _scenario_slug_from_task(task: ProjectTask) -> str | None:
     if task.scenario_slug:
         return task.scenario_slug
@@ -808,6 +817,7 @@ class LearnService:
             f"/projects/{project.slug}/tasks/{current_task.id}" if current_task else project_href(project.slug)
         )
         checklist_map = await self._task_checklist_states(user.id, [t.id for t in ordered_tasks])
+        brief_map = await self._task_brief_snapshots(user.id, [t.id for t in ordered_tasks])
 
         return ProjectDetail(
             id=project.id,
@@ -841,9 +851,9 @@ class LearnService:
                     tasks=[
                         ProjectTaskOut(
                             id=task.id,
-                            title=task.title,
+                            title=(brief_map.get(task.id) or {}).get("title") or task.title,
                             sort_order=task.sort_order,
-                            summary=task.summary,
+                            summary=(brief_map.get(task.id) or {}).get("summary", task.summary),
                             task_type=_enum_value(task.task_type),
                             status="completed" if task.id in completed_ids else "not_started",
                             href=f"/projects/{project.slug}/tasks/{task.id}",
@@ -854,8 +864,8 @@ class LearnService:
                             sql_problem_id=task.sql_problem_id,
                             topic_id=task.topic_id,
                             scenario_slug=task.scenario_slug or _scenario_slug_from_task(task),
-                            body_json=task.body_json or {},
-                            checklist_json=list(task.checklist_json or []),
+                            body_json=(brief_map.get(task.id) or {}).get("body_json", task.body_json or {}),
+                            checklist_json=list((brief_map.get(task.id) or {}).get("checklist_json", task.checklist_json or [])),
                             checklist_state=checklist_map.get(task.id, {}),
                             reference_json=task.reference_json,
                             estimated_minutes=task.estimated_minutes,
@@ -942,6 +952,8 @@ class LearnService:
         if row is None:
             row = UserProjectTaskProgress(user_id=user.id, task_id=task_id)
             self.db.add(row)
+        if not row.brief_snapshot:
+            row.brief_snapshot = _task_brief(task)
         state = dict(row.checklist_state or {})
         state.update({str(k): bool(v) for k, v in checked.items()})
         row.checklist_state = state
@@ -984,6 +996,8 @@ class LearnService:
         if row is None:
             row = UserProjectTaskProgress(user_id=user.id, task_id=task_id)
             self.db.add(row)
+        if not row.brief_snapshot:
+            row.brief_snapshot = _task_brief(task)
         row.status = ProgressStatus.COMPLETED
         row.completed_at = row.completed_at or _now()
         row.last_activity_at = _now()
@@ -1043,6 +1057,8 @@ class LearnService:
             )
 
         if task.sql_problem_id is not None:
+            from app.models.sql_practice import SqlProblem
+
             progress = (
                 await self.db.execute(
                     select(SqlProblemProgress).where(
@@ -1052,7 +1068,10 @@ class LearnService:
                     )
                 )
             ).scalar_one_or_none()
-            if progress is None:
+            problem = await self.db.get(SqlProblem, task.sql_problem_id)
+            published = problem.content_version if problem is not None else 1
+            recorded = progress.content_version if progress is not None and progress.content_version is not None else 1
+            if progress is None or recorded != (published or 1):
                 raise AppException(
                     "Complete the linked SQL problem before marking this task done.",
                     status_code=409,
@@ -1227,6 +1246,19 @@ class LearnService:
             )
         ).scalars().all()
         return {row.task_id: dict(row.checklist_state or {}) for row in rows}
+
+    async def _task_brief_snapshots(self, user_id: UUID, task_ids: list[UUID]) -> dict[UUID, dict]:
+        if not task_ids:
+            return {}
+        rows = (
+            await self.db.execute(
+                select(UserProjectTaskProgress).where(
+                    UserProjectTaskProgress.user_id == user_id,
+                    UserProjectTaskProgress.task_id.in_(task_ids),
+                )
+            )
+        ).scalars().all()
+        return {row.task_id: dict(row.brief_snapshot) for row in rows if row.brief_snapshot}
 
     async def _project_task_hrefs(self, tasks: list[ProjectTask], project_slug: str | None = None) -> dict[UUID, str | None]:
         coding_ids = [t.coding_problem_id for t in tasks if t.coding_problem_id]

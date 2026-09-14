@@ -24,6 +24,7 @@ from app.api.v1 import (
     practice,
     readiness,
     sql_practice,
+    studio,
 )
 
 api_router = APIRouter()
@@ -50,3 +51,4 @@ api_router.include_router(admin_interviews.router, tags=["admin-interviews"])
 api_router.include_router(admin_jobs.router, tags=["admin-jobs"])
 api_router.include_router(admin_readiness.router, tags=["admin-readiness"])
 api_router.include_router(admin_learn.router, tags=["admin-learn"])
+api_router.include_router(studio.router, tags=["studio"])

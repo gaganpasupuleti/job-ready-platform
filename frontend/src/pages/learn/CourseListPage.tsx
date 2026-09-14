@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
+import { LearnSubnav } from '@/components/learn/LearnSubnav'
 import { fetchCourses } from '@/services/learnService'
 
 export function CourseListPage() {
@@ -12,6 +13,7 @@ export function CourseListPage() {
 
   return (
     <div className="module-page learn-page">
+      <LearnSubnav />
       <header className="module-heading">
         <div>
           <Link to="/practice" className="back-link">

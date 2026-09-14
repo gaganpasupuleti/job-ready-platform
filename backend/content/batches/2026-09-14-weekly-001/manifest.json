@@ -1,0 +1,97 @@
+{
+  "batch_id": "2026-09-14-weekly-001",
+  "schema_version": 1,
+  "batch_date": "2026-09-14",
+  "timezone": "Asia/Kolkata",
+  "weekday": "Monday",
+  "rotation_group": 2,
+  "families": [
+    "java-backend",
+    "frontend-react",
+    "fullstack-web"
+  ],
+  "audience": "Fresher and Entry (1-2 yrs)",
+  "difficulty_questions": {
+    "easy": 25,
+    "medium": 17,
+    "hard": 8
+  },
+  "topic_overrides": null,
+  "update_ids": null,
+  "publish_mode": "PREVIEW",
+  "change_reason": "Align the HTTP status-class sentence and citation with the verified RFC 9110 plain-text body. fs-request-response and fs-two-programs are version 3. Earlier manifests fc4a715c and 44365ae5 are superseded and must not be published.",
+  "authorization": "local preview only; not a production publication",
+  "items": [
+    {
+      "path": "materials.json",
+      "sha256": "ef5fa2a6fd21ab3bbdfc95754f69bdb49809d4cbe9daa226cfd4715280d299f8",
+      "content_type": "materials"
+    },
+    {
+      "path": "assignments.json",
+      "sha256": "3bd08d1e64051577a9a9702a3b3bd46d99c48efe3159a457e124e895f00a7c74",
+      "content_type": "assignments"
+    },
+    {
+      "path": "questions.json",
+      "sha256": "d4e4aa1976bb8aa678cf580e6e74d791c5844b008aec2495e2787aed9fb1790e",
+      "content_type": "questions"
+    },
+    {
+      "path": "project.json",
+      "sha256": "549f785a11b6149b60558adff55013cecba2b93f1b0596d79618b27cafc13952",
+      "content_type": "project"
+    },
+    {
+      "path": "packs.json",
+      "sha256": "85ff4c43fd1bac2ff440c34fc832b96f2c7e7a72777515042014507c0f0b3101",
+      "content_type": "packs"
+    },
+    {
+      "path": "solutions.json",
+      "sha256": "335b2390a26a5b3682ca89eaeac3ef6a280a111dcc7aca93ec22a6ad043deeb1",
+      "content_type": "solutions"
+    },
+    {
+      "path": "dataset.json",
+      "sha256": "5b749352bc88cff455d8f51880bbac052b019f0aaf55851bd53ca1c66c656232",
+      "content_type": "dataset"
+    },
+    {
+      "path": "materials/jb-class-and-main.md",
+      "sha256": "bf14477d9397a83a75f36d171406b8fe84dfdc0c1047606ac94521c0a0dc8ec4",
+      "content_type": "material_body",
+      "key": "jb-class-and-main"
+    },
+    {
+      "path": "materials/jb-methods-and-blank-title.md",
+      "sha256": "cffbee89b30a9a8b53117a3bffd2d691453db159d769842d57844c482b89ed1f",
+      "content_type": "material_body",
+      "key": "jb-methods-and-blank-title"
+    },
+    {
+      "path": "materials/fr-component-props.md",
+      "sha256": "96415a3940ff0de4f52d26623bb9f43d18e064ec6fcec861386bad7eddd22a46",
+      "content_type": "material_body",
+      "key": "fr-component-props"
+    },
+    {
+      "path": "materials/fr-state-input.md",
+      "sha256": "cd188263bc0e8a020aa51625263b017523887c6e6ef47bc03bdeed225470c69f",
+      "content_type": "material_body",
+      "key": "fr-state-input"
+    },
+    {
+      "path": "materials/fs-request-response.md",
+      "sha256": "a757dd24ef94c898fb542dcff113a4b8c736e1e36fbcc41fe6cf060b447ee1da",
+      "content_type": "material_body",
+      "key": "fs-request-response"
+    },
+    {
+      "path": "materials/fs-two-programs.md",
+      "sha256": "022c41d21737f1a49b48e43dbad01a82283d7fa5a43e7376051de5a655f01310",
+      "content_type": "material_body",
+      "key": "fs-two-programs"
+    }
+  ]
+}
