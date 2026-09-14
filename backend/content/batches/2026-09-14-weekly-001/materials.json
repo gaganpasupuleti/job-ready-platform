@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "materials": [
+    {
+      "key": "jb-class-and-main",
+      "title": "A Java class and the method that starts it",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 25,
+      "families": [
+        "java-backend"
+      ],
+      "skills": [
+        "java",
+        "classes"
+      ],
+      "objectives": [
+        "Name a class and one object of that class",
+        "Recognize the standard application entry method",
+        "State that this site does not compile or run Java"
+      ],
+      "prerequisites": [
+        "You can read a short code block and say what a file is named"
+      ],
+      "summary": "A class is the blueprint. An object is one ticket built from it. A standard application starts at public static void main(String[] args). This site will not compile the file.",
+      "sources": [
+        {
+          "label": "Oracle tutorial: A Closer Look at the Hello World Application",
+          "url": "https://docs.oracle.com/javase/tutorial/getStarted/application/index.html"
+        },
+        {
+          "label": "Oracle tutorial: Classes",
+          "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html"
+        }
+      ],
+      "examples": [
+        "public class Ticket { } lives in Ticket.java"
+      ],
+      "exercises": [
+        "Write the class line and the main method signature only. Do not add a framework."
+      ],
+      "body_file": "materials/jb-class-and-main.md",
+      "version": 1
+    },
+    {
+      "key": "jb-methods-and-blank-title",
+      "title": "Methods that return a title or refuse a blank one",
+      "kind": "worked_example",
+      "level": "intermediate",
+      "audience": "Entry (1-2 yrs)",
+      "minutes": 30,
+      "families": [
+        "java-backend"
+      ],
+      "skills": [
+        "java",
+        "methods"
+      ],
+      "objectives": [
+        "Write a method that returns a cleaned title",
+        "Refuse a blank title instead of inventing one",
+        "Catch only the failure you named"
+      ],
+      "prerequisites": [
+        "jb-class-and-main"
+      ],
+      "summary": "Trim the title, then reject it when nothing remains. Compare text with equals, not ==. Catch IllegalArgumentException, not every Exception.",
+      "sources": [
+        {
+          "label": "Oracle tutorial: Defining Methods",
+          "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html"
+        },
+        {
+          "label": "Oracle tutorial: What Is an Exception?",
+          "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/definition.html"
+        }
+      ],
+      "examples": [
+        "if (title == null || title.trim().isEmpty()) throw new IllegalArgumentException(\"title is blank\");"
+      ],
+      "exercises": [
+        "Show one accepted call and one rejected call. Do not invent Untitled."
+      ],
+      "body_file": "materials/jb-methods-and-blank-title.md",
+      "version": 1
+    },
+    {
+      "key": "fr-component-props",
+      "title": "A React component and the props a parent passes",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 25,
+      "families": [
+        "frontend-react"
+      ],
+      "skills": [
+        "react",
+        "props"
+      ],
+      "objectives": [
+        "Describe a component as a function that returns UI",
+        "Read a title from props",
+        "State that this site will not render the component"
+      ],
+      "prerequisites": [
+        "You can read a function call and a returned value"
+      ],
+      "summary": "A component function returns a description of UI. Props are inputs from the parent. The child reads them. This application does not render the JSX.",
+      "sources": [
+        {
+          "label": "React docs: Your First Component",
+          "url": "https://react.dev/learn/your-first-component"
+        },
+        {
+          "label": "React docs: Passing Props to a Component",
+          "url": "https://react.dev/learn/passing-props-to-a-component"
+        }
+      ],
+      "examples": [
+        "function TicketCard({ title }) { return <h1>{title}</h1>; }"
+      ],
+      "exercises": [
+        "Name the prop and the parent value that fills it. Do not add a data fetch."
+      ],
+      "body_file": "materials/fr-component-props.md",
+      "version": 1
+    },
+    {
+      "key": "fr-state-input",
+      "title": "State and a controlled title input",
+      "kind": "worked_example",
+      "level": "intermediate",
+      "audience": "Entry (1-2 yrs)",
+      "minutes": 30,
+      "families": [
+        "frontend-react"
+      ],
+      "skills": [
+        "react",
+        "state"
+      ],
+      "objectives": [
+        "Start a title with useState",
+        "Wire an input so React holds the current title",
+        "Avoid reading the new title on the next line of the same handler"
+      ],
+      "prerequisites": [
+        "fr-component-props"
+      ],
+      "summary": "useState keeps the title between renders. A controlled input uses value and onChange. setTitle schedules the next render; the next line still sees the old title.",
+      "sources": [
+        {
+          "label": "React docs: State: A Component's Memory",
+          "url": "https://react.dev/learn/state-a-components-memory"
+        },
+        {
+          "label": "React docs: Responding to Events",
+          "url": "https://react.dev/learn/responding-to-events"
+        },
+        {
+          "label": "React docs: Rendering Lists",
+          "url": "https://react.dev/learn/rendering-lists"
+        }
+      ],
+      "examples": [
+        "const [title, setTitle] = useState(''); <input value={title} onChange={(event) => setTitle(event.target.value)} />"
+      ],
+      "exercises": [
+        "Write the setter call for a blank title, then say what title still holds on the next line."
+      ],
+      "body_file": "materials/fr-state-input.md",
+      "version": 1
+    },
+    {
+      "key": "fs-request-response",
+      "title": "Read one HTTP request and its status",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 25,
+      "families": [
+        "fullstack-web"
+      ],
+      "skills": [
+        "http",
+        "status-codes"
+      ],
+      "objectives": [
+        "Name method, path, and status on one exchange",
+        "Separate 201, 400, and 404 in the supplied log",
+        "Refuse a conclusion the status does not support"
+      ],
+      "prerequisites": [
+        "You can read a small table of rows"
+      ],
+      "summary": "A request has a method and a path. The response has a status. In this log, 201 means created, 400 means the request was rejected, and 404 means that ticket was not found.",
+      "sources": [
+        {
+          "label": "RFC 9110, HTTP Semantics: Status Codes",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes"
+        }
+      ],
+      "examples": [
+        "POST /tickets 201 means the create request was accepted and a ticket was created."
+      ],
+      "exercises": [
+        "From the project log, count 200 responses without treating 201 as 200."
+      ],
+      "body_file": "materials/fs-request-response.md",
+      "version": 1
+    },
+    {
+      "key": "fs-two-programs",
+      "title": "The page and the API are two programs",
+      "kind": "article",
+      "level": "intermediate",
+      "audience": "Entry (1-2 yrs)",
+      "minutes": 25,
+      "families": [
+        "fullstack-web"
+      ],
+      "skills": [
+        "http",
+        "boundaries"
+      ],
+      "objectives": [
+        "Separate what the page shows from what the API received",
+        "Explain one 400 and one 500 without swapping them",
+        "Say what this application will not execute"
+      ],
+      "prerequisites": [
+        "fs-request-response"
+      ],
+      "summary": "The page can show a title the API never received. A 400 is a rejected request. A 500 is a server failure. This app does not run either program.",
+      "sources": [
+        {
+          "label": "RFC 9110, HTTP Semantics: Status Codes",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes"
+        }
+      ],
+      "examples": [
+        "A heading that says Printer is not proof that POST /tickets received title Printer."
+      ],
+      "exercises": [
+        "Name one field the page shows and one field the API received on the successful create."
+      ],
+      "body_file": "materials/fs-two-programs.md",
+      "version": 1
+    }
+  ]
+}

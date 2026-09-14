@@ -1,0 +1,97 @@
+{
+  "batch_id": "2026-09-14-weekly-001",
+  "schema_version": 1,
+  "batch_date": "2026-09-14",
+  "timezone": "Asia/Kolkata",
+  "weekday": "Monday",
+  "rotation_group": 2,
+  "families": [
+    "java-backend",
+    "frontend-react",
+    "fullstack-web"
+  ],
+  "audience": "Fresher and Entry (1-2 yrs)",
+  "difficulty_questions": {
+    "easy": 25,
+    "medium": 17,
+    "hard": 8
+  },
+  "topic_overrides": null,
+  "update_ids": null,
+  "publish_mode": "PREVIEW",
+  "change_reason": "Weekly preview batch for rotation group 2. Java class and methods, React props and state, HTTP request log. CRT uses a channel table, not the prior shop table.",
+  "authorization": "local preview only; not a production publication",
+  "items": [
+    {
+      "path": "materials.json",
+      "sha256": "fa649f0c3748f84d28dac21fa5121e13e2e160a18773f1c57265e234c1562b7c",
+      "content_type": "materials"
+    },
+    {
+      "path": "assignments.json",
+      "sha256": "c3d20d6ad8bf68d729d43545aedbfb44b0cabd86d3050a5f92b0f278e5a3e271",
+      "content_type": "assignments"
+    },
+    {
+      "path": "questions.json",
+      "sha256": "177c685e9ef696c424f147fce6b5203019751106cb8a80363bfb66f9caf3bb6a",
+      "content_type": "questions"
+    },
+    {
+      "path": "project.json",
+      "sha256": "549f785a11b6149b60558adff55013cecba2b93f1b0596d79618b27cafc13952",
+      "content_type": "project"
+    },
+    {
+      "path": "packs.json",
+      "sha256": "85ff4c43fd1bac2ff440c34fc832b96f2c7e7a72777515042014507c0f0b3101",
+      "content_type": "packs"
+    },
+    {
+      "path": "solutions.json",
+      "sha256": "335b2390a26a5b3682ca89eaeac3ef6a280a111dcc7aca93ec22a6ad043deeb1",
+      "content_type": "solutions"
+    },
+    {
+      "path": "dataset.json",
+      "sha256": "5b749352bc88cff455d8f51880bbac052b019f0aaf55851bd53ca1c66c656232",
+      "content_type": "dataset"
+    },
+    {
+      "path": "materials/jb-class-and-main.md",
+      "sha256": "4d48b605010e99bf53bb4508584cad5d7214f03ddb55535d2cf6391168c5c03a",
+      "content_type": "material_body",
+      "key": "jb-class-and-main"
+    },
+    {
+      "path": "materials/jb-methods-and-blank-title.md",
+      "sha256": "da1f56d56e4bcfe8fc10295ff0ed94087d1dac5226b6c9aed0f4cf5c018d0072",
+      "content_type": "material_body",
+      "key": "jb-methods-and-blank-title"
+    },
+    {
+      "path": "materials/fr-component-props.md",
+      "sha256": "8c67f6321464102f9a5349b0887fba16871927aead51a7f7e8134e5dc14bc816",
+      "content_type": "material_body",
+      "key": "fr-component-props"
+    },
+    {
+      "path": "materials/fr-state-input.md",
+      "sha256": "a7b6ee541606c3784c06e7e44d03beda5cbdcc5ea1c44686d1707a1311239c08",
+      "content_type": "material_body",
+      "key": "fr-state-input"
+    },
+    {
+      "path": "materials/fs-request-response.md",
+      "sha256": "af5203277042e84807e92e00bc7f4ca4bf2b8fc8c53dd5eca23033b76634d2dc",
+      "content_type": "material_body",
+      "key": "fs-request-response"
+    },
+    {
+      "path": "materials/fs-two-programs.md",
+      "sha256": "d5ab4c1d550805387163217ecfa1536240a54674df79312bebe81666e2423527",
+      "content_type": "material_body",
+      "key": "fs-two-programs"
+    }
+  ]
+}

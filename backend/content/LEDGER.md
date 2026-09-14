@@ -45,3 +45,26 @@ Fresh, local only:
 ## Migration
 
 `019_learning_studio` revises `018_job_source_taxonomy`. `020_content_version_history` revises 019. Both applied locally. Neither is applied to production.
+
+## Rotation
+
+Completed group 1: `2026-09-19-saturday-001` (data-analyst, data-engineer, python-dev).
+
+Next completed group after the batch below: group 3 (qa-testing, business-analyst, powerbi-analyst). Do not repeat group 2.
+
+## Batch 2026-09-14-weekly-001
+
+Date 2026-09-14, Asia/Kolkata, Monday. Not Saturday. Run because the weekly prompt was pasted that day. Preview only. Not production.
+
+Rotation group 2: java-backend, frontend-react, fullstack-web. Shared CRT is a new pack, `pack-crt-2026-09-14`. `pack-crt-shared` was not rewritten.
+
+- Materials: 6. Java class/main and blank-title methods. React props and controlled state. HTTP request reading and page/API boundary.
+- Assignments: 3. Mode `manual_review`. Rubrics total 100. Private answers are in `solutions.json`, not in student briefs.
+- Project: `ticket-request-log`. New. Does not extend `orders-payment-quality`. Four written milestones. Technology `http`. This app does not run Java, React, or the ticket API.
+- Questions: 50. Difficulty stored as easy/medium/hard because the loader requires those names: 25 easy, 17 medium, 8 hard. That is the requested 25 beginner, 17 intermediate, 8 advanced.
+- CRT table is a channel open/closed/reopened table, not the prior shop table.
+- SQL problems: 3 unchanged. No new SQL milestone.
+- Rejected: 0.
+- Apply created the new items. An identical reapply left materials 6, assignments 3, questions 50, packs 4, project 1, and SQL 3 unchanged.
+- Manifest sha256: `fc4a715c7f5b3f0543c5283947c83a5ba00a2e69d4a300c41ea9d4a38d671046`
+- Local preview API on 127.0.0.1:8001. UI on 127.0.0.1:5176. Not the live site.

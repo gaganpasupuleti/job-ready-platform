@@ -81,6 +81,13 @@ def load_batch(path: Path) -> dict:
         missing = [key for key in pack["question_keys"] if key not in q_by_key]
         if missing:
             rejected.append(f"{pack['key']} unresolved {missing}")
+    for assignment in assignments:
+        for family in assignment.get("families", []):
+            if family not in FAMILY_IDS:
+                rejected.append(f"{assignment['key']} family {family}")
+    for family in project.get("families", []):
+        if family not in FAMILY_IDS:
+            rejected.append(f"{project.get('key')} family {family}")
     return {
         "batch_id": manifest["batch_id"],
         "materials": materials,
@@ -472,7 +479,11 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
         project.description = project_row["scenario"]
         project.final_objective = project_row["outcome"]
         project.skills = project_row["skills"]
-        project.reference_json = {"families": project_row["families"], "dataset": "dataset.sql", "version": project_action["version"]}
+        project.reference_json = {
+            "families": project_row["families"],
+            "dataset": project_row.get("dataset_file") or "dataset.sql",
+            "version": project_action["version"],
+        }
         module = (
             await db.execute(select(ProjectModule).where(ProjectModule.project_id == project.id).order_by(ProjectModule.sort_order))
         ).scalars().first()
@@ -496,23 +507,25 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
             short_description=project_row["outcome"][:500],
             description=project_row["scenario"],
             difficulty=PracticePathDifficulty.BEGINNER,
-            technology="sql",
-            category_key="sql",
-            estimated_minutes=90,
+            technology=project_row.get("technology") or "sql",
+            category_key=project_row.get("category_key") or "sql",
+            estimated_minutes=int(project_row.get("minutes") or 90),
             is_published=True,
             availability=PathAvailability.AVAILABLE,
             prerequisites=[],
             skills=project_row["skills"],
             final_objective=project_row["outcome"],
-            reference_json={"families": project_row["families"], "dataset": "dataset.sql"},
+            reference_json={"families": project_row["families"], "dataset": project_row.get("dataset_file") or "dataset.sql"},
         )
         db.add(project)
         await db.flush()
-        module = ProjectModule(project_id=project.id, title="Payment quality", sort_order=0)
+        module = ProjectModule(project_id=project.id, title=project_row.get("module_title") or "Payment quality", sort_order=0)
         db.add(module)
         await db.flush()
         for index, milestone in enumerate(project_row["milestones"]):
             task_type = ProjectTaskType.SQL if milestone["type"] == "sql" else ProjectTaskType.REVIEW
+            sql_note = "SQL milestones require an accepted studio submission. The findings note is not an automatic grade."
+            review_note = "This milestone is a written check. Marking it complete is not an automatic grade. This app does not run Java, React, or the API in the log."
             db.add(
                 ProjectTask(
                     module_id=module.id,
@@ -521,7 +534,7 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                     task_type=task_type,
                     sql_problem_id=sql_ids.get(milestone.get("sql_problem_slug")),
                     summary=milestone["deliverable"],
-                    body_json={"note": "SQL milestones require an accepted studio submission. The findings note is not an automatic grade."},
+                    body_json={"note": sql_note if milestone["type"] == "sql" else review_note},
                     checklist_json=[],
                 )
             )

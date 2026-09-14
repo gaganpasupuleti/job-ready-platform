@@ -1,0 +1,1755 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "key": "jb-q01",
+      "stem": "Which method is the standard starting point of a Java application?",
+      "skill": "classes",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "public static void main(String[] args)",
+          "correct": true,
+          "why": "That is the entry method the Oracle tutorial shows."
+        },
+        {
+          "key": "B",
+          "text": "public void start()",
+          "correct": false,
+          "why": "start is not the standard entry method."
+        },
+        {
+          "key": "C",
+          "text": "static run()",
+          "correct": false,
+          "why": "run is not the application entry signature."
+        },
+        {
+          "key": "D",
+          "text": "public Ticket main()",
+          "correct": false,
+          "why": "main must return void and take String[]."
+        }
+      ],
+      "explanation": "A standard Java application starts at public static void main(String[] args).",
+      "version": 1
+    },
+    {
+      "key": "jb-q02",
+      "stem": "Which statement matches the class and object distinction in this batch?",
+      "skill": "classes",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The class is the blueprint; new Ticket(4, \"VPN\") is one object",
+          "correct": true,
+          "why": "The class describes tickets. new builds one ticket."
+        },
+        {
+          "key": "B",
+          "text": "The class is already ticket 4",
+          "correct": false,
+          "why": "The class is not the ticket."
+        },
+        {
+          "key": "C",
+          "text": "An object is the file name",
+          "correct": false,
+          "why": "The file name is not the object."
+        },
+        {
+          "key": "D",
+          "text": "A class cannot have two objects",
+          "correct": false,
+          "why": "You can construct more than one object."
+        }
+      ],
+      "explanation": "Class is the blueprint. The object is one ticket built from it.",
+      "version": 1
+    },
+    {
+      "key": "jb-q03",
+      "stem": "What does System.out.println(\"VPN\") do?",
+      "skill": "classes",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Writes VPN and then a line break to standard output",
+          "correct": true,
+          "why": "println writes the text and a newline."
+        },
+        {
+          "key": "B",
+          "text": "Saves a ticket named VPN",
+          "correct": false,
+          "why": "It does not persist a ticket."
+        },
+        {
+          "key": "C",
+          "text": "Compiles Ticket.java",
+          "correct": false,
+          "why": "It is not the compiler."
+        },
+        {
+          "key": "D",
+          "text": "Starts the Java runtime",
+          "correct": false,
+          "why": "The runtime is already running if this line runs."
+        }
+      ],
+      "explanation": "println writes to standard output. It does not save a ticket.",
+      "version": 1
+    },
+    {
+      "key": "jb-q04",
+      "stem": "The brief says a blank title must be refused. Which result matches it?",
+      "skill": "methods",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Throw IllegalArgumentException and do not invent a title",
+          "correct": true,
+          "why": "Refusal is the named failure, not a guessed title."
+        },
+        {
+          "key": "B",
+          "text": "Store the title Untitled",
+          "correct": false,
+          "why": "Untitled was not in the brief."
+        },
+        {
+          "key": "C",
+          "text": "Store an empty string and continue",
+          "correct": false,
+          "why": "An empty string is the failure, not a saved title."
+        },
+        {
+          "key": "D",
+          "text": "Return null and treat it as a saved title",
+          "correct": false,
+          "why": "null is not a saved title."
+        }
+      ],
+      "explanation": "Refuse the blank title. Do not invent Untitled.",
+      "version": 1
+    },
+    {
+      "key": "jb-q05",
+      "stem": "How does this JobReady site grade a Java file pasted into the browser?",
+      "skill": "methods",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "It does not compile or run it. Text or an HTTPS URL is for manual review.",
+          "correct": true,
+          "why": "Java execution is not hosted here."
+        },
+        {
+          "key": "B",
+          "text": "Judge0 compiles it and returns a score",
+          "correct": false,
+          "why": "Judge0 stays disabled and is not a required key."
+        },
+        {
+          "key": "C",
+          "text": "The SQL sandbox compiles it",
+          "correct": false,
+          "why": "The SQL sandbox does not compile Java."
+        },
+        {
+          "key": "D",
+          "text": "A paid plugin must be installed first",
+          "correct": false,
+          "why": "No paid plugin is required to complete the batch."
+        }
+      ],
+      "explanation": "Submit text or an HTTPS URL. This site does not run the Java file.",
+      "version": 1
+    },
+    {
+      "key": "jb-q06",
+      "stem": "A method trims the title, then rejects it when nothing remains. What happens to the input \"   \"?",
+      "skill": "methods",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "It is rejected as blank",
+          "correct": true,
+          "why": "After trim the text is empty, so the check rejects it."
+        },
+        {
+          "key": "B",
+          "text": "It is stored as three spaces",
+          "correct": false,
+          "why": "The brief rejects a blank result after trim."
+        },
+        {
+          "key": "C",
+          "text": "It becomes Untitled",
+          "correct": false,
+          "why": "Untitled is not part of the check."
+        },
+        {
+          "key": "D",
+          "text": "trim throws NullPointerException",
+          "correct": false,
+          "why": "The input is not null, so trim itself is not a null failure."
+        }
+      ],
+      "explanation": "Trim first. An all-space title is empty and must be rejected.",
+      "version": 1
+    },
+    {
+      "key": "jb-q07",
+      "stem": "Which check asks whether two strings have the same characters?",
+      "skill": "methods",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "title == other",
+          "correct": false,
+          "why": "== asks whether they are the same object."
+        },
+        {
+          "key": "B",
+          "text": "title.equals(other)",
+          "correct": true,
+          "why": "equals asks about the characters."
+        },
+        {
+          "key": "C",
+          "text": "title = other",
+          "correct": false,
+          "why": "A single = assigns. It does not compare."
+        },
+        {
+          "key": "D",
+          "text": "System.out.println(title)",
+          "correct": false,
+          "why": "Printing does not compare."
+        }
+      ],
+      "explanation": "Use equals for character content. == is an object identity check.",
+      "version": 1
+    },
+    {
+      "key": "jb-q08",
+      "stem": "A method declares int count; and then reads count before any assignment. What happens?",
+      "skill": "methods",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The compiler rejects the read of an unassigned local variable",
+          "correct": true,
+          "why": "Local variables have no compiler-supplied default."
+        },
+        {
+          "key": "B",
+          "text": "count is silently 0",
+          "correct": false,
+          "why": "That default applies to fields, not to this unread local."
+        },
+        {
+          "key": "C",
+          "text": "count is null",
+          "correct": false,
+          "why": "int is not null."
+        },
+        {
+          "key": "D",
+          "text": "The program prints count and continues",
+          "correct": false,
+          "why": "The compiler does not let this read through."
+        }
+      ],
+      "explanation": "The compiler never assigns a default to an uninitialized local variable.",
+      "version": 1
+    },
+    {
+      "key": "jb-q09",
+      "stem": "A file contains public class Ticket. Which file name matches the public class?",
+      "skill": "classes",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "ticket.txt",
+          "correct": false,
+          "why": "The source file is Java, not a text note."
+        },
+        {
+          "key": "B",
+          "text": "Main.java",
+          "correct": false,
+          "why": "Main.java does not match the public class Ticket."
+        },
+        {
+          "key": "C",
+          "text": "Ticket.java",
+          "correct": true,
+          "why": "The public class name and the file name must match."
+        },
+        {
+          "key": "D",
+          "text": "Ticket.class as the source file",
+          "correct": false,
+          "why": "A .class file is compiled output, not the source the tutorial asks you to save."
+        }
+      ],
+      "explanation": "Save public class Ticket in Ticket.java.",
+      "version": 1
+    },
+    {
+      "key": "jb-q10",
+      "stem": "The method throws IllegalArgumentException for a blank title. Why is catch (Exception ex) a weak handler here?",
+      "skill": "methods",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "It also catches unrelated failures and can hide them",
+          "correct": true,
+          "why": "Exception is a wide type. It hides failures the method did not mean to handle."
+        },
+        {
+          "key": "B",
+          "text": "Exception cannot catch IllegalArgumentException",
+          "correct": false,
+          "why": "IllegalArgumentException is an Exception, so it is caught, and that is the problem."
+        },
+        {
+          "key": "C",
+          "text": "A blank title never throws",
+          "correct": false,
+          "why": "The worked example does throw for a blank title."
+        },
+        {
+          "key": "D",
+          "text": "catch is illegal in Java",
+          "correct": false,
+          "why": "catch is legal. The problem is the width."
+        }
+      ],
+      "explanation": "Catch IllegalArgumentException if that is the named failure. A catch of Exception is wider than the brief.",
+      "version": 1
+    },
+    {
+      "key": "fr-q01",
+      "stem": "In this batch, what does a React component function do?",
+      "skill": "components",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Returns a description of UI",
+          "correct": true,
+          "why": "The component returns UI."
+        },
+        {
+          "key": "B",
+          "text": "Saves a ticket on a server",
+          "correct": false,
+          "why": "Saving is not this function's job."
+        },
+        {
+          "key": "C",
+          "text": "Compiles Java",
+          "correct": false,
+          "why": "React is not a Java compiler."
+        },
+        {
+          "key": "D",
+          "text": "Replaces the need for a parent",
+          "correct": false,
+          "why": "The parent still supplies props."
+        }
+      ],
+      "explanation": "A component returns a description of UI. It does not save a ticket.",
+      "version": 1
+    },
+    {
+      "key": "fr-q02",
+      "stem": "Where does a prop value come from?",
+      "skill": "props",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The child invents it at render time",
+          "correct": false,
+          "why": "A missing prop should stay missing, not be invented."
+        },
+        {
+          "key": "B",
+          "text": "The parent passes it in, and the child reads it",
+          "correct": true,
+          "why": "Props are inputs from the parent."
+        },
+        {
+          "key": "C",
+          "text": "The CSS file",
+          "correct": false,
+          "why": "CSS does not pass the title."
+        },
+        {
+          "key": "D",
+          "text": "The SQL sandbox",
+          "correct": false,
+          "why": "The SQL sandbox is not the component parent."
+        }
+      ],
+      "explanation": "The parent passes the prop. The child reads it.",
+      "version": 1
+    },
+    {
+      "key": "fr-q03",
+      "stem": "const [title, setTitle] = useState(\"\"). What is title on the first render?",
+      "skill": "state",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "null",
+          "correct": false,
+          "why": "The argument was an empty string, not null."
+        },
+        {
+          "key": "B",
+          "text": "\"Untitled\"",
+          "correct": false,
+          "why": "Untitled was not passed to useState."
+        },
+        {
+          "key": "C",
+          "text": "\"\"",
+          "correct": true,
+          "why": "useState(\"\") starts title as an empty string."
+        },
+        {
+          "key": "D",
+          "text": "The previous user's title",
+          "correct": false,
+          "why": "This state is local to the component. It is not another user's value."
+        }
+      ],
+      "explanation": "The first render uses the initial value passed to useState.",
+      "version": 1
+    },
+    {
+      "key": "fr-q04",
+      "stem": "How is an HTML class attribute written in JSX?",
+      "skill": "components",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "class",
+          "correct": false,
+          "why": "class is the HTML name, not the JSX name."
+        },
+        {
+          "key": "B",
+          "text": "className",
+          "correct": true,
+          "why": "className is the JSX name."
+        },
+        {
+          "key": "C",
+          "text": "css",
+          "correct": false,
+          "why": "css is not the attribute."
+        },
+        {
+          "key": "D",
+          "text": "styleClass",
+          "correct": false,
+          "why": "styleClass is not the JSX attribute."
+        }
+      ],
+      "explanation": "JSX uses className, not class.",
+      "version": 1
+    },
+    {
+      "key": "fr-q05",
+      "stem": "How does this JobReady site render a JSX file you submit?",
+      "skill": "components",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "It does not render it. Review is of the text or an HTTPS URL.",
+          "correct": true,
+          "why": "React execution is not hosted here."
+        },
+        {
+          "key": "B",
+          "text": "It mounts the component and types into the input",
+          "correct": false,
+          "why": "No browser preview is run on the server for this assignment."
+        },
+        {
+          "key": "C",
+          "text": "It requires a paid React plugin",
+          "correct": false,
+          "why": "No paid plugin is required."
+        },
+        {
+          "key": "D",
+          "text": "The SQL sandbox renders it",
+          "correct": false,
+          "why": "SQL does not render JSX."
+        }
+      ],
+      "explanation": "Submit the component as text or an HTTPS URL. This site will not render it.",
+      "version": 1
+    },
+    {
+      "key": "fr-q06",
+      "stem": "Which input is controlled by title state?",
+      "skill": "state",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "<input onChange={(event) => setTitle(event.target.value)} />",
+          "correct": false,
+          "why": "onChange alone does not display the state as the current value."
+        },
+        {
+          "key": "B",
+          "text": "<input value={title} onChange={(event) => setTitle(event.target.value)} />",
+          "correct": true,
+          "why": "value and onChange together keep the field tied to state."
+        },
+        {
+          "key": "C",
+          "text": "<input value={title} />",
+          "correct": false,
+          "why": "value without onChange does not write the next keystroke back through the setter in this pattern."
+        },
+        {
+          "key": "D",
+          "text": "<input defaultValue=\"VPN\" />",
+          "correct": false,
+          "why": "defaultValue does not keep the field controlled by title."
+        }
+      ],
+      "explanation": "A controlled input uses value={title} and an onChange that calls setTitle.",
+      "version": 1
+    },
+    {
+      "key": "fr-q07",
+      "stem": "A list of tickets can be filtered. Which key identifies a row?",
+      "skill": "lists",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The array index",
+          "correct": false,
+          "why": "The index changes when the list is filtered or reordered."
+        },
+        {
+          "key": "B",
+          "text": "ticket.id",
+          "correct": true,
+          "why": "ticket.id stays with that ticket."
+        },
+        {
+          "key": "C",
+          "text": "The word key as the title",
+          "correct": false,
+          "why": "The word key is not an identity."
+        },
+        {
+          "key": "D",
+          "text": "The CSS class",
+          "correct": false,
+          "why": "A CSS class does not identify the row."
+        }
+      ],
+      "explanation": "Use a stable id. Do not use the array index when the list can change order.",
+      "version": 1
+    },
+    {
+      "key": "fr-q08",
+      "stem": "A handler does tickets.push(row) and does not call the state setter. What does React do?",
+      "skill": "state",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "It is not asked to render the new list from state",
+          "correct": true,
+          "why": "The setter was not called, so React was not told to render the new list."
+        },
+        {
+          "key": "B",
+          "text": "It saves the ticket on the server",
+          "correct": false,
+          "why": "push does not perform an HTTP create."
+        },
+        {
+          "key": "C",
+          "text": "It resets title to null",
+          "correct": false,
+          "why": "This line does not touch title."
+        },
+        {
+          "key": "D",
+          "text": "It treats push as setState",
+          "correct": false,
+          "why": "push is an array method, not the setter."
+        }
+      ],
+      "explanation": "Mutating the array does not schedule the render. Call the setter with the next list.",
+      "version": 1
+    },
+    {
+      "key": "fr-q09",
+      "stem": "title is \"\". The click handler calls setTitle(\"VPN\") and then reads title on the next line. What does that read see?",
+      "skill": "state",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "\"VPN\"",
+          "correct": false,
+          "why": "The setter does not change title in the function that is already running."
+        },
+        {
+          "key": "B",
+          "text": "\"\"",
+          "correct": true,
+          "why": "The already executing code still sees the previous state."
+        },
+        {
+          "key": "C",
+          "text": "null",
+          "correct": false,
+          "why": "The state was an empty string, not null."
+        },
+        {
+          "key": "D",
+          "text": "The parent's prop, not the state variable",
+          "correct": false,
+          "why": "The read is the state variable, which has not updated yet."
+        }
+      ],
+      "explanation": "setTitle schedules the next render. The next line still sees the old title.",
+      "version": 1
+    },
+    {
+      "key": "fr-q10",
+      "stem": "Why is title = \"VPN\" the wrong way to remember a new title in a function component?",
+      "skill": "state",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "It does not update state, so React does not re-render from that assignment",
+          "correct": true,
+          "why": "The local assignment does not tell React to store a new state value."
+        },
+        {
+          "key": "B",
+          "text": "It compiles the component",
+          "correct": false,
+          "why": "Assignment is not compilation."
+        },
+        {
+          "key": "C",
+          "text": "It sends POST /tickets",
+          "correct": false,
+          "why": "This line is not an HTTP request."
+        },
+        {
+          "key": "D",
+          "text": "It is the same operation as setTitle",
+          "correct": false,
+          "why": "setTitle is the state update. A plain assignment is not."
+        }
+      ],
+      "explanation": "Use the setter from useState. A plain assignment does not schedule a render from state.",
+      "version": 1
+    },
+    {
+      "key": "fs-q01",
+      "stem": "In this batch's log, what is GET /tickets/1 used for?",
+      "skill": "http",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "To read ticket 1",
+          "correct": true,
+          "why": "GET on that path is the read in this log."
+        },
+        {
+          "key": "B",
+          "text": "To create ticket 1",
+          "correct": false,
+          "why": "Create is the POST that returned 201."
+        },
+        {
+          "key": "C",
+          "text": "To delete ticket 1",
+          "correct": false,
+          "why": "No delete appears in the log."
+        },
+        {
+          "key": "D",
+          "text": "To compile a Java class",
+          "correct": false,
+          "why": "The log is HTTP, not a Java compile."
+        }
+      ],
+      "explanation": "In this log, GET reads an existing ticket. It is not a create.",
+      "version": 1
+    },
+    {
+      "key": "fs-q02",
+      "stem": "Using only this log, what does status 201 on row 2 mean?\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |",
+      "skill": "http",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The ticket was not found",
+          "correct": false,
+          "why": "Not found is 404 on row 3."
+        },
+        {
+          "key": "B",
+          "text": "The create succeeded",
+          "correct": true,
+          "why": "Row 2 returned 201 and a ticket id."
+        },
+        {
+          "key": "C",
+          "text": "The server crashed",
+          "correct": false,
+          "why": "A server failure is 500 on row 6."
+        },
+        {
+          "key": "D",
+          "text": "The title was missing",
+          "correct": false,
+          "why": "A missing title is 400 on row 4."
+        }
+      ],
+      "explanation": "201 on the POST means the ticket was created. It is not a failure just because it is not 200.",
+      "version": 1
+    },
+    {
+      "key": "fs-q03",
+      "stem": "Using only this log, what does status 404 on row 3 mean?\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |",
+      "skill": "http",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Ticket 9 was not found",
+          "correct": true,
+          "why": "The path is /tickets/9 and the body says not found."
+        },
+        {
+          "key": "B",
+          "text": "Ticket 1 was not found",
+          "correct": false,
+          "why": "Ticket 1 returned 200 on row 1."
+        },
+        {
+          "key": "C",
+          "text": "The server crashed",
+          "correct": false,
+          "why": "Crash is 500, which is a different row."
+        },
+        {
+          "key": "D",
+          "text": "The page failed to start",
+          "correct": false,
+          "why": "404 is about that resource, not the page program starting."
+        }
+      ],
+      "explanation": "404 means no ticket with id 9. It does not erase the 200 on ticket 1.",
+      "version": 1
+    },
+    {
+      "key": "fs-q04",
+      "stem": "Which description matches the page and the API in this project?",
+      "skill": "boundaries",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "They are the same program and the same store",
+          "correct": false,
+          "why": "A heading is not the JSON the API stored."
+        },
+        {
+          "key": "B",
+          "text": "They are two programs. The page does not contain the API's stored tickets.",
+          "correct": true,
+          "why": "They exchange messages. They are not one store."
+        },
+        {
+          "key": "C",
+          "text": "The page is the SQL sandbox",
+          "correct": false,
+          "why": "The SQL sandbox is a different tool and is not this API."
+        },
+        {
+          "key": "D",
+          "text": "The API is a React prop",
+          "correct": false,
+          "why": "A prop is a React input, not the ticket API."
+        }
+      ],
+      "explanation": "The page shows. The API answers. They are separate programs.",
+      "version": 1
+    },
+    {
+      "key": "fs-q05",
+      "stem": "Using only this log, how many responses are status 200?\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |",
+      "skill": "http",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "1",
+          "correct": false,
+          "why": "Row 1 is one 200, but row 5 is also 200."
+        },
+        {
+          "key": "B",
+          "text": "2",
+          "correct": true,
+          "why": "Rows 1 and 5 are 200. Row 2 is 201, not 200."
+        },
+        {
+          "key": "C",
+          "text": "3",
+          "correct": false,
+          "why": "That would count 201 as 200."
+        },
+        {
+          "key": "D",
+          "text": "6",
+          "correct": false,
+          "why": "Only two rows are 200."
+        }
+      ],
+      "explanation": "Count the Status column. 200 appears on rows 1 and 5. 201 is not 200.",
+      "version": 1
+    },
+    {
+      "key": "fs-q06",
+      "stem": "Using only this log, why did row 4 return 400?\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |",
+      "skill": "http",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The server crashed",
+          "correct": false,
+          "why": "A crash in this log is status 500."
+        },
+        {
+          "key": "B",
+          "text": "The client sent no title, so the request was rejected",
+          "correct": true,
+          "why": "The body sent is {} and the error says title is required."
+        },
+        {
+          "key": "C",
+          "text": "Ticket 4 was not found",
+          "correct": false,
+          "why": "Not found is 404, and this row is a POST."
+        },
+        {
+          "key": "D",
+          "text": "The browser calculated a title incorrectly",
+          "correct": false,
+          "why": "The response names the missing field, not a browser calculation."
+        }
+      ],
+      "explanation": "400 here means the request was rejected because title was missing.",
+      "version": 1
+    },
+    {
+      "key": "fs-q07",
+      "stem": "Using only this log, what does status 500 on row 6 mean?\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |",
+      "skill": "http",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The browser could not parse JSX",
+          "correct": false,
+          "why": "JSX is not in this row."
+        },
+        {
+          "key": "B",
+          "text": "The server failed while handling GET /tickets/3",
+          "correct": true,
+          "why": "The returned body says server failed, and the class is 5xx."
+        },
+        {
+          "key": "C",
+          "text": "The title was missing on a POST",
+          "correct": false,
+          "why": "A missing title is row 4, status 400."
+        },
+        {
+          "key": "D",
+          "text": "Ticket 3 was created",
+          "correct": false,
+          "why": "Created is row 2, status 201."
+        }
+      ],
+      "explanation": "500 means the server failed on that request. It is not a missing title.",
+      "version": 1
+    },
+    {
+      "key": "fs-q08",
+      "stem": "A title appears only as GET /tickets?title=VPN. What is true of the JSON body?",
+      "skill": "http",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The JSON body automatically contains title VPN",
+          "correct": false,
+          "why": "The question places the title in the query, not in a JSON body."
+        },
+        {
+          "key": "B",
+          "text": "A query parameter is not automatically a JSON body field",
+          "correct": true,
+          "why": "The query string and the JSON body are different places."
+        },
+        {
+          "key": "C",
+          "text": "The status must be 201",
+          "correct": false,
+          "why": "201 is a create status. This line is a GET."
+        },
+        {
+          "key": "D",
+          "text": "The page and the API are the same program",
+          "correct": false,
+          "why": "The page and the API remain separate."
+        }
+      ],
+      "explanation": "A title in the query string is not a JSON body field unless the request also sends that body.",
+      "version": 1
+    },
+    {
+      "key": "fs-q09",
+      "stem": "Using only this log, what does status 500 on row 6 prove about the page?\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |",
+      "skill": "http",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The page computed the title incorrectly",
+          "correct": false,
+          "why": "The status is about the server handling GET /tickets/3."
+        },
+        {
+          "key": "B",
+          "text": "It does not prove a page calculation error. It reports a server failure.",
+          "correct": true,
+          "why": "A 500 is a server failure. It is not evidence that the page arithmetic was wrong."
+        },
+        {
+          "key": "C",
+          "text": "The page never rendered a heading",
+          "correct": false,
+          "why": "The log does not say the page failed to render."
+        },
+        {
+          "key": "D",
+          "text": "Ticket 9 was created",
+          "correct": false,
+          "why": "Ticket 9 is the 404 row, and it was not created."
+        }
+      ],
+      "explanation": "A 500 proves the server reported a failure. It does not prove the page calculated the title incorrectly.",
+      "version": 1
+    },
+    {
+      "key": "fs-q10",
+      "stem": "Using RFC 9110 status classes, which class does 404 belong to?",
+      "skill": "http",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "2xx success",
+          "correct": false,
+          "why": "2xx includes 200 and 201, not 404."
+        },
+        {
+          "key": "B",
+          "text": "3xx redirection",
+          "correct": false,
+          "why": "3xx is redirection. 404 is not a redirect."
+        },
+        {
+          "key": "C",
+          "text": "4xx client error",
+          "correct": true,
+          "why": "404 is in the 4xx class."
+        },
+        {
+          "key": "D",
+          "text": "5xx server error",
+          "correct": false,
+          "why": "5xx includes 500, not 404."
+        }
+      ],
+      "explanation": "404 is a 4xx client error. 500 is the 5xx line in this log.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q01",
+      "stem": "The numbers 10, 20, and 30 are one set. What is their average?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "15",
+          "correct": false,
+          "why": "That drops the 30."
+        },
+        {
+          "key": "B",
+          "text": "20",
+          "correct": true,
+          "why": "10 + 20 + 30 = 60, and 60 / 3 = 20."
+        },
+        {
+          "key": "C",
+          "text": "30",
+          "correct": false,
+          "why": "30 is the largest value, not the average."
+        },
+        {
+          "key": "D",
+          "text": "60",
+          "correct": false,
+          "why": "60 is the sum, not the average."
+        }
+      ],
+      "explanation": "Add the three numbers and divide by 3. The average is 20.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q02",
+      "stem": "What is 15% of 200?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "15",
+          "correct": false,
+          "why": "15 is the percent, not the part of 200."
+        },
+        {
+          "key": "B",
+          "text": "30",
+          "correct": true,
+          "why": "0.15 * 200 = 30."
+        },
+        {
+          "key": "C",
+          "text": "150",
+          "correct": false,
+          "why": "150 would be 75% of 200."
+        },
+        {
+          "key": "D",
+          "text": "215",
+          "correct": false,
+          "why": "215 adds the percent to the base."
+        }
+      ],
+      "explanation": "15% of 200 is 30. No further increase is stated.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q03",
+      "stem": "Pipe A fills a tank in 12 hours. Pipe B fills the same tank in 6 hours. How long do they take together, if both fill and neither leaks?",
+      "skill": "quantitative",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "4 hours",
+          "correct": true,
+          "why": "1/12 + 1/6 = 1/12 + 2/12 = 3/12 = 1/4, so 4 hours."
+        },
+        {
+          "key": "B",
+          "text": "9 hours",
+          "correct": false,
+          "why": "Adding the hours is not the combined rate."
+        },
+        {
+          "key": "C",
+          "text": "18 hours",
+          "correct": false,
+          "why": "18 is the product of the hours."
+        },
+        {
+          "key": "D",
+          "text": "2 hours",
+          "correct": false,
+          "why": "2 would be a faster rate than the two pipes together."
+        }
+      ],
+      "explanation": "Add the rates, not the hours. Together they fill one quarter of the tank per hour.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q04",
+      "stem": "A fee of 400 increases by 10%. What is the increase, not the new fee?",
+      "skill": "quantitative",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "10",
+          "correct": false,
+          "why": "10 is the percent, not the money."
+        },
+        {
+          "key": "B",
+          "text": "40",
+          "correct": true,
+          "why": "10% of 400 is 40."
+        },
+        {
+          "key": "C",
+          "text": "440",
+          "correct": false,
+          "why": "440 is the new fee."
+        },
+        {
+          "key": "D",
+          "text": "360",
+          "correct": false,
+          "why": "360 subtracts the increase."
+        }
+      ],
+      "explanation": "The question asks for the increase. 10% of 400 is 40.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q05",
+      "stem": "Pipe A fills a tank in 8 hours. Pipe B empties the same tank in 24 hours. Both are open. How long does a full fill take from empty?",
+      "skill": "quantitative",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "6 hours",
+          "correct": false,
+          "why": "6 would be a faster net rate than A alone minus B."
+        },
+        {
+          "key": "B",
+          "text": "12 hours",
+          "correct": true,
+          "why": "1/8 - 1/24 = 3/24 - 1/24 = 2/24 = 1/12, so 12 hours."
+        },
+        {
+          "key": "C",
+          "text": "16 hours",
+          "correct": false,
+          "why": "16 adds the hours in a way the rates do not support."
+        },
+        {
+          "key": "D",
+          "text": "32 hours",
+          "correct": false,
+          "why": "32 is slower than the empty rate alone."
+        }
+      ],
+      "explanation": "Subtract the emptying rate from the filling rate. The net rate fills the tank in 12 hours.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q06",
+      "stem": "Which number is the odd one out: 2, 4, 8, 9, 16?",
+      "skill": "reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "2",
+          "correct": false,
+          "why": "2 is a power of 2."
+        },
+        {
+          "key": "B",
+          "text": "4",
+          "correct": false,
+          "why": "4 is a power of 2."
+        },
+        {
+          "key": "C",
+          "text": "9",
+          "correct": true,
+          "why": "9 is not a power of 2."
+        },
+        {
+          "key": "D",
+          "text": "16",
+          "correct": false,
+          "why": "16 is a power of 2."
+        }
+      ],
+      "explanation": "2, 4, 8, and 16 are powers of 2. 9 is not.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q07",
+      "stem": "What is the next letter: A, C, E, G, ?",
+      "skill": "reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "H",
+          "correct": false,
+          "why": "H would be a step of 1 from G."
+        },
+        {
+          "key": "B",
+          "text": "I",
+          "correct": true,
+          "why": "The letters skip one each time: A, C, E, G, I."
+        },
+        {
+          "key": "C",
+          "text": "J",
+          "correct": false,
+          "why": "J skips two from G."
+        },
+        {
+          "key": "D",
+          "text": "K",
+          "correct": false,
+          "why": "K is further than the pattern."
+        }
+      ],
+      "explanation": "The pattern moves two letters each step. After G comes I.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q08",
+      "stem": "Ravi is Meera's brother. Meera is Ali's mother. Which relation must hold?",
+      "skill": "reasoning",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Ravi is Ali's maternal uncle",
+          "correct": true,
+          "why": "Meera is the mother, and Ravi is her brother, so Ravi is Ali's maternal uncle."
+        },
+        {
+          "key": "B",
+          "text": "Ravi is Ali's father",
+          "correct": false,
+          "why": "The sentences do not make Ravi the father."
+        },
+        {
+          "key": "C",
+          "text": "Ali is Ravi's mother",
+          "correct": false,
+          "why": "Ali is the child, not Ravi's mother."
+        },
+        {
+          "key": "D",
+          "text": "Meera is Ali's brother",
+          "correct": false,
+          "why": "Meera is the mother, not the brother."
+        }
+      ],
+      "explanation": "Use only the two sentences. Ravi is the mother's brother.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q09",
+      "stem": "Every developer in the room has a laptop. Some people with laptops are interns. Which conclusion must follow?",
+      "skill": "reasoning",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Every developer is an intern",
+          "correct": false,
+          "why": "Some people with laptops are interns does not force every developer to be one."
+        },
+        {
+          "key": "B",
+          "text": "Some developers must be interns",
+          "correct": false,
+          "why": "The interns could be people who are not developers."
+        },
+        {
+          "key": "C",
+          "text": "The intern overlap with developers is not required",
+          "correct": true,
+          "why": "The sentences do not require any developer to be an intern."
+        },
+        {
+          "key": "D",
+          "text": "No developer has a laptop",
+          "correct": false,
+          "why": "The first sentence says every developer has a laptop."
+        }
+      ],
+      "explanation": "Do not turn some into all, and do not force the two groups to overlap.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q10",
+      "stem": "What is the next letter: A, C, F, J, ?",
+      "skill": "reasoning",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "N",
+          "correct": false,
+          "why": "N is a step of 4 from J. The gaps are 2, 3, 4, so the next gap is 5."
+        },
+        {
+          "key": "B",
+          "text": "O",
+          "correct": true,
+          "why": "A to C is 2, C to F is 3, F to J is 4, J to O is 5."
+        },
+        {
+          "key": "C",
+          "text": "P",
+          "correct": false,
+          "why": "P is a step of 6."
+        },
+        {
+          "key": "D",
+          "text": "K",
+          "correct": false,
+          "why": "K is a step of 1."
+        }
+      ],
+      "explanation": "The gaps increase by one. After J, five letters on is O.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q11",
+      "stem": "Which sentence agrees in number?",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The tickets was closed.",
+          "correct": false,
+          "why": "tickets is plural, so was does not agree."
+        },
+        {
+          "key": "B",
+          "text": "The ticket were closed.",
+          "correct": false,
+          "why": "ticket is singular, so were does not agree."
+        },
+        {
+          "key": "C",
+          "text": "The ticket was closed.",
+          "correct": true,
+          "why": "A singular subject takes was in this past statement."
+        },
+        {
+          "key": "D",
+          "text": "Were closed the ticket without a question.",
+          "correct": false,
+          "why": "The auxiliary is placed as if this were a question, and it still does not form one."
+        }
+      ],
+      "explanation": "ticket is singular. Use was.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q12",
+      "stem": "In the phrase a brief note, which meaning of brief fits?",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "A court case",
+          "correct": false,
+          "why": "A legal brief is a different use."
+        },
+        {
+          "key": "B",
+          "text": "Short",
+          "correct": true,
+          "why": "A brief note is a short note."
+        },
+        {
+          "key": "C",
+          "text": "Loud",
+          "correct": false,
+          "why": "Loud is not the meaning."
+        },
+        {
+          "key": "D",
+          "text": "Empty",
+          "correct": false,
+          "why": "Empty is not the meaning."
+        }
+      ],
+      "explanation": "Here brief means short, not a legal case.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q13",
+      "stem": "Which sentence is consistent?",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "She submit the form.",
+          "correct": false,
+          "why": "submit does not agree with She in the present."
+        },
+        {
+          "key": "B",
+          "text": "She submits the form.",
+          "correct": true,
+          "why": "submits agrees with a singular subject."
+        },
+        {
+          "key": "C",
+          "text": "She submitting the form.",
+          "correct": false,
+          "why": "submitting is not a finite verb here."
+        },
+        {
+          "key": "D",
+          "text": "Submit she the form.",
+          "correct": false,
+          "why": "The verb is placed before the subject without a question form."
+        }
+      ],
+      "explanation": "A singular subject in the present uses submits.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q14",
+      "stem": "Which sentence states a status without adding a cause the code does not show?",
+      "skill": "verbal",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The API returned 404.",
+          "correct": true,
+          "why": "The sentence names the status and stops."
+        },
+        {
+          "key": "B",
+          "text": "The API returned 404 because the intern was careless.",
+          "correct": false,
+          "why": "Carelessness is not in the status."
+        },
+        {
+          "key": "C",
+          "text": "The page must be broken because the status is 404.",
+          "correct": false,
+          "why": "A missing resource is not proof the page failed to start."
+        },
+        {
+          "key": "D",
+          "text": "404 means the server crashed.",
+          "correct": false,
+          "why": "404 is not a 5xx crash."
+        }
+      ],
+      "explanation": "Name the status. Do not add a person or a crash that the code does not show.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q15",
+      "stem": "Choose the completion: A prerequisite is something required ____ the next step.",
+      "skill": "verbal",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "after",
+          "correct": false,
+          "why": "A prerequisite comes first, not after."
+        },
+        {
+          "key": "B",
+          "text": "before",
+          "correct": true,
+          "why": "before matches the ordinary meaning: required beforehand."
+        },
+        {
+          "key": "C",
+          "text": "instead of",
+          "correct": false,
+          "why": "instead of replaces the next step."
+        },
+        {
+          "key": "D",
+          "text": "without looking at",
+          "correct": false,
+          "why": "The word does not mean ignoring the next step."
+        }
+      ],
+      "explanation": "A prerequisite is required before the next step.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q16",
+      "stem": "Using only this table, which channel opened the most tickets?\n\n| Channel | Opened | Closed | Reopened |\n| --- | --- | --- | --- |\n| Email | 40 | 30 | 4 |\n| Chat | 25 | 20 | 1 |\n| Phone | 15 | 10 | 2 |\n| Form | 20 | 18 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Email",
+          "correct": true,
+          "why": "Email shows 40 opened."
+        },
+        {
+          "key": "B",
+          "text": "Chat",
+          "correct": false,
+          "why": "Chat shows 25."
+        },
+        {
+          "key": "C",
+          "text": "Phone",
+          "correct": false,
+          "why": "Phone shows 15."
+        },
+        {
+          "key": "D",
+          "text": "Form",
+          "correct": false,
+          "why": "Form shows 20."
+        }
+      ],
+      "explanation": "Compare the Opened column. Email is 40.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q17",
+      "stem": "Using only this table, what is the total of the Opened column?\n\n| Channel | Opened | Closed | Reopened |\n| --- | --- | --- | --- |\n| Email | 40 | 30 | 4 |\n| Chat | 25 | 20 | 1 |\n| Phone | 15 | 10 | 2 |\n| Form | 20 | 18 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "80",
+          "correct": false,
+          "why": "80 drops Form or mis-adds."
+        },
+        {
+          "key": "B",
+          "text": "100",
+          "correct": true,
+          "why": "40 + 25 + 15 + 20 = 100."
+        },
+        {
+          "key": "C",
+          "text": "78",
+          "correct": false,
+          "why": "78 is the Closed column total, not Opened."
+        },
+        {
+          "key": "D",
+          "text": "40",
+          "correct": false,
+          "why": "40 is Email alone."
+        }
+      ],
+      "explanation": "Add the four Opened cells. Do not add Closed.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q18",
+      "stem": "Using only this table, which channel has 0 in Reopened?\n\n| Channel | Opened | Closed | Reopened |\n| --- | --- | --- | --- |\n| Email | 40 | 30 | 4 |\n| Chat | 25 | 20 | 1 |\n| Phone | 15 | 10 | 2 |\n| Form | 20 | 18 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Email",
+          "correct": false,
+          "why": "Email shows 4."
+        },
+        {
+          "key": "B",
+          "text": "Chat",
+          "correct": false,
+          "why": "Chat shows 1."
+        },
+        {
+          "key": "C",
+          "text": "Phone",
+          "correct": false,
+          "why": "Phone shows 2."
+        },
+        {
+          "key": "D",
+          "text": "Form",
+          "correct": true,
+          "why": "Form shows 0."
+        }
+      ],
+      "explanation": "Read the Reopened column. Form is 0.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q19",
+      "stem": "Using only this table, what is Email's closed count divided by its opened count, as a percent?\n\n| Channel | Opened | Closed | Reopened |\n| --- | --- | --- | --- |\n| Email | 40 | 30 | 4 |\n| Chat | 25 | 20 | 1 |\n| Phone | 15 | 10 | 2 |\n| Form | 20 | 18 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "40%",
+          "correct": false,
+          "why": "40 is the opened count, not the rate."
+        },
+        {
+          "key": "B",
+          "text": "75%",
+          "correct": true,
+          "why": "30 / 40 = 0.75, which is 75%."
+        },
+        {
+          "key": "C",
+          "text": "30%",
+          "correct": false,
+          "why": "30 is the closed count, not the percent."
+        },
+        {
+          "key": "D",
+          "text": "133%",
+          "correct": false,
+          "why": "That divides opened by closed."
+        }
+      ],
+      "explanation": "Email closed 30 of 40 opened. That rate is 75%. Reopened is not in this ratio.",
+      "version": 1
+    },
+    {
+      "key": "crt2-q20",
+      "stem": "Using only Closed and Reopened, what is Phone's Closed minus Reopened?\n\n| Channel | Opened | Closed | Reopened |\n| --- | --- | --- | --- |\n| Email | 40 | 30 | 4 |\n| Chat | 25 | 20 | 1 |\n| Phone | 15 | 10 | 2 |\n| Form | 20 | 18 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "8",
+          "correct": true,
+          "why": "10 - 2 = 8."
+        },
+        {
+          "key": "B",
+          "text": "10",
+          "correct": false,
+          "why": "10 is Closed alone."
+        },
+        {
+          "key": "C",
+          "text": "12",
+          "correct": false,
+          "why": "12 adds them."
+        },
+        {
+          "key": "D",
+          "text": "15",
+          "correct": false,
+          "why": "15 is Phone's Opened count, not this difference."
+        }
+      ],
+      "explanation": "Subtract the two named cells. Do not call the result net success. The table does not define that.",
+      "version": 1
+    }
+  ]
+}
