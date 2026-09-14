@@ -83,6 +83,41 @@ export const navigationConfig: NavSection[] = [
   },
 ]
 
+/** Grouped More menu. Existing routes stay; this is layout, not a new destination set. */
+export const moreMenuGroups: { title: string; items: { label: string; path: string }[] }[] = [
+  {
+    title: 'Practice',
+    items: [
+      { label: 'SQL', path: '/practice/sql' },
+      { label: 'DSA', path: '/practice/dsa' },
+      { label: 'Coding', path: '/practice/coding' },
+      { label: 'Technical MCQs', path: '/practice/mcq' },
+      { label: 'Aptitude / CRT', path: '/practice/aptitude' },
+    ],
+  },
+  {
+    title: 'Career',
+    items: [
+      { label: 'Projects', path: '/practice/projects' },
+      { label: 'Job Readiness', path: '/readiness' },
+      { label: 'Interview Prep', path: '/interviews' },
+      { label: 'Bookmarks', path: '/bookmarks' },
+      { label: 'Recommended Jobs', path: '/jobs/recommended' },
+      { label: 'Applications', path: '/jobs/applications' },
+    ],
+  },
+  {
+    title: 'AI & Engineering',
+    items: [
+      { label: 'AI Home', path: '/ai' },
+      { label: 'Prompt Engineering', path: '/ai/prompt-engineering' },
+      { label: 'Cloud', path: '/cloud' },
+      { label: 'DevOps', path: '/devops' },
+      { label: 'Cybersecurity', path: '/cybersecurity' },
+    ],
+  },
+]
+
 export const JOBS_HOME = '/jobs'
 export const JOBS_PREFERENCES = '/jobs/preferences'
 export const JOBS_ONBOARDING_KEY = 'jr_jobs_onboarding'

@@ -3,26 +3,26 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Ivory surfaces and muted pine controls. Logo mark stays steel via --color-brand. */
+/* Light theme sampled from the Jobs reference: cool paper, white cards, green action. */
 @theme {
   --font-sans: "Segoe UI", Inter, Arial, ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, ui-monospace, monospace;
 
-  --color-surface: #f7f1e6;
-  --color-surface-elevated: #fbf7f0;
-  --color-surface-muted: #efe6d6;
-  --color-border: #e0d4c2;
-  --color-border-strong: #cdbba8;
-  --color-text: #2a3438;
-  --color-text-muted: #55605f;
-  --color-text-subtle: #6e7774;
-  --color-accent: #3e5c49;
-  --color-accent-hover: #324a3b;
-  --color-accent-muted: #e3ebe4;
-  --color-success: #3f6b55;
-  --color-warning: #8a6a2f;
-  --color-danger: #8b3f3f;
-  --color-brand: #40596b;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-surface-muted: #f4f6f4;
+  --color-border: #e3e6e4;
+  --color-border-strong: #cfd5d1;
+  --color-text: #1b2832;
+  --color-text-muted: #5d686e;
+  --color-text-subtle: #8b9396;
+  --color-accent: #007c4a;
+  --color-accent-hover: #00663d;
+  --color-accent-muted: #e7f4ed;
+  --color-success: #007c4a;
+  --color-warning: #b5812a;
+  --color-danger: #b44545;
+  --color-brand: #1b2832;
 
   --space-page: 1.25rem;
   --space-page-lg: 1.75rem;
@@ -69,21 +69,21 @@
 }
 
 .dark {
-  --color-surface: #1c2420;
-  --color-surface-elevated: #24302a;
-  --color-surface-muted: #161c19;
-  --color-border: #3a4840;
-  --color-border-strong: #4e6056;
-  --color-text: #f3eee6;
-  --color-text-muted: #c3bbb0;
-  --color-text-subtle: #9a9288;
-  --color-accent: #8fb39a;
-  --color-accent-hover: #a7c6b0;
-  --color-accent-muted: #2a3d32;
-  --color-success: #6f9f84;
-  --color-warning: #c4a35a;
-  --color-danger: #c76f6f;
-  --color-brand: #8eacbf;
+  --color-surface: #17212b;
+  --color-surface-elevated: #1c2833;
+  --color-surface-muted: #0c1118;
+  --color-border: #2a3846;
+  --color-border-strong: #3a4c5c;
+  --color-text: #e7eef5;
+  --color-text-muted: #a8b4c0;
+  --color-text-subtle: #7d8b98;
+  --color-accent: #2f86fe;
+  --color-accent-hover: #5aa3ff;
+  --color-accent-muted: #17324f;
+  --color-success: #3dbe7a;
+  --color-warning: #e0b15a;
+  --color-danger: #e07a7a;
+  --color-brand: #e7eef5;
 }
 
 * {
@@ -101,11 +101,23 @@ body {
   overflow-x: clip;
   font-family: var(--font-sans);
   font-size: 0.9375rem;
+  font-weight: 400;
   line-height: 1.45;
   background-color: var(--color-surface-muted);
+  background-image: none;
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+strong,
+.font-semibold,
+.font-bold {
+  font-weight: 520;
 }
 
 :focus-visible {

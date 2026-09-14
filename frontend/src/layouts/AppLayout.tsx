@@ -71,7 +71,9 @@ export function AppLayout() {
         </div>
       ) : null}
       <main id="main-content" className="flex-1" tabIndex={-1}>
-        <Outlet />
+        <div key={location.pathname} className="page-enter">
+          <Outlet />
+        </div>
       </main>
     </div>
   )

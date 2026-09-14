@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ChevronDown, LogOut, Menu, Moon, Sun, X } from 'lucide-react'
 
@@ -6,12 +6,20 @@ import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
 import {
   isPrimaryNavActive,
-  navigationConfig,
+  moreMenuGroups,
   primaryNavItems,
 } from '@/components/navigation/navConfig'
 import { useAuth } from '@/hooks/useAuth'
 import { useTheme } from '@/hooks/useTheme'
 import { cn } from '@/utils/cn'
+
+function isMoreItemActive(pathname: string, path: string) {
+  const paths = moreMenuGroups.flatMap((group) => group.items.map((item) => item.path))
+  const matches = paths.filter((candidate) => pathname === candidate || pathname.startsWith(`${candidate}/`))
+  if (!matches.includes(path)) return false
+  const best = matches.reduce((longest, candidate) => (candidate.length > longest.length ? candidate : longest))
+  return best === path
+}
 
 interface MastheadProps {
   compact?: boolean
@@ -20,6 +28,7 @@ interface MastheadProps {
 export function Masthead({ compact = false }: MastheadProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
+  const moreRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
@@ -34,11 +43,24 @@ export function Masthead({ compact = false }: MastheadProps) {
       .toUpperCase()
   }, [user])
 
-  const moreItems = navigationConfig.flatMap((section) =>
-    section.title === 'Today' ? [] : section.items,
-  )
-
   const closeMobile = () => setMobileOpen(false)
+  const closeMore = () => setMoreOpen(false)
+
+  useEffect(() => {
+    if (!moreOpen) return
+    const onPointer = (event: MouseEvent) => {
+      if (!moreRef.current?.contains(event.target as Node)) closeMore()
+    }
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') closeMore()
+    }
+    document.addEventListener('mousedown', onPointer)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onPointer)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [moreOpen])
 
   return (
     <>
@@ -68,43 +90,59 @@ export function Masthead({ compact = false }: MastheadProps) {
               </Link>
             )
           })}
-          <div className="more-nav">
+          <div className="more-nav" ref={moreRef}>
             <button
               type="button"
-              className={cn('more-nav-trigger', moreOpen && 'open')}
+              className={cn('more-nav-trigger nav-item', moreOpen && 'open')}
               aria-expanded={moreOpen}
               aria-haspopup="true"
               onClick={() => setMoreOpen((v) => !v)}
             >
               More
-              <ChevronDown className="h-3.5 w-3.5" aria-hidden />
+              <ChevronDown className="more-chevron" aria-hidden />
             </button>
             {moreOpen ? (
-              <div className="more-nav-panel" role="menu">
-                {moreItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    role="menuitem"
-                    onClick={() => {
-                      setMoreOpen(false)
-                      closeMobile()
-                    }}
-                  >
-                    {item.label}
-                  </Link>
+              <div className="more-nav-panel" aria-label="More destinations">
+                {moreMenuGroups.map((group) => (
+                  <section key={group.title} className="more-menu-section">
+                    <p className="menu-section-title">{group.title}</p>
+                    {group.items.map((item) => {
+                      const active = isMoreItemActive(location.pathname, item.path)
+                      return (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          className={cn('more-menu-item', active && 'active')}
+                          aria-current={active ? 'page' : undefined}
+                          onClick={() => {
+                            closeMore()
+                            closeMobile()
+                          }}
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                    })}
+                  </section>
                 ))}
                 {isAdmin ? (
-                  <Link
-                    to="/admin/questions"
-                    role="menuitem"
-                    onClick={() => {
-                      setMoreOpen(false)
-                      closeMobile()
-                    }}
-                  >
-                    Admin
-                  </Link>
+                  <>
+                    <p className="menu-section-title">Admin</p>
+                    <Link
+                      to="/admin/questions"
+                      className={cn(
+                        'more-menu-item more-menu-admin',
+                        (location.pathname === '/admin/questions' || location.pathname.startsWith('/admin/')) && 'active',
+                      )}
+                      aria-current={location.pathname.startsWith('/admin') ? 'page' : undefined}
+                      onClick={() => {
+                        closeMore()
+                        closeMobile()
+                      }}
+                    >
+                      Admin
+                    </Link>
+                  </>
                 ) : null}
               </div>
             ) : null}
