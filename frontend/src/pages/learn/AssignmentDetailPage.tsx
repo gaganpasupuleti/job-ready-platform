@@ -85,6 +85,10 @@ export function AssignmentDetailPage() {
               {data.submissions.map((item) => (
                 <li key={item.id} className="rounded-[5px] border border-[var(--color-border)] p-3">
                   <p>Attempt {item.attempt} · {item.status} · version {item.version}</p>
+                  {item.brief && <p className="mt-2 whitespace-pre-wrap">Filed brief: {item.brief}</p>}
+                  {item.rubric && item.rubric.length > 0 && (
+                    <p className="mt-1">Filed rubric: {item.rubric.map((row) => `${row.criterion} (${row.points})`).join('; ')}</p>
+                  )}
                   <pre className="mt-2 whitespace-pre-wrap text-xs">{item.answer_text}</pre>
                   {item.reviews.map((review) => (
                     <p key={`${review.version}-${review.reviewed_at ?? review.feedback}`} className="mt-2">

@@ -69,6 +69,8 @@ export type AssignmentDetail = {
     version: number
     answer_text: string
     evidence_url: string | null
+    brief: string | null
+    rubric: { criterion: string; points: number }[] | null
     submitted_at: string | null
     reviews: { feedback: string; grade: string | null; version: number; reviewed_at?: string }[]
   }[]
@@ -115,7 +117,7 @@ export async function startPack(key: string) {
 
 export async function fetchReviewQueue() {
   const { data } = await apiClient.get<
-    { id: string; status: string; version: number; assignment_key: string | null; title: string | null; answer_text: string; evidence_url: string | null }[]
+    { id: string; status: string; version: number; assignment_key: string | null; title: string | null; answer_text: string; evidence_url: string | null; brief: string | null; rubric: { criterion: string; points: number }[] | null }[]
   >(apiEndpoints.learn.studioReviews)
   return data
 }

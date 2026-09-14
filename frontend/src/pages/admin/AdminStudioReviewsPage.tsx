@@ -26,6 +26,10 @@ export function AdminStudioReviewsPage() {
           {(data ?? []).map((item) => (
             <li key={item.id} className="rounded-[5px] border border-[var(--color-border)] p-3 text-sm">
               <p>{item.title} · version {item.version}</p>
+              {item.brief && <p className="mt-2 whitespace-pre-wrap">Brief under review: {item.brief}</p>}
+              {item.rubric && item.rubric.length > 0 && (
+                <p className="mt-1">Rubric under review: {item.rubric.map((row) => `${row.criterion} (${row.points})`).join('; ')}</p>
+              )}
               <pre className="mt-2 whitespace-pre-wrap text-xs">{item.answer_text}</pre>
               {item.evidence_url && <p className="mt-1">{item.evidence_url}</p>}
               <label className="mt-2 block" htmlFor={`feedback-${item.id}`}>Feedback</label>

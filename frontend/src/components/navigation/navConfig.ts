@@ -31,7 +31,7 @@ export const primaryNavItems: { label: string; path: string; match?: string[] }[
   { label: 'Jobs', path: '/jobs', match: ['/jobs'] },
   { label: 'Overview', path: '/', match: ['/'] },
   { label: 'Practice', path: '/practice', match: ['/practice'] },
-  { label: 'Learn', path: '/learn', match: ['/learn'] },
+  { label: 'Learn', path: '/learn', match: ['/learn', '/projects'] },
   { label: 'Playground', path: '/practice/playground', match: ['/practice/playground', '/practice/python'] },
   {
     label: 'Assessments',
