@@ -1,11 +1,31 @@
+import asyncio
 import uuid
+from pathlib import Path
 
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from app.db.session import engine
+from app.content.studio_batch import apply_batch
+from app.db.session import AsyncSessionLocal, engine
 from app.main import app
 from app.utils import redis as redis_module
+
+SATURDAY_BATCH = Path(__file__).resolve().parents[1] / "content" / "batches" / "2026-09-19-saturday-001"
+
+
+async def _load_saturday_batch() -> None:
+    async with AsyncSessionLocal() as db:
+        result = await apply_batch(db, SATURDAY_BATCH, allow_remote=False)
+        if result.get("refused"):
+            raise RuntimeError(result)
+        await db.commit()
+    await engine.dispose()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def saturday_batch_loaded():
+    """CI starts from seed only. The studio tests need the reviewed Saturday batch."""
+    asyncio.run(_load_saturday_batch())
 
 
 @pytest.fixture(autouse=True)
