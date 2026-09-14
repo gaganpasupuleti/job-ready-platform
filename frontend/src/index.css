@@ -13,9 +13,9 @@
   --color-surface-muted: #e8eae7;
   --color-border: #d2d8d2;
   --color-border-strong: #bbc5bf;
-  --color-text: #303a3e;
-  --color-text-muted: #646e6d;
-  --color-text-subtle: #858d89;
+  --color-text: #2a3438;
+  --color-text-muted: #55605f;
+  --color-text-subtle: #6e7774;
   --color-accent: #40596b;
   --color-accent-hover: #344953;
   --color-accent-muted: #dce3e6;
@@ -33,6 +33,40 @@
   --shadow-sm: 0 1px 2px color-mix(in srgb, #303a3e 8%, transparent);
 }
 
+:root {
+  --content-rail: 78.5rem;
+  --assessment-rail: 72rem;
+  --page-gutter: 1.5rem;
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --content-rail: 90rem;
+    --page-gutter: 2rem;
+  }
+}
+
+@media (max-width: 1366px) {
+  :root {
+    --content-rail: 72rem;
+    --page-gutter: 1.25rem;
+  }
+}
+
+@media (max-width: 1080px) {
+  :root {
+    --content-rail: 100%;
+    --assessment-rail: 100%;
+    --page-gutter: 1.15rem;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --page-gutter: 1rem;
+  }
+}
+
 .dark {
   --color-surface: #1e2629;
   --color-surface-elevated: #252e32;
@@ -40,8 +74,8 @@
   --color-border: #3a464a;
   --color-border-strong: #4d5b60;
   --color-text: #e8eae7;
-  --color-text-muted: #a3adaa;
-  --color-text-subtle: #7d8885;
+  --color-text-muted: #b4bdb9;
+  --color-text-subtle: #8d9693;
   --color-accent: #8eacbf;
   --color-accent-hover: #a8c2d1;
   --color-accent-muted: #2a3840;
@@ -92,10 +126,10 @@ body {
 }
 
 .jr-subheader {
-  max-width: 1256px;
-  margin: 0 auto;
   width: 100%;
-  padding: 0.85rem max(28px, calc((100vw - 1256px) / 2)) 0;
+  max-width: none;
+  margin: 0;
+  padding: 0.75rem max(var(--page-gutter), calc((100% - var(--content-rail)) / 2)) 0;
 }
 
 .jr-breadcrumb {
@@ -113,10 +147,10 @@ body {
 }
 
 .app-shell-standard main {
-  padding: 1.25rem max(28px, calc((100vw - 1256px) / 2)) 3rem;
-  max-width: 1256px;
-  margin-inline: auto;
   width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 1.15rem max(var(--page-gutter), calc((100% - var(--content-rail)) / 2)) 2.75rem;
 }
 
 .app-shell-focused {
@@ -136,8 +170,8 @@ body {
 }
 
 .app-shell-assessment main {
-  padding: 0.75rem max(20px, calc((100vw - 72rem) / 2));
-  max-width: 72rem;
-  margin-inline: auto;
   width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0.75rem max(var(--page-gutter), calc((100% - var(--assessment-rail)) / 2)) 1.5rem;
 }

@@ -40,7 +40,7 @@ export function CodingProblemList({
         <p className="text-sm text-[var(--color-text-muted)]">No problems match your filters.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="problem-table w-full text-left text-sm">
             <thead className="text-xs text-[var(--color-text-subtle)]">
               <tr>
                 <th className="pb-2 pr-3">Status</th>

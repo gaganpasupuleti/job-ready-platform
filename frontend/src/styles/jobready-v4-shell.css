@@ -20,8 +20,8 @@
   z-index: 45;
   display: flex;
   align-items: center;
-  padding: 0 max(28px, calc((100vw - 1256px) / 2));
-  gap: 48px;
+  padding: 0 max(var(--page-gutter, 1.5rem), calc((100% - var(--content-rail, 78.5rem)) / 2));
+  gap: 40px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
@@ -159,7 +159,7 @@
   display: none;
 }
 
-@media (min-width: 801px) {
+@media (min-width: 1081px) {
   .masthead .logout-desktop {
     display: inline-flex;
   }
@@ -168,13 +168,21 @@
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1366px) {
   .masthead {
-    padding: 0 24px;
-    gap: 26px;
+    gap: 20px;
   }
   .main-navigation {
+    gap: 14px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .masthead {
     gap: 16px;
+  }
+  .main-navigation {
+    gap: 12px;
   }
   .main-navigation a,
   .more-nav-trigger {
@@ -182,10 +190,10 @@
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1080px) {
   .masthead {
     height: 64px;
-    padding: 0 20px;
+    padding-inline: var(--page-gutter, 1.15rem);
     justify-content: space-between;
     gap: 12px;
   }
@@ -265,8 +273,7 @@
 
 /* Learning desk (Overview) */
 .home-v4 {
-  max-width: 1256px;
-  margin: 0 auto;
+  width: 100%;
 }
 .home-heading {
   display: flex;
@@ -300,7 +307,7 @@
 .desk-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 1.75rem;
+  gap: 1.5rem;
 }
 .desk-primary {
   display: flex;
@@ -408,7 +415,14 @@
   color: var(--color-text-muted);
 }
 
-@media (max-width: 800px) {
+@media (min-width: 1600px) {
+  .desk-grid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 1080px) {
   .desk-grid {
     grid-template-columns: 1fr;
   }
@@ -425,7 +439,7 @@
   }
 }
 /* Module pages — Practice / Learn / Jobs */
-.module-page { max-width: 1256px; }
+.module-page { width: 100%; }
 .module-heading {
   display: flex;
   flex-wrap: wrap;
@@ -473,7 +487,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.85rem;
-  padding: 0.7rem 0.8rem;
+  padding: 0.65rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: 5px;
   background: var(--color-surface);
@@ -522,9 +536,10 @@
 .chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .chip-link {
   border: 1px solid var(--color-border);
-  border-radius: 999px;
-  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  padding: 0.2rem 0.55rem;
   font-size: 0.75rem;
+  line-height: 1.35;
   text-decoration: none;
   color: var(--color-text);
   background: var(--color-surface);
@@ -665,27 +680,29 @@
 .jobs-family-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 .jobs-family-pills.is-collapsed {
-  max-height: calc(2 * 2.15rem + 0.4rem);
+  max-height: calc(2 * 1.75rem + 0.35rem);
   overflow: hidden;
 }
 .jobs-family-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
   max-width: 100%;
-  height: 2.15rem;
+  height: 1.75rem;
   border: 1px solid var(--color-border-strong);
   border-radius: 999px;
   background: var(--color-surface);
   color: var(--color-text);
-  padding: 0 0.7rem;
-  font-size: 0.8125rem;
+  padding: 0 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1;
 }
 .jobs-family-pill[aria-pressed='true'] {
   border-color: var(--color-accent);
+  background: var(--color-accent-muted);
   color: var(--color-accent);
   font-weight: 600;
 }
@@ -766,9 +783,6 @@
   .jobs-filter-bar select {
     width: 100%;
   }
-  .jobs-family-pill {
-    max-width: calc(50% - 0.4rem);
-  }
 }
 .jobs-filter-bar input,
 .jobs-filter-bar select {
@@ -834,4 +848,85 @@
   .learn-layout { grid-template-columns: 1fr; }
   .curriculum-sidebar { display: flex; gap: 0.4rem; overflow-x: auto; }
   .curriculum-track { min-width: 180px; margin-bottom: 0; }
+}
+
+.practice-track-nav,
+.filter-chip-row {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  margin: 0 0 1rem;
+  padding-bottom: 0.15rem;
+  scrollbar-width: thin;
+}
+.practice-track-link,
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 1.75rem;
+  padding: 0 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.practice-track-link.is-active,
+.filter-chip[aria-pressed='true'] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-muted);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+.practice-track-link:hover,
+.filter-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.practice-track-count {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.7rem;
+  color: var(--color-text-subtle);
+}
+.practice-track-link.is-active .practice-track-count,
+.filter-chip[aria-pressed='true'] .practice-track-count {
+  color: var(--color-accent);
+}
+.filter-chip-note {
+  margin: -0.45rem 0 0.85rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 720px) {
+  .v4-queue-row,
+  .queue-row,
+  .result-list li {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .problem-table th:nth-child(n + 5),
+  .problem-table td:nth-child(n + 5) {
+    display: none;
+  }
+  .module-heading h1,
+  .home-heading h1 {
+    font-size: 1.45rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .jobs-summary-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+  .module-footer-links {
+    gap: 0.65rem 1rem;
+  }
 }

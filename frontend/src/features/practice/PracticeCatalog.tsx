@@ -88,11 +88,38 @@ export function PracticeCatalog({
         <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">{description}</p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+      {(categories?.length ?? 0) > 1 ? (
+        <div className="filter-chip-row" role="group" aria-label="Categories">
+          <button
+            type="button"
+            className="filter-chip"
+            aria-pressed={!selectedCategoryId}
+            onClick={() => setSelectedCategoryId(null)}
+          >
+            All
+          </button>
+          {categories?.map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              className="filter-chip"
+              aria-pressed={selectedCategoryId === category.id}
+              onClick={() => setSelectedCategoryId(category.id)}
+            >
+              {category.name}
+              <span className="practice-track-count">{category.topics.length}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(16rem,1fr)]">
         <Card padding="md">
           <CardHeader title="Topics" description="Choose a topic to practice" />
           <div className="space-y-3">
-            {categories?.map((category) => (
+            {categories
+              ?.filter((category) => !selectedCategoryId || category.id === selectedCategoryId)
+              .map((category) => (
               <div key={category.id}>
                 <button
                   type="button"
