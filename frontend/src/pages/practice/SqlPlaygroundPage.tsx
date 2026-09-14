@@ -23,6 +23,7 @@ function draftStorageKey(userId: string, datasetId: string) {
 export function SqlPlaygroundPage() {
   const { user } = useAuth()
   const editorRef = useRef<SqlEditorHandle>(null)
+  const runEpochRef = useRef(0)
   const [datasetId, setDatasetId] = useState('campus-bookstore')
   const [query, setQuery] = useState('')
   const [draftReady, setDraftReady] = useState(false)
@@ -41,6 +42,7 @@ export function SqlPlaygroundPage() {
   })
 
   useEffect(() => {
+    runEpochRef.current += 1
     setDraftReady(false)
     setResult(null)
   }, [datasetId])
@@ -58,27 +60,43 @@ export function SqlPlaygroundPage() {
   }, [draftReady, datasetId, query, user?.id])
 
   const runMutation = useMutation({
-    mutationFn: () => runSqlPlaygroundQuery(datasetId, query),
-    onSuccess: (data) => {
+    mutationFn: async () => {
+      const epoch = runEpochRef.current
+      const data = await runSqlPlaygroundQuery(datasetId, query)
+      return { epoch, data }
+    },
+    onSuccess: ({ epoch, data }) => {
+      // Ignore late responses from a previous dataset after the student switches.
+      if (epoch !== runEpochRef.current) return
       setResult(data)
       setMobileTab('results')
     },
-    onError: () => {
-      setResult({
-        columns: [],
-        rows: [],
-        row_count: 0,
-        truncated: false,
-        error: 'Unable to run this query right now.',
-        status: 'sql_error',
-        assessed: false,
-        row_limit: catalogQuery.data?.row_limit ?? 500,
-        timeout_ms: catalogQuery.data?.timeout_ms ?? 3000,
-        note: catalogQuery.data?.note ?? '',
-      })
-      setMobileTab('results')
+    onError: (_error, _variables, onMutateResult) => {
+      void onMutateResult
     },
   })
+
+  const handleRun = () => {
+    const epoch = runEpochRef.current
+    runMutation.mutate(undefined, {
+      onError: () => {
+        if (epoch !== runEpochRef.current) return
+        setResult({
+          columns: [],
+          rows: [],
+          row_count: 0,
+          truncated: false,
+          error: 'Unable to run this query right now.',
+          status: 'sql_error',
+          assessed: false,
+          row_limit: catalogQuery.data?.row_limit ?? 500,
+          timeout_ms: catalogQuery.data?.timeout_ms ?? 3000,
+          note: catalogQuery.data?.note ?? '',
+        })
+        setMobileTab('results')
+      },
+    })
+  }
 
   const schemaTables = useMemo(
     () =>
@@ -253,7 +271,7 @@ export function SqlPlaygroundPage() {
                   <Button
                     type="button"
                     variant="primary"
-                    onClick={() => runMutation.mutate()}
+                    onClick={handleRun}
                     disabled={runMutation.isPending || !query.trim()}
                   >
                     {runMutation.isPending ? (
@@ -279,7 +297,7 @@ export function SqlPlaygroundPage() {
                   onChange={setQuery}
                   height="280px"
                   schemaTables={schemaTables}
-                  onRun={() => runMutation.mutate()}
+                  onRun={handleRun}
                   showHeader={false}
                 />
               </div>
