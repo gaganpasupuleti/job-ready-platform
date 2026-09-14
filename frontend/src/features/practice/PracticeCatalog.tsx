@@ -213,11 +213,7 @@ export function PracticeCatalog({
               disabled={!selectedTopicId || mutation.isPending}
               onClick={handleStart}
             >
-              {mutation.isPending
-                ? 'Starting...'
-                : selectedTopic
-                  ? `Start ${selectedTopic.name}`
-                  : 'Select a topic'}
+              {mutation.isPending ? 'Starting...' : 'Start Session'}
             </Button>
             {mutation.error && (
               <p className="text-xs text-[var(--color-danger)]" role="alert">
