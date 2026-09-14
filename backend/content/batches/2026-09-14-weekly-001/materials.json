@@ -30,8 +30,12 @@
           "url": "https://docs.oracle.com/javase/tutorial/getStarted/application/index.html"
         },
         {
-          "label": "Oracle tutorial: Classes",
-          "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html"
+          "label": "Oracle tutorial: Creating a Package",
+          "url": "https://docs.oracle.com/javase/tutorial/java/package/createpkgs.html"
+        },
+        {
+          "label": "Java SE 21 PrintStream.println",
+          "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/PrintStream.html#println(java.lang.String)"
         }
       ],
       "examples": [
@@ -41,7 +45,7 @@
         "Write the class line and the main method signature only. Do not add a framework."
       ],
       "body_file": "materials/jb-class-and-main.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "jb-methods-and-blank-title",
@@ -72,8 +76,16 @@
           "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html"
         },
         {
-          "label": "Oracle tutorial: What Is an Exception?",
-          "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/definition.html"
+          "label": "Oracle tutorial: Comparing Strings",
+          "url": "https://docs.oracle.com/javase/tutorial/java/data/comparestrings.html"
+        },
+        {
+          "label": "Oracle tutorial: Primitive Data Types",
+          "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html"
+        },
+        {
+          "label": "Oracle tutorial: The catch Blocks",
+          "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/catch.html"
         }
       ],
       "examples": [
@@ -83,7 +95,7 @@
         "Show one accepted call and one rejected call. Do not invent Untitled."
       ],
       "body_file": "materials/jb-methods-and-blank-title.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "fr-component-props",
@@ -116,6 +128,10 @@
         {
           "label": "React docs: Passing Props to a Component",
           "url": "https://react.dev/learn/passing-props-to-a-component"
+        },
+        {
+          "label": "React docs: Writing Markup with JSX",
+          "url": "https://react.dev/learn/writing-markup-with-jsx"
         }
       ],
       "examples": [
@@ -125,7 +141,7 @@
         "Name the prop and the parent value that fills it. Do not add a data fetch."
       ],
       "body_file": "materials/fr-component-props.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "fr-state-input",
@@ -156,8 +172,8 @@
           "url": "https://react.dev/learn/state-a-components-memory"
         },
         {
-          "label": "React docs: Responding to Events",
-          "url": "https://react.dev/learn/responding-to-events"
+          "label": "React docs: useState",
+          "url": "https://react.dev/reference/react/useState"
         },
         {
           "label": "React docs: Rendering Lists",
@@ -171,7 +187,7 @@
         "Write the setter call for a blank title, then say what title still holds on the next line."
       ],
       "body_file": "materials/fr-state-input.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "fs-request-response",
@@ -209,7 +225,7 @@
         "From the project log, count 200 responses without treating 201 as 200."
       ],
       "body_file": "materials/fs-request-response.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "fs-two-programs",
@@ -247,7 +263,7 @@
         "Name one field the page shows and one field the API received on the successful create."
       ],
       "body_file": "materials/fs-two-programs.md",
-      "version": 1
+      "version": 2
     }
   ]
 }

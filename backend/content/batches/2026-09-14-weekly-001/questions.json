@@ -283,73 +283,73 @@
     },
     {
       "key": "jb-q09",
-      "stem": "A file contains public class Ticket. Which file name matches the public class?",
+      "stem": "A folder has Main.java whose text is public class TicketSummary, TicketSummary.class, and Helper.java whose text is class Helper only. Which source-file name matches the public type, and which existing file is not that source?",
       "skill": "classes",
       "difficulty": "hard",
       "mode": "single",
       "options": [
         {
           "key": "A",
-          "text": "ticket.txt",
-          "correct": false,
-          "why": "The source file is Java, not a text note."
+          "text": "TicketSummary.java, and TicketSummary.class is compiler output rather than the source file",
+          "correct": true,
+          "why": "The packages tutorial says a public type must have the same name as the source file. A .class file is what javac writes."
         },
         {
           "key": "B",
-          "text": "Main.java",
+          "text": "Main.java, because the public class text is already stored there",
           "correct": false,
-          "why": "Main.java does not match the public class Ticket."
+          "why": "The file name does not match TicketSummary."
         },
         {
           "key": "C",
-          "text": "Ticket.java",
-          "correct": true,
-          "why": "The public class name and the file name must match."
+          "text": "Helper.java, because any .java file can hold the public class",
+          "correct": false,
+          "why": "Helper is not the public type."
         },
         {
           "key": "D",
-          "text": "Ticket.class as the source file",
+          "text": "TicketSummary.class, because the class name matches the compiled file",
           "correct": false,
-          "why": "A .class file is compiled output, not the source the tutorial asks you to save."
+          "why": "The compiled file is not the source file you save."
         }
       ],
-      "explanation": "Save public class Ticket in Ticket.java.",
-      "version": 1
+      "explanation": "public class TicketSummary belongs in TicketSummary.java. TicketSummary.class is compiler output.",
+      "version": 2
     },
     {
       "key": "jb-q10",
-      "stem": "The method throws IllegalArgumentException for a blank title. Why is catch (Exception ex) a weak handler here?",
+      "stem": "The constructor throws IllegalArgumentException when the title is blank. A handler does: try { summary = new TicketSummary(4, \"   \"); saved = true; } catch (Exception ex) { saved = true; } Why is this a weak match for a brief that says refuse a blank title?",
       "skill": "methods",
       "difficulty": "hard",
       "mode": "single",
       "options": [
         {
           "key": "A",
-          "text": "It also catches unrelated failures and can hide them",
+          "text": "The blank-title failure is caught and then marked saved, and Exception also catches unrelated failures",
           "correct": true,
-          "why": "Exception is a wide type. It hides failures the method did not mean to handle."
+          "why": "The catch runs for the blank title and sets saved to true. Exception is broader than the named failure. The catch-blocks tutorial warns against an overly broad exception."
         },
         {
           "key": "B",
           "text": "Exception cannot catch IllegalArgumentException",
           "correct": false,
-          "why": "IllegalArgumentException is an Exception, so it is caught, and that is the problem."
+          "why": "IllegalArgumentException is an Exception, so this catch does run, and that is the problem."
         },
         {
           "key": "C",
-          "text": "A blank title never throws",
+          "text": "A blank title never throws in this constructor",
           "correct": false,
-          "why": "The worked example does throw for a blank title."
+          "why": "The constructor in this lesson does throw for an all-space title."
         },
         {
           "key": "D",
           "text": "catch is illegal in Java",
           "correct": false,
-          "why": "catch is legal. The problem is the width."
+          "why": "catch is legal. The problem is what the handler does and how wide it is."
         }
       ],
-      "explanation": "Catch IllegalArgumentException if that is the named failure. A catch of Exception is wider than the brief.",
-      "version": 1
+      "explanation": "A refusal that sets saved to true did not refuse the title. Exception is also wider than IllegalArgumentException.",
+      "version": 2
     },
     {
       "key": "fr-q01",
@@ -633,73 +633,73 @@
     },
     {
       "key": "fr-q09",
-      "stem": "title is \"\". The click handler calls setTitle(\"VPN\") and then reads title on the next line. What does that read see?",
+      "stem": "title starts as \"Ada\". The handler runs setTitle(\"VPN\") and then returns title. What does the return see, and what does the next render show?",
       "skill": "state",
       "difficulty": "hard",
       "mode": "single",
       "options": [
         {
           "key": "A",
-          "text": "\"VPN\"",
-          "correct": false,
-          "why": "The setter does not change title in the function that is already running."
+          "text": "The return sees Ada; the next render shows VPN",
+          "correct": true,
+          "why": "The set function does not change title in the already executing code, and it does request a later render with VPN."
         },
         {
           "key": "B",
-          "text": "\"\"",
+          "text": "The return sees VPN; the next render shows VPN",
+          "correct": false,
+          "why": "The return cannot already see VPN. The useState reference says the set function does not change current state in the running code."
+        },
+        {
+          "key": "C",
+          "text": "The return sees Ada; the next render shows Ada",
+          "correct": false,
+          "why": "The next render is the scheduled update. It does not stay Ada."
+        },
+        {
+          "key": "D",
+          "text": "The return sees VPN; the next render shows Ada",
+          "correct": false,
+          "why": "The two moments are not swapped. The running code is stale; the next render is not."
+        }
+      ],
+      "explanation": "The return still sees Ada. The next render shows VPN. That split is the useState rule, not a guess.",
+      "version": 2
+    },
+    {
+      "key": "fr-q10",
+      "stem": "An input uses value={title}. The change handler does title = event.target.value and does not call setTitle. title started as \"\". After the user types VPN, what does the field keep showing?",
+      "skill": "state",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The empty string, because the assignment does not ask React to remember a new value",
           "correct": true,
-          "why": "The already executing code still sees the previous state."
+          "why": "The state-memory page shows this stuck input: value stays tied to the old variable, and assigning it does not make React remember the text."
+        },
+        {
+          "key": "B",
+          "text": "VPN, because the assignment is the state update",
+          "correct": false,
+          "why": "A plain assignment is not setTitle."
         },
         {
           "key": "C",
           "text": "null",
           "correct": false,
-          "why": "The state was an empty string, not null."
+          "why": "The initial value was an empty string, not null."
         },
         {
           "key": "D",
-          "text": "The parent's prop, not the state variable",
+          "text": "The parent's prop, even when no prop was passed",
           "correct": false,
-          "why": "The read is the state variable, which has not updated yet."
+          "why": "This input reads title state, not a missing prop."
         }
       ],
-      "explanation": "setTitle schedules the next render. The next line still sees the old title.",
-      "version": 1
-    },
-    {
-      "key": "fr-q10",
-      "stem": "Why is title = \"VPN\" the wrong way to remember a new title in a function component?",
-      "skill": "state",
-      "difficulty": "hard",
-      "mode": "single",
-      "options": [
-        {
-          "key": "A",
-          "text": "It does not update state, so React does not re-render from that assignment",
-          "correct": true,
-          "why": "The local assignment does not tell React to store a new state value."
-        },
-        {
-          "key": "B",
-          "text": "It compiles the component",
-          "correct": false,
-          "why": "Assignment is not compilation."
-        },
-        {
-          "key": "C",
-          "text": "It sends POST /tickets",
-          "correct": false,
-          "why": "This line is not an HTTP request."
-        },
-        {
-          "key": "D",
-          "text": "It is the same operation as setTitle",
-          "correct": false,
-          "why": "setTitle is the state update. A plain assignment is not."
-        }
-      ],
-      "explanation": "Use the setter from useState. A plain assignment does not schedule a render from state.",
-      "version": 1
+      "explanation": "Without the setter, React does not store the typed text. The field stays on the empty initial value.",
+      "version": 2
     },
     {
       "key": "fs-q01",
@@ -1018,38 +1018,38 @@
     },
     {
       "key": "fs-q10",
-      "stem": "Using RFC 9110 status classes, which class does 404 belong to?",
+      "stem": "Using the six-row log and RFC 9110 classes, row 2 is 201, row 3 is 404, and row 6 is 500. Which statement is true?\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |",
       "skill": "http",
       "difficulty": "hard",
       "mode": "single",
       "options": [
         {
           "key": "A",
-          "text": "2xx success",
-          "correct": false,
-          "why": "2xx includes 200 and 201, not 404."
+          "text": "201 is success-class, 404 is client-error-class, and 500 is server-error-class. A 404 is not a server failure.",
+          "correct": true,
+          "why": "RFC 9110 puts 2xx in successful, 4xx in client error, and 5xx in server error. 201 is 2xx, 404 is 4xx, and 500 is 5xx."
         },
         {
           "key": "B",
-          "text": "3xx redirection",
+          "text": "201, 404, and 500 are all failures because none of them is 200",
           "correct": false,
-          "why": "3xx is redirection. 404 is not a redirect."
+          "why": "201 is in the success class. It is not a failure only because it is not 200."
         },
         {
           "key": "C",
-          "text": "4xx client error",
-          "correct": true,
-          "why": "404 is in the 4xx class."
+          "text": "404 and 500 are the same class",
+          "correct": false,
+          "why": "404 is 4xx and 500 is 5xx."
         },
         {
           "key": "D",
-          "text": "5xx server error",
+          "text": "201 is a client error because the client sent the POST",
           "correct": false,
-          "why": "5xx includes 500, not 404."
+          "why": "Sending a POST does not move 201 into the client-error class."
         }
       ],
-      "explanation": "404 is a 4xx client error. 500 is the 5xx line in this log.",
-      "version": 1
+      "explanation": "Classify each code by its class. 201 is success, 404 is client error, and 500 is server error. Do not treat every non-200 code as the same failure.",
+      "version": 2
     },
     {
       "key": "crt2-q01",
@@ -1125,7 +1125,7 @@
       "key": "crt2-q03",
       "stem": "Pipe A fills a tank in 12 hours. Pipe B fills the same tank in 6 hours. How long do they take together, if both fill and neither leaks?",
       "skill": "quantitative",
-      "difficulty": "medium",
+      "difficulty": "hard",
       "mode": "single",
       "options": [
         {
@@ -1154,7 +1154,7 @@
         }
       ],
       "explanation": "Add the rates, not the hours. Together they fill one quarter of the tank per hour.",
-      "version": 1
+      "version": 2
     },
     {
       "key": "crt2-q04",

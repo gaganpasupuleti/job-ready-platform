@@ -14,10 +14,12 @@ A standard application starts in:
 public static void main(String[] args)
 ```
 
-`public` means the runtime can call it. `static` means it belongs to the class, not to one object. `void` means it does not return a value. `String[] args` is the argument list. A method named `start` or `run` is not this entry point unless something else calls it.
+The closer-look tutorial says every application must contain a `main` method with that signature. It is the entry point. `void` means the method does not return a value. `String[] args` is the argument list; the tutorial says the argument may be named something other than `args`. That page does not define the words `public` and `static` beyond requiring them in the signature. A method named `start` or `run` is not this entry point unless something else calls it.
 
 ## Worked example
-`public class Ticket` is saved as `Ticket.java`. The compiler looks for the public class and the file name to match. Printing a title uses `System.out.println(title)`, which writes that text and then a line break to standard output. It does not save a ticket.
+If a source file declares a public type, the packages tutorial says only one type in that file may be public, and it must have the same name as the source file. `public class TicketSummary` belongs in `TicketSummary.java`. A `.class` file is compiler output. The Windows "Hello World!" instructions save `HelloWorldApp.java`, run `javac`, and show a generated `HelloWorldApp.class`.
+
+`System.out.println(title)` writes that text and then ends the line. The Java SE 21 `PrintStream.println(String)` documentation says it prints a string and then terminates the line. It does not save a ticket.
 
 ## Common mistakes
 - Calling the file `Main.java` while the public class is `Ticket`.
@@ -35,4 +37,5 @@ Class, then object. Public class name matches the file name. The start method is
 
 ## References
 Oracle tutorial, "A Closer Look at the Hello World Application": https://docs.oracle.com/javase/tutorial/getStarted/application/index.html
-Oracle tutorial, "Classes": https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html
+Oracle tutorial, "Creating a Package": https://docs.oracle.com/javase/tutorial/java/package/createpkgs.html
+Java SE 21 `PrintStream.println(String)`: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/PrintStream.html#println(java.lang.String)
