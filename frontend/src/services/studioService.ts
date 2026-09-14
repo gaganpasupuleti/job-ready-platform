@@ -17,7 +17,15 @@ export type StudioCatalog = {
     read: boolean
     updated_at: string | null
   }[]
-  assignments: { key: string; title: string; mode: string; families: string[]; in_progress: boolean }[]
+  assignments: {
+    key: string
+    title: string
+    mode: string
+    families: string[]
+    in_progress: boolean
+    unavailable?: boolean
+    requires_runtime?: string | null
+  }[]
   packs: { key: string; title: string; kind: string; questions: number; families: string[] }[]
 }
 
@@ -62,6 +70,9 @@ export type AssignmentDetail = {
   version: number
   sql_problem_slug: string | null
   local_python: boolean
+  requires_runtime?: string | null
+  unavailable?: boolean
+  unavailable_reason?: string | null
   submissions: {
     id: string
     attempt: number
@@ -124,5 +135,70 @@ export async function fetchReviewQueue() {
 
 export async function reviewSubmission(id: string, payload: { feedback: string; grade: string | null }) {
   const { data } = await apiClient.post(apiEndpoints.learn.studioReview(id), payload)
+  return data
+}
+
+export type SyllabusTracks = {
+  tracks: {
+    id: string
+    title: string
+    units: {
+      id: string
+      title: string
+      position: number
+      lessons: {
+        key: string
+        title: string
+        position: number
+        status: string
+        minutes: number | null
+        material_key: string | null
+        href: string | null
+      }[]
+    }[]
+  }[]
+}
+
+export type SyllabusLesson = {
+  key: string
+  title: string
+  track: string
+  track_title: string
+  unit: string
+  unit_title: string
+  position: number
+  status: string
+  minutes: number | null
+  prerequisites: string[]
+  material_key: string | null
+  video: { url: string; channel: string; topic: string; verified_on: string } | null
+  syllabus_position: number
+  syllabus_total: number
+  previous: { key: string; title: string; status: string; material_key: string | null; href: string } | null
+  next: { key: string; title: string; status: string; material_key: string | null; href: string } | null
+  material: MaterialDetail | null
+  practice: { key: string; stem: string; options: { key: string; text: string }[] }[]
+}
+
+export async function fetchSyllabusTracks() {
+  const { data } = await apiClient.get<SyllabusTracks>(apiEndpoints.learn.studioSyllabus)
+  return data
+}
+
+export async function fetchSyllabusLesson(key: string) {
+  const { data } = await apiClient.get<SyllabusLesson>(apiEndpoints.learn.studioSyllabusLesson(key))
+  return data
+}
+
+export async function checkSyllabusPractice(key: string, questionKey: string, selected: string[]) {
+  const { data } = await apiClient.post<{
+    correct: boolean
+    selected: string[]
+    correct_keys: string[]
+    explanation: string
+    options: { key: string; text: string; correct: boolean }[]
+    competence: boolean
+    note: string
+  }>(apiEndpoints.learn.studioSyllabusPractice(key, questionKey), { selected })
   return data
 }

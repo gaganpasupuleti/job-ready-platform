@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 const items = [
   { label: 'Courses', path: '/learn' },
+  { label: 'Syllabus', path: '/learn/syllabus' },
   { label: 'Materials', path: '/learn/materials' },
   { label: 'Assignments', path: '/learn/assignments' },
   { label: 'Projects', path: '/practice/projects' },

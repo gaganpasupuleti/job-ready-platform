@@ -61,7 +61,7 @@ export function DsaProblemPage() {
   const editorRootRef = useRef<HTMLDivElement>(null)
   const [leftTab, setLeftTab] = useState<LeftTab>('problem')
   const [bottomTab, setBottomTab] = useState<BottomTab>('output')
-  const [languageId, setLanguageId] = useState(71)
+  const [languageId, setLanguageId] = useState(62)
   const [lastResult, setLastResult] = useState<ExecutionResponse | null>(null)
   const [revealedHints, setRevealedHints] = useState(0)
   const [mobileTab, setMobileTab] = useState<'problem' | 'code' | 'output'>('problem')
@@ -158,7 +158,7 @@ export function DsaProblemPage() {
   if (error || !problem) return <ErrorState message={apiErrorMessage(error, 'Problem not found.')} />
 
   const langOptions = (languages ?? problem.supported_languages).filter(
-    (lang) => lang.available !== false,
+    (lang) => lang.available !== false && lang.id !== 71,
   )
   const activeLang = langOptions.find((l) => l.id === languageId)
   const projectReturn = searchParams.get('fromProject')

@@ -122,6 +122,9 @@ export const apiEndpoints = {
     solution: (id: string) => `/api/v1/sql/problems/${id}/solution`,
     executionStatus: '/api/v1/sql/execution-status',
     navigation: (id: string) => `/api/v1/sql/problems/${id}/navigation`,
+    playground: '/api/v1/sql/playground',
+    playgroundDataset: (id: string) => `/api/v1/sql/playground/datasets/${id}`,
+    playgroundRun: (id: string) => `/api/v1/sql/playground/datasets/${id}/run`,
   },
   interview: {
     questions: '/api/v1/interview/questions',
@@ -185,6 +188,10 @@ export const apiEndpoints = {
     studioAssignmentDraft: (key: string) => `/api/v1/studio/assignments/${key}/draft`,
     studioAssignmentSubmit: (key: string) => `/api/v1/studio/assignments/${key}/submit`,
     studioPackStart: (key: string) => `/api/v1/studio/packs/${key}/start`,
+    studioSyllabus: '/api/v1/studio/syllabus',
+    studioSyllabusLesson: (key: string) => `/api/v1/studio/syllabus/${key}`,
+    studioSyllabusPractice: (key: string, questionKey: string) =>
+      `/api/v1/studio/syllabus/${key}/practice/${questionKey}`,
     studioReviews: '/api/v1/admin/studio/submissions',
     studioReview: (id: string) => `/api/v1/admin/studio/submissions/${id}/review`,
   },
