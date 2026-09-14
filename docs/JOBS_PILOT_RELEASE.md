@@ -25,7 +25,19 @@ Publication requires an application-owned decision of `publish` in `job_publicat
 
 `push_validated_to_job_ready` is not in this workspace. The sister repo `codequest-jobs-ops` does not contain that function. Its closest upserts are `scraped_jobs` `ON CONFLICT DO NOTHING` and a different scraper table that rewrites its own columns. Neither statement shows that `validated_jobs.approved_status` or `manual_review_needed` are preserved. Do not assume a source approval would survive ingestion. Do not write those columns from this app. The short queue for Gk is `docs/JOBS_REVIEW_QUEUE.md`.
 
-`--apply` refuses production and source writes. A local apply is allowed only for database `jobready_sync_disposable` on localhost, and it still does not write the source. An empty or failed fetch must not archive local jobs. A nonempty snapshot with zero eligible rows unpublishes only jobs whose `external_id` starts with `jobs-server:`.
+`--apply` refuses production and source writes. A local disposable apply is allowed only for database `jobready_sync_disposable` on localhost, and it still does not write the source. An empty or failed fetch must not archive local jobs. A nonempty snapshot with zero eligible rows unpublishes only jobs whose `external_id` starts with `jobs-server:`.
+
+A reviewed batch is a separate path and is not a complete snapshot. It updates only the named `source/job_id` pairs. It does not archive unnamed jobs. Put the application connection in `JOBS_APPLY_DATABASE_URL`. Do not pass that URL as an argument. Confirm the target with `--confirm-target host:port/database`. `JOBS_APPLY_DATABASE_URL` must identify the same database as `DATABASE_URL`, and must not identify `JOBS_SOURCE_DATABASE_URL`. The source connection is refused if it identifies the application database. Eligibility and publication decisions are read again immediately before a write; a changed plan aborts with no writes. Scheduling is not part of this import. Do not run the apply until the reviewed pairs and their application-owned decisions exist.
+
+From `backend`, with `JOBS_SOURCE_DATABASE_URL`, `DATABASE_URL`, and `JOBS_APPLY_DATABASE_URL` set in the environment:
+
+```text
+python scripts/sync_jobs_source.py --batch reviewed.txt --confirm-target <host>:<port>/<database>
+python scripts/sync_jobs_source.py --apply-reviewed-batch --batch reviewed.txt --confirm-target <host>:<port>/<database>
+python scripts/sync_jobs_source.py --verify-reviewed-batch --batch reviewed.txt --confirm-target <host>:<port>/<database>
+```
+
+`reviewed.txt` is one `source/job_id` pair per line. `#` comments are ignored. Bare `--apply` still refuses.
 
 ## Migration order
 

@@ -15,6 +15,8 @@ from app.schemas.job import (
     ApplicationSummary,
     ApplicationUpdate,
     JobDetail,
+    JobFamilyCounts,
+    JobFilterOptions,
     JobListResponse,
     JobPreferencePublic,
     JobPreferenceUpdate,
@@ -45,6 +47,9 @@ async def list_jobs(
     employment_type: str | None = None,
     experience_min: int | None = None,
     posted_within_days: int | None = None,
+    role_family: str | None = None,
+    location: str | None = None,
+    experience_bucket: str | None = None,
     sort: str = Query(default="newest"),
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=20, ge=1, le=50),
@@ -64,9 +69,68 @@ async def list_jobs(
         employment_type=employment_type,
         experience_min=experience_min,
         posted_within_days=posted_within_days,
+        role_family=role_family,
+        location=location,
+        experience_bucket=experience_bucket,
         sort=sort,
         page=page,
         limit=limit,
+    )
+
+
+@router.get("/family-counts", response_model=JobFamilyCounts)
+async def job_family_counts(
+    user: User = Depends(get_current_user),
+    q: str | None = None,
+    role: str | None = None,
+    skill: str | None = None,
+    company: str | None = None,
+    city: str | None = None,
+    state: str | None = None,
+    country: str | None = None,
+    remote: bool | None = None,
+    work_mode: str | None = None,
+    employment_type: str | None = None,
+    experience_min: int | None = None,
+    posted_within_days: int | None = None,
+    location: str | None = None,
+    experience_bucket: str | None = None,
+    service: JobService = Depends(_svc),
+) -> JobFamilyCounts:
+    del user
+    return await service.family_counts(
+        q=q,
+        role=role,
+        skill=skill,
+        company=company,
+        city=city,
+        state=state,
+        country=country,
+        remote=remote,
+        work_mode=work_mode,
+        employment_type=employment_type,
+        experience_min=experience_min,
+        posted_within_days=posted_within_days,
+        location=location,
+        experience_bucket=experience_bucket,
+    )
+
+
+@router.get("/filter-options", response_model=JobFilterOptions)
+async def job_filter_options(
+    user: User = Depends(get_current_user),
+    location_q: str | None = None,
+    company_q: str | None = None,
+    location: str | None = None,
+    company: str | None = None,
+    service: JobService = Depends(_svc),
+) -> JobFilterOptions:
+    del user
+    return await service.filter_options(
+        location_q=location_q,
+        company_q=company_q,
+        selected_location=location,
+        selected_company=company,
     )
 
 

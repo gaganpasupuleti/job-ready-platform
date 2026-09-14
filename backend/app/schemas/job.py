@@ -52,6 +52,8 @@ class JobCard(BaseModel):
     top_skills: list[str] = []
     is_saved: bool = False
     has_apply_url: bool = False
+    role_family: str | None = None
+    experience_bucket: str | None = None
     requirement_coverage: float | None = None
     has_sufficient_mapping: bool | None = None
     missing_skill_count: int | None = None
@@ -62,6 +64,24 @@ class JobListResponse(BaseModel):
     total: int
     page: int
     limit: int
+
+
+class JobFamilyCount(BaseModel):
+    id: str
+    label: str
+    role_id: str
+    count: int
+
+
+class JobFamilyCounts(BaseModel):
+    all: int
+    families: list[JobFamilyCount]
+
+
+class JobFilterOptions(BaseModel):
+    locations: list[str]
+    companies: list[str]
+    experience_buckets: list[str]
 
 
 class JobPracticeLink(BaseModel):

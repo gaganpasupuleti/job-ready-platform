@@ -89,6 +89,10 @@ class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     salary_currency: Mapped[str | None] = mapped_column(String(8), nullable=True)
 
     location_text: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    role_family: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    actual_role_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    actual_role_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    experience_bucket: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     country: Mapped[str | None] = mapped_column(String(120), nullable=True)
     state: Mapped[str | None] = mapped_column(String(120), nullable=True)
     city: Mapped[str | None] = mapped_column(String(120), nullable=True)
