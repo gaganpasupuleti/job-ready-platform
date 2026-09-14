@@ -17,7 +17,7 @@ from app.content.version_snapshots import assignment_brief_snapshot
 from app.core.deps import get_current_admin, get_current_user
 from app.core.exceptions import AppException
 from app.db.session import get_db
-from app.models.enums import PracticeMode, SessionStatus
+from app.models.enums import PracticeMode, SessionStatus, UserRole
 from app.models.practice import PracticeSession, PracticeSessionQuestion
 from app.models.question import Question
 from app.models.sql_practice import SqlProblemProgress
@@ -30,9 +30,11 @@ from app.models.studio import (
     ContentPackQuestion,
     LearningMaterial,
     LearningMaterialRead,
+    LearningSyllabusEntry,
 )
 from app.models.user import User
 from app.services.job_taxonomy import JOB_FAMILIES, family_label
+from app.services.runtime_lock import PYTHON_LOCK_MESSAGE, assignment_requires_python
 from app.services.practice_service import question_snapshot
 
 router = APIRouter()
@@ -63,6 +65,7 @@ async def catalog(
     level: str | None = None,
     skill: str | None = None,
     progress: str | None = None,
+    include_locked: bool = False,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> dict:
@@ -120,8 +123,18 @@ async def catalog(
             for row in materials
         ],
         "assignments": [
-            {"key": row.content_key, "title": row.title, "mode": row.submission_mode, "families": row.families, "in_progress": row.id in draft_ids}
+            {
+                "key": row.content_key,
+                "title": row.title,
+                "mode": row.submission_mode,
+                "families": row.families,
+                "in_progress": row.id in draft_ids,
+                "unavailable": assignment_requires_python(row.submission_mode, row.requires_runtime),
+                "requires_runtime": "python" if assignment_requires_python(row.submission_mode, row.requires_runtime) else row.requires_runtime,
+            }
             for row in assignments
+            if include_locked and user.role in {UserRole.ADMIN, UserRole.TRAINER}
+            or not assignment_requires_python(row.submission_mode, row.requires_runtime)
         ],
         "packs": [{"key": row.content_key, "title": row.title, "kind": row.kind, "questions": row.question_count, "families": row.families} for row in packs],
     }
@@ -231,6 +244,9 @@ async def assignment_detail(key: str, user: User = Depends(get_current_user), db
         "version": row.version,
         "sql_problem_slug": row.sql_problem_slug,
         "local_python": row.submission_mode == "local_python",
+        "requires_runtime": "python" if assignment_requires_python(row.submission_mode, row.requires_runtime) else row.requires_runtime,
+        "unavailable": assignment_requires_python(row.submission_mode, row.requires_runtime),
+        "unavailable_reason": PYTHON_LOCK_MESSAGE if assignment_requires_python(row.submission_mode, row.requires_runtime) else None,
         "submissions": [_submission_out(item, reviews) for item in mine],
     }
 
@@ -272,6 +288,7 @@ async def _latest(db: AsyncSession, assignment_id, user_id: UUID) -> AssignmentS
 @router.post("/studio/assignments/{key}/draft")
 async def save_draft(key: str, payload: DraftIn, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)) -> dict:
     row = await _assignment(db, key)
+    _reject_locked_python(row)
     _check_url(payload.evidence_url)
     current = await _latest(db, row.id, user.id)
     if current and current.status == "draft":
@@ -302,6 +319,7 @@ async def save_draft(key: str, payload: DraftIn, user: User = Depends(get_curren
 @router.post("/studio/assignments/{key}/submit")
 async def submit_assignment(key: str, payload: DraftIn, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)) -> dict:
     row = await _assignment(db, key)
+    _reject_locked_python(row)
     _check_url(payload.evidence_url)
     if row.submission_mode == "sql_evidence" and row.sql_problem_slug:
         from app.models.sql_practice import SqlProblem
@@ -411,6 +429,206 @@ async def review_queue(user: User = Depends(get_current_admin), db: AsyncSession
     return payload
 
 
+@router.get("/studio/syllabus")
+async def syllabus_tracks(user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)) -> dict:
+    rows = (
+        await db.execute(
+            select(LearningSyllabusEntry)
+            .where(LearningSyllabusEntry.is_published.is_(True))
+            .order_by(LearningSyllabusEntry.track, LearningSyllabusEntry.unit_position, LearningSyllabusEntry.position)
+        )
+    ).scalars().all()
+    tracks: dict[str, dict] = {}
+    for row in rows:
+        track = tracks.setdefault(
+            row.track,
+            {"id": row.track, "title": row.track_title, "units": {}},
+        )
+        unit = track["units"].setdefault(
+            row.unit,
+            {
+                "id": row.unit,
+                "title": row.unit_title,
+                "position": row.unit_position,
+                "lessons": [],
+            },
+        )
+        unit["lessons"].append(
+            {
+                "key": row.content_key,
+                "title": row.title,
+                "position": row.position,
+                "status": row.status,
+                "minutes": row.estimated_minutes,
+                "material_key": row.material_key if row.status == "published" else None,
+                "href": f"/learn/materials/{row.material_key}" if row.status == "published" and row.material_key else None,
+            }
+        )
+    ordered = []
+    for track in tracks.values():
+        units = sorted(track["units"].values(), key=lambda item: item["position"])
+        ordered.append({"id": track["id"], "title": track["title"], "units": units})
+    return {"tracks": ordered}
+
+
+@router.get("/studio/syllabus/{key}")
+async def syllabus_lesson(key: str, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)) -> dict:
+    row = (
+        await db.execute(
+            select(LearningSyllabusEntry).where(
+                LearningSyllabusEntry.content_key == key,
+                LearningSyllabusEntry.is_published.is_(True),
+            )
+        )
+    ).scalar_one_or_none()
+    if row is None:
+        raise AppException("Syllabus lesson not found", status_code=404)
+    siblings = (
+        await db.execute(
+            select(LearningSyllabusEntry)
+            .where(
+                LearningSyllabusEntry.track == row.track,
+                LearningSyllabusEntry.is_published.is_(True),
+            )
+            .order_by(LearningSyllabusEntry.unit_position, LearningSyllabusEntry.position)
+        )
+    ).scalars().all()
+    index = next(i for i, item in enumerate(siblings) if item.id == row.id)
+    previous_row = siblings[index - 1] if index > 0 else None
+    next_row = siblings[index + 1] if index + 1 < len(siblings) else None
+    material = None
+    if row.status == "published" and row.material_key:
+        material = (
+            await db.execute(
+                select(LearningMaterial).where(
+                    LearningMaterial.content_key == row.material_key,
+                    LearningMaterial.is_published.is_(True),
+                )
+            )
+        ).scalar_one_or_none()
+    questions = []
+    for question_key in row.question_keys or []:
+        question = (
+            await db.execute(
+                select(Question)
+                .options(selectinload(Question.options))
+                .where(Question.content_key == question_key, Question.is_active.is_(True))
+            )
+        ).scalar_one_or_none()
+        if question is None:
+            continue
+        questions.append(
+            {
+                "key": question.content_key,
+                "stem": question.question_text,
+                "options": [
+                    {"key": str(index), "text": option.option_text}
+                    for index, option in enumerate(sorted(question.options, key=lambda item: item.sort_order))
+                ],
+            }
+        )
+    return {
+        "key": row.content_key,
+        "title": row.title,
+        "track": row.track,
+        "track_title": row.track_title,
+        "unit": row.unit,
+        "unit_title": row.unit_title,
+        "position": row.position,
+        "status": row.status,
+        "minutes": row.estimated_minutes,
+        "prerequisites": row.prerequisites,
+        "material_key": row.material_key if row.status == "published" else None,
+        "video": row.video_json,
+        "syllabus_position": index + 1,
+        "syllabus_total": len(siblings),
+        "previous": _nav_lesson(previous_row),
+        "next": _nav_lesson(next_row),
+        "material": None
+        if material is None
+        else {
+            "key": material.content_key,
+            "title": material.title,
+            "summary": material.summary,
+            "objectives": material.objectives,
+            "prerequisites": material.prerequisites,
+            "body_md": material.body_md,
+            "examples": material.examples,
+            "exercises": material.exercises,
+            "summary_md": material.summary_md,
+            "sources": material.sources,
+            "minutes": material.estimated_minutes,
+        },
+        "practice": questions,
+    }
+
+
+class PracticeCheckIn(BaseModel):
+    selected: list[str] = Field(default_factory=list)
+
+
+@router.post("/studio/syllabus/{key}/practice/{question_key}")
+async def syllabus_practice_check(
+    key: str,
+    question_key: str,
+    payload: PracticeCheckIn,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    entry = (
+        await db.execute(
+            select(LearningSyllabusEntry).where(
+                LearningSyllabusEntry.content_key == key,
+                LearningSyllabusEntry.is_published.is_(True),
+            )
+        )
+    ).scalar_one_or_none()
+    if entry is None or question_key not in (entry.question_keys or []):
+        raise AppException("Practice question not found", status_code=404)
+    question = (
+        await db.execute(
+            select(Question)
+            .options(selectinload(Question.options))
+            .where(Question.content_key == question_key, Question.is_active.is_(True))
+        )
+    ).scalar_one_or_none()
+    if question is None:
+        raise AppException("Practice question not found", status_code=404)
+    options = sorted(question.options, key=lambda item: item.sort_order)
+    keyed = {str(index): option for index, option in enumerate(options)}
+    selected = [item for item in payload.selected if item in keyed]
+    correct_keys = [str(index) for index, option in enumerate(options) if option.is_correct]
+    is_correct = set(selected) == set(correct_keys) and bool(selected)
+    return {
+        "correct": is_correct,
+        "selected": selected,
+        "correct_keys": correct_keys,
+        "explanation": question.explanation,
+        "options": [
+            {
+                "key": str(index),
+                "text": option.option_text,
+                "correct": bool(option.is_correct),
+            }
+            for index, option in enumerate(options)
+        ],
+        "competence": False,
+        "note": "Reading practice only. This check is not assessed competence.",
+    }
+
+
+def _nav_lesson(row: LearningSyllabusEntry | None) -> dict | None:
+    if row is None:
+        return None
+    return {
+        "key": row.content_key,
+        "title": row.title,
+        "status": row.status,
+        "material_key": row.material_key if row.status == "published" else None,
+        "href": f"/learn/materials/{row.material_key}" if row.status == "published" and row.material_key else f"/learn/syllabus/{row.content_key}",
+    }
+
+
 @router.post("/admin/studio/submissions/{submission_id}/review")
 async def review_submission(
     submission_id: UUID,
@@ -435,6 +653,11 @@ async def review_submission(
     row.status = "accepted" if payload.grade else "needs_changes"
     await db.commit()
     return {"status": row.status, "version": row.assignment_version}
+
+
+def _reject_locked_python(row: Assignment) -> None:
+    if assignment_requires_python(row.submission_mode, row.requires_runtime):
+        raise AppException(PYTHON_LOCK_MESSAGE, status_code=409)
 
 
 async def _assignment(db: AsyncSession, key: str) -> Assignment:

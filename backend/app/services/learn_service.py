@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.exceptions import AppException
+from app.services.runtime_lock import PYTHON_MILESTONE_NOTE, task_requires_python
 from app.models.coding import CodingProblem
 from app.models.learn import (
     Course,
@@ -112,6 +113,10 @@ def _now() -> datetime:
 
 def _enum_value(value: Any) -> str:
     return value.value if hasattr(value, "value") else str(value)
+
+
+def _task_locked(task: ProjectTask) -> bool:
+    return task_requires_python(task.body_json, _enum_value(task.task_type))
 
 
 def course_href(course_slug: str) -> str:
@@ -808,7 +813,8 @@ class LearnService:
         ordered_tasks = [task for module in project.modules for task in module.tasks]
         completed_ids = await self._completed_task_ids(user.id, [t.id for t in ordered_tasks])
         hrefs = await self._project_task_hrefs(ordered_tasks, project.slug)
-        current_task = next((t for t in ordered_tasks if t.id not in completed_ids), None)
+        locked_ids = {task.id for task in ordered_tasks if _task_locked(task)}
+        current_task = next((t for t in ordered_tasks if t.id not in completed_ids and t.id not in locked_ids), None)
         completed_count = len(completed_ids)
         total = len(ordered_tasks)
         percent = progress.percent if progress else (int(round(completed_count * 100 / total)) if total else 0)
@@ -843,6 +849,8 @@ class LearnService:
             continue_href=workspace,
             last_activity_at=progress.last_activity_at if progress else None,
             completed_at=progress.completed_at if progress else None,
+            completion_blocked=bool(locked_ids),
+            completion_note=PYTHON_MILESTONE_NOTE if locked_ids else None,
             modules=[
                 ProjectModuleOut(
                     id=module.id,
@@ -857,7 +865,7 @@ class LearnService:
                             task_type=_enum_value(task.task_type),
                             status="completed" if task.id in completed_ids else "not_started",
                             href=f"/projects/{project.slug}/tasks/{task.id}",
-                            engine_href=hrefs.get(task.id),
+                            engine_href=None if task.id in locked_ids else hrefs.get(task.id),
                             workspace_href=f"/projects/{project.slug}/tasks/{task.id}",
                             lesson_id=task.lesson_id,
                             coding_problem_id=task.coding_problem_id,
@@ -869,6 +877,8 @@ class LearnService:
                             checklist_state=checklist_map.get(task.id, {}),
                             reference_json=task.reference_json,
                             estimated_minutes=task.estimated_minutes,
+                            locked=task.id in locked_ids,
+                            lock_reason=PYTHON_MILESTONE_NOTE if task.id in locked_ids else None,
                         )
                         for task in module.tasks
                     ],
@@ -893,7 +903,7 @@ class LearnService:
         progress.last_activity_at = _now()
         ordered = [task for module in project.modules for task in module.tasks]
         completed_ids = await self._completed_task_ids(user.id, [t.id for t in ordered])
-        current = next((t for t in ordered if t.id not in completed_ids), None)
+        current = next((t for t in ordered if t.id not in completed_ids and not _task_locked(t)), None)
         href = (
             f"/projects/{project.slug}/tasks/{current.id}" if current else project_href(project.slug)
         )
@@ -916,7 +926,7 @@ class LearnService:
             project_slug=detail.slug,
             project_title=detail.title,
             project_percent=detail.progress_percent,
-            project_completed=detail.status == ProgressStatus.COMPLETED.value or detail.progress_percent >= 100,
+            project_completed=detail.status == ProgressStatus.COMPLETED.value and not detail.completion_blocked,
             skills=detail.skills,
             estimated_minutes=detail.estimated_minutes,
             completed_at=detail.completed_at,
@@ -983,6 +993,8 @@ class LearnService:
         task = next((t for t in ordered if t.id == task_id), None)
         if task is None:
             raise AppException("Task not found on this project", status_code=404)
+        if _task_locked(task):
+            raise AppException(PYTHON_MILESTONE_NOTE, status_code=409)
         await self._require_assessment_evidence(user.id, task)
 
         row = (
@@ -1004,13 +1016,15 @@ class LearnService:
 
         completed_ids = await self._completed_task_ids(user.id, [t.id for t in ordered])
         completed_ids.add(task_id)
+        locked_remaining = any(_task_locked(item) and item.id not in completed_ids for item in ordered)
         percent = int(round(len(completed_ids) * 100 / len(ordered))) if ordered else 100
         progress = await self._ensure_project_progress(user.id, project.id)
         progress.percent = percent
         progress.last_task_id = task_id
         progress.last_activity_at = _now()
-        progress.status = ProgressStatus.COMPLETED if percent >= 100 else ProgressStatus.IN_PROGRESS
-        if percent >= 100:
+        finished = percent >= 100 and not locked_remaining
+        progress.status = ProgressStatus.COMPLETED if finished else ProgressStatus.IN_PROGRESS
+        if finished:
             progress.completed_at = progress.completed_at or _now()
         await self.db.commit()
         return {
