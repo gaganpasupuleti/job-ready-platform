@@ -24,6 +24,7 @@ from app.models.job import Job, JobPublicationDecision, JobSource
 from app.models.job_enums import JobSourceType, JobStatus
 from app.models.tagging import Company
 from app.services.job_normalization import https_job_url, job_content_hash, normalize_title, slugify_job
+from app.services.job_taxonomy import stored_source_value
 
 SOURCE_SLUG_PREFIX = "jobs-server"
 EXTERNAL_PREFIX = "jobs-server:"
@@ -59,6 +60,8 @@ class SourceJob:
     salary_min: Decimal | None = None
     salary_max: Decimal | None = None
     currency: str | None = None
+    actual_role_id: str | None = None
+    experience_bucket: str | None = None
 
 
 @dataclass(frozen=True)
@@ -466,6 +469,29 @@ async def apply_plan(db: AsyncSession, plan: SyncPlan) -> ApplyResult:
     )
 
 
+async def backfill_source_taxonomy(db: AsyncSession, rows: list[SourceJob]) -> int:
+    """Copy source taxonomy onto existing jobs. Does not change ids or publication."""
+    updated = 0
+    for row in rows:
+        job = (
+            await db.execute(select(Job).where(Job.external_id == source_identity(row.job_id)))
+        ).scalar_one_or_none()
+        if job is None:
+            continue
+        values = {
+            "role_family": stored_source_value(row.role_family),
+            "actual_role_id": stored_source_value(row.actual_role_id),
+            "actual_role_name": stored_source_value(row.actual_role_name),
+            "experience_bucket": stored_source_value(row.experience_bucket),
+        }
+        if any(getattr(job, key) != value for key, value in values.items()):
+            for key, value in values.items():
+                setattr(job, key, value)
+            updated += 1
+    await db.commit()
+    return updated
+
+
 async def apply_named_plan(db: AsyncSession, plan: SyncPlan) -> ApplyResult:
     """Write only the named inserts and updates. Never archive from a subset."""
     if not plan.named_only or plan.complete:
@@ -569,6 +595,10 @@ async def _upsert(db: AsyncSession, job_id: UUID | None, row: SourceJob) -> Job:
             location_text=location,
             source_url=posting,
             apply_url=apply,
+            role_family=stored_source_value(row.role_family),
+            actual_role_id=stored_source_value(row.actual_role_id),
+            actual_role_name=stored_source_value(row.actual_role_name),
+            experience_bucket=stored_source_value(row.experience_bucket),
             posted_at=row.date_posted,
             salary_min=row.salary_min,
             salary_max=row.salary_max,
@@ -593,6 +623,10 @@ async def _upsert(db: AsyncSession, job_id: UUID | None, row: SourceJob) -> Job:
     job.location_text = location
     job.source_url = posting
     job.apply_url = apply
+    job.role_family = stored_source_value(row.role_family)
+    job.actual_role_id = stored_source_value(row.actual_role_id)
+    job.actual_role_name = stored_source_value(row.actual_role_name)
+    job.experience_bucket = stored_source_value(row.experience_bucket)
     job.posted_at = row.date_posted
     job.salary_min = row.salary_min
     job.salary_max = row.salary_max

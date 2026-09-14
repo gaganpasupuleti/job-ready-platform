@@ -14,7 +14,8 @@ _QUERY = """
 SELECT job_id, source, title, company, location, job_url, apply_url, link_status,
        approved_status, manual_review_needed, date_posted, scraped_created_at, synced_at,
        jd_summary, jd_clean, jd_requirements, jd_responsibilities, required_skills,
-       actual_role_name, role_family, salary_min, salary_max, currency
+       actual_role_id, actual_role_name, role_family, experience_bucket,
+       salary_min, salary_max, currency
 FROM public.validated_jobs
 """
 
@@ -66,8 +67,10 @@ async def fetch_source_jobs(dsn: str) -> list[SourceJob]:
                 jd_requirements=row["jd_requirements"],
                 jd_responsibilities=row["jd_responsibilities"],
                 required_skills=row["required_skills"],
+                actual_role_id=row["actual_role_id"],
                 actual_role_name=row["actual_role_name"],
                 role_family=row["role_family"],
+                experience_bucket=row["experience_bucket"],
                 salary_min=_money(row["salary_min"]),
                 salary_max=_money(row["salary_max"]),
                 currency=row["currency"],

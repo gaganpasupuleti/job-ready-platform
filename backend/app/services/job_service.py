@@ -31,6 +31,9 @@ from app.schemas.job import (
     ApplicationUpdate,
     JobCard,
     JobDetail,
+    JobFamilyCount,
+    JobFamilyCounts,
+    JobFilterOptions,
     JobListResponse,
     JobPracticeLink,
     JobPreferencePublic,
@@ -43,6 +46,11 @@ from app.schemas.job import (
 )
 from app.services.job_match_service import JobMatchService
 from app.services.job_normalization import validate_url
+from app.services.job_taxonomy import (
+    EXPERIENCE_BUCKETS,
+    JOB_FAMILIES,
+    catalog_text,
+)
 
 
 def _utcnow() -> datetime:
@@ -63,7 +71,7 @@ class JobService:
             c = await self.db.get(Company, job.company_id)
             if c:
                 return c.name
-        return job.company_name_raw or "Unknown company"
+        return catalog_text(job.company_name_raw) or "Unknown company"
 
     async def _company_slug(self, job: Job) -> str | None:
         if job.company_id:
@@ -123,7 +131,9 @@ class JobService:
             title=job.title,
             company_name=await self._company_name(job),
             company_slug=await self._company_slug(job),
-            location_text=job.location_text,
+            location_text=catalog_text(job.location_text),
+            role_family=catalog_text(job.role_family),
+            experience_bucket=catalog_text(job.experience_bucket),
             work_mode=job.work_mode,
             employment_type=job.employment_type,
             experience_min_years=job.experience_min_years,
@@ -135,6 +145,154 @@ class JobService:
             is_saved=job.id in saved,
             has_apply_url=bool(job.apply_url and job.apply_url.strip()),
         )
+
+    def _browse_ids(
+        self,
+        *,
+        q: str | None = None,
+        role: str | None = None,
+        skill: str | None = None,
+        company: str | None = None,
+        city: str | None = None,
+        state: str | None = None,
+        country: str | None = None,
+        remote: bool | None = None,
+        work_mode: str | None = None,
+        employment_type: str | None = None,
+        experience_min: int | None = None,
+        posted_within_days: int | None = None,
+        role_family: str | None = None,
+        location: str | None = None,
+        experience_bucket: str | None = None,
+        apply_family: bool = True,
+    ):
+        """Visible job ids. Skill and role constraints are subqueries so joins cannot inflate counts."""
+        stmt = select(Job.id).where(Job.status == JobStatus.ACTIVE, _not_expired())
+        if q and q.strip():
+            pattern = f"%{q.strip()}%"
+            stmt = stmt.where(
+                or_(
+                    Job.title.ilike(pattern),
+                    Job.normalized_title.ilike(pattern),
+                    Job.description.ilike(pattern),
+                    Job.company_name_raw.ilike(pattern),
+                )
+            )
+        company_name = catalog_text(company)
+        if company_name:
+            company_ids = select(Company.id).where(func.lower(func.trim(Company.name)) == company_name.lower())
+            stmt = stmt.where(
+                or_(
+                    func.lower(func.trim(Job.company_name_raw)) == company_name.lower(),
+                    Job.company_id.in_(company_ids),
+                )
+            )
+        if city and city.strip():
+            stmt = stmt.where(Job.city.ilike(f"%{city.strip()}%"))
+        if state and state.strip():
+            stmt = stmt.where(Job.state.ilike(f"%{state.strip()}%"))
+        if country and country.strip():
+            stmt = stmt.where(Job.country.ilike(f"%{country.strip()}%"))
+        if remote is not None:
+            stmt = stmt.where(Job.is_remote.is_(remote))
+        if work_mode:
+            stmt = stmt.where(Job.work_mode == work_mode)
+        if employment_type:
+            stmt = stmt.where(Job.employment_type == employment_type)
+        if experience_min is not None:
+            stmt = stmt.where(
+                or_(Job.experience_min_years.is_(None), Job.experience_min_years <= experience_min)
+            )
+        if posted_within_days:
+            cutoff = _utcnow() - timedelta(days=posted_within_days)
+            stmt = stmt.where(Job.posted_at.is_not(None), Job.posted_at >= cutoff)
+        location_name = catalog_text(location)
+        if location_name:
+            stmt = stmt.where(func.lower(func.trim(Job.location_text)) == location_name.lower())
+        bucket = catalog_text(experience_bucket)
+        if bucket:
+            stmt = stmt.where(Job.experience_bucket == bucket)
+        family = catalog_text(role_family)
+        if apply_family and family:
+            stmt = stmt.where(Job.role_family == family)
+        if role and role.strip():
+            role_ids = (
+                select(JobRoleMap.job_id)
+                .join(JobRole, JobRole.id == JobRoleMap.role_id)
+                .where(or_(JobRole.slug == role.strip(), JobRole.name.ilike(f"%{role.strip()}%")))
+            )
+            stmt = stmt.where(Job.id.in_(role_ids))
+        if skill and skill.strip():
+            skill_ids = (
+                select(JobSkill.job_id)
+                .join(Skill, Skill.id == JobSkill.skill_id)
+                .where(or_(Skill.slug == skill.strip(), Skill.name.ilike(f"%{skill.strip()}%")))
+            )
+            stmt = stmt.where(Job.id.in_(skill_ids))
+        return stmt.distinct()
+
+    async def family_counts(self, **filters) -> JobFamilyCounts:
+        """Counts ignore the selected family so every pill stays comparable."""
+        ids = self._browse_ids(**filters, apply_family=False).subquery()
+        total = int(await self.db.scalar(select(func.count()).select_from(ids)) or 0)
+        grouped = (
+            await self.db.execute(
+                select(Job.role_family, func.count(Job.id))
+                .where(Job.id.in_(select(ids.c.id)))
+                .group_by(Job.role_family)
+            )
+        ).all()
+        by_family = {family: count for family, count in grouped if family}
+        return JobFamilyCounts(
+            all=total,
+            families=[
+                JobFamilyCount(id=family_id, label=label, role_id=role_id, count=int(by_family.get(family_id, 0)))
+                for family_id, label, role_id in JOB_FAMILIES
+            ],
+        )
+
+    async def filter_options(
+        self,
+        *,
+        location_q: str | None = None,
+        company_q: str | None = None,
+        selected_location: str | None = None,
+        selected_company: str | None = None,
+        limit: int = 30,
+    ) -> JobFilterOptions:
+        visible = select(Job.id).where(Job.status == JobStatus.ACTIVE, _not_expired()).subquery()
+        locations = await self._distinct_values(Job.location_text, visible, location_q, selected_location, limit)
+        companies = await self._distinct_values(Job.company_name_raw, visible, company_q, selected_company, limit)
+        raw_buckets = (
+            await self.db.execute(
+                select(Job.experience_bucket)
+                .where(Job.id.in_(select(visible.c.id)), Job.experience_bucket.is_not(None))
+                .distinct()
+            )
+        ).scalars().all()
+        present = {bucket for bucket in (catalog_text(value) for value in raw_buckets) if bucket}
+        official = [bucket for bucket in EXPERIENCE_BUCKETS if bucket in present]
+        extras = sorted(present - set(EXPERIENCE_BUCKETS))
+        return JobFilterOptions(
+            locations=locations,
+            companies=companies,
+            experience_buckets=[*official, *extras],
+        )
+
+    async def _distinct_values(self, column, visible, query: str | None, selected: str | None, limit: int) -> list[str]:
+        values = (
+            await self.db.execute(
+                select(column).where(Job.id.in_(select(visible.c.id)), column.is_not(None)).distinct()
+            )
+        ).scalars().all()
+        cleaned = sorted({text for text in (catalog_text(value) for value in values) if text})
+        needle = (query or "").strip().lower()
+        if needle:
+            cleaned = [value for value in cleaned if needle in value.lower()]
+        chosen = catalog_text(selected)
+        if chosen and chosen not in cleaned:
+            cleaned.insert(0, chosen)
+        return cleaned[:limit]
 
     async def list_jobs(
         self,
@@ -152,57 +310,34 @@ class JobService:
         employment_type: str | None = None,
         experience_min: int | None = None,
         posted_within_days: int | None = None,
+        role_family: str | None = None,
+        location: str | None = None,
+        experience_bucket: str | None = None,
         sort: str = "newest",
         page: int = 1,
         limit: int = 20,
     ) -> JobListResponse:
         limit = min(max(limit, 1), 50)
         page = max(page, 1)
-        stmt = select(Job).where(Job.status == JobStatus.ACTIVE, _not_expired())
-        if q:
-            pattern = f"%{q.strip()}%"
-            stmt = stmt.where(
-                or_(
-                    Job.title.ilike(pattern),
-                    Job.normalized_title.ilike(pattern),
-                    Job.description.ilike(pattern),
-                    Job.company_name_raw.ilike(pattern),
-                )
-            )
-        if company:
-            stmt = stmt.join(Company, Company.id == Job.company_id, isouter=True).where(
-                or_(Company.slug == company, Company.name.ilike(f"%{company}%"), Job.company_name_raw.ilike(f"%{company}%"))
-            )
-        if city:
-            stmt = stmt.where(Job.city.ilike(f"%{city}%"))
-        if state:
-            stmt = stmt.where(Job.state.ilike(f"%{state}%"))
-        if country:
-            stmt = stmt.where(Job.country.ilike(f"%{country}%"))
-        if remote is not None:
-            stmt = stmt.where(Job.is_remote.is_(remote))
-        if work_mode:
-            stmt = stmt.where(Job.work_mode == work_mode)
-        if employment_type:
-            stmt = stmt.where(Job.employment_type == employment_type)
-        if experience_min is not None:
-            stmt = stmt.where(
-                or_(Job.experience_min_years.is_(None), Job.experience_min_years <= experience_min)
-            )
-        if posted_within_days:
-            cutoff = _utcnow() - timedelta(days=posted_within_days)
-            stmt = stmt.where(Job.posted_at.is_not(None), Job.posted_at >= cutoff)
-        if role:
-            stmt = stmt.join(JobRoleMap, JobRoleMap.job_id == Job.id).join(
-                JobRole, JobRole.id == JobRoleMap.role_id
-            ).where(or_(JobRole.slug == role, JobRole.name.ilike(f"%{role}%")))
-        if skill:
-            stmt = stmt.join(JobSkill, JobSkill.job_id == Job.id).join(
-                Skill, Skill.id == JobSkill.skill_id
-            ).where(or_(Skill.slug == skill, Skill.name.ilike(f"%{skill}%")))
-
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = int(await self.db.scalar(count_stmt) or 0)
+        ids = self._browse_ids(
+            q=q,
+            role=role,
+            skill=skill,
+            company=company,
+            city=city,
+            state=state,
+            country=country,
+            remote=remote,
+            work_mode=work_mode,
+            employment_type=employment_type,
+            experience_min=experience_min,
+            posted_within_days=posted_within_days,
+            role_family=role_family,
+            location=location,
+            experience_bucket=experience_bucket,
+        ).subquery()
+        stmt = select(Job).where(Job.id.in_(select(ids.c.id)))
+        total = int(await self.db.scalar(select(func.count()).select_from(ids)) or 0)
 
         if sort == "oldest":
             stmt = stmt.order_by(Job.posted_at.asc().nullslast(), Job.created_at.asc())
