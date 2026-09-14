@@ -60,15 +60,10 @@ export function CodingPage() {
       />
 
       <p className="text-xs text-[var(--color-text-muted)]">
-        Freeform Python (not graded):{' '}
-        <Link to="/practice/python" className="text-[var(--color-accent)] hover:underline">
-          Python Playground
+        <Link to="/practice/playground" className="text-[var(--color-accent)] hover:underline">
+          Playground
         </Link>
-        . Assessed problems open in the shared workspace at{' '}
-        <Link to="/practice/dsa" className="text-[var(--color-accent)] hover:underline">
-          DSA Practice
-        </Link>
-        .
+        . Online Python execution is locked.
       </p>
     </div>
   )

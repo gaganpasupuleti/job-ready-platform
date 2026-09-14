@@ -32,7 +32,7 @@ export const primaryNavItems: { label: string; path: string; match?: string[] }[
   { label: 'Overview', path: '/', match: ['/'] },
   { label: 'Practice', path: '/practice', match: ['/practice'] },
   { label: 'Learn', path: '/learn', match: ['/learn'] },
-  { label: 'Playground', path: '/practice/python', match: ['/practice/python', '/practice/playground'] },
+  { label: 'Playground', path: '/practice/playground', match: ['/practice/playground', '/practice/python'] },
   {
     label: 'Assessments',
     path: '/practice/aptitude',
@@ -50,7 +50,7 @@ export const navigationConfig: NavSection[] = [
       { label: 'Overview', path: '/', icon: 'LayoutDashboard' },
       { label: 'Practice', path: '/practice', icon: 'Target' },
       { label: 'Learn', path: '/learn', icon: 'ListChecks' },
-      { label: 'Playground', path: '/practice/python', icon: 'Terminal' },
+      { label: 'Playground', path: '/practice/playground', icon: 'Terminal' },
       { label: 'Assessments', path: '/practice/aptitude', icon: 'FileQuestion' },
       { label: 'Review', path: '/mistakes', icon: 'FileQuestion' },
     ],
@@ -118,10 +118,17 @@ export function getNavIcon(name?: string) {
 }
 
 export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
-  const matchers = item.match ?? [item.path]
   if (item.path === '/') return pathname === '/'
-  return matchers.some((prefix) => {
-    if (prefix === '/') return pathname === '/'
-    return pathname === prefix || pathname.startsWith(`${prefix}/`)
-  })
+  let winner: { path: string; length: number } | null = null
+  for (const candidate of primaryNavItems) {
+    if (candidate.path === '/') continue
+    for (const prefix of candidate.match ?? [candidate.path]) {
+      if (prefix === '/') continue
+      const hit = pathname === prefix || pathname.startsWith(`${prefix}/`)
+      if (hit && (!winner || prefix.length > winner.length)) {
+        winner = { path: candidate.path, length: prefix.length }
+      }
+    }
+  }
+  return winner?.path === item.path
 }
