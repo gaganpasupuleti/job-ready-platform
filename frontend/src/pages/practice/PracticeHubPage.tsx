@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
+import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
 import { Input } from '@/components/common/Field'
 import {
   fetchPracticeHub,
@@ -72,6 +73,7 @@ export function PracticeHubPage() {
 
   return (
     <div className="module-page practice-hub">
+      <PracticeTrackNav />
       <header className="module-heading">
         <div>
           <p className="eyebrow">Practice</p>
@@ -205,9 +207,11 @@ export function PracticeHubPage() {
       )}
 
       <nav className="module-footer-links" aria-label="Practice banks">
-        <Link to="/practice/dsa">DSA problem bank</Link>
-        <Link to="/practice/sql">SQL Practice</Link>
-        <Link to="/practice/mcq">Technical MCQs</Link>
+        <Link to="/practice/aptitude">Aptitude & Reasoning</Link>
+        <Link to="/practice/sql">SQL</Link>
+        <Link to="/practice/dsa">Programming & DSA</Link>
+        <Link to="/practice/mcq">Subject quizzes</Link>
+        <Link to="/practice/projects">Projects</Link>
         <Link to="/practice/projects">Projects hub</Link>
         <Link to="/practice/python">Playground</Link>
       </nav>

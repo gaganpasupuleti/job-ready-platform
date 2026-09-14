@@ -267,3 +267,15 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 - `e2e/visual-foundation.spec.ts`, `e2e/visual-foundation-shots.spec.ts`, artifacts under `e2e/artifacts/visual-foundation/`
 - Ledgers mirrored across streams for PR reviewability
 - 2026-09-12: stack provenance confirmed (integ cwd + tip SHA MATCH); bind 10048 documented as duplicate-start
+
+## Responsive v5 (2026-09-14) — frontend only
+
+| Field | Value |
+|-------|-------|
+| Branch | `feature/jobready-frontend-responsive-v5` |
+| Base | `origin/master` @ `ab55fce` |
+| Worktree | `../jobready-fe-responsive` |
+| Scope | Colors, pill size, spacing, content-rail alignment, breakpoints, practice track nav |
+| Preserved | Segoe UI / Cascadia Code stack, JR monogram, auth cache, jobs family filters, SQL workbench, MCQ session/autosave, Python execution locks |
+| Backend | **unchanged** — missing contracts recorded in `docs/FRONTEND_BACKEND_DEPENDENCIES.md` |
+| Merge / deploy | **not done** |

@@ -19,6 +19,19 @@ Shared contracts and operational dependencies for JobReady Sprint 1+.
 | Assessed coding Run/Submit | Backend + FE | Phase 2 polish landed FE | Monaco DSA sticky chrome; drafts local; Judge0 disabled honest |
 | MCQ exam resume | Frontend (+ existing session APIs) | **Landed + verified** | History Resume → `/practice/sessions/{id}` while `status=active` |
 | MCQ exam finalize | Backend + FE | **Landed + verified** | Autosaves graded on complete/expiry; late writes rejected; no exam feedback leak |
+| Practice track navigation | Frontend | **v5 FE only** | Composed from existing `GET /practice/catalog`, `GET /coding/progress`, `GET /sql/progress`. No new endpoint. |
+| Responsive content rail | Frontend | **v5 FE only** | Shared `--content-rail` / `--page-gutter`. Fonts and JR monogram unchanged. |
+
+## Missing backend contracts (v5 — do not invent on the client)
+
+Recorded from `feature/jobready-frontend-responsive-v5`. Frontend did not change backend code.
+
+| Need | What exists | Gap |
+|------|-------------|-----|
+| Practice track counts | Catalog tree (domains → categories → topics); coding/SQL progress totals | No unified practice-tracks payload. Track nav derives topic counts from the catalog tree and solved/total from progress. |
+| Question inventory on catalog | `CatalogResponse` names and slugs only | No question counts per topic or category. Nav must not imply inventory size. |
+| DSA topic facet | `CodingProgressSummary.topics` built inside `get_progress_summary` from `list_problems(limit=500)` | No `GET /coding/topics`. If `total_problems` exceeds the progress `items` length, topic chips are incomplete; the existing topic-slug field remains the fallback. |
+| Aptitude vs technical split | Domain slugs `placement` / `technical` and category slug `aptitude` | No dedicated aptitude catalog route. FE filters the existing catalog client-side. |
 
 ## Readiness UI contract
 

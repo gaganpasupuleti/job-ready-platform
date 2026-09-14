@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
+import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
 import { SUPPORTED_LANGUAGES } from '@/constants/languages'
 import {
   CodingProblemList,
@@ -23,7 +24,8 @@ export function CodingPage() {
   })
 
   return (
-    <div className="space-y-4">
+    <div className="module-page space-y-4">
+      <PracticeTrackNav />
       <div>
         <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">Coding Practice</h1>
         <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">

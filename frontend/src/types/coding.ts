@@ -268,7 +268,7 @@ export interface CodingProgressSummary {
   medium?: DifficultyBreakdown
 
   hard?: DifficultyBreakdown
-
+  topics?: { topic_slug: string; topic_name: string; solved: number; total: number }[]
   items: CodingProblemListItem[]
 
 }

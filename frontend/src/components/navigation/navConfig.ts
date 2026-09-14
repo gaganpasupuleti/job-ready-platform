@@ -83,6 +83,41 @@ export const navigationConfig: NavSection[] = [
   },
 ]
 
+/** Grouped More menu. Existing routes stay; this is layout, not a new destination set. */
+export const moreMenuGroups: { title: string; items: { label: string; path: string }[] }[] = [
+  {
+    title: 'Practice',
+    items: [
+      { label: 'SQL', path: '/practice/sql' },
+      { label: 'DSA', path: '/practice/dsa' },
+      { label: 'Coding', path: '/practice/coding' },
+      { label: 'Technical MCQs', path: '/practice/mcq' },
+      { label: 'Aptitude / CRT', path: '/practice/aptitude' },
+    ],
+  },
+  {
+    title: 'Career',
+    items: [
+      { label: 'Projects', path: '/practice/projects' },
+      { label: 'Job Readiness', path: '/readiness' },
+      { label: 'Interview Prep', path: '/interviews' },
+      { label: 'Bookmarks', path: '/bookmarks' },
+      { label: 'Recommended Jobs', path: '/jobs/recommended' },
+      { label: 'Applications', path: '/jobs/applications' },
+    ],
+  },
+  {
+    title: 'AI & Engineering',
+    items: [
+      { label: 'AI Home', path: '/ai' },
+      { label: 'Prompt Engineering', path: '/ai/prompt-engineering' },
+      { label: 'Cloud', path: '/cloud' },
+      { label: 'DevOps', path: '/devops' },
+      { label: 'Cybersecurity', path: '/cybersecurity' },
+    ],
+  },
+]
+
 export const JOBS_HOME = '/jobs'
 export const JOBS_PREFERENCES = '/jobs/preferences'
 export const JOBS_ONBOARDING_KEY = 'jr_jobs_onboarding'
@@ -117,11 +152,24 @@ export function getNavIcon(name?: string) {
   return iconMap[name] ?? LayoutDashboard
 }
 
-export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
+function matchingPrefix(pathname: string, item: (typeof primaryNavItems)[number]) {
   const matchers = item.match ?? [item.path]
-  if (item.path === '/') return pathname === '/'
-  return matchers.some((prefix) => {
-    if (prefix === '/') return pathname === '/'
-    return pathname === prefix || pathname.startsWith(`${prefix}/`)
-  })
+  let best = ''
+  for (const prefix of matchers) {
+    const hit =
+      prefix === '/'
+        ? pathname === '/'
+        : pathname === prefix || pathname.startsWith(`${prefix}/`)
+    if (hit && prefix.length > best.length) best = prefix
+  }
+  return best
+}
+
+/** Longest matching destination wins, so only one primary item is current. */
+export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
+  const ranked = primaryNavItems
+    .map((candidate) => ({ candidate, prefix: matchingPrefix(pathname, candidate) }))
+    .filter((row) => row.prefix.length > 0)
+    .sort((left, right) => right.prefix.length - left.prefix.length)
+  return ranked[0]?.candidate === item
 }

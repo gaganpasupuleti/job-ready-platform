@@ -309,7 +309,7 @@ export function JobsHubPage() {
           <p className="text-sm text-[var(--color-text-muted)]">
             {data.total} job{data.total !== 1 ? 's' : ''} found
           </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {data.items.map((job) => (
               <JobCardView key={job.id} job={job} />
             ))}

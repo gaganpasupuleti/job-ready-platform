@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { Card } from '@/components/common/Card'
+import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
 import { fetchProjects } from '@/services/learnService'
 
 export function ProjectsPage() {
@@ -21,7 +22,8 @@ export function ProjectsPage() {
   const visible = (data ?? []).filter((p) => !category || p.category_key === category)
 
   return (
-    <div className="space-y-6">
+    <div className="module-page space-y-4">
+      <PracticeTrackNav />
       <div>
         <Link to="/practice" className="text-xs text-[var(--color-accent)] hover:underline">
           ← Practice Hub
@@ -32,14 +34,11 @@ export function ProjectsPage() {
         </p>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="filter-chip-row" role="group" aria-label="Project category">
         <button
           type="button"
-          className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs ${
-            !category
-              ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
-              : 'border-[var(--color-border)]'
-          }`}
+          className="filter-chip"
+          aria-pressed={!category}
           onClick={() => setCategory('')}
         >
           All
@@ -48,11 +47,8 @@ export function ProjectsPage() {
           <button
             key={key}
             type="button"
-            className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs ${
-              category === key
-                ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
-                : 'border-[var(--color-border)]'
-            }`}
+            className="filter-chip"
+            aria-pressed={category === key}
             onClick={() => setCategory(key)}
           >
             {key}

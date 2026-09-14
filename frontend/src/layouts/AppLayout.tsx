@@ -47,6 +47,7 @@ export function AppLayout() {
   const title = getPageTitle(location.pathname)
   const shell = resolveShell(location.pathname)
   const compact = shell !== 'standard'
+  const wide = shell === 'standard' && location.pathname.startsWith('/jobs') && location.pathname !== '/jobs/preferences'
 
   return (
     <div
@@ -57,6 +58,7 @@ export function AppLayout() {
         shell === 'assessment' && 'app-shell-assessment',
       )}
       data-shell={shell}
+      data-layout={wide ? 'wide' : 'reading'}
     >
       <Masthead compact={compact} />
       {shell === 'standard' ? (
@@ -69,7 +71,9 @@ export function AppLayout() {
         </div>
       ) : null}
       <main id="main-content" className="flex-1" tabIndex={-1}>
-        <Outlet />
+        <div key={location.pathname} className="page-enter">
+          <Outlet />
+        </div>
       </main>
     </div>
   )

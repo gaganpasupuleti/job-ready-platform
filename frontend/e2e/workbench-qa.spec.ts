@@ -320,7 +320,7 @@ test.describe('DSA workbench QA', () => {
   test('catalog + problem chrome, fonts, bottom tabs, gating', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto('/practice/dsa')
-    await expect(page.getByRole('heading', { name: /dsa practice/i })).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByRole('heading', { name: /programming & dsa|dsa practice/i })).toBeVisible({ timeout: 30_000 })
 
     await page.goto(`/practice/dsa/${DSA_ID}`)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 30_000 })

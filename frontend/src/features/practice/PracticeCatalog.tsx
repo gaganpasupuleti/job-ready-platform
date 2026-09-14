@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { Button } from '@/components/common/Button'
@@ -17,6 +17,7 @@ interface PracticeCatalogProps {
   domainSlug: string
   categorySlug?: string
   topicSlugs?: string[]
+  formatLabel?: string
 }
 
 export function PracticeCatalog({
@@ -25,6 +26,7 @@ export function PracticeCatalog({
   domainSlug,
   categorySlug,
   topicSlugs,
+  formatLabel,
 }: PracticeCatalogProps) {
   const navigate = useNavigate()
   const { data, isLoading, error } = useQuery({
@@ -55,6 +57,7 @@ export function PracticeCatalog({
 
   const selectedCategory =
     categories?.find((category) => category.id === selectedCategoryId) ?? categories?.[0]
+  const selectedTopic = selectedCategory?.topics.find((topic) => topic.id === selectedTopicId)
 
   const handleStart = () => {
     if (!selectedCategory || !selectedTopicId) return
@@ -86,13 +89,48 @@ export function PracticeCatalog({
       <div>
         <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">{title}</h1>
         <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">{description}</p>
+        {formatLabel ? (
+          <p className="mt-1 text-xs text-[var(--color-text-subtle)]">Question format: {formatLabel}</p>
+        ) : null}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+      {(categories?.length ?? 0) > 1 ? (
+        <div>
+          <p className="mb-1 text-xs font-medium text-[var(--color-text-muted)]">Subjects</p>
+          <div className="filter-chip-row" role="group" aria-label="Subjects">
+            <button
+              type="button"
+              className="filter-chip"
+              aria-pressed={!selectedCategoryId}
+              onClick={() => setSelectedCategoryId(null)}
+            >
+              All subjects
+            </button>
+            {categories?.map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                className="filter-chip"
+                aria-pressed={selectedCategoryId === category.id}
+                onClick={() => {
+                  setSelectedCategoryId(category.id)
+                  setSelectedTopicId(null)
+                }}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(16rem,1fr)]">
         <Card padding="md">
           <CardHeader title="Topics" description="Choose a topic to practice" />
           <div className="space-y-3">
-            {categories?.map((category) => (
+            {categories
+              ?.filter((category) => !selectedCategoryId || category.id === selectedCategoryId)
+              .map((category) => (
               <div key={category.id}>
                 <button
                   type="button"
@@ -120,7 +158,13 @@ export function PracticeCatalog({
         </Card>
 
         <Card padding="md">
-          <CardHeader title="Session Setup" />
+          <CardHeader
+            title="Session setup"
+            description="Difficulty and mode apply only after a topic is selected."
+          />
+          <p className="mb-3 text-sm text-[var(--color-text)]" role="status">
+            {selectedTopic ? `Selected topic: ${selectedTopic.name}` : 'Select a topic to continue.'}
+          </p>
           <div className="space-y-3">
             <DifficultySelector value={difficulty} onChange={setDifficulty} />
             <div>
@@ -172,11 +216,18 @@ export function PracticeCatalog({
               {mutation.isPending ? 'Starting...' : 'Start Session'}
             </Button>
             {mutation.error && (
-              <p className="text-xs text-[var(--color-danger)]">{mutation.error.message}</p>
+              <p className="text-xs text-[var(--color-danger)]" role="alert">
+                {mutation.error.message}
+              </p>
             )}
           </div>
         </Card>
       </div>
+
+      <nav className="module-footer-links" aria-label="Related practice">
+        <Link to="/learn">Courses</Link>
+        <Link to="/mistakes">Mistake review</Link>
+      </nav>
 
       <PracticeHistory />
     </div>
