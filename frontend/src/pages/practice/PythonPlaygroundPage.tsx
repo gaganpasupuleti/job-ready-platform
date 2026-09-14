@@ -3,7 +3,7 @@ import { Lock } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/common/Button'
-import { CODE_EXECUTION_LOCKED_MESSAGE, useLockExecutionShortcuts } from '@/components/practice-workspace/practiceWorkspaceUtils'
+import { useLockExecutionShortcuts } from '@/components/practice-workspace/practiceWorkspaceUtils'
 import { useAuth } from '@/hooks/useAuth'
 
 const PYTHON_LANG_ID = 71
@@ -41,7 +41,7 @@ export function PythonPlaygroundPage() {
             <Lock size={18} aria-hidden />
             Python
           </h1>
-          <p role="status">{CODE_EXECUTION_LOCKED_MESSAGE} Coming soon.</p>
+          <p role="status">Coming soon.</p>
         </div>
       </header>
       <div className="rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">

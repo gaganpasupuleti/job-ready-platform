@@ -70,7 +70,7 @@ export type AssignmentDetail = {
     answer_text: string
     evidence_url: string | null
     submitted_at: string | null
-    reviews: { feedback: string; grade: string | null; version: number }[]
+    reviews: { feedback: string; grade: string | null; version: number; reviewed_at?: string }[]
   }[]
 }
 

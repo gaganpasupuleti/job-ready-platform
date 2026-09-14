@@ -87,7 +87,9 @@ export function AssignmentDetailPage() {
                   <p>Attempt {item.attempt} · {item.status} · version {item.version}</p>
                   <pre className="mt-2 whitespace-pre-wrap text-xs">{item.answer_text}</pre>
                   {item.reviews.map((review) => (
-                    <p key={review.feedback} className="mt-2">Feedback (version {review.version}): {review.feedback}{review.grade ? ` · ${review.grade}` : ''}</p>
+                    <p key={`${review.version}-${review.reviewed_at ?? review.feedback}`} className="mt-2">
+                      Feedback (version {review.version}{review.reviewed_at ? ` · ${review.reviewed_at.slice(0, 10)}` : ''}): {review.feedback}{review.grade ? ` · ${review.grade}` : ''}
+                    </p>
                   ))}
                 </li>
               ))}
