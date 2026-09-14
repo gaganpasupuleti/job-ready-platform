@@ -42,6 +42,10 @@ from app.services.sql_execution import (
 from app.services.sql_execution.executor import SqlSandboxExecutor
 
 
+def _published_version(problem) -> int:
+    return getattr(problem, "content_version", None) or 1
+
+
 def _recorded_version(progress, problem: SqlProblem) -> int | None:
     if progress is None:
         return None
@@ -54,7 +58,7 @@ def _solved_for_published_version(progress, problem: SqlProblem) -> bool:
     """Current solved flag applies only to the published version. Old rows stay stored."""
     if progress is None or progress.status != SqlProgressStatus.SOLVED:
         return False
-    return _recorded_version(progress, problem) == (problem.content_version or 1)
+    return _recorded_version(progress, problem) == _published_version(problem)
 
 
 def _public_sample(problem: SqlProblem) -> list:
@@ -69,7 +73,7 @@ def _public_sample(problem: SqlProblem) -> list:
 def _published_progress_status(progress, problem: SqlProblem):
     if progress is None:
         return SqlProgressStatus.UNSOLVED
-    if _recorded_version(progress, problem) != (problem.content_version or 1):
+    if _recorded_version(progress, problem) != _published_version(problem):
         return SqlProgressStatus.UNSOLVED
     return progress.status
 
@@ -297,11 +301,11 @@ class SqlPracticeService:
                 query_text=query,
                 status=SqlSubmissionStatus.SQL_ERROR,
                 error_message=safety,
-                content_version=problem.content_version,
+                content_version=_published_version(problem),
             )
             await self.repo.save_submission(submission)
             await self.repo.upsert_progress(
-                user.id, problem.id, solved=False, content_version=problem.content_version
+                user.id, problem.id, solved=False, content_version=_published_version(problem)
             )
             await self.db.commit()
             return SqlSubmitResponse(
@@ -314,7 +318,7 @@ class SqlPracticeService:
         # A draft is not an attempt. This submit is graded against the published
         # problem version loaded above and that version is stored on the row.
         # Later content updates must not rewrite this status or feedback.
-        published_version = problem.content_version
+        published_version = _published_version(problem)
         # Submit: evaluate full result up to submit_max_rows (no display truncation)
         async with concurrency_slot(user.id, namespace="sql"):
             result = await self.executor.execute(
@@ -577,7 +581,7 @@ class SqlPracticeService:
             task_description=problem.task_description,
             expected_columns=list(problem.expected_columns or []),
             sample_expected_rows=_public_sample(problem),
-            content_version=problem.content_version or 1,
+            content_version=_published_version(problem),
             hints=list(problem.hints or []),
             estimated_time_seconds=problem.estimated_time_seconds,
             order_sensitive=problem.order_sensitive,
