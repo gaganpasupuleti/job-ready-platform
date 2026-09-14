@@ -13,6 +13,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.content.version_snapshots import assignment_brief_snapshot
 from app.core.deps import get_current_admin, get_current_user
 from app.core.exceptions import AppException
 from app.db.session import get_db
@@ -68,7 +69,7 @@ async def catalog(
     published_materials = (await db.execute(select(LearningMaterial).where(LearningMaterial.is_published.is_(True)))).scalars().all()
     published_assignments = (await db.execute(select(Assignment).where(Assignment.is_published.is_(True)))).scalars().all()
     published_packs = (await db.execute(select(ContentPack).where(ContentPack.is_published.is_(True)))).scalars().all()
-    family_counts: dict[str, int] = {key: 0 for key, _label in JOB_FAMILIES if key != "other-review"}
+    family_counts: dict[str, int] = {row[0]: 0 for row in JOB_FAMILIES if row[0] != "other-review"}
     skill_counts: dict[str, int] = {}
     level_counts: dict[str, int] = {}
     kind_counts: dict[str, int] = {}
@@ -110,7 +111,7 @@ async def catalog(
         assignments = [row for row in assignments if row.id in draft_ids]
     materials = sorted(materials, key=lambda row: row.updated_at or row.created_at, reverse=True)
     return {
-        "families": [{"id": key, "label": family_label(key), "count": family_counts[key]} for key, _label in JOB_FAMILIES if key != "other-review"],
+        "families": [{"id": row[0], "label": family_label(row[0]), "count": family_counts[row[0]]} for row in JOB_FAMILIES if row[0] != "other-review"],
         "skills": [{"id": key, "count": skill_counts[key]} for key in sorted(skill_counts)],
         "levels": [{"id": key, "count": level_counts[key]} for key in sorted(level_counts)],
         "kinds": [{"id": key, "count": kind_counts[key]} for key in sorted(kind_counts)],
@@ -243,6 +244,8 @@ def _submission_out(item: AssignmentSubmission, reviews: list[AssignmentReview])
         "version": item.assignment_version,
         "answer_text": item.answer_text,
         "evidence_url": item.evidence_url,
+        "brief": (item.brief_snapshot or {}).get("brief_md"),
+        "rubric": (item.brief_snapshot or {}).get("rubric"),
         "submitted_at": item.submitted_at.isoformat() if item.submitted_at else None,
         "reviews": [
             {
@@ -274,17 +277,22 @@ async def save_draft(key: str, payload: DraftIn, user: User = Depends(get_curren
     if current and current.status == "draft":
         current.answer_text = payload.answer_text
         current.evidence_url = payload.evidence_url
+        if not current.brief_snapshot:
+            current.brief_snapshot = assignment_brief_snapshot(row)
+            current.assignment_version = row.version
     else:
         attempt = 1 if current is None else current.attempt_number + 1
+        snapshot = assignment_brief_snapshot(row)
         db.add(
             AssignmentSubmission(
                 assignment_id=row.id,
                 user_id=user.id,
-                assignment_version=row.version,
+                assignment_version=snapshot["version"],
                 attempt_number=attempt,
                 status="draft",
                 answer_text=payload.answer_text,
                 evidence_url=payload.evidence_url,
+                brief_snapshot=snapshot,
             )
         )
     await db.commit()
@@ -310,26 +318,31 @@ async def submit_assignment(key: str, payload: DraftIn, user: User = Depends(get
                 )
             )
         ).scalar_one_or_none()
-        if solved is None:
+        recorded = solved.content_version if solved is not None and solved.content_version is not None else 1
+        if solved is None or recorded != (problem.content_version or 1):
             raise AppException("Submit the linked SQL problem in SQL Studio before this assignment can be filed.", status_code=409)
     current = await _latest(db, row.id, user.id)
     if current is None or current.status != "draft":
         attempt = 1 if current is None else current.attempt_number + 1
+        snapshot = assignment_brief_snapshot(row)
         current = AssignmentSubmission(
             assignment_id=row.id,
             user_id=user.id,
-            assignment_version=row.version,
+            assignment_version=snapshot["version"],
             attempt_number=attempt,
             status="draft",
             answer_text=payload.answer_text,
             evidence_url=payload.evidence_url,
+            brief_snapshot=snapshot,
         )
         db.add(current)
+    if not current.brief_snapshot:
+        current.brief_snapshot = assignment_brief_snapshot(row)
     current.answer_text = payload.answer_text
     current.evidence_url = payload.evidence_url
     current.status = "submitted"
     current.submitted_at = datetime.now(UTC)
-    current.assignment_version = row.version
+    current.assignment_version = current.brief_snapshot.get("version", row.version)
     await db.commit()
     return {"status": "submitted", "version": current.assignment_version}
 
@@ -391,6 +404,8 @@ async def review_queue(user: User = Depends(get_current_admin), db: AsyncSession
                 "title": assignment.title if assignment else None,
                 "answer_text": row.answer_text,
                 "evidence_url": row.evidence_url,
+                "brief": (row.brief_snapshot or {}).get("brief_md"),
+                "rubric": (row.brief_snapshot or {}).get("rubric"),
             }
         )
     return payload

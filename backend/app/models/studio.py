@@ -85,6 +85,7 @@ class AssignmentSubmission(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     answer_text: Mapped[str] = mapped_column(Text, nullable=False, default="")
     evidence_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    brief_snapshot: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
 
 class AssignmentReview(Base, UUIDPrimaryKeyMixin):

@@ -131,3 +131,78 @@ async def test_question_revision_does_not_rewrite_open_attempt(client, student_a
             question = (await db.execute(select(Question).where(Question.content_key == "py-q01"))).scalar_one()
             question.question_text = original
             await db.commit()
+
+
+@pytest.mark.asyncio
+async def test_filed_brief_survives_live_assignment_and_milestone_edits(client, student_auth):
+    filed = await client.post(
+        "/api/v1/studio/assignments/py-assign-exceptions/submit",
+        headers=student_auth[0],
+        json={"answer_text": "keep this brief", "evidence_url": "https://example.com/repo"},
+    )
+    assert filed.status_code == 200, filed.text
+    detail = await client.get("/api/v1/studio/assignments/py-assign-exceptions", headers=student_auth[0])
+    submission = detail.json()["submissions"][-1]
+    original_brief = submission["brief"]
+    original_rubric = submission["rubric"]
+    assert original_brief
+    assert original_rubric
+
+    from app.db.session import AsyncSessionLocal
+    from app.models.learn import ProjectTask
+    from app.models.studio import Assignment
+    from sqlalchemy import select
+
+    async with AsyncSessionLocal() as db:
+        assignment = (
+            await db.execute(select(Assignment).where(Assignment.content_key == "py-assign-exceptions"))
+        ).scalar_one()
+        assignment.brief_md = "NEW BRIEF AFTER SUBMISSION"
+        assignment.rubric = [{"criterion": "replaced", "points": 1}]
+        assignment.version = assignment.version + 1
+        await db.commit()
+    after = await client.get("/api/v1/studio/assignments/py-assign-exceptions", headers=student_auth[0])
+    kept = next(item for item in after.json()["submissions"] if item["id"] == submission["id"])
+    assert kept["brief"] == original_brief
+    assert kept["rubric"] == original_rubric
+    assert "NEW BRIEF" not in kept["brief"]
+    assert after.json()["brief_md"] == "NEW BRIEF AFTER SUBMISSION"
+
+    project = await client.get("/api/v1/projects/orders-payment-quality", headers=student_auth[0])
+    assert project.status_code == 200, project.text
+    review = next(
+        task
+        for module in project.json()["modules"]
+        for task in module["tasks"]
+        if task["task_type"] == "review"
+    )
+    done = await client.post(
+        f"/api/v1/projects/{project.json()['id']}/tasks/{review['id']}/complete",
+        headers=student_auth[0],
+    )
+    assert done.status_code == 200, done.text
+    async with AsyncSessionLocal() as db:
+        task = await db.get(ProjectTask, review["id"])
+        task.title = "Rewritten milestone"
+        task.summary = "Rewritten deliverable"
+        await db.commit()
+    again = await client.get("/api/v1/projects/orders-payment-quality", headers=student_auth[0])
+    shown = next(
+        task
+        for module in again.json()["modules"]
+        for task in module["tasks"]
+        if task["id"] == review["id"]
+    )
+    assert shown["title"] == review["title"]
+    assert shown["summary"] == review["summary"]
+    async with AsyncSessionLocal() as db:
+        assignment = (
+            await db.execute(select(Assignment).where(Assignment.content_key == "py-assign-exceptions"))
+        ).scalar_one()
+        assignment.brief_md = original_brief
+        assignment.rubric = original_rubric
+        assignment.version = submission["version"]
+        task = await db.get(ProjectTask, review["id"])
+        task.title = review["title"]
+        task.summary = review["summary"]
+        await db.commit()

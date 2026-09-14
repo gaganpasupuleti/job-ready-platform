@@ -42,6 +42,38 @@ from app.services.sql_execution import (
 from app.services.sql_execution.executor import SqlSandboxExecutor
 
 
+def _recorded_version(progress, problem: SqlProblem) -> int | None:
+    if progress is None:
+        return None
+    if progress.content_version is not None:
+        return progress.content_version
+    return 1
+
+
+def _solved_for_published_version(progress, problem: SqlProblem) -> bool:
+    """Current solved flag applies only to the published version. Old rows stay stored."""
+    if progress is None or progress.status != SqlProgressStatus.SOLVED:
+        return False
+    return _recorded_version(progress, problem) == (problem.content_version or 1)
+
+
+def _public_sample(problem: SqlProblem) -> list:
+    """Never send the private expected result as the student-visible sample."""
+    sample = list(problem.sample_expected_rows or [])
+    expected = getattr(problem, "expected_result", None)
+    if expected is not None and sample == list(expected.rows or []):
+        return []
+    return sample
+
+
+def _published_progress_status(progress, problem: SqlProblem):
+    if progress is None:
+        return SqlProgressStatus.UNSOLVED
+    if _recorded_version(progress, problem) != (problem.content_version or 1):
+        return SqlProgressStatus.UNSOLVED
+    return progress.status
+
+
 class SqlPracticeService:
     def __init__(self, db: AsyncSession, executor: SqlSandboxExecutor | None = None):
         self.db = db
@@ -130,7 +162,7 @@ class SqlPracticeService:
                     tags=list(problem.tags or []),
                     role_tags=list(problem.role_tags or []),
                     estimated_time_seconds=problem.estimated_time_seconds,
-                    progress_status=prog_row.status if prog_row else SqlProgressStatus.UNSOLVED,
+                    progress_status=_published_progress_status(prog_row, problem),
                     acceptance_rate=rates.get(problem.id),
                     attempt_count=prog_row.attempt_count if prog_row else 0,
                 )
@@ -265,9 +297,12 @@ class SqlPracticeService:
                 query_text=query,
                 status=SqlSubmissionStatus.SQL_ERROR,
                 error_message=safety,
+                content_version=problem.content_version,
             )
             await self.repo.save_submission(submission)
-            await self.repo.upsert_progress(user.id, problem.id, solved=False)
+            await self.repo.upsert_progress(
+                user.id, problem.id, solved=False, content_version=problem.content_version
+            )
             await self.db.commit()
             return SqlSubmitResponse(
                 submission_id=submission.id,
@@ -276,6 +311,10 @@ class SqlPracticeService:
                 error=safety,
             )
 
+        # A draft is not an attempt. This submit is graded against the published
+        # problem version loaded above and that version is stored on the row.
+        # Later content updates must not rewrite this status or feedback.
+        published_version = problem.content_version
         # Submit: evaluate full result up to submit_max_rows (no display truncation)
         async with concurrency_slot(user.id, namespace="sql"):
             result = await self.executor.execute(
@@ -326,6 +365,7 @@ class SqlPracticeService:
             execution_time_ms=result.execution_time_ms,
             error_message=result.error if status == SqlSubmissionStatus.SQL_ERROR else None,
             feedback=feedback,
+            content_version=published_version,
         )
         await self.repo.save_submission(submission)
         await self.repo.upsert_progress(
@@ -335,6 +375,7 @@ class SqlPracticeService:
             execution_time_ms=result.execution_time_ms
             if status == SqlSubmissionStatus.ACCEPTED
             else None,
+            content_version=published_version,
         )
         if status == SqlSubmissionStatus.ACCEPTED:
             from app.services.project_sync import complete_linked_project_tasks
@@ -365,6 +406,7 @@ class SqlPracticeService:
             truncated=result.truncated,
             error=result.error if status == SqlSubmissionStatus.SQL_ERROR else None,
             solution_unlocked=status == SqlSubmissionStatus.ACCEPTED,
+            content_version=published_version,
         )
 
     async def list_submissions(
@@ -395,6 +437,7 @@ class SqlPracticeService:
                     status=sub.status,
                     result_row_count=sub.result_row_count,
                     execution_time_ms=sub.execution_time_ms,
+                    content_version=sub.content_version,
                     submitted_at=sub.submitted_at,
                 )
             )
@@ -417,6 +460,7 @@ class SqlPracticeService:
             execution_time_ms=sub.execution_time_ms,
             error_message=sub.error_message,
             feedback=sub.feedback,
+            content_version=sub.content_version,
             submitted_at=sub.submitted_at,
         )
 
@@ -429,7 +473,7 @@ class SqlPracticeService:
             solved = sum(
                 1
                 for p in subset
-                if progress_map.get(p.id) and progress_map[p.id].status == SqlProgressStatus.SOLVED
+                if _solved_for_published_version(progress_map.get(p.id), p)
             )
             attempted = sum(1 for p in subset if p.id in progress_map)
             return DifficultyBreakdown(solved=solved, total=len(subset), attempted=attempted)
@@ -496,7 +540,7 @@ class SqlPracticeService:
         if not problem or not problem.is_active:
             raise AppException("SQL problem not found", status_code=404)
         progress = await self.repo.get_progress(user.id, problem_id)
-        if not progress or progress.status != SqlProgressStatus.SOLVED:
+        if not _solved_for_published_version(progress, problem):
             raise AppException("Solve this problem to unlock the solution.", status_code=403)
         return SqlSolutionResponse(
             solution_query=problem.solution_query,
@@ -516,7 +560,7 @@ class SqlPracticeService:
         topic = await self.repo.get_topic(problem.topic_id)
         progress = await self.repo.get_progress(user.id, problem.id)
         bookmarked = await self.repo.is_bookmarked(user.id, problem.id)
-        unlocked = bool(progress and progress.status == SqlProgressStatus.SOLVED)
+        unlocked = _solved_for_published_version(progress, problem)
         return SqlProblemDetail(
             id=problem.id,
             slug=problem.slug,
@@ -532,12 +576,13 @@ class SqlPracticeService:
             scenario=problem.scenario,
             task_description=problem.task_description,
             expected_columns=list(problem.expected_columns or []),
-            sample_expected_rows=list(problem.sample_expected_rows or []),
+            sample_expected_rows=_public_sample(problem),
+            content_version=problem.content_version or 1,
             hints=list(problem.hints or []),
             estimated_time_seconds=problem.estimated_time_seconds,
             order_sensitive=problem.order_sensitive,
             schema_tables=self._schema_tables(problem),
-            progress_status=progress.status if progress else SqlProgressStatus.UNSOLVED,
+            progress_status=_published_progress_status(progress, problem),
             bookmarked=bookmarked,
             solution_unlocked=unlocked,
             execution_available=self.executor.is_available(),

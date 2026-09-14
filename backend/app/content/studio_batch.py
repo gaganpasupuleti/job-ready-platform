@@ -20,8 +20,9 @@ from app.models.enums import Difficulty, QuestionType
 from app.models.learn import Project, ProjectModule, ProjectTask
 from app.models.learn_enums import PathAvailability, PracticePathDifficulty, ProjectTaskType
 from app.models.question import Question, QuestionOption
-from app.models.sql_practice import SqlExpectedResult, SqlProblem, SqlProblemColumn, SqlProblemSeedRow, SqlProblemTable
+from app.models.sql_practice import SqlProblem, SqlProblemTable
 from app.models.sql_enums import SqlDialect
+from app.content.version_snapshots import freeze_assignment_submissions, freeze_task_progress
 from app.models.studio import Assignment, ContentBatchItem, ContentPack, ContentPackQuestion, LearningMaterial
 from app.models.taxonomy import Category, Domain, Topic
 from app.services.job_taxonomy import JOB_FAMILIES
@@ -93,7 +94,7 @@ def load_batch(path: Path) -> dict:
 
 
 def plan(batch: dict, stored: dict[str, ContentBatchItem]) -> dict:
-    counts = {kind: {"create": 0, "update": 0, "unchanged": 0, "rejected": 0} for kind in ("material", "assignment", "question", "pack", "project")}
+    counts = {kind: {"create": 0, "update": 0, "unchanged": 0, "rejected": 0} for kind in ("material", "assignment", "question", "pack", "project", "sql")}
     actions = []
     if batch["rejected"]:
         counts["material"]["rejected"] = len(batch["rejected"])
@@ -104,6 +105,7 @@ def plan(batch: dict, stored: dict[str, ContentBatchItem]) -> dict:
         + [("question", row) for row in batch["questions"]]
         + [("pack", row) for row in batch["packs"]]
         + [("project", batch["project"])]
+        + [("sql", row) for row in sql_plan_rows()]
     )
     rejected = []
     for kind, row in catalog:
@@ -148,40 +150,84 @@ async def _topic(db: AsyncSession, slug: str, name: str) -> Topic:
     return topic
 
 
-async def _shop_tables(db, problem: SqlProblem) -> None:
-    customers = SqlProblemTable(problem_id=problem.id, table_name="customers", description="Shop customers", sort_order=0)
-    orders = SqlProblemTable(problem_id=problem.id, table_name="orders", description="One row per order", sort_order=1)
-    payments = SqlProblemTable(problem_id=problem.id, table_name="payments", description="Payments that exist", sort_order=2)
-    db.add_all([customers, orders, payments])
-    await db.flush()
-    db.add_all([
-        SqlProblemColumn(table_id=customers.id, column_name="id", data_type="int", is_nullable=False, sort_order=0),
-        SqlProblemColumn(table_id=customers.id, column_name="name", data_type="text", is_nullable=False, sort_order=1),
-        SqlProblemColumn(table_id=customers.id, column_name="city", data_type="text", is_nullable=False, sort_order=2),
-        SqlProblemColumn(table_id=orders.id, column_name="id", data_type="int", is_nullable=False, sort_order=0),
-        SqlProblemColumn(table_id=orders.id, column_name="customer_id", data_type="int", is_nullable=False, sort_order=1),
-        SqlProblemColumn(table_id=orders.id, column_name="status", data_type="text", is_nullable=False, sort_order=2),
-        SqlProblemColumn(table_id=orders.id, column_name="amount", data_type="numeric", is_nullable=True, sort_order=3),
-        SqlProblemColumn(table_id=orders.id, column_name="ordered_on", data_type="date", is_nullable=False, sort_order=4),
-        SqlProblemColumn(table_id=payments.id, column_name="id", data_type="int", is_nullable=False, sort_order=0),
-        SqlProblemColumn(table_id=payments.id, column_name="order_id", data_type="int", is_nullable=False, sort_order=1),
-        SqlProblemColumn(table_id=payments.id, column_name="amount", data_type="numeric", is_nullable=False, sort_order=2),
-        SqlProblemColumn(table_id=payments.id, column_name="paid_on", data_type="date", is_nullable=False, sort_order=3),
-        SqlProblemSeedRow(table_id=customers.id, row_data={"id": 1, "name": "Ada", "city": "Hyderabad"}, sort_order=0),
-        SqlProblemSeedRow(table_id=customers.id, row_data={"id": 2, "name": "Ben", "city": "Bengaluru"}, sort_order=1),
-        SqlProblemSeedRow(table_id=customers.id, row_data={"id": 3, "name": "Cho", "city": "Pune"}, sort_order=2),
-        SqlProblemSeedRow(table_id=orders.id, row_data={"id": 1, "customer_id": 1, "status": "paid", "amount": 1000, "ordered_on": "2026-01-02"}, sort_order=0),
-        SqlProblemSeedRow(table_id=orders.id, row_data={"id": 2, "customer_id": 1, "status": "pending", "amount": 500, "ordered_on": "2026-01-05"}, sort_order=1),
-        SqlProblemSeedRow(table_id=orders.id, row_data={"id": 3, "customer_id": 2, "status": "paid", "amount": 800, "ordered_on": "2026-01-03"}, sort_order=2),
-        SqlProblemSeedRow(table_id=orders.id, row_data={"id": 4, "customer_id": 2, "status": "cancelled", "amount": 200, "ordered_on": "2026-01-04"}, sort_order=3),
-        SqlProblemSeedRow(table_id=orders.id, row_data={"id": 5, "customer_id": 3, "status": "shipped", "amount": 1500, "ordered_on": "2026-01-06"}, sort_order=4),
-        SqlProblemSeedRow(table_id=payments.id, row_data={"id": 1, "order_id": 1, "amount": 1000, "paid_on": "2026-01-02"}, sort_order=0),
-        SqlProblemSeedRow(table_id=payments.id, row_data={"id": 2, "order_id": 3, "amount": 800, "paid_on": "2026-01-04"}, sort_order=1),
-    ])
+def shop_dataset() -> list[dict]:
+    """Synthetic shop seed shared by the three studio SQL problems. Version 1."""
+    return [
+        {
+            "table_name": "customers",
+            "description": "Shop customers",
+            "sort_order": 0,
+            "columns": [
+                {"column_name": "id", "data_type": "int", "is_nullable": False, "sort_order": 0},
+                {"column_name": "name", "data_type": "text", "is_nullable": False, "sort_order": 1},
+                {"column_name": "city", "data_type": "text", "is_nullable": False, "sort_order": 2},
+            ],
+            "rows": [
+                {"id": 1, "name": "Ada", "city": "Hyderabad"},
+                {"id": 2, "name": "Ben", "city": "Bengaluru"},
+                {"id": 3, "name": "Cho", "city": "Pune"},
+            ],
+        },
+        {
+            "table_name": "orders",
+            "description": "One row per order",
+            "sort_order": 1,
+            "columns": [
+                {"column_name": "id", "data_type": "int", "is_nullable": False, "sort_order": 0},
+                {"column_name": "customer_id", "data_type": "int", "is_nullable": False, "sort_order": 1},
+                {"column_name": "status", "data_type": "text", "is_nullable": False, "sort_order": 2},
+                {"column_name": "amount", "data_type": "numeric", "is_nullable": True, "sort_order": 3},
+                {"column_name": "ordered_on", "data_type": "date", "is_nullable": False, "sort_order": 4},
+            ],
+            "rows": [
+                {"id": 1, "customer_id": 1, "status": "paid", "amount": 1000, "ordered_on": "2026-01-02"},
+                {"id": 2, "customer_id": 1, "status": "pending", "amount": 500, "ordered_on": "2026-01-05"},
+                {"id": 3, "customer_id": 2, "status": "paid", "amount": 800, "ordered_on": "2026-01-03"},
+                {"id": 4, "customer_id": 2, "status": "cancelled", "amount": 200, "ordered_on": "2026-01-04"},
+                {"id": 5, "customer_id": 3, "status": "shipped", "amount": 1500, "ordered_on": "2026-01-06"},
+            ],
+        },
+        {
+            "table_name": "payments",
+            "description": "Payments that exist",
+            "sort_order": 2,
+            "columns": [
+                {"column_name": "id", "data_type": "int", "is_nullable": False, "sort_order": 0},
+                {"column_name": "order_id", "data_type": "int", "is_nullable": False, "sort_order": 1},
+                {"column_name": "amount", "data_type": "numeric", "is_nullable": False, "sort_order": 2},
+                {"column_name": "paid_on", "data_type": "date", "is_nullable": False, "sort_order": 3},
+            ],
+            "rows": [
+                {"id": 1, "order_id": 1, "amount": 1000, "paid_on": "2026-01-02"},
+                {"id": 2, "order_id": 3, "amount": 800, "paid_on": "2026-01-04"},
+            ],
+        },
+    ]
+
+
+def sql_plan_rows() -> list[dict]:
+    seed = shop_dataset()
+    rows = []
+    for slug, spec in SQL_PROBLEMS.items():
+        rows.append(
+            {
+                "key": slug,
+                "version": int(spec.get("version") or 1),
+                "title": spec["title"],
+                "task": spec["task"],
+                "solution": spec["solution"],
+                "columns": spec["columns"],
+                "rows": spec["rows"],
+                "order_sensitive": slug == "orders-revenue-by-customer",
+                "tables": seed,
+            }
+        )
+    return rows
 
 
 SQL_PROBLEMS = {
     "orders-paid-totals": {
+        "version": 1,
         "title": "Paid order totals",
         "task": "Return one row: paid_orders and paid_amount for status = 'paid'. Do not treat a missing amount as zero.",
         "solution": "SELECT COUNT(*) AS paid_orders, SUM(amount) AS paid_amount FROM orders WHERE status = 'paid'",
@@ -189,6 +235,7 @@ SQL_PROBLEMS = {
         "rows": [[2, 1800]],
     },
     "orders-missing-payment": {
+        "version": 1,
         "title": "Orders with no payment row",
         "task": "Return missing_payments, the number of orders with no payment row. Use IS NULL.",
         "solution": "SELECT COUNT(*) AS missing_payments FROM orders o LEFT JOIN payments p ON p.order_id = o.id WHERE p.id IS NULL",
@@ -196,6 +243,7 @@ SQL_PROBLEMS = {
         "rows": [[3]],
     },
     "orders-revenue-by-customer": {
+        "version": 1,
         "title": "Revenue by customer excluding cancelled",
         "task": "Return customer_name and revenue for non-cancelled orders, ordered by customer_name.",
         "solution": "SELECT c.name AS customer_name, SUM(o.amount) AS revenue FROM customers c JOIN orders o ON o.customer_id = c.id WHERE o.status <> 'cancelled' GROUP BY c.name ORDER BY c.name",
@@ -205,9 +253,36 @@ SQL_PROBLEMS = {
 }
 
 
-async def _upsert_sql(db: AsyncSession, topic: Topic, slug: str) -> SqlProblem:
-    spec = SQL_PROBLEMS[slug]
-    problem = (await db.execute(select(SqlProblem).where(SqlProblem.slug == slug))).scalar_one_or_none()
+async def refresh_sql_problem(
+    db: AsyncSession,
+    topic: Topic,
+    slug: str,
+    spec: dict,
+    tables: list[dict],
+    version: int,
+    *,
+    replace: bool,
+) -> SqlProblem:
+    """Create or version a SQL problem without rewriting stored submissions.
+
+    An unchanged version records identity and does not replace the seed.
+    A higher version replaces statement, schema/seed, and expected results in
+    this session. Callers commit once. Earlier submission rows are not updated.
+    Expected rows stay on SqlExpectedResult, never on the public sample.
+    """
+    from app.repositories.sql_practice_repository import SqlPracticeRepository
+
+    problem = (
+        await db.execute(
+            select(SqlProblem)
+            .options(
+                selectinload(SqlProblem.tables).selectinload(SqlProblemTable.columns),
+                selectinload(SqlProblem.tables).selectinload(SqlProblemTable.seed_rows),
+                selectinload(SqlProblem.expected_result),
+            )
+            .where(SqlProblem.slug == slug)
+        )
+    ).scalar_one_or_none()
     if problem is None:
         category = await db.get(Category, topic.category_id)
         problem = SqlProblem(
@@ -225,21 +300,30 @@ async def _upsert_sql(db: AsyncSession, topic: Topic, slug: str) -> SqlProblem:
             task_description=spec["task"],
             expected_columns=spec["columns"],
             solution_query=spec["solution"],
-            solution_explanation="Hand-checked against the five orders and two payments.",
+            solution_explanation="Hand-checked against the published dataset for this version.",
             hints=["Read the status values before aggregating."],
-            sample_expected_rows=spec["rows"],
+            sample_expected_rows=[],
             is_active=True,
             is_sample=True,
-            order_sensitive=slug == "orders-revenue-by-customer",
+            order_sensitive=bool(spec.get("order_sensitive")),
+            content_version=version,
         )
-        # domain_id must be the domain, not the category. Load it.
-        category = await db.get(Category, topic.category_id)
-        problem.domain_id = category.domain_id
         db.add(problem)
         await db.flush()
-        await _shop_tables(db, problem)
-        db.add(SqlExpectedResult(problem_id=problem.id, columns=spec["columns"], rows=spec["rows"]))
-        await db.flush()
+        await db.refresh(problem, attribute_names=["tables", "expected_result"])
+        await SqlPracticeRepository(db).replace_dataset(problem, tables, spec["columns"], spec["rows"])
+        return problem
+    # Do not publish the private expected rows as a sample.
+    problem.sample_expected_rows = []
+    problem.content_version = version
+    if not replace:
+        return problem
+    problem.title = spec["title"]
+    problem.task_description = spec["task"]
+    problem.solution_query = spec["solution"]
+    problem.expected_columns = spec["columns"]
+    problem.order_sensitive = bool(spec.get("order_sensitive"))
+    await SqlPracticeRepository(db).replace_dataset(problem, tables, spec["columns"], spec["rows"])
     return problem
 
 
@@ -348,8 +432,21 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
             if current is None:
                 db.add(Assignment(content_key=key, **payload))
             else:
+                await freeze_assignment_submissions(db, current)
                 for field, value in payload.items():
                     setattr(current, field, value)
+        elif kind == "sql":
+            spec = dict(SQL_PROBLEMS[key])
+            spec["order_sensitive"] = key == "orders-revenue-by-customer"
+            await refresh_sql_problem(
+                db,
+                topic,
+                key,
+                spec,
+                shop_dataset(),
+                action["version"],
+                replace=action["action"] == "update",
+            )
         if kind == "pack":
             continue
         record = stored.get(key) or ContentBatchItem(item_key=key)
@@ -363,8 +460,9 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
     await db.flush()
     sql_ids = {}
     for slug in SQL_PROBLEMS:
-        problem = await _upsert_sql(db, topic, slug)
-        sql_ids[slug] = problem.id
+        problem = (await db.execute(select(SqlProblem.id).where(SqlProblem.slug == slug))).scalar_one_or_none()
+        if problem is not None:
+            sql_ids[slug] = problem
     project_row = batch["project"]
     project_action = next(action for action in planned["actions"] if action["type"] == "project")
     project = (await db.execute(select(Project).where(Project.slug == project_row["key"]))).scalar_one_or_none()
@@ -386,6 +484,8 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                 if index >= len(existing_tasks):
                     break
                 task = existing_tasks[index]
+                prior = stored.get(project_row["key"])
+                await freeze_task_progress(db, task, prior.version if prior else 1)
                 task.title = milestone["title"]
                 task.summary = milestone["deliverable"]
                 task.sql_problem_id = sql_ids.get(milestone.get("sql_problem_slug"))
