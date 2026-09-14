@@ -49,6 +49,8 @@ export interface JobCard {
   top_skills: string[]
   is_saved: boolean
   has_apply_url?: boolean
+  role_family?: string | null
+  experience_bucket?: string | null
   requirement_coverage?: number | null
   has_sufficient_mapping?: boolean | null
   missing_skill_count?: number | null
@@ -315,11 +317,32 @@ export interface AdminJobListResponse {
   limit: number
 }
 
+export interface JobFamilyCount {
+  id: string
+  label: string
+  role_id: string
+  count: number
+}
+
+export interface JobFamilyCounts {
+  all: number
+  families: JobFamilyCount[]
+}
+
+export interface JobFilterOptions {
+  locations: string[]
+  companies: string[]
+  experience_buckets: string[]
+}
+
 export interface JobListFilters {
   q?: string
   role?: string
   skill?: string
   company?: string
+  location?: string
+  role_family?: string
+  experience_bucket?: string
   city?: string
   state?: string
   country?: string

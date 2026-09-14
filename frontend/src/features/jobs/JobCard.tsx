@@ -61,6 +61,7 @@ export function JobCardView({
 
       <div className="flex flex-wrap gap-1">
         {job.location_text && <Badge>{job.location_text}</Badge>}
+        {job.experience_bucket && <Badge>{job.experience_bucket}</Badge>}
         {job.is_remote && <Badge variant="accent">Remote</Badge>}
         {workMode && <Badge>{workMode}</Badge>}
         {experience && <Badge>{experience}</Badge>}

@@ -200,6 +200,8 @@ export const apiEndpoints = {
   },
   jobs: {
     list: '/api/v1/jobs',
+    familyCounts: '/api/v1/jobs/family-counts',
+    filterOptions: '/api/v1/jobs/filter-options',
     summary: '/api/v1/jobs/summary',
     saved: '/api/v1/jobs/saved',
     recommended: '/api/v1/jobs/recommended',

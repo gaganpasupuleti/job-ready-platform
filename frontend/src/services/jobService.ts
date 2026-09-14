@@ -15,6 +15,8 @@ import type {
   IngestionErrorPublic,
   IngestionRunPublic,
   JobDetail,
+  JobFamilyCounts,
+  JobFilterOptions,
   JobListFilters,
   JobListResponse,
   JobPreferencePublic,
@@ -26,6 +28,23 @@ import type {
 
 export async function fetchJobs(filters?: JobListFilters) {
   const { data } = await apiClient.get<JobListResponse>(apiEndpoints.jobs.list, { params: filters })
+  return data
+}
+
+export async function fetchJobFamilyCounts(filters?: JobListFilters) {
+  const { data } = await apiClient.get<JobFamilyCounts>(apiEndpoints.jobs.familyCounts, {
+    params: filters,
+  })
+  return data
+}
+
+export async function fetchJobFilterOptions(params?: {
+  location_q?: string
+  company_q?: string
+  location?: string
+  company?: string
+}) {
+  const { data } = await apiClient.get<JobFilterOptions>(apiEndpoints.jobs.filterOptions, { params })
   return data
 }
 
