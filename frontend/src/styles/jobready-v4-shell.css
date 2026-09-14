@@ -659,12 +659,116 @@
   font-weight: 600;
   border-bottom-color: var(--color-accent);
 }
+.jobs-family-panel {
+  margin-bottom: 0.85rem;
+}
+.jobs-family-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.jobs-family-pills.is-collapsed {
+  max-height: calc(2 * 2.15rem + 0.4rem);
+  overflow: hidden;
+}
+.jobs-family-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  height: 2.15rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 0 0.7rem;
+  font-size: 0.8125rem;
+}
+.jobs-family-pill[aria-pressed='true'] {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+.jobs-family-count {
+  border-radius: 999px;
+  background: var(--color-surface-muted, var(--color-border));
+  padding: 0.05rem 0.4rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.jobs-family-toggle,
+.jobs-family-status {
+  margin-top: 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent);
+  font-size: 0.8125rem;
+  padding: 0.15rem 0;
+}
+.jobs-family-status {
+  color: var(--color-text-muted);
+}
+.jobs-catalog-select {
+  position: relative;
+  min-width: 10rem;
+}
+.jobs-catalog-input {
+  width: 100%;
+  height: 2.25rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: var(--color-surface);
+  padding: 0 0.65rem;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+.jobs-catalog-list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.2rem);
+  left: 0;
+  right: 0;
+  max-height: 14rem;
+  overflow: auto;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+.jobs-catalog-list button,
+.jobs-catalog-status {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+}
+.jobs-catalog-list button.is-active,
+.jobs-catalog-list button:focus {
+  background: var(--color-surface-muted, var(--color-border));
+}
 .jobs-filter-bar {
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
   align-items: center;
   margin-bottom: 1rem;
+}
+@media (max-width: 720px) {
+  .jobs-filter-bar,
+  .jobs-catalog-select,
+  .jobs-filter-bar input,
+  .jobs-filter-bar select {
+    width: 100%;
+  }
+  .jobs-family-pill {
+    max-width: calc(50% - 0.4rem);
+  }
 }
 .jobs-filter-bar input,
 .jobs-filter-bar select {
