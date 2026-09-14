@@ -17,8 +17,13 @@ def _service(executor: SqlSandboxExecutor = Depends(get_sql_executor)) -> SqlPla
     return SqlPlaygroundService(executor)
 
 
-@router.get("")
+@router.get("/")
 async def playground_catalog(service: SqlPlaygroundService = Depends(_service)) -> dict:
+    return service.catalog()
+
+
+@router.get("")
+async def playground_catalog_alias(service: SqlPlaygroundService = Depends(_service)) -> dict:
     return service.catalog()
 
 
