@@ -49,6 +49,7 @@ from app.services.job_normalization import validate_url
 from app.services.job_taxonomy import (
     EXPERIENCE_BUCKETS,
     JOB_FAMILIES,
+    MISSING_COMPANY_LABEL,
     catalog_text,
 )
 
@@ -71,7 +72,7 @@ class JobService:
             c = await self.db.get(Company, job.company_id)
             if c:
                 return c.name
-        return catalog_text(job.company_name_raw) or "Unknown company"
+        return catalog_text(job.company_name_raw) or MISSING_COMPANY_LABEL
 
     async def _company_slug(self, job: Job) -> str | None:
         if job.company_id:
@@ -262,7 +263,23 @@ class JobService:
     ) -> JobFilterOptions:
         visible = select(Job.id).where(Job.status == JobStatus.ACTIVE, _not_expired()).subquery()
         locations = await self._distinct_values(Job.location_text, visible, location_q, selected_location, limit)
-        companies = await self._distinct_values(Job.company_name_raw, visible, company_q, selected_company, limit)
+        raw_companies = await self._distinct_values(Job.company_name_raw, visible, None, None, limit=10_000)
+        linked_names = (
+            await self.db.execute(
+                select(Company.name)
+                .where(Company.id.in_(select(Job.company_id).where(Job.id.in_(select(visible.c.id)), Job.company_id.is_not(None))))
+                .distinct()
+            )
+        ).scalars().all()
+        companies = sorted({*raw_companies, *(catalog_text(name) for name in linked_names if catalog_text(name))})
+        companies = [name for name in companies if name != MISSING_COMPANY_LABEL]
+        needle = (company_q or "").strip().lower()
+        if needle:
+            companies = [name for name in companies if needle in name.lower()]
+        chosen = catalog_text(selected_company)
+        if chosen and chosen != MISSING_COMPANY_LABEL and chosen not in companies:
+            companies.insert(0, chosen)
+        companies = companies[:limit]
         raw_buckets = (
             await self.db.execute(
                 select(Job.experience_bucket)
@@ -285,12 +302,18 @@ class JobService:
                 select(column).where(Job.id.in_(select(visible.c.id)), column.is_not(None)).distinct()
             )
         ).scalars().all()
-        cleaned = sorted({text for text in (catalog_text(value) for value in values) if text})
+        cleaned = sorted(
+            {
+                text
+                for text in (catalog_text(value) for value in values)
+                if text and text != MISSING_COMPANY_LABEL
+            }
+        )
         needle = (query or "").strip().lower()
         if needle:
             cleaned = [value for value in cleaned if needle in value.lower()]
         chosen = catalog_text(selected)
-        if chosen and chosen not in cleaned:
+        if chosen and chosen != MISSING_COMPANY_LABEL and chosen not in cleaned:
             cleaned.insert(0, chosen)
         return cleaned[:limit]
 

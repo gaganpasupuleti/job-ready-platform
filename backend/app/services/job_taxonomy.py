@@ -35,6 +35,8 @@ EXPERIENCE_BUCKETS: tuple[str, ...] = (
     "Experienced",
 )
 
+MISSING_COMPANY_LABEL = "Company not provided"
+
 _PLACEHOLDERS = frozenset({"nan", "none", "null", "n/a", "na", "-", "undefined", "unknown"})
 
 

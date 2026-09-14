@@ -10,7 +10,7 @@ from app.db.session import AsyncSessionLocal
 from app.models.job import Job, JobSkill
 from app.models.job_enums import JobSkillImportance, JobStatus
 from app.models.tagging import Skill
-from app.services.job_taxonomy import catalog_text, stored_source_value
+from app.services.job_taxonomy import MISSING_COMPANY_LABEL, catalog_text, stored_source_value
 from app.services.jobs_source_sync import ReviewedIdentity, SourceJob, apply_named_plan, plan_named_batch
 from tests.test_jobs_source_sync import _row
 
@@ -214,3 +214,58 @@ async def test_family_counts_ignore_selected_family_and_page(client, student_aut
     assert "nan" not in choices["locations"]
     assert "Fresher" in choices["experience_buckets"]
     assert None not in choices["experience_buckets"]
+
+
+@pytest.mark.asyncio
+async def test_missing_company_and_experience_are_not_invented(client, student_auth):
+    headers, _ = student_auth
+    token = uuid4().hex[:8]
+    location = f"Hyderabad {token}"
+    async with AsyncSessionLocal() as db:
+        missing = _job(
+            title=f"Missing catalog fields {token}",
+            company_name_raw=None,
+            location_text=location,
+            role_family="data-engineer",
+            experience_bucket=None,
+        )
+        db.add(missing)
+        await db.commit()
+
+    listed = await client.get(
+        "/api/v1/jobs",
+        headers=headers,
+        params={"role_family": "data-engineer", "location": location},
+    )
+    assert listed.status_code == 200, listed.text
+    body = listed.json()
+    assert body["total"] == 1
+    assert body["items"][0]["company_name"] == MISSING_COMPANY_LABEL
+    assert body["items"][0]["experience_bucket"] is None
+
+    options = await client.get("/api/v1/jobs/filter-options", headers=headers)
+    assert options.status_code == 200, options.text
+    assert MISSING_COMPANY_LABEL not in options.json()["companies"]
+
+    forced = await client.get(
+        "/api/v1/jobs/filter-options",
+        headers=headers,
+        params={"company": MISSING_COMPANY_LABEL},
+    )
+    assert MISSING_COMPANY_LABEL not in forced.json()["companies"]
+
+    linked = await client.get(
+        "/api/v1/jobs/filter-options",
+        headers=headers,
+        params={"company_q": "Company not provided"},
+    )
+    assert MISSING_COMPANY_LABEL not in linked.json()["companies"]
+
+    for bucket in ("Internship", "Fresher", "Entry (1-2 yrs)", "Experienced"):
+        excluded = await client.get(
+            "/api/v1/jobs",
+            headers=headers,
+            params={"role_family": "data-engineer", "location": location, "experience_bucket": bucket},
+        )
+        assert excluded.status_code == 200, excluded.text
+        assert excluded.json()["total"] == 0
