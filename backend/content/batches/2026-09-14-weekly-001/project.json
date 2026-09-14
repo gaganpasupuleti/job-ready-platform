@@ -1,0 +1,72 @@
+{
+  "key": "ticket-request-log",
+  "version": 1,
+  "title": "Read a ticket request log",
+  "families": [
+    "java-backend",
+    "frontend-react",
+    "fullstack-web"
+  ],
+  "skills": [
+    "http",
+    "status-codes"
+  ],
+  "technology": "http",
+  "category_key": "web",
+  "module_title": "Request log",
+  "minutes": 70,
+  "scenario": "A small desk logged six ticket requests. The page a person sees and the API that answers /tickets are two programs. This JobReady app stores the log so you can read it. It does not send the requests, compile Java, or render React.\n\nRelated material: /learn/materials/fs-request-response and /learn/materials/fs-two-programs. Related assignments: /learn/assignments/jb-assign-ticket-summary, /learn/assignments/fr-assign-ticket-form, /learn/assignments/fs-assign-read-the-log. Related quiz: /learn/quizzes/pack-fullstack-web.\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |\n\nValidation: status counts are 200 twice, 201 once, 400 once, 404 once, 500 once. A missing payment table from last week's shop project is not this log. Do not invent a seventh request.",
+  "outcome": "A reviewer can see status counts, a 400 that is not a 500, and a note that this app did not execute the page or the API.",
+  "dataset_file": "dataset.json",
+  "materials": [
+    "fs-request-response",
+    "fs-two-programs",
+    "jb-class-and-main",
+    "fr-component-props"
+  ],
+  "assignments": [
+    "fs-assign-read-the-log",
+    "jb-assign-ticket-summary",
+    "fr-assign-ticket-form"
+  ],
+  "reviewer_rubric": [
+    {
+      "criterion": "Counts match the six rows",
+      "points": 30
+    },
+    {
+      "criterion": "400 and 500 are not swapped",
+      "points": 25
+    },
+    {
+      "criterion": "Page field and API field are distinguished",
+      "points": 25
+    },
+    {
+      "criterion": "Note says this app did not execute the log",
+      "points": 20
+    }
+  ],
+  "milestones": [
+    {
+      "title": "Count the statuses",
+      "type": "review",
+      "deliverable": "Write the counts for 200, 201, 400, 404, and 500. Expected from the log: 2, 1, 1, 1, 1. Marking complete is not an automatic grade."
+    },
+    {
+      "title": "Separate a 400 from a 500",
+      "type": "review",
+      "deliverable": "Explain row 4 and row 6. 400 is a rejected request with no title. 500 is a server failure on GET /tickets/3."
+    },
+    {
+      "title": "Name the page field and the API field",
+      "type": "review",
+      "deliverable": "Name one thing a page can show, and one field the 201 response returned (id 4, title VPN). Do not treat them as the same store."
+    },
+    {
+      "title": "Say what this app does not run",
+      "type": "review",
+      "deliverable": "Write that Java, React, and the ticket API are not executed here. Link the written assignment if you completed fs-assign-read-the-log."
+    }
+  ]
+}

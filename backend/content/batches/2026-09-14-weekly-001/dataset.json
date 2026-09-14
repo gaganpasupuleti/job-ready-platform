@@ -1,0 +1,78 @@
+{
+  "synthetic": true,
+  "currency": null,
+  "requests": [
+    {
+      "n": 1,
+      "method": "GET",
+      "path": "/tickets/1",
+      "body_sent": null,
+      "status": 200,
+      "body_returned": {
+        "id": 1,
+        "title": "Printer"
+      }
+    },
+    {
+      "n": 2,
+      "method": "POST",
+      "path": "/tickets",
+      "body_sent": {
+        "title": "VPN"
+      },
+      "status": 201,
+      "body_returned": {
+        "id": 4,
+        "title": "VPN"
+      }
+    },
+    {
+      "n": 3,
+      "method": "GET",
+      "path": "/tickets/9",
+      "body_sent": null,
+      "status": 404,
+      "body_returned": {
+        "error": "not found"
+      }
+    },
+    {
+      "n": 4,
+      "method": "POST",
+      "path": "/tickets",
+      "body_sent": {},
+      "status": 400,
+      "body_returned": {
+        "error": "title is required"
+      }
+    },
+    {
+      "n": 5,
+      "method": "GET",
+      "path": "/tickets/2",
+      "body_sent": null,
+      "status": 200,
+      "body_returned": {
+        "id": 2,
+        "title": "Laptop"
+      }
+    },
+    {
+      "n": 6,
+      "method": "GET",
+      "path": "/tickets/3",
+      "body_sent": null,
+      "status": 500,
+      "body_returned": {
+        "error": "server failed"
+      }
+    }
+  ],
+  "status_counts": {
+    "200": 2,
+    "201": 1,
+    "404": 1,
+    "400": 1,
+    "500": 1
+  }
+}
