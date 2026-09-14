@@ -117,11 +117,24 @@ export function getNavIcon(name?: string) {
   return iconMap[name] ?? LayoutDashboard
 }
 
-export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
+function matchingPrefix(pathname: string, item: (typeof primaryNavItems)[number]) {
   const matchers = item.match ?? [item.path]
-  if (item.path === '/') return pathname === '/'
-  return matchers.some((prefix) => {
-    if (prefix === '/') return pathname === '/'
-    return pathname === prefix || pathname.startsWith(`${prefix}/`)
-  })
+  let best = ''
+  for (const prefix of matchers) {
+    const hit =
+      prefix === '/'
+        ? pathname === '/'
+        : pathname === prefix || pathname.startsWith(`${prefix}/`)
+    if (hit && prefix.length > best.length) best = prefix
+  }
+  return best
+}
+
+/** Longest matching destination wins, so only one primary item is current. */
+export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
+  const ranked = primaryNavItems
+    .map((candidate) => ({ candidate, prefix: matchingPrefix(pathname, candidate) }))
+    .filter((row) => row.prefix.length > 0)
+    .sort((left, right) => right.prefix.length - left.prefix.length)
+  return ranked[0]?.candidate === item
 }

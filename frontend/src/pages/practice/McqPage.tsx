@@ -6,8 +6,9 @@ export function McqPage() {
     <div className="module-page">
       <PracticeTrackNav />
       <PracticeCatalog
-        title="Technical MCQs"
-        description="Core computer science, programming, cloud, AI, and cybersecurity fundamentals."
+        title="Subject quizzes"
+        description="Choose a subject, then a topic. Multiple choice is the question format, not a separate track."
+        formatLabel="Multiple choice"
         domainSlug="technical"
       />
     </div>

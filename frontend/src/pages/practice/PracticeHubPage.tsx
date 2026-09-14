@@ -207,10 +207,11 @@ export function PracticeHubPage() {
       )}
 
       <nav className="module-footer-links" aria-label="Practice banks">
-        <Link to="/practice/aptitude">Aptitude</Link>
-        <Link to="/practice/mcq">Technical MCQs</Link>
-        <Link to="/practice/dsa">DSA problem bank</Link>
-        <Link to="/practice/sql">SQL Practice</Link>
+        <Link to="/practice/aptitude">Aptitude & Reasoning</Link>
+        <Link to="/practice/sql">SQL</Link>
+        <Link to="/practice/dsa">Programming & DSA</Link>
+        <Link to="/practice/mcq">Subject quizzes</Link>
+        <Link to="/practice/projects">Projects</Link>
         <Link to="/practice/projects">Projects hub</Link>
         <Link to="/practice/python">Playground</Link>
       </nav>

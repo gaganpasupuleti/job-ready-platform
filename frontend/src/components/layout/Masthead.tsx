@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { ChevronDown, LogOut, Menu, Moon, Sun, X } from 'lucide-react'
 
 import { Logo } from '@/components/brand/Logo'
@@ -57,16 +57,15 @@ export function Masthead({ compact = false }: MastheadProps) {
           {primaryNavItems.map((item) => {
             const active = isPrimaryNavActive(location.pathname, item)
             return (
-              <NavLink
+              <Link
                 key={item.path + item.label}
                 to={item.path}
-                end={item.path === '/'}
                 className={active ? 'active' : undefined}
                 aria-current={active ? 'page' : undefined}
                 onClick={closeMobile}
               >
                 {item.label}
-              </NavLink>
+              </Link>
             )
           })}
           <div className="more-nav">

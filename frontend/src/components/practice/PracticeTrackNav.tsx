@@ -1,70 +1,46 @@
-import { NavLink } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { Link, useLocation } from 'react-router-dom'
 
-import { fetchCodingProgress } from '@/services/codingService'
-import { fetchCatalog } from '@/services/practiceService'
-import { fetchSqlProgress } from '@/services/sqlService'
-import type { DomainBrief } from '@/types/practice'
-
-function countTopics(domains: DomainBrief[] | undefined, domainSlug: string, categorySlug?: string) {
-  const domain = domains?.find((item) => item.slug === domainSlug)
-  if (!domain) return null
-  const categories = categorySlug
-    ? domain.categories.filter((category) => category.slug === categorySlug)
-    : domain.categories
-  if (!categories.length) return null
-  return categories.reduce((total, category) => total + category.topics.length, 0)
+interface PracticeDestination {
+  label: string
+  to: string
+  match: string[]
 }
 
-/** Cross-track jumps using catalog, coding progress, and SQL progress — no new API. */
-export function PracticeTrackNav() {
-  const catalog = useQuery({
-    queryKey: ['practice-catalog'],
-    queryFn: fetchCatalog,
-  })
-  const coding = useQuery({
-    queryKey: ['coding-progress'],
-    queryFn: fetchCodingProgress,
-  })
-  const sql = useQuery({
-    queryKey: ['sql-progress'],
-    queryFn: fetchSqlProgress,
-  })
+/** Destination navigation only. Topic and difficulty filters stay on the page. */
+const destinations: PracticeDestination[] = [
+  { label: 'Aptitude & Reasoning', to: '/practice/aptitude', match: ['/practice/aptitude'] },
+  { label: 'SQL', to: '/practice/sql', match: ['/practice/sql'] },
+  {
+    label: 'Programming & DSA',
+    to: '/practice/dsa',
+    match: ['/practice/dsa', '/practice/coding'],
+  },
+  { label: 'Quizzes', to: '/practice/mcq', match: ['/practice/mcq'] },
+  { label: 'Projects', to: '/practice/projects', match: ['/practice/projects'] },
+]
 
-  const tracks: { label: string; to: string; end?: boolean; count: string | number | null }[] = [
-    { label: 'Practice', to: '/practice', end: true, count: null },
-    {
-      label: 'Aptitude',
-      to: '/practice/aptitude',
-      count: countTopics(catalog.data?.domains, 'placement', 'aptitude'),
-    },
-    { label: 'MCQ', to: '/practice/mcq', count: countTopics(catalog.data?.domains, 'technical') },
-    {
-      label: 'DSA',
-      to: '/practice/dsa',
-      count:
-        coding.data != null ? `${coding.data.solved_count}/${coding.data.total_problems}` : null,
-    },
-    {
-      label: 'SQL',
-      to: '/practice/sql',
-      count: sql.data != null ? `${sql.data.solved_count}/${sql.data.total_problems}` : null,
-    },
-  ]
+function isDestinationActive(pathname: string, match: string[]) {
+  return match.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+}
+
+export function PracticeTrackNav() {
+  const { pathname } = useLocation()
 
   return (
-    <nav className="practice-track-nav" aria-label="Practice tracks">
-      {tracks.map((track) => (
-        <NavLink
-          key={track.to}
-          to={track.to}
-          end={track.end}
-          className={({ isActive }) => `practice-track-link${isActive ? ' is-active' : ''}`}
-        >
-          {track.label}
-          {track.count != null ? <span className="practice-track-count">{track.count}</span> : null}
-        </NavLink>
-      ))}
+    <nav className="practice-track-nav" aria-label="Practice destinations">
+      {destinations.map((item) => {
+        const active = isDestinationActive(pathname, item.match)
+        return (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={`practice-track-link${active ? ' is-active' : ''}`}
+            aria-current={active ? 'page' : undefined}
+          >
+            {item.label}
+          </Link>
+        )
+      })}
     </nav>
   )
 }

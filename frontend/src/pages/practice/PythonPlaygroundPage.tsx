@@ -75,6 +75,10 @@ export function PythonPlaygroundPage() {
             </Link>
             {' / '}
             Playground
+            {' · '}
+            <Link to="/practice/sql" className="text-[var(--color-accent)] hover:underline">
+              SQL workspace
+            </Link>
           </p>
           <h1
             className="text-base font-semibold leading-tight text-[var(--color-text)] sm:text-lg"
@@ -84,6 +88,14 @@ export function PythonPlaygroundPage() {
           </h1>
           <p className="mt-0.5 max-w-2xl text-sm text-[var(--color-text-muted)]">
             Freeform Python with stdin — not assessed. Use DSA/Coding problems for graded Run/Submit.
+          </p>
+          <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm">
+            <Link to="/practice/sql" className="text-[var(--color-accent)] hover:underline">
+              Open SQL workspace
+            </Link>
+            <Link to="/practice/dsa" className="text-[var(--color-accent)] hover:underline">
+              Graded programming problems
+            </Link>
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -96,11 +108,9 @@ export function PythonPlaygroundPage() {
       </div>
 
       {!available && (
-        <div
-          className="rounded-md border border-amber-300/60 bg-amber-50 px-3 py-2 text-[13px] text-amber-900 dark:border-amber-700/50 dark:bg-amber-950/40 dark:text-amber-100"
-          role="status"
-        >
-          {CODE_EXECUTION_LOCKED_MESSAGE}
+        <div className="execution-lock" role="status">
+          <strong>Python execution locked</strong>
+          <p>{CODE_EXECUTION_LOCKED_MESSAGE}</p>
         </div>
       )}
 

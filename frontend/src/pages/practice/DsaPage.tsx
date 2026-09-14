@@ -45,7 +45,7 @@ export function DsaPage() {
     <div className="module-page space-y-4">
       <PracticeTrackNav />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">DSA Practice</h2>
+        <h1 className="text-lg font-semibold text-[var(--color-text)]">Programming & DSA</h1>
         <p className="text-sm text-[var(--color-text-muted)]">
           Topic-organized coding problems with run/submit, progress tracking, and hidden test
           evaluation.

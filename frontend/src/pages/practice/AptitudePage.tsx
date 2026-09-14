@@ -6,8 +6,9 @@ export function AptitudePage() {
     <div className="module-page">
       <PracticeTrackNav />
       <PracticeCatalog
-        title="Aptitude / CRT Practice"
+        title="Aptitude & Reasoning"
         description="Quantitative aptitude, logical reasoning, verbal ability, and data interpretation."
+        formatLabel="Multiple choice"
         domainSlug="placement"
         categorySlug="aptitude"
       />
