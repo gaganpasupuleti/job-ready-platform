@@ -31,6 +31,14 @@ def _admin_url(database: str) -> str:
 async def _connect_admin(app_parsed) -> asyncpg.Connection:
     admin_parsed = urlparse(settings.sql_sandbox_admin_database_url.replace("+asyncpg", ""))
     candidates = (
+        # CREATEDB for disposable rehearsal DB lives on the app Postgres instance.
+        {
+            "host": app_parsed.hostname or admin_parsed.hostname,
+            "port": app_parsed.port or 5432,
+            "user": admin_parsed.username or "jobready_sql_admin",
+            "password": admin_parsed.password,
+            "database": "postgres",
+        },
         {
             "host": admin_parsed.hostname or app_parsed.hostname,
             "port": admin_parsed.port or app_parsed.port or 5432,
