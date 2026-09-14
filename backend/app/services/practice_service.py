@@ -510,9 +510,10 @@ class PracticeService:
                 continue
             if not answer.selected_option_ids:
                 continue
-            question = await self.question_repo.get_by_id(sq.question_id)
-            if question is None:
+            live = await self.question_repo.get_by_id(sq.question_id)
+            if live is None:
                 continue
+            question = view_question(live, sq.snapshot_json)
             selected_uuids = [UUID(value) for value in answer.selected_option_ids]
             is_correct, marks_awarded = self._evaluate_answer(question, selected_uuids)
             answer.is_correct = is_correct

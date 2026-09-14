@@ -25,7 +25,15 @@ python scripts/content_batch.py --batch content/batches/2026-09-19-saturday-001 
 
 `--apply` refuses a non-local database. There is no boot-time publish and no production command in this change.
 
-A later Saturday batch is a new directory under `content/batches/` with a new `batch_id`. Reuse item keys to update. A hash change without a version bump is rejected. An identical apply reports unchanged and does not duplicate rows.
+A later Saturday batch is a new directory under `content/batches/` with a new `batch_id`. Reuse item keys to update. A hash change without a version bump is rejected. An identical apply reports unchanged and does not duplicate rows. A version bump updates project text and existing milestone rows in place. It does not delete student task history.
+
+## Verification reused or still open
+
+- Batch plan, identical reapply, assignment isolation, and coding-lock contract were already verified. Do not rerun those as failures.
+- Question snapshots keep an open attempt's stem after the live question text changes.
+- Redis was not running. Cache, rate-limit, and any flow that depends on Redis were not exercised. Treat them as unverified.
+- Isolated student SQL sandbox Run was not exercised in this pass. Authoring checks used a temporary schema that was dropped.
+- Desktop and 390px hub screenshots were not successfully captured. Do not treat the login-page capture as visual acceptance of the hub.
 
 ## Migration
 

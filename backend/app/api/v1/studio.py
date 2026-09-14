@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_admin, get_current_user
@@ -243,7 +244,15 @@ def _submission_out(item: AssignmentSubmission, reviews: list[AssignmentReview])
         "answer_text": item.answer_text,
         "evidence_url": item.evidence_url,
         "submitted_at": item.submitted_at.isoformat() if item.submitted_at else None,
-        "reviews": [{"feedback": review.feedback, "grade": review.grade, "version": review.submission_version} for review in matched],
+        "reviews": [
+            {
+                "feedback": review.feedback,
+                "grade": review.grade,
+                "version": review.submission_version,
+                "reviewed_at": review.reviewed_at.isoformat(),
+            }
+            for review in matched
+        ],
     }
 
 
@@ -335,7 +344,9 @@ async def start_pack(key: str, user: User = Depends(get_current_user), db: Async
     ).scalars().all()
     questions = []
     for link in links:
-        question = await db.get(Question, link.question_id)
+        question = (
+            await db.execute(select(Question).options(selectinload(Question.options)).where(Question.id == link.question_id))
+        ).scalar_one_or_none()
         if question and question.is_active:
             questions.append(question)
     if not questions:

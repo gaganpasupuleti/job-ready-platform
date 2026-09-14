@@ -366,8 +366,30 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
         problem = await _upsert_sql(db, topic, slug)
         sql_ids[slug] = problem.id
     project_row = batch["project"]
+    project_action = next(action for action in planned["actions"] if action["type"] == "project")
     project = (await db.execute(select(Project).where(Project.slug == project_row["key"]))).scalar_one_or_none()
-    if project is None:
+    if project is not None and project_action["action"] == "update":
+        project.title = project_row["title"]
+        project.short_description = project_row["outcome"][:500]
+        project.description = project_row["scenario"]
+        project.final_objective = project_row["outcome"]
+        project.skills = project_row["skills"]
+        project.reference_json = {"families": project_row["families"], "dataset": "dataset.sql", "version": project_action["version"]}
+        module = (
+            await db.execute(select(ProjectModule).where(ProjectModule.project_id == project.id).order_by(ProjectModule.sort_order))
+        ).scalars().first()
+        if module is not None:
+            existing_tasks = (
+                await db.execute(select(ProjectTask).where(ProjectTask.module_id == module.id).order_by(ProjectTask.sort_order))
+            ).scalars().all()
+            for index, milestone in enumerate(project_row["milestones"]):
+                if index >= len(existing_tasks):
+                    break
+                task = existing_tasks[index]
+                task.title = milestone["title"]
+                task.summary = milestone["deliverable"]
+                task.sql_problem_id = sql_ids.get(milestone.get("sql_problem_slug"))
+    elif project is None:
         project = Project(
             slug=project_row["key"],
             title=project_row["title"],
@@ -403,7 +425,10 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                     checklist_json=[],
                 )
             )
+    pack_actions = {action["key"]: action for action in planned["actions"] if action["type"] == "pack"}
     for pack_row in batch["packs"]:
+        if pack_actions.get(pack_row["key"], {}).get("action") == "unchanged":
+            continue
         pack = (await db.execute(select(ContentPack).where(ContentPack.content_key == pack_row["key"]))).scalar_one_or_none()
         if pack is None:
             pack = ContentPack(
