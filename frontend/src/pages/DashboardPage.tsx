@@ -61,7 +61,7 @@ export function DashboardPage() {
               : ' Your next step is ready.'}
           </p>
         </div>
-        <Link to="/practice/python">
+        <Link to="/practice/playground">
           <Button variant="secondary" className="inline-flex items-center gap-2">
             <Terminal className="h-4 w-4" aria-hidden />
             Open playground
