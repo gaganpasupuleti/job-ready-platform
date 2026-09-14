@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Button } from '@/components/common/Button'
+import { SafeMarkdown } from '@/components/learn/SafeMarkdown'
 import { LearnSubnav } from '@/components/learn/LearnSubnav'
 import { apiClient } from '@/api/client'
 import { fetchMaterial, markMaterialRead, materialDownloadUrl } from '@/services/studioService'
@@ -54,7 +55,9 @@ export function MaterialDetailPage() {
             <h2 className="text-sm font-semibold">Objectives</h2>
             <ul className="list-disc pl-5 text-sm">{data.objectives.map((item) => <li key={item}>{item}</li>)}</ul>
           </section>
-          <pre className="mt-4 whitespace-pre-wrap rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-sm">{data.body_md}</pre>
+          <div className="mt-4 min-w-0 rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+            <SafeMarkdown source={data.body_md} />
+          </div>
           {data.examples.length > 0 && (
             <section className="mt-4">
               <h2 className="text-sm font-semibold">Examples</h2>

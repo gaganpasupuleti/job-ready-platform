@@ -288,7 +288,7 @@ React docs, "Rendering Lists": https://react.dev/learn/rendering-lists
         "prerequisites": ["You can read a small table of rows"],
         "summary": "A request has a method and a path. The response has a status. In this log, 201 means created, 400 means the request was rejected, and 404 means that ticket was not found.",
         "sources": [
-            {"label": "RFC 9110, HTTP Semantics: Status Codes", "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes"}
+            {"label": "RFC 9110, HTTP Semantics: Status Codes", "url": "https://www.rfc-editor.org/rfc/rfc9110.txt"}
         ],
         "examples": ["POST /tickets 201 means the create request was accepted and a ticket was created."],
         "exercises": ["From the project log, count 200 responses without treating 201 as 200."],
@@ -299,7 +299,7 @@ Read one line of a request log without inventing a second request.
 You can read a table and count rows that share a value.
 
 ## Method, path, status
-A request line in this batch has a method and a path. The matching response has a status code. Status classes in RFC 9110: 1xx informational, 2xx success, 3xx redirection, 4xx client error, 5xx server error. This material uses only the codes in the supplied log.
+A request line in this batch has a method and a path. The matching response has a status code. RFC 9110 defines the class by the first digit: 1xx (Informational), 2xx (Successful), 3xx (Redirection), 4xx (Client Error), and 5xx (Server Error). This material uses only the codes in the supplied log.
 
 This is the log. Do not add a row.
 
@@ -342,7 +342,7 @@ This application does not host the ticket API and will not send these requests f
 Read method, path, and status together. Keep 200, 201, 400, 404, and 500 distinct. Do not invent a request that is not in the log.
 
 ## References
-RFC 9110, HTTP Semantics, status codes: https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes
+RFC 9110, HTTP Semantics, status codes (plain text, section 15): https://www.rfc-editor.org/rfc/rfc9110.txt
 """,
     },
     {
@@ -362,7 +362,7 @@ RFC 9110, HTTP Semantics, status codes: https://www.rfc-editor.org/rfc/rfc9110.h
         "prerequisites": ["fs-request-response"],
         "summary": "The page can show a title the API never received. A 400 is a rejected request. A 500 is a server failure. This app does not run either program.",
         "sources": [
-            {"label": "RFC 9110, HTTP Semantics: Status Codes", "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes"}
+            {"label": "RFC 9110, HTTP Semantics: Status Codes", "url": "https://www.rfc-editor.org/rfc/rfc9110.txt"}
         ],
         "examples": ["A heading that says Printer is not proof that POST /tickets received title Printer."],
         "exercises": ["Name one field the page shows and one field the API received on the successful create."],
@@ -376,7 +376,7 @@ You can read method, path, and status from `fs-request-response`.
 The page is what a person looks at. The API is what answers `/tickets`. They can fail separately. A heading that shows `Printer` is the page. It is not, by itself, the JSON the API stored. The successful create in the log is the evidence for what the API received: JSON `{ "title": "VPN" }` and response `{ "id": 4, "title": "VPN" }`.
 
 ## Worked example
-Request 4 in the log from `fs-request-response` is `POST /tickets` with `{}` and status 400. The page may still show an empty input. The API rejected the request because the title was missing. Request 6 is `GET /tickets/3` with status 500. RFC 9110 puts 500 in the server-error class. That class does not say the browser calculated a title incorrectly. The conclusion that a 500 does not prove a page calculation error is an application of that class, not a sentence copied from the RFC.
+Request 4 in the log from `fs-request-response` is `POST /tickets` with `{}` and status 400. The page may still show an empty input. The API rejected the request because the title was missing. Request 6 is `GET /tickets/3` with status 500. RFC 9110 puts 500 in the 5xx (Server Error) class. That class does not say the browser calculated a title incorrectly. The conclusion that a 500 does not prove a page calculation error is an application of that class, not a sentence copied from the RFC.
 
 ## Common mistakes
 - Using a 500 as evidence that the page's arithmetic was wrong.
@@ -390,7 +390,7 @@ Write two sentences. One names a field the page shows. One names a field the API
 The page shows. The API receives and answers. Status 400 and status 500 are different failures. This site does not execute either side.
 
 ## References
-RFC 9110, HTTP Semantics, status codes: https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes
+RFC 9110, HTTP Semantics, status codes (plain text, section 15): https://www.rfc-editor.org/rfc/rfc9110.txt
 """,
     },
 ]
@@ -634,7 +634,8 @@ def main() -> None:
         body = item["body"].strip() + "\n"
         rel = f"materials/{item['key']}.md"
         _write(ROOT / rel, body)
-        material_rows.append({k: v for k, v in item.items() if k != "body"} | {"body_file": rel, "version": 2})
+        material_version = 3 if item["key"] in {"fs-request-response", "fs-two-programs"} else 2
+        material_rows.append({k: v for k, v in item.items() if k != "body"} | {"body_file": rel, "version": material_version})
 
     log_rows = [
         {"n": 1, "method": "GET", "path": "/tickets/1", "body_sent": None, "status": 200, "body_returned": {"id": 1, "title": "Printer"}},
@@ -781,7 +782,7 @@ def main() -> None:
         "topic_overrides": None,
         "update_ids": None,
         "publish_mode": "PREVIEW",
-        "change_reason": "Weekly preview batch for rotation group 2. Java class and methods, React props and state, HTTP request log. CRT uses a channel table, not the prior shop table.",
+        "change_reason": "Align the HTTP status-class sentence and citation with the verified RFC 9110 plain-text body. fs-request-response and fs-two-programs are version 3. Earlier manifests fc4a715c and 44365ae5 are superseded and must not be published.",
         "authorization": "local preview only; not a production publication",
         "items": manifest_items,
     }

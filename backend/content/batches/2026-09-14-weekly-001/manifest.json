@@ -19,12 +19,12 @@
   "topic_overrides": null,
   "update_ids": null,
   "publish_mode": "PREVIEW",
-  "change_reason": "Weekly preview batch for rotation group 2. Java class and methods, React props and state, HTTP request log. CRT uses a channel table, not the prior shop table.",
+  "change_reason": "Align the HTTP status-class sentence and citation with the verified RFC 9110 plain-text body. fs-request-response and fs-two-programs are version 3. Earlier manifests fc4a715c and 44365ae5 are superseded and must not be published.",
   "authorization": "local preview only; not a production publication",
   "items": [
     {
       "path": "materials.json",
-      "sha256": "2b64375ce24ce49fefab88c7d74e190050e17c4de0b2e5a4f0c5cc8adc86cdcd",
+      "sha256": "ef5fa2a6fd21ab3bbdfc95754f69bdb49809d4cbe9daa226cfd4715280d299f8",
       "content_type": "materials"
     },
     {
@@ -83,13 +83,13 @@
     },
     {
       "path": "materials/fs-request-response.md",
-      "sha256": "9809c4362f55e7771aa24bf54f3d3dadd074920fb2b19c979aa79d3d425b9541",
+      "sha256": "a757dd24ef94c898fb542dcff113a4b8c736e1e36fbcc41fe6cf060b447ee1da",
       "content_type": "material_body",
       "key": "fs-request-response"
     },
     {
       "path": "materials/fs-two-programs.md",
-      "sha256": "1b2c39fcf034c8f1b677604be76630379b1e5052e7c9a8f40be24aba7ddd4739",
+      "sha256": "022c41d21737f1a49b48e43dbad01a82283d7fa5a43e7376051de5a655f01310",
       "content_type": "material_body",
       "key": "fs-two-programs"
     }

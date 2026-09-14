@@ -5,7 +5,7 @@ Read one line of a request log without inventing a second request.
 You can read a table and count rows that share a value.
 
 ## Method, path, status
-A request line in this batch has a method and a path. The matching response has a status code. Status classes in RFC 9110: 1xx informational, 2xx success, 3xx redirection, 4xx client error, 5xx server error. This material uses only the codes in the supplied log.
+A request line in this batch has a method and a path. The matching response has a status code. RFC 9110 defines the class by the first digit: 1xx (Informational), 2xx (Successful), 3xx (Redirection), 4xx (Client Error), and 5xx (Server Error). This material uses only the codes in the supplied log.
 
 This is the log. Do not add a row.
 
@@ -48,4 +48,4 @@ This application does not host the ticket API and will not send these requests f
 Read method, path, and status together. Keep 200, 201, 400, 404, and 500 distinct. Do not invent a request that is not in the log.
 
 ## References
-RFC 9110, HTTP Semantics, status codes: https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes
+RFC 9110, HTTP Semantics, status codes (plain text, section 15): https://www.rfc-editor.org/rfc/rfc9110.txt

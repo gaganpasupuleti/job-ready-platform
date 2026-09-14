@@ -215,7 +215,7 @@
       "sources": [
         {
           "label": "RFC 9110, HTTP Semantics: Status Codes",
-          "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes"
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.txt"
         }
       ],
       "examples": [
@@ -225,7 +225,7 @@
         "From the project log, count 200 responses without treating 201 as 200."
       ],
       "body_file": "materials/fs-request-response.md",
-      "version": 2
+      "version": 3
     },
     {
       "key": "fs-two-programs",
@@ -253,7 +253,7 @@
       "sources": [
         {
           "label": "RFC 9110, HTTP Semantics: Status Codes",
-          "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes"
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.txt"
         }
       ],
       "examples": [
@@ -263,7 +263,7 @@
         "Name one field the page shows and one field the API received on the successful create."
       ],
       "body_file": "materials/fs-two-programs.md",
-      "version": 2
+      "version": 3
     }
   ]
 }

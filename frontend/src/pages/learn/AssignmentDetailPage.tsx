@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Button } from '@/components/common/Button'
 import { Textarea } from '@/components/common/Field'
+import { SafeMarkdown } from '@/components/learn/SafeMarkdown'
 import { LearnSubnav } from '@/components/learn/LearnSubnav'
 import { fetchAssignment, saveAssignmentDraft, submitAssignment } from '@/services/studioService'
 
@@ -60,7 +61,7 @@ export function AssignmentDetailPage() {
               . A browser note is not a substitute for an accepted studio submission.
             </p>
           )}
-          <p className="text-sm">{data.brief_md}</p>
+          <SafeMarkdown source={data.brief_md} />
           <p className="mt-2 text-xs text-[var(--color-text-muted)]">Estimated effort {data.minutes} min. Due date: {data.due_at ?? 'none'}. Version {data.version}.</p>
           <h2 className="mt-4 text-sm font-semibold">Requirements</h2>
           <ul className="list-disc pl-5 text-sm">{data.requirements.map((item) => <li key={item}>{item}</li>)}</ul>
@@ -85,7 +86,12 @@ export function AssignmentDetailPage() {
               {data.submissions.map((item) => (
                 <li key={item.id} className="rounded-[5px] border border-[var(--color-border)] p-3">
                   <p>Attempt {item.attempt} · {item.status} · version {item.version}</p>
-                  {item.brief && <p className="mt-2 whitespace-pre-wrap">Filed brief: {item.brief}</p>}
+                  {item.brief && (
+                    <div className="mt-2">
+                      <p className="text-xs text-[var(--color-text-muted)]">Filed brief</p>
+                      <SafeMarkdown source={item.brief} />
+                    </div>
+                  )}
                   {item.rubric && item.rubric.length > 0 && (
                     <p className="mt-1">Filed rubric: {item.rubric.map((row) => `${row.criterion} (${row.points})`).join('; ')}</p>
                   )}

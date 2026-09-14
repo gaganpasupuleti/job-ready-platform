@@ -68,5 +68,8 @@ Rotation group 2: java-backend, frontend-react, fullstack-web. Shared CRT is a n
 - Apply created the new items. An identical reapply left materials 6, assignments 3, questions 50, packs 4, project 1, and SQL 3 unchanged.
 - First preview manifest sha256: `fc4a715c7f5b3f0543c5283947c83a5ba00a2e69d4a300c41ea9d4a38d671046`
 - Review correction: citations that did not support the lesson claim were replaced, the six-row log was added to the material and assignment, and weak hard questions were rewritten or relabeled. Changed items are version 2. Do not publish the first preview hash.
-- Reviewed manifest sha256: `44365ae5db37b6e36ddb0a6a4e166c8bef611043609f93fc7b8632ec88d8410e`
+- Reviewed manifest sha256: `44365ae5db37b6e36ddb0a6a4e166c8bef611043609f93fc7b8632ec88d8410e` — superseded. Do not publish.
+- Citation closure: the HTTP class sentence now uses the RFC 9110 names verified in the plain-text body (`1xx (Informational)` through `5xx (Server Error)`), and the citation is `https://www.rfc-editor.org/rfc/rfc9110.txt`. `fs-request-response` and `fs-two-programs` are version 3. Earlier manifests `fc4a715c…` and `44365ae5…` must not be published.
+- Final weekly manifest sha256: `d05331548a7d8f717696cfe1c405ded1c02b113496f07e6787d60a9e517e0e66`
+- Saturday manifest sha256 is unchanged: `02d697efa25d03161f5bb096d4ed3028ed1076a319a0946bd7f569fdc2b36700`
 - Local preview API on 127.0.0.1:8001. UI on 127.0.0.1:5176. Not the live site.
