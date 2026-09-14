@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "materials": [
+    {
+      "key": "da-sql-filter-agg",
+      "title": "SQL filtering and aggregation for analysts",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 25,
+      "families": [
+        "data-analyst"
+      ],
+      "skills": [
+        "sql",
+        "aggregation"
+      ],
+      "objectives": [
+        "Filter rows with WHERE before grouping",
+        "Use COUNT, SUM, and AVG without inventing zeros",
+        "Read a grouped result against the source rows"
+      ],
+      "prerequisites": [
+        "You can read a table of rows and columns"
+      ],
+      "summary": "WHERE chooses rows. GROUP BY builds one row per group. Aggregates ignore NULL in SUM and AVG, and COUNT(column) ignores NULL too.",
+      "sources": [
+        {
+          "label": "PostgreSQL aggregate functions",
+          "url": "https://www.postgresql.org/docs/current/functions-aggregate.html"
+        }
+      ],
+      "examples": [
+        "SELECT status, COUNT(*) FROM orders WHERE status <> 'cancelled' GROUP BY status;"
+      ],
+      "exercises": [
+        "Count paid orders only. Then sum their amounts. A missing payment is not an amount of zero unless you write COALESCE."
+      ],
+      "body_file": "materials/da-sql-filter-agg.md",
+      "version": 1
+    },
+    {
+      "key": "da-read-a-table",
+      "title": "Reading a business table without inventing a story",
+      "kind": "worked_example",
+      "level": "beginner",
+      "audience": "Internship",
+      "minutes": 20,
+      "families": [
+        "data-analyst"
+      ],
+      "skills": [
+        "data-interpretation"
+      ],
+      "objectives": [
+        "Name the grain of a table",
+        "Separate a count of rows from a sum of money",
+        "Refuse a conclusion the columns do not support"
+      ],
+      "prerequisites": [
+        "da-sql-filter-agg is helpful, not required"
+      ],
+      "summary": "The grain is what one row means. A revenue column is not a profit column. A missing cell is missing, not automatically zero.",
+      "sources": [],
+      "examples": [
+        "If one row is one order, do not call the row count a customer count."
+      ],
+      "exercises": [
+        "Given orders and a city on the customer table, explain why you cannot report city revenue until you join and state how you treat cancelled orders."
+      ],
+      "body_file": "materials/da-read-a-table.md",
+      "version": 1
+    },
+    {
+      "key": "de-joins-nulls",
+      "title": "SQL joins and NULL handling",
+      "kind": "article",
+      "level": "intermediate",
+      "audience": "Entry (1-2 yrs)",
+      "minutes": 30,
+      "families": [
+        "data-engineer"
+      ],
+      "skills": [
+        "sql",
+        "joins"
+      ],
+      "objectives": [
+        "Choose INNER JOIN when both sides must exist",
+        "Keep unmatched rows with LEFT JOIN",
+        "Stop treating NULL as equal to NULL"
+      ],
+      "prerequisites": [
+        "You can filter and group a single table"
+      ],
+      "summary": "An inner join drops orders with no matching payment. A left join keeps them. NULL = NULL is unknown, so use IS NULL.",
+      "sources": [
+        {
+          "label": "PostgreSQL comparison functions",
+          "url": "https://www.postgresql.org/docs/current/functions-comparison.html"
+        }
+      ],
+      "examples": [
+        "SELECT o.id FROM orders o LEFT JOIN payments p ON p.order_id = o.id WHERE p.id IS NULL;"
+      ],
+      "exercises": [
+        "Explain why WHERE p.amount IS NULL after a left join is not the same as filtering inside the join condition."
+      ],
+      "body_file": "materials/de-joins-nulls.md",
+      "version": 1
+    },
+    {
+      "key": "de-python-validation",
+      "title": "Python ingestion checks you can run on your own computer",
+      "kind": "article",
+      "level": "intermediate",
+      "audience": "Fresher",
+      "minutes": 25,
+      "families": [
+        "data-engineer"
+      ],
+      "skills": [
+        "python",
+        "validation"
+      ],
+      "objectives": [
+        "Reject a row with a missing required key",
+        "Refuse a negative amount when the brief forbids it",
+        "Keep validation separate from a database write"
+      ],
+      "prerequisites": [
+        "You can write a Python function on your own computer"
+      ],
+      "summary": "Online Python execution is locked. These checks are for a local script. A failed check returns a reason. It does not invent a repaired row.",
+      "sources": [
+        {
+          "label": "Python exceptions tutorial",
+          "url": "https://docs.python.org/3/tutorial/errors.html"
+        }
+      ],
+      "examples": [
+        "def require_amount(row):\n    if 'amount' not in row or row['amount'] is None:\n        raise ValueError('amount is required')"
+      ],
+      "exercises": [
+        "Write a local function that rejects duplicate order ids and returns the rejected ids. Do not submit it to the locked playground."
+      ],
+      "body_file": "materials/de-python-validation.md",
+      "version": 1
+    },
+    {
+      "key": "py-collections-flow",
+      "title": "Python collections and control flow",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 25,
+      "families": [
+        "python-dev"
+      ],
+      "skills": [
+        "python",
+        "collections"
+      ],
+      "objectives": [
+        "Pick a list, dict, or set for the access you need",
+        "Avoid mutating a list while iterating it",
+        "Use a guard clause instead of a buried return"
+      ],
+      "prerequisites": [
+        "You can run Python 3 on your own computer"
+      ],
+      "summary": "A list keeps order and duplicates. A set does not. A dict maps a key to one value. The playground will not execute these examples.",
+      "sources": [
+        {
+          "label": "Python data structures",
+          "url": "https://docs.python.org/3/tutorial/datastructures.html"
+        }
+      ],
+      "examples": [
+        "seen = set()\nfor order_id in order_ids:\n    if order_id in seen:\n        continue\n    seen.add(order_id)"
+      ],
+      "exercises": [
+        "On your computer, write a function that returns names longer than 3 characters. Do not expect the locked editor to run it."
+      ],
+      "body_file": "materials/py-collections-flow.md",
+      "version": 1
+    },
+    {
+      "key": "py-functions-exceptions",
+      "title": "Python functions and exceptions",
+      "kind": "cheatsheet",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 20,
+      "families": [
+        "python-dev"
+      ],
+      "skills": [
+        "python",
+        "exceptions"
+      ],
+      "objectives": [
+        "Write a function with an explicit return",
+        "Catch the exception you can handle",
+        "Avoid a bare except that hides bugs"
+      ],
+      "prerequisites": [
+        "py-collections-flow"
+      ],
+      "summary": "A function without return yields None. except ValueError handles ValueError. except Exception hides more than you intend.",
+      "sources": [
+        {
+          "label": "Python errors and exceptions",
+          "url": "https://docs.python.org/3/tutorial/errors.html"
+        }
+      ],
+      "examples": [
+        "def parse_amount(text):\n    try:\n        return int(text)\n    except ValueError:\n        raise ValueError('amount must be an integer') from None"
+      ],
+      "exercises": [
+        "Locally, call parse_amount('12') and parse_amount('no'). Record both results in a repository note. The site will not run them."
+      ],
+      "body_file": "materials/py-functions-exceptions.md",
+      "version": 1
+    }
+  ]
+}

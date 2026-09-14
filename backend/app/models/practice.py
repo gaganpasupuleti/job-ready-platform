@@ -66,6 +66,7 @@ class PracticeSessionQuestion(Base, UUIDPrimaryKeyMixin):
         UUID(as_uuid=True), ForeignKey("questions.id", ondelete="CASCADE"), index=True
     )
     question_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    snapshot_json: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
     session: Mapped["PracticeSession"] = relationship(back_populates="questions")
 

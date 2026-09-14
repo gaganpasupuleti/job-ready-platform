@@ -7,6 +7,54 @@ from app.core.config import settings
 from app.core.exceptions import AppException
 from app.models.enums import PracticeMode, SessionStatus
 from app.models.practice import PracticeAnswer, PracticeSession, PracticeSessionQuestion
+
+
+class _SnapOption:
+    def __init__(self, data: dict) -> None:
+        self.id = UUID(data["id"])
+        self.option_text = data["option_text"]
+        self.is_correct = bool(data["is_correct"])
+        self.sort_order = data.get("sort_order", 0)
+
+
+class _SnapQuestion:
+    def __init__(self, question, snapshot: dict) -> None:
+        self.id = question.id
+        self.question_type = question.question_type
+        self.title = snapshot.get("title")
+        self.question_text = snapshot["question_text"]
+        self.explanation = snapshot.get("explanation")
+        self.difficulty = question.difficulty
+        self.marks = snapshot.get("marks", question.marks)
+        self.negative_marks = snapshot.get("negative_marks", question.negative_marks)
+        self.estimated_time_seconds = question.estimated_time_seconds
+        self.topic_id = question.topic_id
+        self.options = [_SnapOption(item) for item in snapshot.get("options", [])]
+
+
+def question_snapshot(question) -> dict:
+    return {
+        "title": question.title,
+        "question_text": question.question_text,
+        "explanation": question.explanation,
+        "marks": question.marks,
+        "negative_marks": question.negative_marks,
+        "options": [
+            {
+                "id": str(opt.id),
+                "option_text": opt.option_text,
+                "is_correct": opt.is_correct,
+                "sort_order": opt.sort_order,
+            }
+            for opt in question.options
+        ],
+    }
+
+
+def view_question(question, snapshot: dict | None):
+    if not snapshot or "options" not in snapshot:
+        return question
+    return _SnapQuestion(question, snapshot)
 from app.models.user import User
 from app.repositories.practice_repository import PracticeRepository
 from app.repositories.question_repository import QuestionRepository, TaxonomyRepository
@@ -81,6 +129,7 @@ class PracticeService:
                 session_id=session.id,
                 question_id=question.id,
                 question_number=index + 1,
+                snapshot_json=question_snapshot(question),
             )
             for index, question in enumerate(questions)
         ]
@@ -116,6 +165,7 @@ class PracticeService:
                 session_id=session.id,
                 question_id=question.id,
                 question_number=index + 1,
+                snapshot_json=question_snapshot(question),
             )
             for index, question in enumerate(questions)
         ]
@@ -168,12 +218,13 @@ class PracticeService:
         session = await self._get_owned_session(user.id, session_id)
         await self._maybe_expire_exam(user, session)
         sq = self._get_session_question(session, question_number)
-        question = await self.question_repo.get_by_id(sq.question_id)
-        if question is None:
+        live = await self.question_repo.get_by_id(sq.question_id)
+        if live is None:
             raise AppException("Question not found", status_code=404)
+        question = view_question(live, sq.snapshot_json)
 
-        topic_name = await self.question_repo.get_topic_name(question.topic_id)
-        skills = await self.question_repo.get_skill_names(question.id)
+        topic_name = await self.question_repo.get_topic_name(live.topic_id)
+        skills = await self.question_repo.get_skill_names(live.id)
         answered = await self.practice_repo.get_answer(session.id, question.id)
         bookmarked = await self.practice_repo.is_bookmarked(user.id, question.id)
         selected_ids = []
@@ -205,11 +256,12 @@ class PracticeService:
             raise AppException("Session is not active", status_code=400)
 
         sq = self._get_session_question(session, question_number)
-        question = await self.question_repo.get_by_id(sq.question_id)
-        if question is None:
+        live = await self.question_repo.get_by_id(sq.question_id)
+        if live is None:
             raise AppException("Question not found", status_code=404)
+        question = view_question(live, sq.snapshot_json)
 
-        existing = await self.practice_repo.get_answer(session.id, question.id)
+        existing = await self.practice_repo.get_answer(session.id, live.id)
         if existing and existing.answered_at is not None and session.mode == PracticeMode.PRACTICE:
             raise AppException("Question already answered", status_code=400)
 
@@ -282,10 +334,11 @@ class PracticeService:
         total_time = 0
 
         for sq in sorted(session.questions, key=lambda item: item.question_number):
-            question = await self.question_repo.get_by_id(sq.question_id)
-            if question is None:
+            live = await self.question_repo.get_by_id(sq.question_id)
+            if live is None:
                 continue
-            answer = await self.practice_repo.get_answer(session.id, question.id)
+            question = view_question(live, sq.snapshot_json)
+            answer = await self.practice_repo.get_answer(session.id, live.id)
             correct_ids = [opt.id for opt in question.options if opt.is_correct]
             selected_ids = []
             selected_texts = []
