@@ -51,7 +51,7 @@ export function AssignmentsPage() {
           {data!.assignments.map((item) => (
             <Link key={item.key} to={`/learn/assignments/${item.key}`} className="course-tile">
               <strong>{item.title}</strong>
-              <p>{item.mode === 'local_python' ? 'Local Python · manual review' : 'SQL evidence'}</p>
+              <p>{item.mode === 'local_python' ? 'Local Python · manual review' : item.mode === 'manual_review' ? 'Local work · manual review' : 'SQL evidence'}</p>
               <span>{item.in_progress ? 'Draft in progress' : 'Not started'}</span>
             </Link>
           ))}

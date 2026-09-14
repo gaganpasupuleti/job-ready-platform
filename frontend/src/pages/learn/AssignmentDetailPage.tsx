@@ -45,12 +45,12 @@ export function AssignmentDetailPage() {
         <>
           <header className="module-heading">
             <div>
-              <p className="eyebrow">{data.local_python ? 'Local Python · manual review' : 'SQL evidence'}</p>
+              <p className="eyebrow">{data.local_python ? 'Local Python · manual review' : data.mode === 'manual_review' ? 'Local work · manual review' : 'SQL evidence'}</p>
               <h1>{data.title}</h1>
               <p>{data.goal}</p>
             </div>
           </header>
-          {data.local_python && (
+          {(data.local_python || data.mode === 'manual_review') && (
             <p role="status" className="mb-3 text-sm">Solve this on your own computer. The online runner is locked and will not grade this assignment.</p>
           )}
           {data.sql_problem_slug && (
