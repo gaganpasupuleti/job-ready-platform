@@ -179,8 +179,8 @@
         }
       ],
       "sql_problem_slug": null,
-      "brief": "Input data is the six-row log in project ticket-request-log and in fs-request-response. Constraints: no extra rows; no hosted API call; no paid tool. Estimated effort 40 minutes. Manual review of the written counts.",
-      "version": 1
+      "brief": "Input data, and the only rows you may use:\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |\n\nConstraints: no extra rows; no hosted API call; no paid tool. Estimated effort 40 minutes. Manual review of the written counts. This site will not send these requests.",
+      "version": 2
     }
   ]
 }

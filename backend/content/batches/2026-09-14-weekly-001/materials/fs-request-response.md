@@ -7,6 +7,17 @@ You can read a table and count rows that share a value.
 ## Method, path, status
 A request line in this batch has a method and a path. The matching response has a status code. Status classes in RFC 9110: 1xx informational, 2xx success, 3xx redirection, 4xx client error, 5xx server error. This material uses only the codes in the supplied log.
 
+This is the log. Do not add a row.
+
+| # | Method | Path | Body sent | Status | Body returned |
+| --- | --- | --- | --- | --- | --- |
+| 1 | GET | /tickets/1 | none | 200 | {"id": 1, "title": "Printer"} |
+| 2 | POST | /tickets | {"title": "VPN"} | 201 | {"id": 4, "title": "VPN"} |
+| 3 | GET | /tickets/9 | none | 404 | {"error": "not found"} |
+| 4 | POST | /tickets | {} | 400 | {"error": "title is required"} |
+| 5 | GET | /tickets/2 | none | 200 | {"id": 2, "title": "Laptop"} |
+| 6 | GET | /tickets/3 | none | 500 | {"error": "server failed"} |
+
 In this log, and not as a claim about every API on the internet:
 
 - GET reads a ticket

@@ -10,7 +10,7 @@ In this material, a component is a function. It returns a description of what sh
 The parent supplies the value: `<TicketCard title="VPN" />`. The child does not invent a title when the prop is missing. A missing title should be visible as missing, not replaced with a guessed label.
 
 ## JSX names
-The HTML `class` attribute is written `className` in JSX. That is a JavaScript name, not a second kind of CSS.
+The HTML `class` attribute is written `className` in JSX. React's JSX page says this is because `class` is a reserved word, and the attribute is named after the DOM `className` property. It is not a second kind of CSS.
 
 ## Worked example
 Parent data: ticket 4, title VPN. Parent renders `<TicketCard title="VPN" />`. The card shows VPN. If the parent passes `title=""`, the card shows an empty heading. It does not mean the ticket was created.
@@ -32,3 +32,4 @@ The component returns UI. Props come from the parent. `className` is the JSX nam
 ## References
 React docs, "Your First Component": https://react.dev/learn/your-first-component
 React docs, "Passing Props to a Component": https://react.dev/learn/passing-props-to-a-component
+React docs, "Writing Markup with JSX": https://react.dev/learn/writing-markup-with-jsx

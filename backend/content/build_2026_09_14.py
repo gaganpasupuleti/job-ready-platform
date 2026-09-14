@@ -36,7 +36,8 @@ MATERIALS = [
         "summary": "A class is the blueprint. An object is one ticket built from it. A standard application starts at public static void main(String[] args). This site will not compile the file.",
         "sources": [
             {"label": "Oracle tutorial: A Closer Look at the Hello World Application", "url": "https://docs.oracle.com/javase/tutorial/getStarted/application/index.html"},
-            {"label": "Oracle tutorial: Classes", "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html"},
+            {"label": "Oracle tutorial: Creating a Package", "url": "https://docs.oracle.com/javase/tutorial/java/package/createpkgs.html"},
+            {"label": "Java SE 21 PrintStream.println", "url": "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/PrintStream.html#println(java.lang.String)"},
         ],
         "examples": ["public class Ticket { } lives in Ticket.java"],
         "exercises": ["Write the class line and the main method signature only. Do not add a framework."],
@@ -56,10 +57,12 @@ A standard application starts in:
 public static void main(String[] args)
 ```
 
-`public` means the runtime can call it. `static` means it belongs to the class, not to one object. `void` means it does not return a value. `String[] args` is the argument list. A method named `start` or `run` is not this entry point unless something else calls it.
+The closer-look tutorial says every application must contain a `main` method with that signature. It is the entry point. `void` means the method does not return a value. `String[] args` is the argument list; the tutorial says the argument may be named something other than `args`. That page does not define the words `public` and `static` beyond requiring them in the signature. A method named `start` or `run` is not this entry point unless something else calls it.
 
 ## Worked example
-`public class Ticket` is saved as `Ticket.java`. The compiler looks for the public class and the file name to match. Printing a title uses `System.out.println(title)`, which writes that text and then a line break to standard output. It does not save a ticket.
+If a source file declares a public type, the packages tutorial says only one type in that file may be public, and it must have the same name as the source file. `public class TicketSummary` belongs in `TicketSummary.java`. A `.class` file is compiler output. The Windows "Hello World!" instructions save `HelloWorldApp.java`, run `javac`, and show a generated `HelloWorldApp.class`.
+
+`System.out.println(title)` writes that text and then ends the line. The Java SE 21 `PrintStream.println(String)` documentation says it prints a string and then terminates the line. It does not save a ticket.
 
 ## Common mistakes
 - Calling the file `Main.java` while the public class is `Ticket`.
@@ -77,7 +80,8 @@ Class, then object. Public class name matches the file name. The start method is
 
 ## References
 Oracle tutorial, "A Closer Look at the Hello World Application": https://docs.oracle.com/javase/tutorial/getStarted/application/index.html
-Oracle tutorial, "Classes": https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html
+Oracle tutorial, "Creating a Package": https://docs.oracle.com/javase/tutorial/java/package/createpkgs.html
+Java SE 21 `PrintStream.println(String)`: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/PrintStream.html#println(java.lang.String)
 """,
     },
     {
@@ -98,7 +102,9 @@ Oracle tutorial, "Classes": https://docs.oracle.com/javase/tutorial/java/javaOO/
         "summary": "Trim the title, then reject it when nothing remains. Compare text with equals, not ==. Catch IllegalArgumentException, not every Exception.",
         "sources": [
             {"label": "Oracle tutorial: Defining Methods", "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html"},
-            {"label": "Oracle tutorial: What Is an Exception?", "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/definition.html"},
+            {"label": "Oracle tutorial: Comparing Strings", "url": "https://docs.oracle.com/javase/tutorial/java/data/comparestrings.html"},
+            {"label": "Oracle tutorial: Primitive Data Types", "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html"},
+            {"label": "Oracle tutorial: The catch Blocks", "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/catch.html"},
         ],
         "examples": ["if (title == null || title.trim().isEmpty()) throw new IllegalArgumentException(\"title is blank\");"],
         "exercises": ["Show one accepted call and one rejected call. Do not invent Untitled."],
@@ -115,12 +121,12 @@ A method has a name, parameters, and a return type. `String cleaned(String title
 Input `" VPN "` becomes `"VPN"` after trim. Input `"   "` becomes empty after trim, so the method throws `IllegalArgumentException` with the reason `title is blank`. Input `null` fails the same check before `trim` is called, so it does not throw `NullPointerException` from `trim`.
 
 ## Comparing text
-`title.equals("VPN")` asks whether the characters match. `title == "VPN"` asks whether both sides are the same object. Two different `String` objects can hold the same characters. Use `equals` for the title check.
+`title.equals("VPN")` asks whether the characters match. The comparing-strings tutorial says `equals` returns true when the argument is a `String` with the same sequence of characters. `title == "VPN"` is a different operator. This lesson does not treat `==` as a character comparison.
 
 ## Common mistakes
 - Calling `trim` on null.
-- Catching `Exception` and printing `failed`, which also hides failures you did not mean to handle.
-- Reading a local `int count;` before assigning it. The compiler does not give a local variable a default.
+- Catching `Exception` and then treating the ticket as saved. The catch-blocks tutorial says a multi-type catch exists partly to lessen the temptation to catch an overly broad exception. `Exception` is broader than `IllegalArgumentException`.
+- Reading a local `int count;` before assigning it. The data-types tutorial says the compiler never assigns a default to an uninitialized local variable, and reading it is a compile-time error. That default rule is for fields, not for this local variable.
 
 ## Exercise
 On your computer, call the check with `" VPN "` and with `"   "`. Record the returned title and the exception message. This site will not run the file.
@@ -130,7 +136,9 @@ Trim, then reject an empty result. Use `equals` for characters. Catch the except
 
 ## References
 Oracle tutorial, "Defining Methods": https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html
-Oracle tutorial, "What Is an Exception?": https://docs.oracle.com/javase/tutorial/essential/exceptions/definition.html
+Oracle tutorial, "Comparing Strings and Portions of Strings": https://docs.oracle.com/javase/tutorial/java/data/comparestrings.html
+Oracle tutorial, "Primitive Data Types": https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
+Oracle tutorial, "The catch Blocks": https://docs.oracle.com/javase/tutorial/essential/exceptions/catch.html
 """,
     },
     {
@@ -152,6 +160,7 @@ Oracle tutorial, "What Is an Exception?": https://docs.oracle.com/javase/tutoria
         "sources": [
             {"label": "React docs: Your First Component", "url": "https://react.dev/learn/your-first-component"},
             {"label": "React docs: Passing Props to a Component", "url": "https://react.dev/learn/passing-props-to-a-component"},
+            {"label": "React docs: Writing Markup with JSX", "url": "https://react.dev/learn/writing-markup-with-jsx"},
         ],
         "examples": ["function TicketCard({ title }) { return <h1>{title}</h1>; }"],
         "exercises": ["Name the prop and the parent value that fills it. Do not add a data fetch."],
@@ -167,7 +176,7 @@ In this material, a component is a function. It returns a description of what sh
 The parent supplies the value: `<TicketCard title="VPN" />`. The child does not invent a title when the prop is missing. A missing title should be visible as missing, not replaced with a guessed label.
 
 ## JSX names
-The HTML `class` attribute is written `className` in JSX. That is a JavaScript name, not a second kind of CSS.
+The HTML `class` attribute is written `className` in JSX. React's JSX page says this is because `class` is a reserved word, and the attribute is named after the DOM `className` property. It is not a second kind of CSS.
 
 ## Worked example
 Parent data: ticket 4, title VPN. Parent renders `<TicketCard title="VPN" />`. The card shows VPN. If the parent passes `title=""`, the card shows an empty heading. It does not mean the ticket was created.
@@ -189,6 +198,7 @@ The component returns UI. Props come from the parent. `className` is the JSX nam
 ## References
 React docs, "Your First Component": https://react.dev/learn/your-first-component
 React docs, "Passing Props to a Component": https://react.dev/learn/passing-props-to-a-component
+React docs, "Writing Markup with JSX": https://react.dev/learn/writing-markup-with-jsx
 """,
     },
     {
@@ -209,7 +219,7 @@ React docs, "Passing Props to a Component": https://react.dev/learn/passing-prop
         "summary": "useState keeps the title between renders. A controlled input uses value and onChange. setTitle schedules the next render; the next line still sees the old title.",
         "sources": [
             {"label": "React docs: State: A Component's Memory", "url": "https://react.dev/learn/state-a-components-memory"},
-            {"label": "React docs: Responding to Events", "url": "https://react.dev/learn/responding-to-events"},
+            {"label": "React docs: useState", "url": "https://react.dev/reference/react/useState"},
             {"label": "React docs: Rendering Lists", "url": "https://react.dev/learn/rendering-lists"},
         ],
         "examples": ["const [title, setTitle] = useState(''); <input value={title} onChange={(event) => setTitle(event.target.value)} />"],
@@ -236,7 +246,7 @@ A controlled input displays the state and writes back through the setter:
 The user types `V`. React calls `setTitle("V")`. The next render shows `V` in the field. The next character works the same way. A submit handler that checks `title.trim()` uses the state React already stored, not a guessed value from the DOM.
 
 ## The next line still sees the old value
-After `setTitle("VPN")`, a `console.log(title)` on the next line of the same event handler logs the previous title. The setter scheduled an update. It did not change the `title` variable in the function that is already running. React documents this: calling the set function does not change the current state in the already executing code.
+After `setTitle("VPN")`, a read of `title` on the next line of the same event handler still sees the previous title. The setter asked React to render again. It did not change the `title` variable in the function that is already running. The `useState` reference says calling the set function does not change the current state in the already executing code. The state-memory page shows the related stuck-input case: assigning `title = event.target.value` without the setter does not make React remember the new text.
 
 ## Lists
 When you render several tickets, give each item a `key` that identifies that ticket, such as `ticket.id`. Pushing into an array with `tickets.push(row)` does not call the setter, so React is not asked to render the new list.
@@ -257,7 +267,7 @@ State starts at the `useState` argument. A controlled input uses `value` and `on
 
 ## References
 React docs, "State: A Component's Memory": https://react.dev/learn/state-a-components-memory
-React docs, "Responding to Events": https://react.dev/learn/responding-to-events
+React docs, "useState": https://react.dev/reference/react/useState
 React docs, "Rendering Lists": https://react.dev/learn/rendering-lists
 """,
     },
@@ -290,6 +300,17 @@ You can read a table and count rows that share a value.
 
 ## Method, path, status
 A request line in this batch has a method and a path. The matching response has a status code. Status classes in RFC 9110: 1xx informational, 2xx success, 3xx redirection, 4xx client error, 5xx server error. This material uses only the codes in the supplied log.
+
+This is the log. Do not add a row.
+
+| # | Method | Path | Body sent | Status | Body returned |
+| --- | --- | --- | --- | --- | --- |
+| 1 | GET | /tickets/1 | none | 200 | {"id": 1, "title": "Printer"} |
+| 2 | POST | /tickets | {"title": "VPN"} | 201 | {"id": 4, "title": "VPN"} |
+| 3 | GET | /tickets/9 | none | 404 | {"error": "not found"} |
+| 4 | POST | /tickets | {} | 400 | {"error": "title is required"} |
+| 5 | GET | /tickets/2 | none | 200 | {"id": 2, "title": "Laptop"} |
+| 6 | GET | /tickets/3 | none | 500 | {"error": "server failed"} |
 
 In this log, and not as a claim about every API on the internet:
 
@@ -355,7 +376,7 @@ You can read method, path, and status from `fs-request-response`.
 The page is what a person looks at. The API is what answers `/tickets`. They can fail separately. A heading that shows `Printer` is the page. It is not, by itself, the JSON the API stored. The successful create in the log is the evidence for what the API received: JSON `{ "title": "VPN" }` and response `{ "id": 4, "title": "VPN" }`.
 
 ## Worked example
-Request 4 in the project log is `POST /tickets` with `{}` and status 400. The page may still show an empty input. The API rejected the request because the title was missing. Request 6 is `GET /tickets/3` with status 500. That line means the server failed. It does not prove the browser calculated the title incorrectly.
+Request 4 in the log from `fs-request-response` is `POST /tickets` with `{}` and status 400. The page may still show an empty input. The API rejected the request because the title was missing. Request 6 is `GET /tickets/3` with status 500. RFC 9110 puts 500 in the server-error class. That class does not say the browser calculated a title incorrectly. The conclusion that a 500 does not prove a page calculation error is an application of that class, not a sentence copied from the RFC.
 
 ## Common mistakes
 - Using a 500 as evidence that the page's arithmetic was wrong.
@@ -420,8 +441,8 @@ def questions():
     items.append(_q("jb-q06", "A method trims the title, then rejects it when nothing remains. What happens to the input \"   \"?", "methods", "medium", ["It is rejected as blank", "It is stored as three spaces", "It becomes Untitled", "trim throws NullPointerException"], 0, ["After trim the text is empty, so the check rejects it.", "The brief rejects a blank result after trim.", "Untitled is not part of the check.", "The input is not null, so trim itself is not a null failure."], "Trim first. An all-space title is empty and must be rejected."))
     items.append(_q("jb-q07", "Which check asks whether two strings have the same characters?", "methods", "medium", ["title == other", "title.equals(other)", "title = other", "System.out.println(title)"], 1, ["== asks whether they are the same object.", "equals asks about the characters.", "A single = assigns. It does not compare.", "Printing does not compare."], "Use equals for character content. == is an object identity check."))
     items.append(_q("jb-q08", "A method declares int count; and then reads count before any assignment. What happens?", "methods", "medium", ["The compiler rejects the read of an unassigned local variable", "count is silently 0", "count is null", "The program prints count and continues"], 0, ["Local variables have no compiler-supplied default.", "That default applies to fields, not to this unread local.", "int is not null.", "The compiler does not let this read through."], "The compiler never assigns a default to an uninitialized local variable."))
-    items.append(_q("jb-q09", "A file contains public class Ticket. Which file name matches the public class?", "classes", "hard", ["ticket.txt", "Main.java", "Ticket.java", "Ticket.class as the source file"], 2, ["The source file is Java, not a text note.", "Main.java does not match the public class Ticket.", "The public class name and the file name must match.", "A .class file is compiled output, not the source the tutorial asks you to save."], "Save public class Ticket in Ticket.java."))
-    items.append(_q("jb-q10", "The method throws IllegalArgumentException for a blank title. Why is catch (Exception ex) a weak handler here?", "methods", "hard", ["It also catches unrelated failures and can hide them", "Exception cannot catch IllegalArgumentException", "A blank title never throws", "catch is illegal in Java"], 0, ["Exception is a wide type. It hides failures the method did not mean to handle.", "IllegalArgumentException is an Exception, so it is caught, and that is the problem.", "The worked example does throw for a blank title.", "catch is legal. The problem is the width."], "Catch IllegalArgumentException if that is the named failure. A catch of Exception is wider than the brief."))
+    items.append(_q("jb-q09", "A folder has Main.java whose text is public class TicketSummary, TicketSummary.class, and Helper.java whose text is class Helper only. Which source-file name matches the public type, and which existing file is not that source?", "classes", "hard", ["TicketSummary.java, and TicketSummary.class is compiler output rather than the source file", "Main.java, because the public class text is already stored there", "Helper.java, because any .java file can hold the public class", "TicketSummary.class, because the class name matches the compiled file"], 0, ["The packages tutorial says a public type must have the same name as the source file. A .class file is what javac writes.", "The file name does not match TicketSummary.", "Helper is not the public type.", "The compiled file is not the source file you save."], "public class TicketSummary belongs in TicketSummary.java. TicketSummary.class is compiler output."))
+    items.append(_q("jb-q10", "The constructor throws IllegalArgumentException when the title is blank. A handler does: try { summary = new TicketSummary(4, \"   \"); saved = true; } catch (Exception ex) { saved = true; } Why is this a weak match for a brief that says refuse a blank title?", "methods", "hard", ["The blank-title failure is caught and then marked saved, and Exception also catches unrelated failures", "Exception cannot catch IllegalArgumentException", "A blank title never throws in this constructor", "catch is illegal in Java"], 0, ["The catch runs for the blank title and sets saved to true. Exception is broader than the named failure. The catch-blocks tutorial warns against an overly broad exception.", "IllegalArgumentException is an Exception, so this catch does run, and that is the problem.", "The constructor in this lesson does throw for an all-space title.", "catch is legal. The problem is what the handler does and how wide it is."], "A refusal that sets saved to true did not refuse the title. Exception is also wider than IllegalArgumentException."))
 
     items.append(_q("fr-q01", "In this batch, what does a React component function do?", "components", "easy", ["Returns a description of UI", "Saves a ticket on a server", "Compiles Java", "Replaces the need for a parent"], 0, ["The component returns UI.", "Saving is not this function's job.", "React is not a Java compiler.", "The parent still supplies props."], "A component returns a description of UI. It does not save a ticket."))
     items.append(_q("fr-q02", "Where does a prop value come from?", "props", "easy", ["The child invents it at render time", "The parent passes it in, and the child reads it", "The CSS file", "The SQL sandbox"], 1, ["A missing prop should stay missing, not be invented.", "Props are inputs from the parent.", "CSS does not pass the title.", "The SQL sandbox is not the component parent."], "The parent passes the prop. The child reads it."))
@@ -431,8 +452,8 @@ def questions():
     items.append(_q("fr-q06", "Which input is controlled by title state?", "state", "medium", ["<input onChange={(event) => setTitle(event.target.value)} />", "<input value={title} onChange={(event) => setTitle(event.target.value)} />", "<input value={title} />", "<input defaultValue=\"VPN\" />"], 1, ["onChange alone does not display the state as the current value.", "value and onChange together keep the field tied to state.", "value without onChange does not write the next keystroke back through the setter in this pattern.", "defaultValue does not keep the field controlled by title."], "A controlled input uses value={title} and an onChange that calls setTitle."))
     items.append(_q("fr-q07", "A list of tickets can be filtered. Which key identifies a row?", "lists", "medium", ["The array index", "ticket.id", "The word key as the title", "The CSS class"], 1, ["The index changes when the list is filtered or reordered.", "ticket.id stays with that ticket.", "The word key is not an identity.", "A CSS class does not identify the row."], "Use a stable id. Do not use the array index when the list can change order."))
     items.append(_q("fr-q08", "A handler does tickets.push(row) and does not call the state setter. What does React do?", "state", "medium", ["It is not asked to render the new list from state", "It saves the ticket on the server", "It resets title to null", "It treats push as setState"], 0, ["The setter was not called, so React was not told to render the new list.", "push does not perform an HTTP create.", "This line does not touch title.", "push is an array method, not the setter."], "Mutating the array does not schedule the render. Call the setter with the next list."))
-    items.append(_q("fr-q09", "title is \"\". The click handler calls setTitle(\"VPN\") and then reads title on the next line. What does that read see?", "state", "hard", ["\"VPN\"", "\"\"", "null", "The parent's prop, not the state variable"], 1, ["The setter does not change title in the function that is already running.", "The already executing code still sees the previous state.", "The state was an empty string, not null.", "The read is the state variable, which has not updated yet."], "setTitle schedules the next render. The next line still sees the old title."))
-    items.append(_q("fr-q10", "Why is title = \"VPN\" the wrong way to remember a new title in a function component?", "state", "hard", ["It does not update state, so React does not re-render from that assignment", "It compiles the component", "It sends POST /tickets", "It is the same operation as setTitle"], 0, ["The local assignment does not tell React to store a new state value.", "Assignment is not compilation.", "This line is not an HTTP request.", "setTitle is the state update. A plain assignment is not."], "Use the setter from useState. A plain assignment does not schedule a render from state."))
+    items.append(_q("fr-q09", "title starts as \"Ada\". The handler runs setTitle(\"VPN\") and then returns title. What does the return see, and what does the next render show?", "state", "hard", ["The return sees Ada; the next render shows VPN", "The return sees VPN; the next render shows VPN", "The return sees Ada; the next render shows Ada", "The return sees VPN; the next render shows Ada"], 0, ["The set function does not change title in the already executing code, and it does request a later render with VPN.", "The return cannot already see VPN. The useState reference says the set function does not change current state in the running code.", "The next render is the scheduled update. It does not stay Ada.", "The two moments are not swapped. The running code is stale; the next render is not."], "The return still sees Ada. The next render shows VPN. That split is the useState rule, not a guess."))
+    items.append(_q("fr-q10", "An input uses value={title}. The change handler does title = event.target.value and does not call setTitle. title started as \"\". After the user types VPN, what does the field keep showing?", "state", "medium", ["The empty string, because the assignment does not ask React to remember a new value", "VPN, because the assignment is the state update", "null", "The parent's prop, even when no prop was passed"], 0, ["The state-memory page shows this stuck input: value stays tied to the old variable, and assigning it does not make React remember the text.", "A plain assignment is not setTitle.", "The initial value was an empty string, not null.", "This input reads title state, not a missing prop."], "Without the setter, React does not store the typed text. The field stays on the empty initial value."))
 
     items.append(_q("fs-q01", "In this batch's log, what is GET /tickets/1 used for?", "http", "easy", ["To read ticket 1", "To create ticket 1", "To delete ticket 1", "To compile a Java class"], 0, ["GET on that path is the read in this log.", "Create is the POST that returned 201.", "No delete appears in the log.", "The log is HTTP, not a Java compile."], "In this log, GET reads an existing ticket. It is not a create."))
     items.append(_q("fs-q02", "Using only this log, what does status 201 on row 2 mean?", "http", "easy", ["The ticket was not found", "The create succeeded", "The server crashed", "The title was missing"], 1, ["Not found is 404 on row 3.", "Row 2 returned 201 and a ticket id.", "A server failure is 500 on row 6.", "A missing title is 400 on row 4."], "201 on the POST means the ticket was created. It is not a failure just because it is not 200.", LOG))
@@ -443,11 +464,11 @@ def questions():
     items.append(_q("fs-q07", "Using only this log, what does status 500 on row 6 mean?", "http", "medium", ["The browser could not parse JSX", "The server failed while handling GET /tickets/3", "The title was missing on a POST", "Ticket 3 was created"], 1, ["JSX is not in this row.", "The returned body says server failed, and the class is 5xx.", "A missing title is row 4, status 400.", "Created is row 2, status 201."], "500 means the server failed on that request. It is not a missing title.", LOG))
     items.append(_q("fs-q08", "A title appears only as GET /tickets?title=VPN. What is true of the JSON body?", "http", "medium", ["The JSON body automatically contains title VPN", "A query parameter is not automatically a JSON body field", "The status must be 201", "The page and the API are the same program"], 1, ["The question places the title in the query, not in a JSON body.", "The query string and the JSON body are different places.", "201 is a create status. This line is a GET.", "The page and the API remain separate."], "A title in the query string is not a JSON body field unless the request also sends that body."))
     items.append(_q("fs-q09", "Using only this log, what does status 500 on row 6 prove about the page?", "http", "hard", ["The page computed the title incorrectly", "It does not prove a page calculation error. It reports a server failure.", "The page never rendered a heading", "Ticket 9 was created"], 1, ["The status is about the server handling GET /tickets/3.", "A 500 is a server failure. It is not evidence that the page arithmetic was wrong.", "The log does not say the page failed to render.", "Ticket 9 is the 404 row, and it was not created."], "A 500 proves the server reported a failure. It does not prove the page calculated the title incorrectly.", LOG))
-    items.append(_q("fs-q10", "Using RFC 9110 status classes, which class does 404 belong to?", "http", "hard", ["2xx success", "3xx redirection", "4xx client error", "5xx server error"], 2, ["2xx includes 200 and 201, not 404.", "3xx is redirection. 404 is not a redirect.", "404 is in the 4xx class.", "5xx includes 500, not 404."], "404 is a 4xx client error. 500 is the 5xx line in this log."))
+    items.append(_q("fs-q10", "Using the six-row log and RFC 9110 classes, row 2 is 201, row 3 is 404, and row 6 is 500. Which statement is true?", "http", "hard", ["201 is success-class, 404 is client-error-class, and 500 is server-error-class. A 404 is not a server failure.", "201, 404, and 500 are all failures because none of them is 200", "404 and 500 are the same class", "201 is a client error because the client sent the POST"], 0, ["RFC 9110 puts 2xx in successful, 4xx in client error, and 5xx in server error. 201 is 2xx, 404 is 4xx, and 500 is 5xx.", "201 is in the success class. It is not a failure only because it is not 200.", "404 is 4xx and 500 is 5xx.", "Sending a POST does not move 201 into the client-error class."], "Classify each code by its class. 201 is success, 404 is client error, and 500 is server error. Do not treat every non-200 code as the same failure.", LOG))
 
     items.append(_q("crt2-q01", "The numbers 10, 20, and 30 are one set. What is their average?", "quantitative", "easy", ["15", "20", "30", "60"], 1, ["That drops the 30.", "10 + 20 + 30 = 60, and 60 / 3 = 20.", "30 is the largest value, not the average.", "60 is the sum, not the average."], "Add the three numbers and divide by 3. The average is 20."))
     items.append(_q("crt2-q02", "What is 15% of 200?", "quantitative", "easy", ["15", "30", "150", "215"], 1, ["15 is the percent, not the part of 200.", "0.15 * 200 = 30.", "150 would be 75% of 200.", "215 adds the percent to the base."], "15% of 200 is 30. No further increase is stated."))
-    items.append(_q("crt2-q03", "Pipe A fills a tank in 12 hours. Pipe B fills the same tank in 6 hours. How long do they take together, if both fill and neither leaks?", "quantitative", "medium", ["4 hours", "9 hours", "18 hours", "2 hours"], 0, ["1/12 + 1/6 = 1/12 + 2/12 = 3/12 = 1/4, so 4 hours.", "Adding the hours is not the combined rate.", "18 is the product of the hours.", "2 would be a faster rate than the two pipes together."], "Add the rates, not the hours. Together they fill one quarter of the tank per hour."))
+    items.append(_q("crt2-q03", "Pipe A fills a tank in 12 hours. Pipe B fills the same tank in 6 hours. How long do they take together, if both fill and neither leaks?", "quantitative", "hard", ["4 hours", "9 hours", "18 hours", "2 hours"], 0, ["1/12 + 1/6 = 1/12 + 2/12 = 3/12 = 1/4, so 4 hours.", "Adding the hours is not the combined rate.", "18 is the product of the hours.", "2 would be a faster rate than the two pipes together."], "Add the rates, not the hours. Together they fill one quarter of the tank per hour."))
     items.append(_q("crt2-q04", "A fee of 400 increases by 10%. What is the increase, not the new fee?", "quantitative", "medium", ["10", "40", "440", "360"], 1, ["10 is the percent, not the money.", "10% of 400 is 40.", "440 is the new fee.", "360 subtracts the increase."], "The question asks for the increase. 10% of 400 is 40."))
     items.append(_q("crt2-q05", "Pipe A fills a tank in 8 hours. Pipe B empties the same tank in 24 hours. Both are open. How long does a full fill take from empty?", "quantitative", "hard", ["6 hours", "12 hours", "16 hours", "32 hours"], 1, ["6 would be a faster net rate than A alone minus B.", "1/8 - 1/24 = 3/24 - 1/24 = 2/24 = 1/12, so 12 hours.", "16 adds the hours in a way the rates do not support.", "32 is slower than the empty rate alone."], "Subtract the emptying rate from the filling rate. The net rate fills the tank in 12 hours."))
     items.append(_q("crt2-q06", "Which number is the odd one out: 2, 4, 8, 9, 16?", "reasoning", "easy", ["2", "4", "9", "16"], 2, ["2 is a power of 2.", "4 is a power of 2.", "9 is not a power of 2.", "16 is a power of 2."], "2, 4, 8, and 16 are powers of 2. 9 is not."))
@@ -569,8 +590,8 @@ ASSIGNMENTS = [
             {"criterion": "States that this app did not send the requests", "points": 15},
         ],
         "sql_problem_slug": None,
-        "brief": "Input data is the six-row log in project ticket-request-log and in fs-request-response. Constraints: no extra rows; no hosted API call; no paid tool. Estimated effort 40 minutes. Manual review of the written counts.",
-        "version": 1,
+        "brief": "Input data, and the only rows you may use:\n\n| # | Method | Path | Body sent | Status | Body returned |\n| --- | --- | --- | --- | --- | --- |\n| 1 | GET | /tickets/1 | none | 200 | {\"id\": 1, \"title\": \"Printer\"} |\n| 2 | POST | /tickets | {\"title\": \"VPN\"} | 201 | {\"id\": 4, \"title\": \"VPN\"} |\n| 3 | GET | /tickets/9 | none | 404 | {\"error\": \"not found\"} |\n| 4 | POST | /tickets | {} | 400 | {\"error\": \"title is required\"} |\n| 5 | GET | /tickets/2 | none | 200 | {\"id\": 2, \"title\": \"Laptop\"} |\n| 6 | GET | /tickets/3 | none | 500 | {\"error\": \"server failed\"} |\n\nConstraints: no extra rows; no hosted API call; no paid tool. Estimated effort 40 minutes. Manual review of the written counts. This site will not send these requests.",
+        "version": 2,
     },
 ]
 
@@ -613,7 +634,7 @@ def main() -> None:
         body = item["body"].strip() + "\n"
         rel = f"materials/{item['key']}.md"
         _write(ROOT / rel, body)
-        material_rows.append({k: v for k, v in item.items() if k != "body"} | {"body_file": rel, "version": 1})
+        material_rows.append({k: v for k, v in item.items() if k != "body"} | {"body_file": rel, "version": 2})
 
     log_rows = [
         {"n": 1, "method": "GET", "path": "/tickets/1", "body_sent": None, "status": 200, "body_returned": {"id": 1, "title": "Printer"}},
@@ -656,6 +677,10 @@ def main() -> None:
     }
     dataset = {"synthetic": True, "currency": None, "requests": log_rows, "status_counts": {str(k): v for k, v in status_counts.items()}}
 
+    revised = {"jb-q09", "jb-q10", "fr-q09", "fr-q10", "fs-q10", "crt2-q03"}
+    for row in questions_payload["questions"]:
+        if row["key"] in revised:
+            row["version"] = 2
     _write(ROOT / "questions.json", json.dumps(questions_payload, indent=2) + "\n")
     _write(ROOT / "assignments.json", json.dumps({"version": 1, "assignments": ASSIGNMENTS}, indent=2) + "\n")
     _write(ROOT / "solutions.json", json.dumps(solutions, indent=2) + "\n")

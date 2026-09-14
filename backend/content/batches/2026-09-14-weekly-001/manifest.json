@@ -24,17 +24,17 @@
   "items": [
     {
       "path": "materials.json",
-      "sha256": "fa649f0c3748f84d28dac21fa5121e13e2e160a18773f1c57265e234c1562b7c",
+      "sha256": "2b64375ce24ce49fefab88c7d74e190050e17c4de0b2e5a4f0c5cc8adc86cdcd",
       "content_type": "materials"
     },
     {
       "path": "assignments.json",
-      "sha256": "c3d20d6ad8bf68d729d43545aedbfb44b0cabd86d3050a5f92b0f278e5a3e271",
+      "sha256": "3bd08d1e64051577a9a9702a3b3bd46d99c48efe3159a457e124e895f00a7c74",
       "content_type": "assignments"
     },
     {
       "path": "questions.json",
-      "sha256": "177c685e9ef696c424f147fce6b5203019751106cb8a80363bfb66f9caf3bb6a",
+      "sha256": "d4e4aa1976bb8aa678cf580e6e74d791c5844b008aec2495e2787aed9fb1790e",
       "content_type": "questions"
     },
     {
@@ -59,37 +59,37 @@
     },
     {
       "path": "materials/jb-class-and-main.md",
-      "sha256": "4d48b605010e99bf53bb4508584cad5d7214f03ddb55535d2cf6391168c5c03a",
+      "sha256": "bf14477d9397a83a75f36d171406b8fe84dfdc0c1047606ac94521c0a0dc8ec4",
       "content_type": "material_body",
       "key": "jb-class-and-main"
     },
     {
       "path": "materials/jb-methods-and-blank-title.md",
-      "sha256": "da1f56d56e4bcfe8fc10295ff0ed94087d1dac5226b6c9aed0f4cf5c018d0072",
+      "sha256": "cffbee89b30a9a8b53117a3bffd2d691453db159d769842d57844c482b89ed1f",
       "content_type": "material_body",
       "key": "jb-methods-and-blank-title"
     },
     {
       "path": "materials/fr-component-props.md",
-      "sha256": "8c67f6321464102f9a5349b0887fba16871927aead51a7f7e8134e5dc14bc816",
+      "sha256": "96415a3940ff0de4f52d26623bb9f43d18e064ec6fcec861386bad7eddd22a46",
       "content_type": "material_body",
       "key": "fr-component-props"
     },
     {
       "path": "materials/fr-state-input.md",
-      "sha256": "a7b6ee541606c3784c06e7e44d03beda5cbdcc5ea1c44686d1707a1311239c08",
+      "sha256": "cd188263bc0e8a020aa51625263b017523887c6e6ef47bc03bdeed225470c69f",
       "content_type": "material_body",
       "key": "fr-state-input"
     },
     {
       "path": "materials/fs-request-response.md",
-      "sha256": "af5203277042e84807e92e00bc7f4ca4bf2b8fc8c53dd5eca23033b76634d2dc",
+      "sha256": "9809c4362f55e7771aa24bf54f3d3dadd074920fb2b19c979aa79d3d425b9541",
       "content_type": "material_body",
       "key": "fs-request-response"
     },
     {
       "path": "materials/fs-two-programs.md",
-      "sha256": "d5ab4c1d550805387163217ecfa1536240a54674df79312bebe81666e2423527",
+      "sha256": "1b2c39fcf034c8f1b677604be76630379b1e5052e7c9a8f40be24aba7ddd4739",
       "content_type": "material_body",
       "key": "fs-two-programs"
     }

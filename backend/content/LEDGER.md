@@ -66,5 +66,7 @@ Rotation group 2: java-backend, frontend-react, fullstack-web. Shared CRT is a n
 - SQL problems: 3 unchanged. No new SQL milestone.
 - Rejected: 0.
 - Apply created the new items. An identical reapply left materials 6, assignments 3, questions 50, packs 4, project 1, and SQL 3 unchanged.
-- Manifest sha256: `fc4a715c7f5b3f0543c5283947c83a5ba00a2e69d4a300c41ea9d4a38d671046`
+- First preview manifest sha256: `fc4a715c7f5b3f0543c5283947c83a5ba00a2e69d4a300c41ea9d4a38d671046`
+- Review correction: citations that did not support the lesson claim were replaced, the six-row log was added to the material and assignment, and weak hard questions were rewritten or relabeled. Changed items are version 2. Do not publish the first preview hash.
+- Reviewed manifest sha256: `44365ae5db37b6e36ddb0a6a4e166c8bef611043609f93fc7b8632ec88d8410e`
 - Local preview API on 127.0.0.1:8001. UI on 127.0.0.1:5176. Not the live site.
