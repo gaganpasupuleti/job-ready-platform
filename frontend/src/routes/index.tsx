@@ -26,10 +26,13 @@ import { DsaPage } from '@/pages/practice/DsaPage'
 import { DsaProblemPage } from '@/pages/practice/DsaProblemPage'
 import { PlaygroundHubPage } from '@/pages/practice/PlaygroundHubPage'
 import { PythonPlaygroundPage } from '@/pages/practice/PythonPlaygroundPage'
+import { SqlPlaygroundPage } from '@/pages/practice/SqlPlaygroundPage'
 import { MaterialsPage } from '@/pages/learn/MaterialsPage'
 import { MaterialDetailPage } from '@/pages/learn/MaterialDetailPage'
 import { AssignmentsPage } from '@/pages/learn/AssignmentsPage'
 import { AssignmentDetailPage } from '@/pages/learn/AssignmentDetailPage'
+import { SyllabusPage } from '@/pages/learn/SyllabusPage'
+import { SyllabusLessonPage } from '@/pages/learn/SyllabusLessonPage'
 import { QuizPackPage } from '@/pages/learn/QuizPackPage'
 import { AdminStudioReviewsPage } from '@/pages/admin/AdminStudioReviewsPage'
 import { McqPage } from '@/pages/practice/McqPage'
@@ -155,6 +158,8 @@ export function AppRoutes() {
         <Route path="projects/:slug/tasks/:taskId" element={<ProjectTaskPage />} />
         <Route path="projects/:slug" element={<ProjectDetailPage />} />
         <Route path="learn" element={<CourseListPage />} />
+        <Route path="learn/syllabus" element={<SyllabusPage />} />
+        <Route path="learn/syllabus/:key" element={<SyllabusLessonPage />} />
         <Route path="learn/materials" element={<MaterialsPage />} />
         <Route path="learn/materials/:key" element={<MaterialDetailPage />} />
         <Route path="learn/assignments" element={<AssignmentsPage />} />
@@ -171,7 +176,10 @@ export function AppRoutes() {
         <Route path="practice/dsa/:problemId" element={<DsaProblemPage />} />
         <Route path="practice/coding" element={<CodingPage />} />
         <Route path="practice/python" element={<PythonPlaygroundPage />} />
+        <Route path="practice/compiler" element={<PythonPlaygroundPage />} />
+        <Route path="practice/compiler/python" element={<PythonPlaygroundPage />} />
         <Route path="practice/playground" element={<PlaygroundHubPage />} />
+        <Route path="practice/playground/sql" element={<SqlPlaygroundPage />} />
         <Route path="practice/sql" element={<SqlPage />} />
         <Route path="practice/sql/:slug" element={<SqlProblemPage />} />
         <Route path="submissions" element={<SubmissionsPage />} />

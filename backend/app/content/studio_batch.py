@@ -23,7 +23,7 @@ from app.models.question import Question, QuestionOption
 from app.models.sql_practice import SqlProblem, SqlProblemTable
 from app.models.sql_enums import SqlDialect
 from app.content.version_snapshots import freeze_assignment_submissions, freeze_task_progress
-from app.models.studio import Assignment, ContentBatchItem, ContentPack, ContentPackQuestion, LearningMaterial
+from app.models.studio import Assignment, ContentBatchItem, ContentPack, ContentPackQuestion, LearningMaterial, LearningSyllabusEntry
 from app.models.taxonomy import Category, Domain, Topic
 from app.services.job_taxonomy import JOB_FAMILIES
 
@@ -48,10 +48,21 @@ def load_batch(path: Path) -> dict:
         if digest != item["sha256"]:
             rejected.append(f"hash mismatch {item['path']}")
     materials = json.loads((path / "materials.json").read_text(encoding="utf-8"))["materials"]
-    assignments = json.loads((path / "assignments.json").read_text(encoding="utf-8"))["assignments"]
+    assignments = (
+        json.loads((path / "assignments.json").read_text(encoding="utf-8"))["assignments"]
+        if (path / "assignments.json").is_file()
+        else []
+    )
     questions = json.loads((path / "questions.json").read_text(encoding="utf-8"))["questions"]
-    packs = json.loads((path / "packs.json").read_text(encoding="utf-8"))["packs"]
-    project = json.loads((path / "project.json").read_text(encoding="utf-8"))
+    packs = (
+        json.loads((path / "packs.json").read_text(encoding="utf-8"))["packs"]
+        if (path / "packs.json").is_file()
+        else []
+    )
+    project_path = path / "project.json"
+    project = json.loads(project_path.read_text(encoding="utf-8")) if project_path.is_file() else None
+    syllabus_path = path / "syllabus.json"
+    syllabus = json.loads(syllabus_path.read_text(encoding="utf-8"))["entries"] if syllabus_path.is_file() else []
     for material in materials:
         body = (path / material["body_file"]).read_text(encoding="utf-8")
         material["body_md"] = body
@@ -85,9 +96,19 @@ def load_batch(path: Path) -> dict:
         for family in assignment.get("families", []):
             if family not in FAMILY_IDS:
                 rejected.append(f"{assignment['key']} family {family}")
-    for family in project.get("families", []):
-        if family not in FAMILY_IDS:
-            rejected.append(f"{project.get('key')} family {family}")
+    if project is not None:
+        for family in project.get("families", []):
+            if family not in FAMILY_IDS:
+                rejected.append(f"{project.get('key')} family {family}")
+    material_keys = {row["key"] for row in materials}
+    for entry in syllabus:
+        if entry.get("status") == "published" and not entry.get("material_key"):
+            rejected.append(f"{entry['key']} published without material")
+        if entry.get("material_key") and entry["material_key"] not in material_keys:
+            rejected.append(f"{entry['key']} missing material {entry.get('material_key')}")
+        for question_key in entry.get("question_keys") or []:
+            if question_key not in q_by_key:
+                rejected.append(f"{entry['key']} unresolved {question_key}")
     return {
         "batch_id": manifest["batch_id"],
         "materials": materials,
@@ -95,13 +116,14 @@ def load_batch(path: Path) -> dict:
         "questions": questions,
         "packs": packs,
         "project": project,
+        "syllabus": syllabus,
         "rejected": rejected,
         "path": path,
     }
 
 
 def plan(batch: dict, stored: dict[str, ContentBatchItem]) -> dict:
-    counts = {kind: {"create": 0, "update": 0, "unchanged": 0, "rejected": 0} for kind in ("material", "assignment", "question", "pack", "project", "sql")}
+    counts = {kind: {"create": 0, "update": 0, "unchanged": 0, "rejected": 0} for kind in ("material", "assignment", "question", "pack", "project", "sql", "syllabus")}
     actions = []
     if batch["rejected"]:
         counts["material"]["rejected"] = len(batch["rejected"])
@@ -111,8 +133,9 @@ def plan(batch: dict, stored: dict[str, ContentBatchItem]) -> dict:
         + [("assignment", row) for row in batch["assignments"]]
         + [("question", row) for row in batch["questions"]]
         + [("pack", row) for row in batch["packs"]]
-        + [("project", batch["project"])]
-        + [("sql", row) for row in sql_plan_rows()]
+        + ([("project", batch["project"])] if batch.get("project") else [])
+        + ([("sql", row) for row in sql_plan_rows()] if batch.get("project") else [])
+        + [("syllabus", row) for row in batch.get("syllabus") or []]
     )
     rejected = []
     for kind, row in catalog:
@@ -428,6 +451,7 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                 prerequisites=row["prerequisites"],
                 rubric=row["rubric"],
                 submission_mode=row["mode"],
+                requires_runtime=row.get("requires_runtime") or ("python" if row["mode"] == "local_python" else None),
                 estimated_minutes=row["minutes"],
                 due_at=None,
                 families=row["families"],
@@ -454,6 +478,34 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                 action["version"],
                 replace=action["action"] == "update",
             )
+        elif kind == "syllabus":
+            row = next(item for item in batch["syllabus"] if item["key"] == key)
+            current = (
+                await db.execute(select(LearningSyllabusEntry).where(LearningSyllabusEntry.content_key == key))
+            ).scalar_one_or_none()
+            payload = dict(
+                track=row["track"],
+                track_title=row["track_title"],
+                unit=row["unit"],
+                unit_title=row["unit_title"],
+                unit_position=int(row["unit_position"]),
+                title=row["title"],
+                position=int(row["position"]),
+                status=row["status"],
+                material_key=row.get("material_key"),
+                question_keys=row.get("question_keys") or [],
+                prerequisites=row.get("prerequisites") or [],
+                estimated_minutes=row.get("minutes"),
+                video_json=row.get("video"),
+                version=action["version"],
+                content_hash=action["hash"],
+                is_published=True,
+            )
+            if current is None:
+                db.add(LearningSyllabusEntry(content_key=key, **payload))
+            else:
+                for field, value in payload.items():
+                    setattr(current, field, value)
         if kind == "pack":
             continue
         record = stored.get(key) or ContentBatchItem(item_key=key)
@@ -465,79 +517,87 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
         stored[key] = record
         db.add(record)
     await db.flush()
-    sql_ids = {}
-    for slug in SQL_PROBLEMS:
-        problem = (await db.execute(select(SqlProblem.id).where(SqlProblem.slug == slug))).scalar_one_or_none()
-        if problem is not None:
-            sql_ids[slug] = problem
-    project_row = batch["project"]
-    project_action = next(action for action in planned["actions"] if action["type"] == "project")
-    project = (await db.execute(select(Project).where(Project.slug == project_row["key"]))).scalar_one_or_none()
-    if project is not None and project_action["action"] == "update":
-        project.title = project_row["title"]
-        project.short_description = project_row["outcome"][:500]
-        project.description = project_row["scenario"]
-        project.final_objective = project_row["outcome"]
-        project.skills = project_row["skills"]
-        project.reference_json = {
-            "families": project_row["families"],
-            "dataset": project_row.get("dataset_file") or "dataset.sql",
-            "version": project_action["version"],
-        }
-        module = (
-            await db.execute(select(ProjectModule).where(ProjectModule.project_id == project.id).order_by(ProjectModule.sort_order))
-        ).scalars().first()
-        if module is not None:
-            existing_tasks = (
-                await db.execute(select(ProjectTask).where(ProjectTask.module_id == module.id).order_by(ProjectTask.sort_order))
-            ).scalars().all()
-            for index, milestone in enumerate(project_row["milestones"]):
-                if index >= len(existing_tasks):
-                    break
-                task = existing_tasks[index]
-                prior = stored.get(project_row["key"])
-                await freeze_task_progress(db, task, prior.version if prior else 1)
-                task.title = milestone["title"]
-                task.summary = milestone["deliverable"]
-                task.sql_problem_id = sql_ids.get(milestone.get("sql_problem_slug"))
-    elif project is None:
-        project = Project(
-            slug=project_row["key"],
-            title=project_row["title"],
-            short_description=project_row["outcome"][:500],
-            description=project_row["scenario"],
-            difficulty=PracticePathDifficulty.BEGINNER,
-            technology=project_row.get("technology") or "sql",
-            category_key=project_row.get("category_key") or "sql",
-            estimated_minutes=int(project_row.get("minutes") or 90),
-            is_published=True,
-            availability=PathAvailability.AVAILABLE,
-            prerequisites=[],
-            skills=project_row["skills"],
-            final_objective=project_row["outcome"],
-            reference_json={"families": project_row["families"], "dataset": project_row.get("dataset_file") or "dataset.sql"},
-        )
-        db.add(project)
-        await db.flush()
-        module = ProjectModule(project_id=project.id, title=project_row.get("module_title") or "Payment quality", sort_order=0)
-        db.add(module)
-        await db.flush()
-        for index, milestone in enumerate(project_row["milestones"]):
-            task_type = ProjectTaskType.SQL if milestone["type"] == "sql" else ProjectTaskType.REVIEW
-            sql_note = "SQL milestones require an accepted studio submission. The findings note is not an automatic grade."
-            review_note = "This milestone is a written check. Marking it complete is not an automatic grade. This app does not run Java, React, or the API in the log."
-            db.add(
-                ProjectTask(
-                    module_id=module.id,
-                    title=milestone["title"],
-                    sort_order=index,
-                    task_type=task_type,
-                    sql_problem_id=sql_ids.get(milestone.get("sql_problem_slug")),
-                    summary=milestone["deliverable"],
-                    body_json={"note": sql_note if milestone["type"] == "sql" else review_note},
-                    checklist_json=[],
-                )
+    if batch.get("project"):
+        sql_ids = {}
+        for slug in SQL_PROBLEMS:
+            problem = (await db.execute(select(SqlProblem.id).where(SqlProblem.slug == slug))).scalar_one_or_none()
+            if problem is not None:
+                sql_ids[slug] = problem
+        project_row = batch["project"]
+        project_action = next(action for action in planned["actions"] if action["type"] == "project")
+        project = (await db.execute(select(Project).where(Project.slug == project_row["key"]))).scalar_one_or_none()
+        if project is not None and project_action["action"] == "update":
+            project.title = project_row["title"]
+            project.short_description = project_row["outcome"][:500]
+            project.description = project_row["scenario"]
+            project.final_objective = project_row["outcome"]
+            project.skills = project_row["skills"]
+            project.reference_json = {
+                "families": project_row["families"],
+                "dataset": project_row.get("dataset_file") or "dataset.sql",
+                "version": project_action["version"],
+            }
+            module = (
+                await db.execute(select(ProjectModule).where(ProjectModule.project_id == project.id).order_by(ProjectModule.sort_order))
+            ).scalars().first()
+            if module is not None:
+                existing_tasks = (
+                    await db.execute(select(ProjectTask).where(ProjectTask.module_id == module.id).order_by(ProjectTask.sort_order))
+                ).scalars().all()
+                for index, milestone in enumerate(project_row["milestones"]):
+                    if index >= len(existing_tasks):
+                        break
+                    task = existing_tasks[index]
+                    prior = stored.get(project_row["key"])
+                    await freeze_task_progress(db, task, prior.version if prior else 1)
+                    task.title = milestone["title"]
+                    task.summary = milestone["deliverable"]
+                    task.sql_problem_id = sql_ids.get(milestone.get("sql_problem_slug"))
+                    if milestone.get("requires_runtime"):
+                        body = dict(task.body_json or {})
+                        body["requires_runtime"] = milestone["requires_runtime"]
+                        task.body_json = body
+        elif project is None:
+            project = Project(
+                slug=project_row["key"],
+                title=project_row["title"],
+                short_description=project_row["outcome"][:500],
+                description=project_row["scenario"],
+                difficulty=PracticePathDifficulty.BEGINNER,
+                technology=project_row.get("technology") or "sql",
+                category_key=project_row.get("category_key") or "sql",
+                estimated_minutes=int(project_row.get("minutes") or 90),
+                is_published=True,
+                availability=PathAvailability.AVAILABLE,
+                prerequisites=[],
+                skills=project_row["skills"],
+                final_objective=project_row["outcome"],
+                reference_json={"families": project_row["families"], "dataset": project_row.get("dataset_file") or "dataset.sql"},
             )
+            db.add(project)
+            await db.flush()
+            module = ProjectModule(project_id=project.id, title=project_row.get("module_title") or "Payment quality", sort_order=0)
+            db.add(module)
+            await db.flush()
+            for index, milestone in enumerate(project_row["milestones"]):
+                task_type = ProjectTaskType.SQL if milestone["type"] == "sql" else ProjectTaskType.REVIEW
+                sql_note = "SQL milestones require an accepted studio submission. The findings note is not an automatic grade."
+                review_note = "This milestone is a written check. Marking it complete is not an automatic grade. This app does not run Java, React, or the API in the log."
+                body = {"note": sql_note if milestone["type"] == "sql" else review_note}
+                if milestone.get("requires_runtime"):
+                    body["requires_runtime"] = milestone["requires_runtime"]
+                db.add(
+                    ProjectTask(
+                        module_id=module.id,
+                        title=milestone["title"],
+                        sort_order=index,
+                        task_type=task_type,
+                        sql_problem_id=sql_ids.get(milestone.get("sql_problem_slug")),
+                        summary=milestone["deliverable"],
+                        body_json=body,
+                        checklist_json=[],
+                    )
+                )
     pack_actions = {action["key"]: action for action in planned["actions"] if action["type"] == "pack"}
     for pack_row in batch["packs"]:
         if pack_actions.get(pack_row["key"], {}).get("action") == "unchanged":

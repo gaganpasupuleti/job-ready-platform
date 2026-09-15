@@ -11,7 +11,11 @@ function getPageTitle(pathname: string): string {
     }
   }
   if (pathname === '/') return 'Overview'
-  if (pathname.startsWith('/practice/python') || pathname.startsWith('/practice/playground')) {
+  if (
+    pathname.startsWith('/practice/python') ||
+    pathname.startsWith('/practice/compiler') ||
+    pathname.startsWith('/practice/playground')
+  ) {
     return 'Playground'
   }
   if (pathname.startsWith('/practice/dsa/')) return 'Coding workspace'
@@ -27,6 +31,7 @@ function resolveShell(pathname: string): ShellMode {
     pathname.startsWith('/practice/dsa/') ||
     pathname.startsWith('/practice/sql/') ||
     pathname.startsWith('/practice/python') ||
+    pathname.startsWith('/practice/compiler') ||
     pathname.startsWith('/practice/playground') ||
     (pathname.startsWith('/learn/courses/') && pathname.includes('/lessons/'))
   ) {

@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { expect, type APIRequestContext, type Page } from '@playwright/test'
+import { expect, type APIRequestContext, type BrowserContext, type Page } from '@playwright/test'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -38,8 +38,31 @@ export type E2EManifest = {
 export type CodingFixture = { id: string; slug: string; title: string }
 
 export function apiBaseUrl(): string {
-  const raw = (process.env.E2E_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '')
+  const raw = (process.env.E2E_API_URL || 'http://127.0.0.1:8020').trim().replace(/\/$/, '')
   return raw.endsWith('/api/v1') ? raw : `${raw}/api/v1`
+}
+
+const proxiedContexts = new WeakSet<BrowserContext>()
+
+/** Relay FE-origin /api/v1 calls to E2E_API_URL (5180 vite proxy may target another backend). */
+export async function attachApiProxy(context: BrowserContext) {
+  if (proxiedContexts.has(context)) return
+  proxiedContexts.add(context)
+  const apiURL = apiBaseUrl().replace(/\/api\/v1$/, '')
+  const apiOrigin = new URL(apiURL).origin
+  await context.route(/\/api\/v1\//, async (route) => {
+    const req = route.request()
+    const url = new URL(req.url())
+    const proxied =
+      url.origin === apiOrigin ? req.url() : `${apiURL}${url.pathname}${url.search}`
+    const response = await route.fetch({
+      url: proxied,
+      method: req.method(),
+      headers: req.headers(),
+      postData: req.postData(),
+    })
+    await route.fulfill({ response })
+  })
 }
 
 const fallbackManifest: E2EManifest = {
@@ -271,6 +294,7 @@ export async function loginAs(
   page: Page,
   user: { email: string; password: string },
 ) {
+  await attachApiProxy(page.context())
   await page.goto('/login')
   await page.getByLabel('Email').fill(user.email)
   await page.getByLabel('Password').fill(user.password)

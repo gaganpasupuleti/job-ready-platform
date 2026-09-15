@@ -1,3 +1,6 @@
 # The Saturday manifest hashes the reviewed Windows working copies.
 # Check out those bytes so CI and publish see the same digest.
 backend/content/batches/2026-09-19-saturday-001/** text eol=crlf
+
+# The syllabus manifest was approved from the reviewed Windows working copies.
+backend/content/batches/2026-09-14-syllabus-001/** text eol=crlf
