@@ -50,7 +50,7 @@ test.describe('V4 module visual shots', () => {
     await page.screenshot({ path: path.join(outDir, `${project}-jobs.png`), fullPage: true })
 
     await page.goto('/practice/python')
-    await expect(page.getByRole('heading', { name: /^python$/i })).toBeVisible({
+    await expect(page.getByRole('heading', { name: 'Python — Coming soon' })).toBeVisible({
       timeout: 20_000,
     })
     await expect(

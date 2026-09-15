@@ -72,7 +72,9 @@ test.describe('Acceptance shots', () => {
     await page.reload()
     await expect(page.getByTestId('sql-playground-heading')).toBeVisible({ timeout: 20_000 })
     await page.getByRole('button', { name: /run query/i }).click()
-    await expect(page.getByRole('alert')).toBeVisible({ timeout: 30_000 })
+    await expect(page.locator('p[role="alert"]').filter({ hasText: /.+/ })).toBeVisible({
+      timeout: 30_000,
+    })
     await shot(page, `sql-error-${test.info().project.name}`)
   })
 
