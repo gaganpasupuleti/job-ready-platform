@@ -1,3 +1,4 @@
+import { TypingPracticePage } from '@/features/typing/TypingPracticePage'
 import { Route, Routes } from 'react-router-dom'
 
 import { AdminRoute, GuestRoute, ProtectedRoute } from '@/components/auth/ProtectedRoute'
@@ -147,6 +148,7 @@ export function AppRoutes() {
       >
         <Route index element={<DashboardPage />} />
         <Route path="practice" element={<PracticeHubPage />} />
+        <Route path="practice/typing" element={<TypingPracticePage />} />
         <Route path="practice/paths/:slug" element={<PracticePathPage />} />
         <Route path="practice/projects" element={<ProjectsPage />} />
         <Route path="practice/projects/:slug" element={<ProjectDetailPage />} />

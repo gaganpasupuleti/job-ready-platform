@@ -87,6 +87,11 @@ export function PracticeHubPage() {
         </Link>
       </header>
 
+      <Link to="/practice/typing" className="v4-queue-row">
+        <div><strong>Typing practice</strong><p className="mt-0.5 text-xs text-[var(--color-text-muted)]">Build keyboard fluency with text, code, and your own passages.</p></div>
+        <span className="queue-meta">Start typing →</span>
+      </Link>
+
       <div className="problem-toolbar">
         <Input
           aria-label="Search practice content"

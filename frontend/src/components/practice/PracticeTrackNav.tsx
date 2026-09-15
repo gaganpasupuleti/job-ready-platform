@@ -8,6 +8,7 @@ interface PracticeDestination {
 
 /** Destination navigation only. Topic and difficulty filters stay on the page. */
 const destinations: PracticeDestination[] = [
+  { label: 'Typing', to: '/practice/typing', match: ['/practice/typing'] },
   { label: 'Aptitude & Reasoning', to: '/practice/aptitude', match: ['/practice/aptitude'] },
   { label: 'SQL', to: '/practice/sql', match: ['/practice/sql'] },
   {
