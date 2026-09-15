@@ -1,0 +1,55 @@
+{
+  "batch_id": "2026-09-14-syllabus-001",
+  "title": "CRT and DSA syllabus reading unit",
+  "audience": [
+    "Fresher",
+    "Entry (1-2 yrs)"
+  ],
+  "notes": [
+    "Published lessons only. Coming-soon rows have no empty article pages.",
+    "YouTube recommendations omitted; see VIDEO_GAPS.md.",
+    "Mark-as-read remains reading progress only."
+  ],
+  "items": [
+    {
+      "path": "materials.json",
+      "sha256": "ecf5e041c971aacd22e4a522d4dfdd89d1d17eabc071b26f24506e76940ede33"
+    },
+    {
+      "path": "questions.json",
+      "sha256": "d2123194f8a795eb5fbb36bfe4fbc141704888bff34af8354a21872a056acd49"
+    },
+    {
+      "path": "syllabus.json",
+      "sha256": "afb7b39e4061da9e7f841cb79da1ce723adadf46c5dd07ce66b07151bc88c48a"
+    },
+    {
+      "path": "articles/crt-quant-percentages.md",
+      "sha256": "ad1a0398bb5dba91cd63e76a04d82dfe64976f119a8e34b635aae7d76102d884"
+    },
+    {
+      "path": "articles/crt-logical-patterns.md",
+      "sha256": "7f5e65604714b92ced3544a8ab7fb6b500888c43cf48b7d73d88c9d5f74a1cef"
+    },
+    {
+      "path": "articles/crt-verbal-meaning.md",
+      "sha256": "bf7a298d21c936fd8d35ccea651e19e41ff94d3fd50f7a347101d39ebef4448f"
+    },
+    {
+      "path": "articles/crt-di-tables.md",
+      "sha256": "e4dd71f7dc231bde06ea0f07cd9a7862f4a9224aa6d772f6672afbd06b726c54"
+    },
+    {
+      "path": "articles/dsa-complexity.md",
+      "sha256": "25ef2e40e25e971196f4c136fecde9c5777ae3785a18f1e422fb2eb87cf69c91"
+    },
+    {
+      "path": "articles/dsa-arrays-strings.md",
+      "sha256": "bd89835be5b6bb0fba4134587eb96e5d75edae4b94c145a9221e79f9a528d6ee"
+    },
+    {
+      "path": "VIDEO_GAPS.md",
+      "sha256": "04c6c9ef6dcaf732833feb7a03d17801872fe07d6226103dcd1dac8f38402680"
+    }
+  ]
+}

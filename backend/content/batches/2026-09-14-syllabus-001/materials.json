@@ -1,0 +1,161 @@
+{
+  "materials": [
+    {
+      "key": "crt-quant-percentages",
+      "title": "Percentages for placement aptitude",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 12,
+      "families": ["business-analyst"],
+      "skills": ["quantitative", "crt"],
+      "objectives": [
+        "Convert a percentage into a fraction of a whole",
+        "Compute a single discount without inventing a second step",
+        "Avoid treating the discount amount as the sale price"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "Book price 240 with 25% off once → sale price 180"
+      ],
+      "exercises": [
+        "Compute 15% of 200, then subtract once from 200"
+      ],
+      "summary": "Percent means per hundred. Multiply once, then add or subtract as the sentence asks.",
+      "sources": [],
+      "body_file": "articles/crt-quant-percentages.md",
+      "version": 1
+    },
+    {
+      "key": "crt-logical-patterns",
+      "title": "Number patterns in logical reasoning",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 12,
+      "families": ["business-analyst"],
+      "skills": ["logical-reasoning", "crt"],
+      "objectives": [
+        "Separate additive patterns from multiplicative patterns",
+        "Test a candidate rule against every consecutive pair",
+        "Reject a guess that only fits the first two terms"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "2, 5, 11, 23 → next term 47 using ×2+1"
+      ],
+      "exercises": [
+        "Write the differences for 3, 6, 12, 24 and name the rule"
+      ],
+      "summary": "Write the rule, check every step, then predict the next term.",
+      "sources": [],
+      "body_file": "articles/crt-logical-patterns.md",
+      "version": 1
+    },
+    {
+      "key": "crt-verbal-meaning",
+      "title": "Reading for meaning in verbal ability",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 10,
+      "families": ["business-analyst"],
+      "skills": ["verbal", "crt"],
+      "objectives": [
+        "Identify the main claim in a short sentence",
+        "Reject options that invent new facts",
+        "Keep the strength of the original wording"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "Postponed because the dataset was incomplete ≠ cancelled"
+      ],
+      "exercises": [
+        "Rewrite a mild claim without upgrading it to a stronger verb"
+      ],
+      "summary": "Preserve meaning. Do not import facts the sentence never stated.",
+      "sources": [],
+      "body_file": "articles/crt-verbal-meaning.md",
+      "version": 1
+    },
+    {
+      "key": "crt-di-tables",
+      "title": "Reading a simple data table",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 12,
+      "families": ["business-analyst", "data-analyst"],
+      "skills": ["data-interpretation", "crt"],
+      "objectives": [
+        "Read column headers before computing",
+        "Compute a share only after the total is known",
+        "Separate a count from a percentage"
+      ],
+      "prerequisites": ["crt-quant-percentages"],
+      "examples": [
+        "Two 200 responses out of six requests → 1/3"
+      ],
+      "exercises": [
+        "From a five-row status table, compute the share of 4xx statuses"
+      ],
+      "summary": "Confirm the unit of each column, sum, then divide.",
+      "sources": [],
+      "body_file": "articles/crt-di-tables.md",
+      "version": 1
+    },
+    {
+      "key": "dsa-complexity",
+      "title": "Time complexity with big-O",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 15,
+      "families": ["java-backend", "python-dev"],
+      "skills": ["dsa", "complexity"],
+      "objectives": [
+        "Count dominant steps in short pseudocode",
+        "Distinguish constant, linear, and quadratic growth",
+        "Justify a big-O claim with a trace table"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "Nested pair counting loop is O(n²)"
+      ],
+      "exercises": [
+        "Classify a single for-loop that visits each element once"
+      ],
+      "summary": "Big-O describes growth with n, not one laptop's clock time.",
+      "sources": [],
+      "body_file": "articles/dsa-complexity.md",
+      "version": 1
+    },
+    {
+      "key": "dsa-arrays-strings",
+      "title": "Arrays and strings",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 16,
+      "families": ["java-backend", "python-dev"],
+      "skills": ["dsa", "arrays", "strings"],
+      "objectives": [
+        "Index an array without off-by-one holes",
+        "Scan a string once while tracking state",
+        "Verify the idea with a trace table"
+      ],
+      "prerequisites": ["dsa-complexity"],
+      "examples": [
+        "In-place reverse with left/right pointers",
+        "First repeated character with a seen set"
+      ],
+      "exercises": [
+        "Trace reverse on a five-element array"
+      ],
+      "summary": "Walk the sequence once, keep an invariant, and fill a tiny trace table.",
+      "sources": [],
+      "body_file": "articles/dsa-arrays-strings.md",
+      "version": 1
+    }
+  ]
+}

@@ -23,6 +23,7 @@ from app.api.v1 import (
     modules,
     practice,
     readiness,
+    sql_playground,
     sql_practice,
     studio,
 )
@@ -33,6 +34,7 @@ api_router.include_router(modules.router, tags=["modules"])
 api_router.include_router(auth.router, tags=["auth"])
 api_router.include_router(practice.router, tags=["practice"])
 api_router.include_router(coding.router, tags=["coding"])
+api_router.include_router(sql_playground.router, tags=["sql-playground"])
 api_router.include_router(sql_practice.router, tags=["sql"])
 api_router.include_router(interview.router, tags=["interview"])
 api_router.include_router(interviews.router, tags=["interviews"])

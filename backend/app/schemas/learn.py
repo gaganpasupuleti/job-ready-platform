@@ -237,6 +237,8 @@ class ProjectTaskOut(BaseModel):
     checklist_state: dict[str, Any] = Field(default_factory=dict)
     reference_json: dict[str, Any] | None = None
     estimated_minutes: int | None = None
+    locked: bool = False
+    lock_reason: str | None = None
 
 
 class ProjectModuleOut(BaseModel):
@@ -270,6 +272,8 @@ class ProjectDetail(BaseModel):
     continue_href: str | None = None
     last_activity_at: datetime | None = None
     completed_at: datetime | None = None
+    completion_blocked: bool = False
+    completion_note: str | None = None
     modules: list[ProjectModuleOut] = Field(default_factory=list)
 
 
