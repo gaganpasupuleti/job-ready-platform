@@ -8,23 +8,30 @@ export function PlaygroundHubPage() {
         <div>
           <p className="eyebrow">Playground</p>
           <h1>Playground</h1>
-          <p>SQL Studio is available. Python execution is not.</p>
+          <p>SQL IDE is available. Python execution is not part of this release.</p>
         </div>
       </header>
       <div className="course-grid">
-        <Link to="/practice/sql" className="course-tile">
-          <strong>SQL Studio</strong>
-          <p>Choose a dataset, inspect the schema, run a query, and submit only when the problem asks for it.</p>
+        <Link to="/practice/playground/sql" className="course-tile" data-testid="sql-playground-tile">
+          <strong>SQL</strong>
+          <p>Open the standalone SQL IDE with sample datasets. No assessed problem required.</p>
           <span>Available</span>
         </Link>
-        <Link to="/practice/python" className="course-tile">
+        <Link to="/practice/python" className="course-tile" data-testid="python-coming-soon-tile">
           <strong className="inline-flex items-center gap-2">
             <Lock size={16} aria-hidden />
-            Python
+            Python — Coming soon
           </strong>
-          <p>Locked. This app does not run or grade Python.</p>
+          <p>Locked for this release. Saved drafts stay in this browser.</p>
         </Link>
       </div>
+      <p className="mt-4 text-sm text-[var(--color-text-muted)]">
+        Need graded SQL work? Use{' '}
+        <Link to="/practice/sql" className="text-[var(--color-accent)] hover:underline">
+          SQL Practice
+        </Link>
+        .
+      </p>
     </div>
   )
 }

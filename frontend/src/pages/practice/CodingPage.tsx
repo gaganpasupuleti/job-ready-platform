@@ -11,7 +11,7 @@ import {
 import { fetchCodingProblems, fetchCodingProgress } from '@/services/codingService'
 
 export function CodingPage() {
-  const [languageId, setLanguageId] = useState<number>(71)
+  const [languageId, setLanguageId] = useState<number>(62)
 
   const { data: progress } = useQuery({
     queryKey: ['coding-progress'],
@@ -43,13 +43,17 @@ export function CodingPage() {
             type="button"
             onClick={() => setLanguageId(lang.id)}
             aria-pressed={languageId === lang.id}
+            disabled={lang.id === 71}
+            title={lang.id === 71 ? 'Python — Coming soon' : lang.name}
             className={`h-7 rounded-[var(--radius-control)] border px-2.5 text-xs ${
-              languageId === lang.id
-                ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
-                : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
+              lang.id === 71
+                ? 'cursor-not-allowed border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-text-muted)]'
+                : languageId === lang.id
+                  ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
+                  : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
             }`}
           >
-            {lang.shortLabel}
+            {lang.id === 71 ? 'Python — Coming soon' : lang.shortLabel}
           </button>
         ))}
       </div>

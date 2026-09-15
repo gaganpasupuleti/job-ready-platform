@@ -56,6 +56,7 @@ test.describe('V4 module visual shots', () => {
     await expect(
       page.getByText('Python execution is locked. This page does not run or grade code.').first(),
     ).toBeVisible()
+    await expect(page.getByText('Python — Coming soon').first()).toBeVisible()
     await expect(page.getByRole('button', { name: /^run$/i })).toHaveCount(0)
     await page.screenshot({
       path: path.join(outDir, `${project}-python-playground.png`),

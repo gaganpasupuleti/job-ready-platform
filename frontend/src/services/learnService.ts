@@ -181,6 +181,8 @@ export interface ProjectDetail {
   current_task_id: string | null
   current_task_href: string | null
   continue_href: string | null
+  completion_blocked?: boolean
+  completion_note?: string | null
   modules: Array<{
     id: string
     title: string
@@ -197,6 +199,8 @@ export interface ProjectDetail {
       workspace_href?: string | null
       coding_problem_id?: string | null
       sql_problem_id?: string | null
+      locked?: boolean
+      lock_reason?: string | null
       topic_id?: string | null
       scenario_slug?: string | null
       checklist_json: unknown[]
