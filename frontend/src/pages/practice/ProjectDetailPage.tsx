@@ -124,6 +124,13 @@ export function ProjectDetailPage() {
         </div>
       </Card>
 
+      {data.completion_blocked && (
+        <p role="status" className="rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface-muted)] p-3 text-sm">
+          {data.completion_note ??
+            'A Python milestone is locked for this release. Other milestones stay available. This project cannot currently be completed in full.'}
+        </p>
+      )}
+
       {data.modules.map((mod) => (
         <Card key={mod.id}>
           <CardHeader title={mod.title} />
@@ -135,12 +142,18 @@ export function ProjectDetailPage() {
                     <p className="font-medium">
                       {task.status === 'completed' ? '✓ ' : data.current_task_id === task.id ? '● ' : '○ '}
                       {task.title}
+                      {task.locked ? ' · Locked' : ''}
                     </p>
                     <p className="text-xs text-[var(--color-text-subtle)]">
                       {task.task_type} · {task.status}
                     </p>
                     {task.summary && (
                       <p className="mt-1 text-[var(--color-text-muted)]">{task.summary}</p>
+                    )}
+                    {task.locked && task.lock_reason && (
+                      <p role="status" className="mt-1 text-[var(--color-text-muted)]">
+                        {task.lock_reason}
+                      </p>
                     )}
                     {task.checklist_json?.length > 0 && (
                       <ul className="mt-2 list-disc pl-5 text-[var(--color-text-muted)]">
@@ -151,12 +164,13 @@ export function ProjectDetailPage() {
                     )}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {task.href && (
+                    {task.href && !task.locked && (
                       <Link to={task.href}>
                         <Button size="sm">{task.status === 'completed' ? 'Review' : 'Continue'}</Button>
                       </Link>
                     )}
                     {task.status !== 'completed' &&
+                      !task.locked &&
                       !['coding', 'sql', 'mcq', 'scenario'].includes(task.task_type) && (
                       <Button
                         variant="secondary"

@@ -72,6 +72,7 @@ from app.models.studio import (
     ContentPackQuestion,
     LearningMaterial,
     LearningMaterialRead,
+    LearningSyllabusEntry,
 )
 from app.models.question import Question, QuestionOption
 from app.models.sql_practice import (

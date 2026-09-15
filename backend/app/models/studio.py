@@ -65,6 +65,7 @@ class Assignment(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     prerequisites: Mapped[list] = mapped_column(JSONB, nullable=False)
     rubric: Mapped[list] = mapped_column(JSONB, nullable=False)
     submission_mode: Mapped[str] = mapped_column(String(40), nullable=False)
+    requires_runtime: Mapped[str | None] = mapped_column(String(40), nullable=True)
     estimated_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
     due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     families: Mapped[list] = mapped_column(JSONB, nullable=False)
@@ -122,6 +123,30 @@ class ContentPackQuestion(Base, UUIDPrimaryKeyMixin):
     pack_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("content_packs.id", ondelete="CASCADE"), nullable=False)
     question_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class LearningSyllabusEntry(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+    """Ordered reading track. Coming-soon rows have no article."""
+
+    __tablename__ = "learning_syllabus_entries"
+
+    content_key: Mapped[str] = mapped_column(String(160), unique=True, nullable=False)
+    track: Mapped[str] = mapped_column(String(40), nullable=False)
+    track_title: Mapped[str] = mapped_column(String(120), nullable=False)
+    unit: Mapped[str] = mapped_column(String(80), nullable=False)
+    unit_title: Mapped[str] = mapped_column(String(160), nullable=False)
+    unit_position: Mapped[int] = mapped_column(Integer, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    material_key: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    question_keys: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+    prerequisites: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+    estimated_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    video_json: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    is_published: Mapped[bool] = mapped_column(nullable=False, default=False)
 
 
 class ContentBatchItem(Base):

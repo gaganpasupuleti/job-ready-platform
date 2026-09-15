@@ -36,10 +36,13 @@ test.describe('Visual foundation keyboard & shells', () => {
     })
     const group = page.getByRole('group', { name: /language filter/i })
     await expect(group).toBeVisible()
-    const python = group.getByRole('button', { name: /py/i }).first()
-    await python.focus()
-    await python.press('Enter')
-    await expect(python).toHaveAttribute('aria-pressed', 'true')
+    const python = group.getByRole('button', { name: 'Python — Coming soon' })
+    await expect(python).toBeDisabled()
+    await expect(python).toHaveAttribute('aria-pressed', 'false')
+    const javascript = group.getByRole('button', { name: 'JS' })
+    await javascript.focus()
+    await javascript.press('Enter')
+    await expect(javascript).toHaveAttribute('aria-pressed', 'true')
   })
 
   test('assessment and focused shells set data-shell', async ({ page }) => {

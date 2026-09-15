@@ -38,8 +38,8 @@ export function PythonPlaygroundPage() {
               Playground
             </Link>
             {' / '}
-            <Link to="/practice/sql" className="text-[var(--color-accent)] hover:underline">
-              SQL workspace
+            <Link to="/practice/playground/sql" className="text-[var(--color-accent)] hover:underline">
+              SQL IDE
             </Link>
           </p>
           <h1
@@ -47,7 +47,7 @@ export function PythonPlaygroundPage() {
             data-testid="python-playground-heading"
           >
             <Lock size={18} aria-hidden />
-            Python
+            Python — Coming soon
           </h1>
           <p role="status" className="mt-0.5 max-w-2xl text-sm text-[var(--color-text-muted)]">
             Python execution is locked. This page does not run or grade code.
@@ -56,7 +56,8 @@ export function PythonPlaygroundPage() {
       </header>
       <div className="rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
         <p className="text-sm text-[var(--color-text-muted)]">
-          Saved drafts stay on this browser. Viewing a draft does not run or grade it. Use the SQL workspace when the task is SQL.
+          Saved drafts stay on this browser. Viewing a draft does not mount the editor, stdin, output,
+          or Run controls. Use the SQL IDE when the task is SQL.
         </p>
         <Button className="mt-3" variant="secondary" onClick={showDraft}>
           View saved draft

@@ -46,12 +46,26 @@ export function AssignmentDetailPage() {
         <>
           <header className="module-heading">
             <div>
-              <p className="eyebrow">{data.local_python ? 'Local Python · manual review' : data.mode === 'manual_review' ? 'Local work · manual review' : 'SQL evidence'}</p>
+              <p className="eyebrow">
+                {data.unavailable
+                  ? 'Unavailable · Python locked'
+                  : data.local_python
+                    ? 'Local Python · manual review'
+                    : data.mode === 'manual_review'
+                      ? 'Local work · manual review'
+                      : 'SQL evidence'}
+              </p>
               <h1>{data.title}</h1>
               <p>{data.goal}</p>
             </div>
           </header>
-          {(data.local_python || data.mode === 'manual_review') && (
+          {data.unavailable && (
+            <p role="status" className="mb-3 rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface-muted)] p-3 text-sm">
+              {data.unavailable_reason ??
+                'Python is locked for this release. Previous submissions and reviews stay visible. New submissions are not accepted.'}
+            </p>
+          )}
+          {!data.unavailable && (data.local_python || data.mode === 'manual_review') && (
             <p role="status" className="mb-3 text-sm">Solve this on your own computer. The online runner is locked and will not grade this assignment.</p>
           )}
           {data.sql_problem_slug && (
@@ -67,6 +81,7 @@ export function AssignmentDetailPage() {
           <ul className="list-disc pl-5 text-sm">{data.requirements.map((item) => <li key={item}>{item}</li>)}</ul>
           <h2 className="mt-4 text-sm font-semibold">Rubric</h2>
           <ul className="list-disc pl-5 text-sm">{data.rubric.map((item) => <li key={item.criterion}>{item.criterion} ({item.points})</li>)}</ul>
+          {!data.unavailable && (
           <form className="mt-4 space-y-3" onSubmit={(event) => event.preventDefault()}>
             <label className="block text-sm" htmlFor="answer-text">Answer text</label>
             <Textarea id="answer-text" value={answer} onChange={(event) => setAnswer(event.target.value)} rows={8} />
@@ -78,6 +93,7 @@ export function AssignmentDetailPage() {
             </div>
             {submitMutation.isError && <p role="alert" className="text-sm text-[var(--color-danger)]">{messageOf(submitMutation.error)}</p>}
           </form>
+          )}
           <h2 className="mt-6 text-sm font-semibold">Your submissions</h2>
           {data.submissions.length === 0 ? (
             <p className="text-sm text-[var(--color-text-muted)]">No draft or submission yet.</p>

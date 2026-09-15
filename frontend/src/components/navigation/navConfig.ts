@@ -32,7 +32,7 @@ export const primaryNavItems: { label: string; path: string; match?: string[] }[
   { label: 'Overview', path: '/', match: ['/'] },
   { label: 'Practice', path: '/practice', match: ['/practice'] },
   { label: 'Learn', path: '/learn', match: ['/learn', '/projects'] },
-  { label: 'Playground', path: '/practice/playground', match: ['/practice/playground', '/practice/python'] },
+  { label: 'Playground', path: '/practice/playground', match: ['/practice/playground', '/practice/python', '/practice/compiler'] },
   {
     label: 'Assessments',
     path: '/practice/aptitude',
