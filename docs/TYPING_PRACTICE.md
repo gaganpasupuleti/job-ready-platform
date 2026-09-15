@@ -25,6 +25,7 @@ Rejected: TypeView's global key handler (it interferes with custom-text editing 
 - Enter inserts a newline. Tab inserts up to four expected indentation spaces or an expected literal tab only within indentation. Otherwise Tab moves focus; Shift+Tab always moves focus. Escape leaves the typing field.
 - Input is scoped to an accessible textarea, with paste/drop blocked for measured input. Custom content may be pasted into the separate editor. English ASCII input, punctuation, tabs and newlines only; custom passages are capped at 2,000 characters.
 - Session-local light/dark practice themes and show/hide keyboard. No application-wide theme mutations.
+- Distraction-free Full screen mode: hides masthead, breadcrumbs, practice nav, settings toolbar, keyboard guide, coaching, and history while keeping the typing surface, live metrics, Restart, and a Back control. Back and Escape restore the normal page without resetting input, selected settings, or the running timer.
 - A bounded 50-result history per authenticated user in the current browser; eight recent rows displayed. Reads validate stored data; saves are idempotent by run UUID. Storage failure shows a message and preserves the in-memory result. Custom passage text is not persisted.
 
 ## Metric policy

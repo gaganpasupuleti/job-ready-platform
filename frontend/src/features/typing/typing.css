@@ -26,6 +26,85 @@
   border-radius: 14px;
   padding: 18px;
 }
+.typing-studio.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100dvh;
+  padding: 18px clamp(14px, 3vw, 28px) 24px;
+  margin: 0;
+  border-radius: 0;
+  background: var(--tp-bg, #f6f7f5);
+  overflow: hidden;
+}
+.typing-studio.is-fullscreen .typing-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+}
+.typing-studio.is-fullscreen .typing-card-top,
+.typing-studio.is-fullscreen .typing-metrics,
+.typing-studio.is-fullscreen .typing-input-footer,
+.typing-studio.is-fullscreen .typing-progress,
+.typing-studio.is-fullscreen .typing-result {
+  flex-shrink: 0;
+}
+.typing-studio.is-fullscreen .typing-input-area {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.typing-studio.is-fullscreen .typing-passage {
+  flex: 1 1 auto;
+  min-height: 140px;
+  height: auto !important;
+  max-height: none;
+  overflow: auto;
+}
+.typing-focus-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.typing-focus-bar p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--tp-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.typing-focus-back {
+  background: var(--tp-card) !important;
+  border: 1px solid var(--tp-line);
+  color: var(--tp-text) !important;
+  font-weight: 600;
+  min-height: 40px;
+  padding: 8px 14px !important;
+}
+.typing-focus-back:hover:not(:disabled) {
+  background: var(--tp-soft) !important;
+}
+.typing-fullscreen-trigger {
+  margin-left: auto;
+  background: var(--tp-soft) !important;
+  color: var(--tp-accent) !important;
+  border: 1px solid transparent;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.typing-fullscreen-trigger:hover:not(:disabled) {
+  border-color: var(--tp-accent);
+}
 .typing-heading {
   display: flex;
   justify-content: space-between;
@@ -664,6 +743,16 @@
   .typing-studio.typing-dark {
     padding: 12px;
   }
+  .typing-studio.is-fullscreen {
+    padding: 12px 12px 18px;
+  }
+  .typing-focus-bar p {
+    font-size: 10px;
+  }
+  .typing-fullscreen-trigger {
+    width: 100%;
+    margin-left: 0;
+  }
   .typing-result h2 {
     font-size: 22px;
   }
@@ -676,4 +765,11 @@
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Hide application chrome while typing focus mode is active. Scoped to this page only. */
+html.typing-focus-mode .masthead,
+html.typing-focus-mode .jr-subheader {
+  visibility: hidden !important;
+  pointer-events: none !important;
 }

@@ -4,6 +4,7 @@ import {
   ArrowRight,
   Code2,
   Keyboard,
+  Maximize2,
   RotateCcw,
   Type,
   SlidersHorizontal,
@@ -53,6 +54,7 @@ function TypingStudio({ userId }: { userId: string }) {
   const [custom, setCustom] = useState('')
   const [dark, setDark] = useState(false)
   const [keyboard, setKeyboard] = useState(true)
+  const [fullscreen, setFullscreen] = useState(false)
   const [history, setHistory] = useState(() => readHistory(userId))
   const [notice, setNotice] = useState('')
   const [focused, setFocused] = useState(false)
@@ -140,6 +142,32 @@ function TypingStudio({ userId }: { userId: string }) {
     }
   }, [session.input.length])
 
+  // Exit fullscreen without resetting the live session, settings, or timer.
+  function exitFullscreen() {
+    setFullscreen(false)
+    requestAnimationFrame(() => inputRef.current?.focus())
+  }
+
+  useEffect(() => {
+    if (!fullscreen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    document.documentElement.classList.add('typing-focus-mode')
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setFullscreen(false)
+        requestAnimationFrame(() => inputRef.current?.focus())
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.documentElement.classList.remove('typing-focus-mode')
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [fullscreen])
+
   function reset(
     options: {
       mode?: Mode
@@ -192,112 +220,138 @@ function TypingStudio({ userId }: { userId: string }) {
   )
   const best = similar.length ? Math.max(...similar.map((r) => r.wpm)) : null
   return (
-    <div className={`typing-studio${dark ? ' typing-dark' : ''}`}>
-      <PracticeTrackNav />
-      <header className="typing-heading">
-        <div>
-          <p className="typing-eyebrow">PRACTICE / KEYBOARD FLUENCY</p>
-          <h1>
-            Find your typing rhythm<span>.</span>
-          </h1>
-          <p>Build accuracy first. Let speed follow.</p>
-        </div>
-        <Link to="/practice" className="typing-back">
-          <ArrowLeft size={14} /> Practice hub
-        </Link>
-      </header>
-      <div className="typing-toolbar">
-        <div className="typing-segment" aria-label="Practice mode">
-          {(
-            [
-              { mode: 'text', label: 'Text', icon: Type },
-              { mode: 'code', label: 'Code', icon: Code2 },
-              { mode: 'custom', label: 'Custom', icon: SlidersHorizontal },
-            ] as const
-          ).map((item) => (
-            <button
-              key={item.mode}
-              aria-pressed={mode === item.mode}
-              onClick={() => switchMode(item.mode)}
-              disabled={running}
-            >
-              <item.icon size={15} />
-              {item.label}
-            </button>
-          ))}
-        </div>
-        <div className="typing-settings">
-          {mode === 'code' && (
-            <label>
-              Language
-              <select
-                aria-label="Code language"
-                value={language}
-                disabled={running}
-                onChange={(e) => reset({ language: e.target.value as Language })}
-              >
-                {languages.map((l) => (
-                  <option key={l}>{l}</option>
-                ))}
-              </select>
-            </label>
-          )}
-          {mode !== 'custom' && (
-            <label>
-              Level
-              <select
-                aria-label="Difficulty"
-                value={difficulty}
-                disabled={running}
-                onChange={(e) => reset({ difficulty: e.target.value as Difficulty })}
-              >
-                {difficulties.map((d) => (
-                  <option key={d}>{d}</option>
-                ))}
-              </select>
-            </label>
-          )}
-          <label>
-            Session
-            <select
-              aria-label="Session duration"
-              value={seconds}
-              disabled={running}
-              onChange={(e) => reset({ seconds: Number(e.target.value) })}
-            >
-              <option value={0}>Full passage</option>
-              {[30, 60, 120].map((s) => (
-                <option key={s} value={s}>
-                  {s} seconds
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <button
-          className="typing-icon"
-          aria-label={dark ? 'Use light practice theme' : 'Use dark practice theme'}
-          onClick={() => setDark(!dark)}
-        >
-          {dark ? <Sun size={17} /> : <Moon size={17} />}
-        </button>
-      </div>
-      {mode === 'custom' && !running && !finished && (
-        <section className="typing-custom">
-          <label htmlFor="custom-passage">
-            Your practice passage <span>English text or code · up to 2,000 characters</span>
-          </label>
-          <textarea
-            id="custom-passage"
-            value={customDraft}
-            maxLength={2000}
-            placeholder="Paste a passage or code snippet here…"
-            onChange={(e) => setCustomDraft(e.target.value)}
-          />
-          <button className="typing-primary" onClick={startCustom}>
-            Use this passage <ArrowRight size={14} />
+    <div
+      className={`typing-studio${dark ? ' typing-dark' : ''}${fullscreen ? ' is-fullscreen' : ''}`}
+      data-fullscreen={fullscreen ? 'true' : 'false'}
+    >
+      {fullscreen ? (
+        <div className="typing-focus-bar">
+          <button type="button" className="typing-focus-back" onClick={exitFullscreen}>
+            <ArrowLeft size={15} />
+            Back
           </button>
-        </section>
+          <p>Distraction-free typing</p>
+        </div>
+      ) : (
+        <>
+          <PracticeTrackNav />
+          <header className="typing-heading">
+            <div>
+              <p className="typing-eyebrow">PRACTICE / KEYBOARD FLUENCY</p>
+              <h1>
+                Find your typing rhythm<span>.</span>
+              </h1>
+              <p>Build accuracy first. Let speed follow.</p>
+            </div>
+            <Link to="/practice" className="typing-back">
+              <ArrowLeft size={14} /> Practice hub
+            </Link>
+          </header>
+          <div className="typing-toolbar">
+            <div className="typing-segment" aria-label="Practice mode">
+              {(
+                [
+                  { mode: 'text', label: 'Text', icon: Type },
+                  { mode: 'code', label: 'Code', icon: Code2 },
+                  { mode: 'custom', label: 'Custom', icon: SlidersHorizontal },
+                ] as const
+              ).map((item) => (
+                <button
+                  key={item.mode}
+                  aria-pressed={mode === item.mode}
+                  onClick={() => switchMode(item.mode)}
+                  disabled={running}
+                >
+                  <item.icon size={15} />
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            <div className="typing-settings">
+              {mode === 'code' && (
+                <label>
+                  Language
+                  <select
+                    aria-label="Code language"
+                    value={language}
+                    disabled={running}
+                    onChange={(e) => reset({ language: e.target.value as Language })}
+                  >
+                    {languages.map((l) => (
+                      <option key={l}>{l}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              {mode !== 'custom' && (
+                <label>
+                  Level
+                  <select
+                    aria-label="Difficulty"
+                    value={difficulty}
+                    disabled={running}
+                    onChange={(e) => reset({ difficulty: e.target.value as Difficulty })}
+                  >
+                    {difficulties.map((d) => (
+                      <option key={d}>{d}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              <label>
+                Session
+                <select
+                  aria-label="Session duration"
+                  value={seconds}
+                  disabled={running}
+                  onChange={(e) => reset({ seconds: Number(e.target.value) })}
+                >
+                  <option value={0}>Full passage</option>
+                  {[30, 60, 120].map((s) => (
+                    <option key={s} value={s}>
+                      {s} seconds
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <button
+              className="typing-icon"
+              aria-label={dark ? 'Use light practice theme' : 'Use dark practice theme'}
+              onClick={() => setDark(!dark)}
+            >
+              {dark ? <Sun size={17} /> : <Moon size={17} />}
+            </button>
+            <button
+              className="typing-fullscreen-trigger"
+              type="button"
+              onClick={() => {
+                setFullscreen(true)
+                requestAnimationFrame(() => inputRef.current?.focus())
+              }}
+            >
+              <Maximize2 size={15} />
+              Full screen
+            </button>
+          </div>
+          {mode === 'custom' && !running && !finished && (
+            <section className="typing-custom">
+              <label htmlFor="custom-passage">
+                Your practice passage <span>English text or code · up to 2,000 characters</span>
+              </label>
+              <textarea
+                id="custom-passage"
+                value={customDraft}
+                maxLength={2000}
+                placeholder="Paste a passage or code snippet here…"
+                onChange={(e) => setCustomDraft(e.target.value)}
+              />
+              <button className="typing-primary" onClick={startCustom}>
+                Use this passage <ArrowRight size={14} />
+              </button>
+            </section>
+          )}
+        </>
       )}
       {notice && (
         <p role="status" className="typing-notice">
@@ -431,7 +485,13 @@ function TypingStudio({ userId }: { userId: string }) {
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Escape') {
-                    e.currentTarget.blur()
+                    if (fullscreen) {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      exitFullscreen()
+                    } else {
+                      e.currentTarget.blur()
+                    }
                     return
                   }
                   if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
@@ -463,9 +523,13 @@ function TypingStudio({ userId }: { userId: string }) {
             </span>
             <div className="typing-input-footer">
               <p id="typing-help">
-                {focused
-                  ? 'Backspace to correct · Enter for a new line · Tab for indentation · Esc to leave'
-                  : 'Click the passage or tab here to start typing'}
+                {fullscreen
+                  ? focused
+                    ? 'Esc or Back restores the full page without resetting your session'
+                    : 'Click the passage to continue · Esc or Back to leave full screen'
+                  : focused
+                    ? 'Backspace to correct · Enter for a new line · Tab for indentation · Esc to leave'
+                    : 'Click the passage or tab here to start typing'}
               </p>
               <button aria-label="Restart typing session" onClick={() => reset()}>
                 <RotateCcw size={15} /> Restart
@@ -484,138 +548,142 @@ function TypingStudio({ userId }: { userId: string }) {
           <span style={{ width: `${stats.progress}%` }} />
         </div>
       </section>
-      <div className="typing-lower">
-        <section className="typing-keyboard-panel">
-          <div className="typing-section-title">
-            <h2>
-              <Keyboard size={17} /> Keyboard guide
-            </h2>
-            <button aria-pressed={keyboard} onClick={() => setKeyboard(!keyboard)}>
-              {keyboard ? 'Hide' : 'Show'}
-            </button>
-          </div>
-          {keyboard && (
-            <div
-              className="typing-keyboard"
-              aria-label={`Next key: ${visibleKey(next) || 'none'}${shiftNeeded ? ' with Shift' : ''}`}
-            >
-              {keyRows.map((row, i) => (
-                <div className="typing-key-row" key={i}>
-                  {row.map((key, j) => (
-                    <kbd
-                      key={`${key}-${j}`}
-                      className={`${key.length > 1 ? 'key-wide' : ''} ${!finished && (key === expectedKey || (key === 'Shift' && shiftNeeded)) ? 'key-next' : ''}`}
-                    >
-                      {key}
-                    </kbd>
-                  ))}
-                </div>
-              ))}
-              <div className="typing-key-row">
-                <kbd className={`key-space${!finished && next === ' ' ? ' key-next' : ''}`}>
-                  space
-                </kbd>
+      {!fullscreen && (
+        <>
+          <div className="typing-lower">
+            <section className="typing-keyboard-panel">
+              <div className="typing-section-title">
+                <h2>
+                  <Keyboard size={17} /> Keyboard guide
+                </h2>
+                <button aria-pressed={keyboard} onClick={() => setKeyboard(!keyboard)}>
+                  {keyboard ? 'Hide' : 'Show'}
+                </button>
               </div>
+              {keyboard && (
+                <div
+                  className="typing-keyboard"
+                  aria-label={`Next key: ${visibleKey(next) || 'none'}${shiftNeeded ? ' with Shift' : ''}`}
+                >
+                  {keyRows.map((row, i) => (
+                    <div className="typing-key-row" key={i}>
+                      {row.map((key, j) => (
+                        <kbd
+                          key={`${key}-${j}`}
+                          className={`${key.length > 1 ? 'key-wide' : ''} ${!finished && (key === expectedKey || (key === 'Shift' && shiftNeeded)) ? 'key-next' : ''}`}
+                        >
+                          {key}
+                        </kbd>
+                      ))}
+                    </div>
+                  ))}
+                  <div className="typing-key-row">
+                    <kbd className={`key-space${!finished && next === ' ' ? ' key-next' : ''}`}>
+                      space
+                    </kbd>
+                  </div>
+                </div>
+              )}
+              <p className="typing-small">
+                {finished
+                  ? 'Rest your hands, then try another round.'
+                  : 'Follow the highlighted key. Keep your hands relaxed.'}
+              </p>
+            </section>
+            <aside className="typing-coach">
+              <p className="typing-eyebrow">FOCUS ON ACCURACY</p>
+              <h2>{stats.errors ? 'Your next small win.' : 'Make each keystroke count.'}</h2>
+              <p>
+                {stats.errors
+                  ? 'These characters caused errors in this session. Backspacing fixes the text; your accuracy still includes the original attempt.'
+                  : 'Keep your eyes on the text. Start at a comfortable pace and build a steady rhythm before chasing speed.'}
+              </p>
+              <div className="typing-weak-keys">
+                {Object.entries(session.errors)
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 5)
+                  .map(([key, count]) => (
+                    <span key={key}>
+                      <kbd>{visibleKey(key)}</kbd> × {count}
+                    </span>
+                  ))}
+              </div>
+              <p className="typing-small">
+                Code mode measures typing fluency. It does not run or grade code.
+              </p>
+            </aside>
+          </div>
+          <section className="typing-history">
+            <div className="typing-section-title">
+              <h2>
+                <History size={17} /> Recent sessions <span>{history.length}</span>
+              </h2>
+              {history.length > 0 && (
+                <button
+                  onClick={() => {
+                    if (clearHistory(userId)) setHistory([])
+                    else setNotice('Could not clear browser history. Please try again.')
+                  }}
+                >
+                  Clear history
+                </button>
+              )}
             </div>
-          )}
-          <p className="typing-small">
-            {finished
-              ? 'Rest your hands, then try another round.'
-              : 'Follow the highlighted key. Keep your hands relaxed.'}
-          </p>
-        </section>
-        <aside className="typing-coach">
-          <p className="typing-eyebrow">FOCUS ON ACCURACY</p>
-          <h2>{stats.errors ? 'Your next small win.' : 'Make each keystroke count.'}</h2>
-          <p>
-            {stats.errors
-              ? 'These characters caused errors in this session. Backspacing fixes the text; your accuracy still includes the original attempt.'
-              : 'Keep your eyes on the text. Start at a comfortable pace and build a steady rhythm before chasing speed.'}
-          </p>
-          <div className="typing-weak-keys">
-            {Object.entries(session.errors)
-              .sort((a, b) => b[1] - a[1])
-              .slice(0, 5)
-              .map(([key, count]) => (
-                <span key={key}>
-                  <kbd>{visibleKey(key)}</kbd> × {count}
-                </span>
-              ))}
-          </div>
-          <p className="typing-small">
-            Code mode measures typing fluency. It does not run or grade code.
-          </p>
-        </aside>
-      </div>
-      <section className="typing-history">
-        <div className="typing-section-title">
-          <h2>
-            <History size={17} /> Recent sessions <span>{history.length}</span>
-          </h2>
-          {history.length > 0 && (
-            <button
-              onClick={() => {
-                if (clearHistory(userId)) setHistory([])
-                else setNotice('Could not clear browser history. Please try again.')
-              }}
-            >
-              Clear history
-            </button>
-          )}
-        </div>
-        {history.length === 0 ? (
-          <p className="typing-empty">
-            Your first finished session will appear here. Start with a comfortable pace.
-          </p>
-        ) : (
-          <div className="typing-table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Practice</th>
-                  <th>Session</th>
-                  <th>WPM</th>
-                  <th>Accuracy</th>
-                  <th>Errors</th>
-                  <th>Completed</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.slice(0, 8).map((result) => (
-                  <tr key={result.id}>
-                    <td>
-                      <strong>
-                        {result.mode === 'code'
-                          ? 'Code'
-                          : result.mode === 'custom'
-                            ? 'Custom'
-                            : 'Text'}
-                      </strong>
-                      <span>{result.label}</span>
-                    </td>
-                    <td>{result.seconds ? `${result.seconds}s` : 'Passage'}</td>
-                    <td>{result.wpm}</td>
-                    <td>{result.accuracy}%</td>
-                    <td>{result.errors}</td>
-                    <td>
-                      {new Date(result.date).toLocaleString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-        <p className="typing-small">
-          Last 50 results saved for your account in this browser. No cross-device sync. WPM =
-          correct characters ÷ 5 ÷ elapsed minutes.
-        </p>
-      </section>
+            {history.length === 0 ? (
+              <p className="typing-empty">
+                Your first finished session will appear here. Start with a comfortable pace.
+              </p>
+            ) : (
+              <div className="typing-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Practice</th>
+                      <th>Session</th>
+                      <th>WPM</th>
+                      <th>Accuracy</th>
+                      <th>Errors</th>
+                      <th>Completed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.slice(0, 8).map((result) => (
+                      <tr key={result.id}>
+                        <td>
+                          <strong>
+                            {result.mode === 'code'
+                              ? 'Code'
+                              : result.mode === 'custom'
+                                ? 'Custom'
+                                : 'Text'}
+                          </strong>
+                          <span>{result.label}</span>
+                        </td>
+                        <td>{result.seconds ? `${result.seconds}s` : 'Passage'}</td>
+                        <td>{result.wpm}</td>
+                        <td>{result.accuracy}%</td>
+                        <td>{result.errors}</td>
+                        <td>
+                          {new Date(result.date).toLocaleString(undefined, {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <p className="typing-small">
+              Last 50 results saved for your account in this browser. No cross-device sync. WPM =
+              correct characters ÷ 5 ÷ elapsed minutes.
+            </p>
+          </section>
+        </>
+      )}
     </div>
   )
 }
