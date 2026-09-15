@@ -19,6 +19,7 @@ Rejected: TypeView's global key handler (it interferes with custom-text editing 
 
 - Text, code, and custom passage practice, exposed in Practice Hub, practice destinations, and More.
 - Foundation, intermediate and advanced drills; 15 original code snippets across Python, SQL, JavaScript, Java and C++.
+- Python code levels follow a typing curriculum: Foundation (variables, simple functions, basic loops), Intermediate (comprehensions, dict processing, exceptions, file handling), Advanced (classes, decorators, generators, async typed pipelines) with matching punctuation density.
 - 30/60/120-second limits or a full passage. Runs end when the passage finishes or the deadline is reached, whichever occurs first.
 - First insertion starts the clock; idle time does not count. Once started, the clock continues when focus leaves or the tab is hidden. Deadline checks also run on input and visibility changes.
 - Correct/error character styling, caret following, progress, WPM, raw WPM, accuracy, elapsed/remaining time, current-session error characters, same-mode/level/duration personal best.

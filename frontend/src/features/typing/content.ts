@@ -16,9 +16,12 @@ const passages = [
 ]
 const snippets: Record<Language, string[]> = {
   Python: [
-    'def greet(name):\n    message = "Hello, " + name\n    return message\n\nprint(greet("learner"))',
-    'def active_names(students):\n    return [\n        student["name"]\n        for student in students\n        if student["active"]\n    ]',
-    'def count_events(events):\n    counts = {}\n    for event in events:\n        key = (event["user_id"], event["type"])\n        counts[key] = counts.get(key, 0) + 1\n    return counts',
+    // Foundation: variables, simple functions, basic loops — short lines, light punctuation
+    'def score_total(values):\n    total = 0\n    for value in values:\n        total = total + value\n    return total\n\nprint(score_total([2, 4, 6]))',
+    // Intermediate: comprehensions, dict processing, exceptions, file handling
+    'def load_active(path):\n    try:\n        with open(path, "r", encoding="utf-8") as handle:\n            rows = handle.read().splitlines()\n    except OSError as error:\n        raise RuntimeError("Unable to read file") from error\n    return {\n        name: int(score)\n        for name, score in (row.split(",") for row in rows)\n        if int(score) >= 70\n    }',
+    // Advanced: classes, decorators, generators, async, typed pipelines — nested, denser punctuation
+    'import asyncio\nfrom typing import AsyncIterator, Callable\n\ndef trace(fn: Callable[[str], str]) -> Callable[[str], str]:\n    def wrapped(value: str) -> str:\n        return f"{fn.__name__}:{fn(value)}"\n    return wrapped\n\nclass Pipeline:\n    def __init__(self, limit: int) -> None:\n        self.limit = limit\n\n    @trace\n    def label(self, item: str) -> str:\n        return item.upper()\n\n    async def stream(self, items: list[str]) -> AsyncIterator[str]:\n        for index, item in enumerate(items):\n            if index >= self.limit:\n                break\n            yield self.label(item)\n            await asyncio.sleep(0)',
   ],
   SQL: [
     'SELECT name, score\nFROM students\nWHERE score >= 70\nORDER BY score DESC;',
