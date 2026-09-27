@@ -15,6 +15,7 @@ import { AdminContentPage } from '@/pages/admin/AdminContentPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { DashboardPage } from '@/pages/DashboardPage'
+import { MyRequestsPage } from '@/pages/support/MyRequestsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { AptitudePage } from '@/pages/practice/AptitudePage'
 import { BookmarksPage } from '@/pages/bookmarks/BookmarksPage'
@@ -44,6 +45,7 @@ import { CompanyPrepPage } from '@/pages/interviews/CompanyPrepPage'
 import { CompanyPrepDetailPage } from '@/pages/interviews/CompanyPrepDetailPage'
 import { AdminInterviewPacksPage } from '@/pages/admin/AdminInterviewPacksPage'
 import { AdminAssignmentsPage } from '@/pages/admin/AdminAssignmentsPage'
+import { AdminFeedbackPage } from '@/pages/admin/AdminFeedbackPage'
 import { AdminJobsPage } from '@/pages/admin/AdminJobsPage'
 import { AdminReadinessPage } from '@/pages/admin/AdminReadinessPage'
 import { JobsApplicationsPage } from '@/pages/jobs/JobsApplicationsPage'
@@ -485,6 +487,30 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminInterviewPacksPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="support/requests"
+          element={<MyRequestsPage />}
+        />
+        <Route
+          path="support/requests/:ticketId"
+          element={<MyRequestsPage />}
+        />
+        <Route
+          path="admin/feedback"
+          element={
+            <AdminRoute>
+              <AdminFeedbackPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/feedback/:ticketId"
+          element={
+            <AdminRoute>
+              <AdminFeedbackPage />
             </AdminRoute>
           }
         />

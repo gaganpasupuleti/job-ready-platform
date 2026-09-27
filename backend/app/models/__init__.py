@@ -47,6 +47,7 @@ from app.models.learn import (
     Project,
 )
 from app.models.manual_assignment import ManualAssignmentSubmission
+from app.models.support_ticket import SupportTicket, SupportTicketMessage, SupportTicketStatusEvent
 from app.models.scenario import (
     ScenarioChallenge,
     ScenarioOption,
@@ -127,6 +128,9 @@ __all__ = [
     "CourseLesson",
     "Project",
     "ManualAssignmentSubmission",
+    "SupportTicket",
+    "SupportTicketMessage",
+    "SupportTicketStatusEvent",
     "CodingProblem",
     "CodingTestCase",
     "CodingSubmission",

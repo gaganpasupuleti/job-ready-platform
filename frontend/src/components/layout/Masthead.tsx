@@ -13,11 +13,20 @@ const ADMIN_LINKS = [
   { label: 'Questions', path: '/admin/questions' },
   { label: 'Jobs', path: '/admin/jobs' },
   { label: 'Assignments', path: '/admin/assignments' },
+  { label: 'Student Feedback', path: '/admin/feedback' },
   { label: 'Projects', path: '/admin/projects' },
   { label: 'Readiness', path: '/admin/readiness' },
 ]
 
-export function Masthead({ compact = false }: { compact?: boolean }) {
+export function Masthead({
+  compact = false,
+  feedbackOpen = false,
+  onFeedback,
+}: {
+  compact?: boolean
+  feedbackOpen?: boolean
+  onFeedback?: () => void
+}) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
   const location = useLocation()
@@ -109,6 +118,18 @@ export function Masthead({ compact = false }: { compact?: boolean }) {
           </div>
         </nav>
         <div className="masthead-tools">
+          {user ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="feedback-entry"
+              aria-expanded={feedbackOpen}
+              aria-controls="student-feedback-panel"
+              onClick={() => onFeedback?.()}
+            >
+              Feedback
+            </Button>
+          ) : null}
           <Button
             variant="ghost"
             size="sm"

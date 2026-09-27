@@ -89,6 +89,9 @@ export const apiEndpoints = {
     },
     assignments: '/api/v1/admin/assignments',
     assignment: (id: string) => `/api/v1/admin/assignments/${id}`,
+    supportTickets: '/api/v1/admin/support/tickets',
+    supportTicket: (id: string) => `/api/v1/admin/support/tickets/${id}`,
+    supportReplies: (id: string) => `/api/v1/admin/support/tickets/${id}/replies`,
     readiness: {
       roles: '/api/v1/admin/readiness/roles',
     },
@@ -215,6 +218,11 @@ export const apiEndpoints = {
   },
   assignments: {
     list: '/api/v1/assignments',
+  },
+  support: {
+    tickets: '/api/v1/support/tickets',
+    ticket: (id: string) => `/api/v1/support/tickets/${id}`,
+    replies: (id: string) => `/api/v1/support/tickets/${id}/replies`,
   },
   applications: {
     list: '/api/v1/applications',
