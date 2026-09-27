@@ -30,7 +30,7 @@ export type AdminBook = {
   description: string
   category: string
   external_url: string | null
-  storage_key: string | null
+  has_file: boolean
   status: BookPublication
 }
 
@@ -40,7 +40,6 @@ export type BookDraft = {
   description: string
   category: string
   external_url: string
-  storage_key: string
   status: BookPublication
 }
 
@@ -117,9 +116,36 @@ export async function fetchLibraryFile(url: string) {
     } catch {
       message = response.status === 404 ? 'This PDF file is missing.' : message
     }
-    throw new Error(message)
+    throw new LibraryFileError(message, response.status)
   }
   return response.arrayBuffer()
+}
+
+export async function uploadAdminPdf(id: string, file: File) {
+  const body = new FormData()
+  body.append('file', file)
+  const { data } = await apiClient.post<AdminBook>(apiEndpoints.library.adminFile(id), body, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    transformRequest: (payload, headers) => {
+      if (headers) delete headers['Content-Type']
+      return payload
+    },
+  })
+  return data
+}
+
+export async function removeAdminPdf(id: string) {
+  const { data } = await apiClient.delete<AdminBook>(apiEndpoints.library.adminFile(id))
+  return data
+}
+
+export class LibraryFileError extends Error {
+  status: number
+
+  constructor(message: string, status: number) {
+    super(message)
+    this.status = status
+  }
 }
 
 function sourcePayload(draft: BookDraft) {
@@ -130,7 +156,6 @@ function sourcePayload(draft: BookDraft) {
     category: draft.category.trim(),
     status: draft.status,
   }
-  if (draft.storage_key.trim()) payload.storage_key = draft.storage_key.trim()
-  else payload.external_url = draft.external_url.trim()
+  if (draft.external_url.trim()) payload.external_url = draft.external_url.trim()
   return payload
 }

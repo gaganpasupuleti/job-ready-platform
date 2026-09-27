@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import pytest
 
 from app.core.config import settings
-from app.library.fixtures import LOCAL_FIXTURE_KEY
+from app.library.fixtures import LOCAL_FIXTURE_KEY, fixture_pdf_bytes
 from app.library.r2 import R2Config, presign_get
 
 FIXTURE_URL = "https://example.com/jobready-local-library-fixture"
@@ -18,7 +18,6 @@ def _pdf(**overrides):
         "author": "Local test author",
         "description": "Clearly identified local test fixture. Not a production catalog.",
         "category": "Local fixtures",
-        "storage_key": LOCAL_FIXTURE_KEY,
         "status": "draft",
     }
     payload.update(overrides)
@@ -26,9 +25,25 @@ def _pdf(**overrides):
 
 
 async def _create(client, headers, **overrides):
+    status = overrides.pop("status", "draft")
     response = await client.post("/api/v1/admin/library/books", headers=headers, json=_pdf(**overrides))
     assert response.status_code == 201, response.text
-    return response.json()
+    created = response.json()
+    uploaded = await client.post(
+        f"/api/v1/admin/library/books/{created['id']}/file",
+        headers=headers,
+        files={"file": ("local-fixture.pdf", fixture_pdf_bytes(), "application/pdf")},
+    )
+    assert uploaded.status_code == 200, uploaded.text
+    if status != "draft":
+        published = await client.patch(
+            f"/api/v1/admin/library/books/{created['id']}",
+            headers=headers,
+            json={"status": status},
+        )
+        assert published.status_code == 200, published.text
+        return published.json()
+    return uploaded.json()
 
 
 def test_presign_builds_an_https_url_without_a_network_call():
@@ -52,7 +67,9 @@ async def test_students_cannot_read_a_draft_or_unconfigured_pdf(client, admin_au
     headers, _email = student_auth
     created = await _create(client, admin_auth)
     book_id = created["id"]
-    assert created["storage_key"] == LOCAL_FIXTURE_KEY
+    assert created["storage_key"].startswith(f"library/books/{book_id}/")
+    assert created["storage_key"].endswith(".pdf")
+    assert "local-fixture.pdf" not in created["storage_key"]
     assert "storage_key" not in (await client.get("/api/v1/library/books", headers=headers)).json()["items"].__repr__()
 
     for path in (f"/api/v1/library/books/{book_id}/read-link", f"/api/v1/library/books/{book_id}/file"):
@@ -61,11 +78,14 @@ async def test_students_cannot_read_a_draft_or_unconfigured_pdf(client, admin_au
         assert LOCAL_FIXTURE_KEY not in denied.text
         assert "X-Amz-Signature" not in denied.text
 
-    missing = await _create(client, admin_auth, storage_key="local-fixtures/missing.pdf", status="published", title="Missing PDF fixture")
-    unconfigured = await client.get(f"/api/v1/library/books/{missing['id']}/read-link", headers=headers)
-    assert unconfigured.status_code == 503
-    assert unconfigured.json()["detail"] == "PDF storage is not configured."
-    assert "missing.pdf" not in unconfigured.text
+    rejected = await client.post(
+        "/api/v1/admin/library/books",
+        headers=admin_auth,
+        json=_pdf(storage_key="local-fixtures/missing.pdf", title="Missing PDF fixture"),
+    )
+    assert rejected.status_code == 422
+    assert "object key" in rejected.text
+    assert "id" not in rejected.json()
 
     anonymous = await client.get(f"/api/v1/library/books/{book_id}/read-link")
     assert anonymous.status_code == 401

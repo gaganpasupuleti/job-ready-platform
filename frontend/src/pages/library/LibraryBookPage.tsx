@@ -138,6 +138,9 @@ function BookDetail({
           </span>
         </p>
       ) : null}
+      {book.available && !book.external_url && !book.has_file ? (
+        <p className="mb-4 text-sm text-[var(--color-text-muted)]">No PDF or link is attached.</p>
+      ) : null}
       {!book.available ? (
         <div className="mb-4">
           <EmptyState

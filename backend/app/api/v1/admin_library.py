@@ -2,7 +2,7 @@
 
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_admin
@@ -52,3 +52,23 @@ async def update_book(
     svc: LibraryService = Depends(_svc),
 ) -> AdminLibraryBook:
     return await svc.update_book(book_id, payload)
+
+
+@router.post("/books/{book_id}/file", response_model=AdminLibraryBook)
+async def upload_book_file(
+    book_id: UUID,
+    file: UploadFile = File(...),
+    _admin: User = Depends(get_current_admin),
+    svc: LibraryService = Depends(_svc),
+) -> AdminLibraryBook:
+    body = await file.read()
+    return await svc.upload_pdf(book_id, file.filename or "", file.content_type or "", body)
+
+
+@router.delete("/books/{book_id}/file", response_model=AdminLibraryBook)
+async def remove_book_file(
+    book_id: UUID,
+    _admin: User = Depends(get_current_admin),
+    svc: LibraryService = Depends(_svc),
+) -> AdminLibraryBook:
+    return await svc.remove_pdf(book_id)

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { initialReaderPage, progressWrite, readerFileUrl } from '../src/features/library/readerModel.ts'
+import { initialReaderPage, progressWrite, readerFileUrl, shouldRefreshReadLink } from '../src/features/library/readerModel.ts'
 
 test('the reader resumes a saved page and does not write merely by opening', () => {
   assert.equal(initialReaderPage(null, 2), 1)
@@ -10,6 +10,12 @@ test('the reader resumes a saved page and does not write merely by opening', () 
   assert.equal(progressWrite(null, 1, false), null)
   assert.equal(progressWrite(2, 2, true), null)
   assert.equal(progressWrite(1, 2, true), 2)
+})
+
+test('an expired read link is refreshed once', () => {
+  assert.equal(shouldRefreshReadLink(403, false), true)
+  assert.equal(shouldRefreshReadLink(403, true), false)
+  assert.equal(shouldRefreshReadLink(404, false), false)
 })
 
 test('an unavailable book cannot keep a cached file URL', () => {

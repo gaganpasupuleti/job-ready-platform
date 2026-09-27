@@ -38,6 +38,9 @@ Thumbs.db
 *.log
 logs/
 
+# Development-only library PDF objects. Not a production catalog.
+backend/var/
+
 # Testing
 .coverage
 htmlcov/

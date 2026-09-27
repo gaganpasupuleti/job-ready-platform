@@ -134,6 +134,8 @@ class Settings(BaseSettings):
     library_r2_bucket: str = ""
     library_r2_access_key_id: str = ""
     library_r2_secret_access_key: str = ""
+    library_pdf_max_bytes: int = 20 * 1024 * 1024
+    library_dev_object_dir: str = ""
 
     practice_catalog_cache_ttl_seconds: int = 300
     practice_catalog_cache_key: str = "practice:catalog"

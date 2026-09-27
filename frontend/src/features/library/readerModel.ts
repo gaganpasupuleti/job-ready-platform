@@ -11,6 +11,10 @@ export function progressWrite(savedPage: number | null, nextPage: number, fromUs
   return nextPage
 }
 
+export function shouldRefreshReadLink(status: number, alreadyRetried: boolean) {
+  return !alreadyRetried && status === 403
+}
+
 export function readerFileUrl(available: boolean, hasFile: boolean, fileUrl: string | null) {
   if (!available || !hasFile) return null
   return fileUrl

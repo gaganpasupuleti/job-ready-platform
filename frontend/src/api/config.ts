@@ -264,6 +264,7 @@ export const apiEndpoints = {
     readLink: (id: string) => `/api/v1/library/books/${id}/read-link`,
     adminBooks: '/api/v1/admin/library/books',
     adminBook: (id: string) => `/api/v1/admin/library/books/${id}`,
+    adminFile: (id: string) => `/api/v1/admin/library/books/${id}/file`,
   },
 } as const
 

@@ -6,9 +6,9 @@ import { BookOpen, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/common/Button'
 import { EmptyState, ErrorState } from '@/components/practice-workspace/PracticeWorkspace'
 import { acceptStudentBook, loadLibraryBook } from '@/features/library/libraryQueries'
-import { initialReaderPage, progressWrite, readerFileUrl } from '@/features/library/readerModel'
+import { initialReaderPage, progressWrite, readerFileUrl, shouldRefreshReadLink } from '@/features/library/readerModel'
 import { useAuth } from '@/hooks/useAuth'
-import { fetchLibraryFile, fetchReadLink, saveReadingProgress, setReadingStatus, type ReadingStatus, type StudentBook } from '@/services/libraryService'
+import { fetchLibraryFile, fetchReadLink, LibraryFileError, saveReadingProgress, setReadingStatus, type ReadingStatus, type StudentBook } from '@/services/libraryService'
 
 const STATUSES: { value: ReadingStatus; label: string }[] = [
   { value: 'not_started', label: 'Not started' },
@@ -25,6 +25,7 @@ export function LibraryReaderPage() {
   const [pageCount, setPageCount] = useState(0)
   const [fileError, setFileError] = useState<string | null>(null)
   const [rendering, setRendering] = useState(false)
+  const [linkAttempt, setLinkAttempt] = useState(0)
   const userId = user?.id ?? ''
 
   const bookQuery = useQuery({
@@ -61,6 +62,19 @@ export function LibraryReaderPage() {
     retry: false,
     structuralSharing: false,
   })
+
+  const fileStatus = fileQuery.error instanceof LibraryFileError ? fileQuery.error.status : 0
+  const refreshingLink = shouldRefreshReadLink(fileStatus, linkAttempt > 0)
+
+  useEffect(() => {
+    setLinkAttempt(0)
+  }, [bookId])
+
+  useEffect(() => {
+    if (!refreshingLink) return
+    setLinkAttempt(1)
+    void queryClient.invalidateQueries({ queryKey: ['library-read-link', user?.id, bookId] })
+  }, [refreshingLink, queryClient, user?.id, bookId])
 
   useEffect(() => {
     if (!book) return
@@ -116,7 +130,7 @@ export function LibraryReaderPage() {
     if (write != null && book?.available) progress.mutate(write)
   }
 
-  if (bookQuery.isLoading || (canRead && !fileQuery.data && (linkQuery.isLoading || fileQuery.isLoading) && !fileError)) {
+  if (bookQuery.isLoading || refreshingLink || (canRead && !fileQuery.data && (linkQuery.isLoading || fileQuery.isLoading) && !fileError)) {
     return <p className="text-sm text-[var(--color-text-muted)]">Loading PDF…</p>
   }
   if (bookQuery.isError || !book) {
@@ -144,7 +158,7 @@ export function LibraryReaderPage() {
       <div className="min-w-0">
         <BackLink />
         <ErrorState message={error} />
-        <Button type="button" className="mt-3" onClick={() => { linkQuery.refetch(); fileQuery.refetch() }}>Retry</Button>
+        <Button type="button" className="mt-3" onClick={() => { setLinkAttempt(0); void queryClient.invalidateQueries({ queryKey: ['library-read-link', user?.id, bookId] }) }}>Retry</Button>
       </div>
     )
   }

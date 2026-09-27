@@ -57,6 +57,36 @@ def presign_get(config: R2Config, key: str, now: datetime, expires: int = 300) -
     return f"https://{host}{canonical_uri}?{canonical_query}&X-Amz-Signature={signature}"
 
 
+def signed_headers(config: R2Config, method: str, key: str, now: datetime, payload_hash: str = "UNSIGNED-PAYLOAD") -> tuple[str, dict[str, str]]:
+    """Authorization headers for one R2 request. No network call is made."""
+    host = f"{config.account_id}.r2.cloudflarestorage.com"
+    amz_date = now.strftime("%Y%m%dT%H%M%SZ")
+    datestamp = now.strftime("%Y%m%d")
+    region = "auto"
+    credential = f"{config.access_key_id}/{datestamp}/{region}/s3/aws4_request"
+    canonical_uri = "/" + quote(config.bucket, safe="") + "/" + quote(key, safe="/")
+    names = {
+        "host": host,
+        "x-amz-content-sha256": payload_hash,
+        "x-amz-date": amz_date,
+    }
+    signed = ";".join(sorted(names))
+    canonical_headers = "".join(f"{name}:{names[name]}\n" for name in sorted(names))
+    canonical_request = "\n".join([method, canonical_uri, "", canonical_headers, signed, payload_hash])
+    scope = f"{datestamp}/{region}/s3/aws4_request"
+    string_to_sign = "\n".join(
+        ["AWS4-HMAC-SHA256", amz_date, scope, hashlib.sha256(canonical_request.encode()).hexdigest()]
+    )
+    signature = hmac.new(_signing_key(config.secret_access_key, datestamp, region), string_to_sign.encode(), hashlib.sha256).hexdigest()
+    authorization = f"AWS4-HMAC-SHA256 Credential={credential}, SignedHeaders={signed}, Signature={signature}"
+    return f"https://{host}{canonical_uri}", {
+        "Host": host,
+        "X-Amz-Content-Sha256": payload_hash,
+        "X-Amz-Date": amz_date,
+        "Authorization": authorization,
+    }
+
+
 def _signing_key(secret: str, datestamp: str, region: str) -> bytes:
     def sign(key: bytes, message: str) -> bytes:
         return hmac.new(key, message.encode(), hashlib.sha256).digest()

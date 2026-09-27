@@ -1,7 +1,5 @@
 """Library metadata. This service never requests an external or storage URL."""
 
-import re
-from datetime import datetime, timezone
 from urllib.parse import urlparse
 from uuid import UUID, uuid4
 
@@ -11,8 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.exceptions import AppException
-from app.library.fixtures import LOCAL_FIXTURE_KEY, fixture_pdf_bytes
-from app.library.r2 import R2Config, presign_get
+from app.library.fixtures import LOCAL_FIXTURE_KEY
+from app.library.storage import StorageError, library_storage
 from app.models.library import LibraryBook, LibraryBookmark, LibraryReadingStatus
 from app.models.user import User
 from app.schemas.library import (
@@ -42,34 +40,24 @@ def require_https_url(value: str) -> str:
     return "https" + raw[len(parsed.scheme) :]
 
 
-def require_storage_key(value: str) -> str:
-    raw = value.strip()
-    if not raw or any(character.isspace() for character in raw) or "\\" in raw or ".." in raw:
-        raise AppException("Enter an object key without spaces or parent paths.", status_code=422)
-    if "://" in raw or raw.startswith("/"):
-        raise AppException("The object key cannot be a URL.", status_code=422)
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,399}", raw):
-        raise AppException("The object key contains characters that are not allowed.", status_code=422)
-    return raw
+def validate_pdf_upload(filename: str, content_type: str, body: bytes) -> None:
+    name = (filename or "").strip()
+    if not name.lower().endswith(".pdf"):
+        raise AppException("Choose a .pdf file.", status_code=422)
+    media = (content_type or "").split(";", 1)[0].strip().lower()
+    if media != "application/pdf":
+        raise AppException("Only PDF files can be uploaded.", status_code=422)
+    if not body:
+        raise AppException("The PDF file is empty.", status_code=422)
+    if len(body) > settings.library_pdf_max_bytes:
+        raise AppException("The PDF is too large.", status_code=422)
+    if not body.startswith(b"%PDF"):
+        raise AppException("The file is not a PDF.", status_code=422)
 
 
-def _apply_source(book: LibraryBook, external_url: str | None, storage_key: str | None, *, external_set: bool, storage_set: bool) -> None:
-    if external_set and storage_set:
-        raise AppException("Choose either an https link or a PDF object key.", status_code=422)
-    if storage_set:
-        if storage_key is None or not storage_key.strip():
-            raise AppException("Enter a PDF object key.", status_code=422)
-        book.storage_key = require_storage_key(storage_key)
-        book.external_url = None
-        return
-    if external_set:
-        if external_url is None or not external_url.strip():
-            raise AppException("Enter one https URL without spaces.", status_code=422)
-        book.external_url = require_https_url(external_url)
-        book.storage_key = None
-        return
-    if book.external_url is None and book.storage_key is None:
-        raise AppException("Choose either an https link or a PDF object key.", status_code=422)
+def _require_published_source(book: LibraryBook) -> None:
+    if book.status == "published" and not book.external_url and not book.storage_key:
+        raise AppException("Choose an https link or upload a PDF.", status_code=422)
 
 
 def _clean_text(value: str, label: str, limit: int) -> str:
@@ -92,18 +80,12 @@ class LibraryService:
             author=_clean_text(payload.author, "author", 200),
             description=payload.description.strip(),
             category=_clean_text(payload.category, "category", 80),
-            external_url=None,
+            external_url=require_https_url(payload.external_url) if payload.external_url else None,
             storage_key=None,
             status=payload.status,
             created_by=admin.id,
         )
-        _apply_source(
-            book,
-            payload.external_url,
-            payload.storage_key,
-            external_set=payload.external_url is not None,
-            storage_set=payload.storage_key is not None,
-        )
+        _require_published_source(book)
         self.db.add(book)
         await self.db.commit()
         return self._admin(book)
@@ -111,6 +93,7 @@ class LibraryService:
     async def update_book(self, book_id: UUID, payload: LibraryBookPatch) -> AdminLibraryBook:
         book = await self._book(book_id)
         changes = payload.model_dump(exclude_unset=True)
+        old_key = book.storage_key
         if "title" in changes:
             book.title = _clean_text(changes["title"], "title", 200)
         if "author" in changes:
@@ -119,20 +102,67 @@ class LibraryService:
             book.description = changes["description"].strip()
         if "category" in changes:
             book.category = _clean_text(changes["category"], "category", 80)
-        if "external_url" in changes or "storage_key" in changes:
-            _apply_source(
-                book,
-                changes.get("external_url", book.external_url),
-                changes.get("storage_key", book.storage_key),
-                external_set="external_url" in changes,
-                storage_set="storage_key" in changes,
-            )
+        if "external_url" in changes:
+            book.external_url = require_https_url(changes["external_url"] or "")
+            book.storage_key = None
         if "status" in changes:
             if changes["status"] not in BOOK_STATUSES:
                 raise AppException("Choose draft, published, or archived.", status_code=422)
             book.status = changes["status"]
+        _require_published_source(book)
         await self.db.commit()
+        if old_key and book.storage_key != old_key:
+            self._delete_object(old_key)
         return self._admin(book)
+
+    async def upload_pdf(self, book_id: UUID, filename: str, content_type: str, body: bytes) -> AdminLibraryBook:
+        validate_pdf_upload(filename, content_type, body)
+        book = await self._book(book_id)
+        store = library_storage()
+        new_key = f"library/books/{book.id}/{uuid4().hex}.pdf"
+        old_key = book.storage_key
+        try:
+            store.put(new_key, body)
+            if not store.exists(new_key):
+                self._delete_quiet(store, new_key)
+                raise AppException("The PDF upload could not be verified.", status_code=503)
+        except StorageError as exc:
+            raise AppException(exc.message, status_code=exc.status_code) from None
+        book.storage_key = new_key
+        book.external_url = None
+        try:
+            await self.db.commit()
+        except Exception:
+            await self.db.rollback()
+            self._delete_quiet(store, new_key)
+            raise AppException("The PDF could not be saved.", status_code=503) from None
+        if old_key and old_key != new_key:
+            self._delete_object(old_key)
+        return self._admin(book)
+
+    async def remove_pdf(self, book_id: UUID) -> AdminLibraryBook:
+        book = await self._book(book_id)
+        if not book.storage_key:
+            raise AppException("This book has no PDF.", status_code=404)
+        if book.status == "published" and not book.external_url:
+            raise AppException("Add an https link before removing the only PDF, or archive the book.", status_code=422)
+        old_key = book.storage_key
+        book.storage_key = None
+        await self.db.commit()
+        self._delete_object(old_key)
+        return self._admin(book)
+
+    def _delete_object(self, key: str) -> None:
+        if not key or key == LOCAL_FIXTURE_KEY:
+            return
+        self._delete_quiet(library_storage(), key)
+
+    @staticmethod
+    def _delete_quiet(store, key: str) -> None:
+        try:
+            store.delete(key)
+        except StorageError:
+            return
 
     async def admin_list(self) -> list[AdminLibraryBook]:
         rows = (
@@ -250,32 +280,26 @@ class LibraryService:
 
     async def read_link(self, user: User, book_id: UUID) -> ReadLink:
         book = await self._published_file(book_id)
-        if book.storage_key == LOCAL_FIXTURE_KEY and not settings.library_storage_configured:
-            self._local_fixture_allowed()
-            return ReadLink(url=f"/api/v1/library/books/{book.id}/file", expires_in=300)
-        if not settings.library_storage_configured:
-            raise AppException("PDF storage is not configured.", status_code=503)
-        config = R2Config(
-            account_id=settings.library_r2_account_id.strip(),
-            bucket=settings.library_r2_bucket.strip(),
-            access_key_id=settings.library_r2_access_key_id.strip(),
-            secret_access_key=settings.library_r2_secret_access_key.strip(),
-        )
-        return ReadLink(
-            url=presign_get(config, book.storage_key or "", datetime.now(timezone.utc)),
-            expires_in=300,
-        )
+        store = library_storage()
+        key = book.storage_key or ""
+        try:
+            if not store.exists(key):
+                raise AppException("This PDF file is missing.", status_code=404)
+            url = store.presign_get(key, book.id)
+        except StorageError as exc:
+            raise AppException(exc.message, status_code=exc.status_code) from None
+        return ReadLink(url=url, expires_in=300)
 
     async def file_bytes(self, user: User, book_id: UUID) -> bytes:
         book = await self._published_file(book_id)
-        if book.storage_key != LOCAL_FIXTURE_KEY or settings.library_storage_configured:
+        store = library_storage()
+        try:
+            payload = store.read_bytes(book.storage_key or "")
+        except StorageError as exc:
+            raise AppException(exc.message, status_code=exc.status_code) from None
+        if not payload:
             raise AppException("This PDF file is missing.", status_code=404)
-        self._local_fixture_allowed()
-        return fixture_pdf_bytes()
-
-    def _local_fixture_allowed(self) -> None:
-        if settings.app_env.lower() in {"production", "prod"}:
-            raise AppException("PDF storage is not configured.", status_code=503)
+        return payload
 
     async def _published_file(self, book_id: UUID) -> LibraryBook:
         book = await self._published(book_id)
@@ -330,5 +354,6 @@ class LibraryService:
             category=book.category,
             external_url=book.external_url,
             storage_key=book.storage_key,
+            has_file=book.storage_key is not None,
             status=book.status,  # type: ignore[arg-type]
         )
