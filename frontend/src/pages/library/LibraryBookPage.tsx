@@ -7,9 +7,9 @@ import { Card, CardHeader } from '@/components/common/Card'
 import { EmptyState, ErrorState } from '@/components/practice-workspace/PracticeWorkspace'
 import { sectionStaleMessage, sectionUnavailable } from '@/features/dashboard/overviewModel'
 import { useAuth } from '@/hooks/useAuth'
+import { acceptStudentBook, loadLibraryBook } from '@/features/library/libraryQueries'
 import {
   bookmarkBook,
-  fetchLibraryBook,
   setReadingStatus,
   unbookmarkBook,
   type ReadingStatus,
@@ -33,14 +33,15 @@ export function LibraryBookPage() {
   const [actionError, setActionError] = useState('')
   const book = useQuery({
     queryKey: ['library-book', user?.id, bookId],
-    queryFn: () => fetchLibraryBook(bookId),
+    queryFn: () => loadLibraryBook(user?.id ?? '', bookId),
     enabled: Boolean(user?.id && bookId),
   })
   const missing = sectionUnavailable(book)
   const stale = sectionStaleMessage(book, online())
 
   async function refresh(next: StudentBook) {
-    queryClient.setQueryData(['library-book', user?.id, bookId], next)
+    const stored = user?.id ? acceptStudentBook(user.id, next) : next
+    queryClient.setQueryData(['library-book', user?.id, bookId], stored)
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['library-books', user?.id] }),
       queryClient.invalidateQueries({ queryKey: ['library-saved', user?.id] }),
@@ -139,7 +140,7 @@ function BookDetail({
           {book.bookmarked ? 'Remove bookmark' : 'Bookmark'}
         </Button>
       </div>
-      <div className="mt-4">
+      <div className="mt-4" role="group" aria-label="Reading status">
         <p className="text-xs text-[var(--color-text-muted)]">Reading status</p>
         <p className="mb-2 text-xs text-[var(--color-text-muted)]">Choose a status. Nothing is saved until you do.</p>
         <div className="flex flex-wrap gap-2">

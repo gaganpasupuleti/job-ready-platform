@@ -7,7 +7,8 @@ import { Card, CardHeader } from '@/components/common/Card'
 import { EmptyState, ErrorState } from '@/components/practice-workspace/PracticeWorkspace'
 import { sectionStaleMessage, sectionUnavailable } from '@/features/dashboard/overviewModel'
 import { useAuth } from '@/hooks/useAuth'
-import { fetchLibraryBooks, fetchSavedBooks, type StudentBook } from '@/services/libraryService'
+import { loadLibraryBooks, loadSavedBooks } from '@/features/library/libraryQueries'
+import { type StudentBook } from '@/services/libraryService'
 
 function online() {
   return typeof navigator === 'undefined' ? true : navigator.onLine
@@ -27,12 +28,12 @@ export function LibraryPage() {
   const [category, setCategory] = useState('')
   const books = useQuery({
     queryKey: ['library-books', user?.id, submitted, category],
-    queryFn: () => fetchLibraryBooks(submitted, category),
+    queryFn: () => loadLibraryBooks(user?.id ?? '', submitted, category),
     enabled: Boolean(user?.id),
   })
   const saved = useQuery({
     queryKey: ['library-saved', user?.id],
-    queryFn: fetchSavedBooks,
+    queryFn: () => loadSavedBooks(user?.id ?? ''),
     enabled: Boolean(user?.id),
   })
   const booksMissing = sectionUnavailable(books)
