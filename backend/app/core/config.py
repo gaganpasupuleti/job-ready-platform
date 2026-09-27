@@ -5,6 +5,8 @@ import warnings
 logger = logging.getLogger(__name__)
 
 _UNSAFE_JWT_DEFAULT = "change-me-in-production-use-long-random-secret"
+_EMAIL_PLACEHOLDER_KEY = "REPLACE_WITH_REAL_BREVO_API_KEY"
+_EMAIL_PLACEHOLDER_ADDRESS = "notifications@example.com"
 
 
 class Settings(BaseSettings):
@@ -103,6 +105,14 @@ class Settings(BaseSettings):
     admin_bootstrap_email: str = ""
     admin_bootstrap_password: str = ""
 
+    # In-app mail stays off until a verified Brevo sender and a real API key
+    # replace the Railway placeholders. Reading these names does not send mail.
+    email_provider: str = ""
+    email_enabled: bool = False
+    email_from_address: str = ""
+    email_from_name: str = ""
+    brevo_api_key: str = ""
+
     practice_catalog_cache_ttl_seconds: int = 300
     practice_catalog_cache_key: str = "practice:catalog"
 
@@ -129,6 +139,22 @@ class Settings(BaseSettings):
             raise RuntimeError("DATABASE_URL is required in production.")
         if self.debug:
             warnings.warn("DEBUG=true in production is discouraged.", UserWarning, stacklevel=2)
+
+    @property
+    def email_can_send(self) -> bool:
+        """True only when mail is explicitly enabled with a real Brevo sender and key."""
+        provider = (self.email_provider or "").strip().lower()
+        address = (self.email_from_address or "").strip().lower()
+        key = (self.brevo_api_key or "").strip()
+        return (
+            self.email_enabled
+            and provider == "brevo"
+            and bool(address)
+            and address != _EMAIL_PLACEHOLDER_ADDRESS
+            and "@" in address
+            and bool(key)
+            and key != _EMAIL_PLACEHOLDER_KEY
+        )
 
 
 settings = Settings()
