@@ -138,14 +138,21 @@ class SupportTicketService:
             raise AppException("Request not found", status_code=404)
         message, created = await self._prepare_reply(ticket, actor, payload)
         if created:
-            await NotificationService(self.db).stage_support_reply(
-                recipient_id=ticket.user_id,
-                ticket_id=ticket.id,
-                message_id=message.id,
-                author_id=actor.id,
-                author_role=_role(actor),
-            )
-            await self._commit_reply(ticket, payload)
+            saved_ticket_id = ticket.id
+            try:
+                await NotificationService(self.db).stage_support_reply(
+                    recipient_id=ticket.user_id,
+                    ticket_id=saved_ticket_id,
+                    message_id=message.id,
+                    author_id=actor.id,
+                    author_role=_role(actor),
+                )
+                await self._commit_reply(ticket, payload)
+            except IntegrityError:
+                await self.db.rollback()
+                existing = await self._message_for_request(saved_ticket_id, payload.client_request_id)
+                if existing is None or existing.body != payload.body:
+                    raise AppException("Could not save this reply. Try again.", status_code=409) from None
         return await self.admin_detail(ticket_id)
 
     async def change_status(

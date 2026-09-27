@@ -44,3 +44,23 @@ export async function markAllNotificationsRead() {
   const { data } = await apiClient.post<{ count: number }>(apiEndpoints.notifications.readAll)
   return data
 }
+
+export type EmailPreferences = {
+  assignment_review_enabled: boolean
+  support_reply_enabled: boolean
+}
+
+export async function fetchEmailPreferences() {
+  const { data } = await apiClient.get<EmailPreferences>(apiEndpoints.notifications.emailPreferences)
+  return data
+}
+
+export async function updateEmailPreferences(patch: Partial<EmailPreferences>) {
+  const { data } = await apiClient.patch<EmailPreferences>(apiEndpoints.notifications.emailPreferences, patch)
+  return data
+}
+
+export async function unsubscribeEmail(token: string) {
+  const { data } = await apiClient.post<EmailPreferences>(apiEndpoints.notifications.emailUnsubscribe, { token })
+  return data
+}

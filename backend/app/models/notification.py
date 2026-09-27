@@ -1,4 +1,4 @@
-"""In-app notifications. Email delivery is intentionally absent."""
+"""In-app notifications. Email is a separate outbox row created in the same transaction."""
 
 from __future__ import annotations
 

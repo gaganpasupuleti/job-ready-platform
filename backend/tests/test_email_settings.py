@@ -16,6 +16,7 @@ def test_email_settings_read_the_railway_names_and_stay_off(monkeypatch):
     assert loaded.email_from_name == "JobReady"
     assert loaded.brevo_api_key == "REPLACE_WITH_REAL_BREVO_API_KEY"
     assert loaded.email_can_send is False
+    assert loaded.email_block_reason == "email_disabled"
 
 
 def _load(monkeypatch, **values: str) -> Settings:
@@ -35,6 +36,7 @@ def test_placeholder_sender_and_key_cannot_send_even_if_enabled(monkeypatch):
     )
     assert loaded.email_enabled is True
     assert loaded.email_can_send is False
+    assert loaded.email_block_reason == "placeholder_configuration"
 
 
 def test_each_placeholder_blocks_sending_when_enabled(monkeypatch):
@@ -47,6 +49,7 @@ def test_each_placeholder_blocks_sending_when_enabled(monkeypatch):
         BREVO_API_KEY="not-a-real-key",
     )
     assert placeholder_sender.email_can_send is False
+    assert placeholder_sender.email_block_reason == "placeholder_configuration"
 
     placeholder_key = _load(
         monkeypatch,
@@ -57,6 +60,7 @@ def test_each_placeholder_blocks_sending_when_enabled(monkeypatch):
         BREVO_API_KEY="REPLACE_WITH_REAL_BREVO_API_KEY",
     )
     assert placeholder_key.email_can_send is False
+    assert placeholder_key.email_block_reason == "placeholder_configuration"
 
 
 def test_disabled_flag_blocks_sending_with_non_placeholder_values(monkeypatch):
@@ -70,3 +74,4 @@ def test_disabled_flag_blocks_sending_with_non_placeholder_values(monkeypatch):
     )
     assert loaded.email_enabled is False
     assert loaded.email_can_send is False
+    assert loaded.email_block_reason == "email_disabled"

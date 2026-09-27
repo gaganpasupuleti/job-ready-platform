@@ -973,6 +973,25 @@
   font-weight: 500;
   color: var(--color-text-muted);
 }
+.notification-email {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.notification-email h3 {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.notification-email label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
 @media (max-width: 800px) {
   .notification-panel {
     position: fixed;

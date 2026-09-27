@@ -229,6 +229,8 @@ export const apiEndpoints = {
     unread: '/api/v1/notifications/unread-count',
     readAll: '/api/v1/notifications/read-all',
     read: (id: string) => `/api/v1/notifications/${id}/read`,
+    emailPreferences: '/api/v1/notifications/email-preferences',
+    emailUnsubscribe: '/api/v1/notifications/email-unsubscribe',
   },
   applications: {
     list: '/api/v1/applications',

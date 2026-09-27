@@ -6,6 +6,9 @@ row and does not change its read time. A different note is a new review and
 creates a new unread row. Support notifications are created only for a newly
 inserted admin or trainer reply, keyed by that message. Student replies,
 status changes, and rows that already existed are not backfilled.
+
+The email outbox row is added in this same transaction. A failed commit
+removes both. Repeating the event does not add a second email.
 """
 
 from __future__ import annotations
@@ -19,6 +22,7 @@ from sqlalchemy import and_, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import AppException
+from app.email.outbox import stage_email_for_notification
 from app.models.notification import (
     ASSIGNMENT_REVIEW,
     ASSIGNMENT_REVIEW_MESSAGE,
@@ -78,17 +82,18 @@ class NotificationService:
         existing = await self.db.scalar(select(Notification.id).where(Notification.event_key == key))
         if existing is not None:
             return
-        self.db.add(
-            Notification(
-                recipient_user_id=recipient_id,
-                event_type=ASSIGNMENT_REVIEW,
-                event_key=key,
-                source_type=ASSIGNMENT_SOURCE,
-                source_id=submission_id,
-                message=ASSIGNMENT_REVIEW_MESSAGE,
-                destination_path=assignment_destination(submission_id),
-            )
+        row = Notification(
+            recipient_user_id=recipient_id,
+            event_type=ASSIGNMENT_REVIEW,
+            event_key=key,
+            source_type=ASSIGNMENT_SOURCE,
+            source_id=submission_id,
+            message=ASSIGNMENT_REVIEW_MESSAGE,
+            destination_path=assignment_destination(submission_id),
         )
+        self.db.add(row)
+        await self.db.flush()
+        await stage_email_for_notification(self.db, row)
 
     async def stage_support_reply(
         self,
@@ -105,17 +110,18 @@ class NotificationService:
         existing = await self.db.scalar(select(Notification.id).where(Notification.event_key == key))
         if existing is not None:
             return
-        self.db.add(
-            Notification(
-                recipient_user_id=recipient_id,
-                event_type=SUPPORT_REPLY,
-                event_key=key,
-                source_type=SUPPORT_SOURCE,
-                source_id=ticket_id,
-                message=SUPPORT_REPLY_MESSAGE,
-                destination_path=support_destination(ticket_id),
-            )
+        row = Notification(
+            recipient_user_id=recipient_id,
+            event_type=SUPPORT_REPLY,
+            event_key=key,
+            source_type=SUPPORT_SOURCE,
+            source_id=ticket_id,
+            message=SUPPORT_REPLY_MESSAGE,
+            destination_path=support_destination(ticket_id),
         )
+        self.db.add(row)
+        await self.db.flush()
+        await stage_email_for_notification(self.db, row)
 
     async def list_for_user(self, user: User, *, limit: int, cursor: str | None) -> NotificationPage:
         page_size = min(max(limit, 1), _PAGE_MAX)

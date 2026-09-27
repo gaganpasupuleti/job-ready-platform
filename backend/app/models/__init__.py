@@ -47,6 +47,7 @@ from app.models.learn import (
     Project,
 )
 from app.models.manual_assignment import ManualAssignmentSubmission
+from app.models.email_notification import EmailOutbox, EmailPreference
 from app.models.notification import Notification
 from app.models.support_ticket import SupportTicket, SupportTicketMessage, SupportTicketStatusEvent
 from app.models.scenario import (
@@ -129,6 +130,8 @@ __all__ = [
     "CourseLesson",
     "Project",
     "ManualAssignmentSubmission",
+    "EmailOutbox",
+    "EmailPreference",
     "Notification",
     "SupportTicket",
     "SupportTicketMessage",

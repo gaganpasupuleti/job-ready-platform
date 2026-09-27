@@ -7,7 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_user
 from app.db.session import get_db
+from app.email.preferences import EmailPreferenceService
 from app.models.user import User
+from app.schemas.email_preference import EmailPreferenceUpdate, EmailPreferences, EmailUnsubscribeRequest
 from app.schemas.notification import NotificationItem, NotificationPage, UnreadCount
 from app.services.notification_service import NotificationService
 
@@ -34,6 +36,31 @@ async def unread_notification_count(
     service: NotificationService = Depends(_svc),
 ) -> UnreadCount:
     return await service.unread_count(user)
+
+
+@router.get("/email-preferences", response_model=EmailPreferences)
+async def get_email_preferences(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> EmailPreferences:
+    return await EmailPreferenceService(db).get_for_user(user)
+
+
+@router.patch("/email-preferences", response_model=EmailPreferences)
+async def update_email_preferences(
+    payload: EmailPreferenceUpdate,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> EmailPreferences:
+    return await EmailPreferenceService(db).update_for_user(user, payload)
+
+
+@router.post("/email-unsubscribe", response_model=EmailPreferences)
+async def unsubscribe_email_category(
+    payload: EmailUnsubscribeRequest,
+    db: AsyncSession = Depends(get_db),
+) -> EmailPreferences:
+    return await EmailPreferenceService(db).unsubscribe(payload.token)
 
 
 @router.post("/read-all", response_model=UnreadCount)

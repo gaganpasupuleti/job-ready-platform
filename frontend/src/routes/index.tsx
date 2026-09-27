@@ -14,6 +14,7 @@ import { AdminContentBatchPage } from '@/pages/admin/AdminContentBatchPage'
 import { AdminContentPage } from '@/pages/admin/AdminContentPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
+import { EmailUnsubscribePage } from '@/pages/EmailUnsubscribePage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { MyRequestsPage } from '@/pages/support/MyRequestsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -131,6 +132,8 @@ export function AppRoutes() {
           </GuestRoute>
         }
       />
+
+      <Route path="/email/unsubscribe" element={<EmailUnsubscribePage />} />
 
       <Route
         element={

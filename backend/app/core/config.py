@@ -112,6 +112,13 @@ class Settings(BaseSettings):
     email_from_address: str = ""
     email_from_name: str = ""
     brevo_api_key: str = ""
+    frontend_base_url: str = "http://localhost:5173"
+    email_http_timeout_seconds: float = 10.0
+    email_max_attempts: int = 5
+    email_worker_batch_size: int = 20
+    # Must stay longer than the HTTP timeout. A claim that outlives it is
+    # ambiguous and is not resent.
+    email_claim_timeout_seconds: int = 30
 
     practice_catalog_cache_ttl_seconds: int = 300
     practice_catalog_cache_key: str = "practice:catalog"
@@ -155,6 +162,39 @@ class Settings(BaseSettings):
             and bool(key)
             and key != _EMAIL_PLACEHOLDER_KEY
         )
+
+    @property
+    def email_block_reason(self) -> str | None:
+        """Why mail must not be sent, or None when email_can_send is true.
+
+        Disabled sending and placeholder credentials are different reasons.
+        Both suppress new outbox rows instead of leaving them queued.
+        """
+        if self.email_can_send:
+            return None
+        provider = (self.email_provider or "").strip().lower()
+        address = (self.email_from_address or "").strip().lower()
+        key = (self.brevo_api_key or "").strip()
+        placeholder = (
+            provider == "brevo"
+            and (
+                not address
+                or "@" not in address
+                or address == _EMAIL_PLACEHOLDER_ADDRESS
+                or not key
+                or key == _EMAIL_PLACEHOLDER_KEY
+            )
+        )
+        if self.email_enabled and placeholder:
+            return "placeholder_configuration"
+        return "email_disabled"
+
+    @property
+    def frontend_link_base(self) -> str | None:
+        base = (self.frontend_base_url or "").strip().rstrip("/")
+        if base.startswith("https://") or base.startswith("http://"):
+            return base
+        return None
 
 
 settings = Settings()

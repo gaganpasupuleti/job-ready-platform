@@ -19,6 +19,7 @@ import {
   notificationLoadMessage,
   notificationRefreshMessage,
 } from '@/features/notifications/queryState'
+import { EmailPreferences } from '@/features/notifications/EmailPreferences'
 
 const REFRESH_MS = 60_000
 
@@ -166,6 +167,7 @@ export function NotificationBell() {
               Mark all read
             </Button>
           </div>
+          <EmailPreferences userId={userId} />
           {items.isLoading ? <LoadingState label="Loading notifications" /> : null}
           {notificationLoadFailed(items) ? (
             <div className="space-y-2">

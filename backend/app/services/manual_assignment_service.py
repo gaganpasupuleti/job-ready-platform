@@ -117,12 +117,12 @@ class ManualAssignmentService:
             return self._report(row, user, project_title)
         row.review_note = note
         row.status = REVIEWED
-        await NotificationService(self.db).stage_assignment_review(
-            recipient_id=row.user_id,
-            submission_id=row.id,
-            note=note,
-        )
         try:
+            await NotificationService(self.db).stage_assignment_review(
+                recipient_id=row.user_id,
+                submission_id=row.id,
+                note=note,
+            )
             await self.db.commit()
         except IntegrityError:
             await self.db.rollback()
