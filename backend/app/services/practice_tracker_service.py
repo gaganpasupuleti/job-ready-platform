@@ -289,6 +289,7 @@ class PracticeTrackerService:
                     Topic.id,
                     Topic.name,
                     Topic.slug,
+                    Category.name,
                     func.coalesce(correct_expr, 0),
                     func.coalesce(incorrect_expr, 0),
                 )
@@ -296,20 +297,21 @@ class PracticeTrackerService:
                 .join(PracticeSession, PracticeSession.id == PracticeAnswer.session_id)
                 .join(Question, Question.id == PracticeAnswer.question_id)
                 .join(Topic, Topic.id == Question.topic_id)
+                .join(Category, Category.id == Topic.category_id)
                 .where(
                     PracticeSession.user_id == user_id,
                     PracticeSession.status == SessionStatus.COMPLETED,
                     PracticeAnswer.answered_at.is_not(None),
                     PracticeAnswer.is_correct.is_not(None),
                 )
-                .group_by(Topic.id, Topic.name, Topic.slug)
+                .group_by(Topic.id, Topic.name, Topic.slug, Category.name)
                 .having(func.coalesce(incorrect_expr, 0) > 0)
                 .order_by(incorrect_expr.desc(), correct_expr.asc())
                 .limit(WEAK_TOPIC_LIMIT)
             )
         ).all()
         topics: list[WeakTopic] = []
-        for topic_id, name, slug, correct, incorrect in rows:
+        for topic_id, name, slug, category_name, correct, incorrect in rows:
             correct_count = int(correct or 0)
             incorrect_count = int(incorrect or 0)
             graded = correct_count + incorrect_count
@@ -318,6 +320,7 @@ class PracticeTrackerService:
                     topic_id=topic_id,
                     topic_name=name,
                     topic_slug=slug,
+                    category_name=category_name,
                     graded_answers=graded,
                     correct_answers=correct_count,
                     incorrect_answers=incorrect_count,

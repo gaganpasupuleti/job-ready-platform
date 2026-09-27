@@ -162,7 +162,8 @@ async def test_opening_and_active_session_are_not_completed_attempts(client, stu
     assert quiz["attempt_status"] == "completed"
     assert any(item["source_id"] == session["id"] for item in done["recent_practice"])
     assert session_body["incorrect_count"] == 0 or any(
-        item["topic_id"] == session["topic_id"] for item in done["weak_topics"]
+        item["topic_id"] == session["topic_id"] and item["category_name"]
+        for item in done["weak_topics"]
     )
 
 

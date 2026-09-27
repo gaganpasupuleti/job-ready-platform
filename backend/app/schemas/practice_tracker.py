@@ -43,6 +43,7 @@ class WeakTopic(BaseModel):
     topic_id: UUID
     topic_name: str
     topic_slug: str
+    category_name: str
     graded_answers: int
     correct_answers: int
     incorrect_answers: int

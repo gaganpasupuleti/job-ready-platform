@@ -33,6 +33,7 @@ export const apiEndpoints = {
       `/api/v1/practice/sessions/${sessionId}/questions/${number}/autosave`,
     complete: (sessionId: string) => `/api/v1/practice/sessions/${sessionId}/complete`,
     results: (sessionId: string) => `/api/v1/practice/sessions/${sessionId}/results`,
+    tracker: '/api/v1/practice/tracker',
   },
   admin: {
     questions: '/api/v1/admin/questions',

@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
+import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
-import { EmptyState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
+import { EmptyState, ErrorState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
+import { StudentOverview } from '@/features/dashboard/StudentOverview'
+import { sectionStaleMessage, sectionUnavailable } from '@/features/dashboard/overviewModel'
 import { StatCard } from '@/features/dashboard/StatCard'
+import { useAuth } from '@/hooks/useAuth'
 import { fetchAiHome } from '@/services/aiService'
 import { fetchCodingProgress } from '@/services/codingService'
 import { fetchInterviewProgress } from '@/services/interviewService'
@@ -15,10 +19,19 @@ import { fetchSqlProgress } from '@/services/sqlService'
 import type { DashboardCard } from '@/types'
 
 export function DashboardPage() {
-  const { data: continueItems, isLoading: continueLoading } = useQuery({
-    queryKey: ['continue-learning'],
+  const { user } = useAuth()
+  const continueLearning = useQuery({
+    queryKey: ['continue-learning', user?.id],
     queryFn: fetchContinueLearning,
+    enabled: Boolean(user?.id),
   })
+  const continueItems = continueLearning.data
+  const continueLoading = continueLearning.isPending && continueLearning.isFetching && continueItems == null
+  const continueUnavailable = sectionUnavailable(continueLearning)
+  const continueStale = sectionStaleMessage(
+    continueLearning,
+    typeof navigator === 'undefined' ? true : navigator.onLine,
+  )
   const { data: coding } = useQuery({ queryKey: ['coding-progress'], queryFn: fetchCodingProgress })
   const { data: sql } = useQuery({ queryKey: ['sql-progress'], queryFn: fetchSqlProgress })
   const { data: ai } = useQuery({ queryKey: ['ai-home'], queryFn: fetchAiHome })
@@ -80,7 +93,7 @@ export function DashboardPage() {
       <div>
         <h1 className="text-lg font-semibold text-[var(--color-text)]">Welcome back</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Continue learning, practice stats, target role readiness, and recommended next actions.
+          Continue learning, this UTC week, recent practice, quizzes, active jobs, and unread updates.
         </p>
       </div>
 
@@ -143,12 +156,30 @@ export function DashboardPage() {
           </div>
         </Card>
       )}
-      {!continueLoading && (continueItems?.length ?? 0) === 0 && (
+      {continueUnavailable ? (
+        <div className="space-y-3">
+          <ErrorState message="Continue learning could not be loaded." />
+          <Button type="button" variant="secondary" size="sm" onClick={() => void continueLearning.refetch()}>
+            Retry
+          </Button>
+        </div>
+      ) : null}
+      {continueStale ? (
+        <div className="space-y-3">
+          <ErrorState message={continueStale} />
+          <Button type="button" variant="secondary" size="sm" onClick={() => void continueLearning.refetch()}>
+            Retry
+          </Button>
+        </div>
+      ) : null}
+      {!continueLoading && !continueUnavailable && (continueItems?.length ?? 0) === 0 ? (
         <EmptyState
           title="No recent learning activity"
           description="Start a course, project, or practice path to see it here."
         />
-      )}
+      ) : null}
+
+      {user?.id ? <StudentOverview userId={user.id} /> : null}
 
       {jobsSummary && (
         <Card>
