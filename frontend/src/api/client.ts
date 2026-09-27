@@ -1,6 +1,14 @@
 import axios from 'axios'
 
 import { apiConfig, AUTH_TOKEN_KEY } from '@/api/config'
+import { clearAuthQueryCache } from '@/queryClient'
+
+function bearerToken(headers: { get?: (name: string) => unknown; Authorization?: unknown } | undefined): string {
+  if (!headers) return ''
+  const raw = typeof headers.get === 'function' ? headers.get('Authorization') : headers.Authorization
+  if (typeof raw !== 'string') return ''
+  return raw.replace(/^Bearer\s+/i, '')
+}
 
 export const apiClient = axios.create({
   baseURL: apiConfig.baseURL,
@@ -17,14 +25,24 @@ apiClient.interceptors.request.use((config) => {
 })
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const sent = bearerToken(response.config.headers)
+    const current = localStorage.getItem(AUTH_TOKEN_KEY) ?? ''
+    if (sent && sent !== current) {
+      return Promise.reject(new Error('Session changed'))
+    }
+    return response
+  },
   (error) => {
     const status = error.response?.status
     const requestUrl = String(error.config?.url ?? '')
     const isAuthEndpoint = /\/auth\/(login|register)\b/.test(requestUrl)
+    const sent = bearerToken(error.config?.headers)
+    const current = localStorage.getItem(AUTH_TOKEN_KEY) ?? ''
 
-    if (status === 401 && !isAuthEndpoint) {
+    if (status === 401 && !isAuthEndpoint && (!sent || sent === current)) {
       localStorage.removeItem(AUTH_TOKEN_KEY)
+      clearAuthQueryCache()
       if (typeof window !== 'undefined') {
         const path = window.location.pathname
         if (!path.startsWith('/login') && !path.startsWith('/register')) {

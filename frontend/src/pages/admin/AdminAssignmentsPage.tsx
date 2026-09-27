@@ -69,9 +69,14 @@ export function AdminAssignmentsPage() {
                 />
                 <div>
                   <Button type="submit" variant="primary" size="sm" disabled={review.isPending}>
-                    Save review
+                    {review.isPending ? 'Saving...' : 'Save review'}
                   </Button>
                 </div>
+                {review.isError ? (
+                  <p className="text-sm text-[var(--color-danger)]">
+                    {review.error instanceof Error ? review.error.message : 'Could not save the review.'}
+                  </p>
+                ) : null}
               </form>
             ) : null}
           </Card>

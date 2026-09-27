@@ -5,6 +5,12 @@ Revises: 018_job_source_taxonomy
 
 A submission is a link and an optional question. It does not complete a project
 and it is not a grade.
+
+The revision id is 33 characters. Alembic creates alembic_version.version_num
+as VARCHAR(32), so the stamp after this upgrade would fail. Widen that column
+before the new id is written. Downgrade leaves the wider column in place:
+the 33-character id is still stored when downgrade() runs, and shrinking it
+first would reject that value.
 """
 
 from typing import Sequence, Union
@@ -19,6 +25,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    op.execute("ALTER TABLE alembic_version ALTER COLUMN version_num TYPE VARCHAR(64)")
     op.create_table(
         "manual_assignment_submissions",
         sa.Column("id", sa.Uuid(), nullable=False),

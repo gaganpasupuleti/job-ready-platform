@@ -24,7 +24,7 @@ export function PracticeResultsPage() {
   })
 
   const incorrectIds = (data?.questions ?? [])
-    .filter((item) => !item.is_correct && item.question_id)
+    .filter((item) => !item.is_correct && item.selected_option_ids.length > 0 && item.question_id)
     .map((item) => item.question_id)
 
   const retry = useMutation({

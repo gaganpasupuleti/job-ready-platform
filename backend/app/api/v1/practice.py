@@ -48,11 +48,7 @@ async def create_retry_session(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> SessionDetailResponse:
-    from uuid import UUID
-
-    return await PracticeService(db).create_retry_session(
-        current_user, [UUID(q) for q in payload.question_ids]
-    )
+    return await PracticeService(db).create_retry_session(current_user, payload.question_ids)
 
 
 @router.get("/sessions/{session_id}", response_model=SessionDetailResponse)

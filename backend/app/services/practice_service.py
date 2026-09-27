@@ -88,7 +88,9 @@ class PracticeService:
         return self._session_detail(session, answered_count=0)
 
     async def create_retry_session(self, user: User, question_ids: list[UUID]) -> SessionDetailResponse:
-        unique_ids = list(dict.fromkeys(question_ids))[:50]
+        unique_ids = list(dict.fromkeys(question_ids))
+        if len(unique_ids) > 50:
+            raise AppException("At most 50 questions can be retried at once.", status_code=400)
         questions = await self.question_repo.find_by_ids(unique_ids)
         if not questions:
             raise AppException("No active questions found for the given IDs", status_code=404)

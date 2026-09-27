@@ -1,19 +1,12 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
 
 import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 import { AuthProvider } from '@/hooks/useAuth'
+import { queryClient } from '@/queryClient'
 import { AppRoutes } from '@/routes'
 
 import './index.css'
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-})
 
 export function App() {
   return (

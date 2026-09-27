@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { ErrorState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
 import { fetchMyAssignments, submitManualAssignment } from '@/services/assignmentService'
 
 const inputClass =
@@ -16,7 +17,7 @@ export function ManualAssignmentSection({ projectId }: { projectId?: string }) {
   const [question, setQuestion] = useState('')
   const [error, setError] = useState('')
 
-  const { data } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['manual-assignments'],
     queryFn: fetchMyAssignments,
   })
@@ -31,7 +32,9 @@ export function ManualAssignmentSection({ projectId }: { projectId?: string }) {
       setError('')
       void queryClient.invalidateQueries({ queryKey: ['manual-assignments'] })
     },
-    onError: () => setError('Submit an https link. GitHub and other sites both work.'),
+    onError: (submitError: Error) => {
+      setError(submitError.message || 'Could not submit the assignment.')
+    },
   })
 
   const mine = (data ?? []).filter((item) => !projectId || item.project_id === projectId)
@@ -81,12 +84,17 @@ export function ManualAssignmentSection({ projectId }: { projectId?: string }) {
         {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
         <div>
           <Button type="submit" variant="primary" disabled={submit.isPending}>
-            Submit for review
+            {submit.isPending ? 'Submitting...' : 'Submit for review'}
           </Button>
         </div>
       </form>
 
-      {mine.length > 0 ? (
+      {isLoading ? <LoadingState label="Loading your submissions" /> : null}
+      {isError ? <ErrorState message="Could not load your submissions." /> : null}
+      {!isLoading && !isError && mine.length === 0 ? (
+        <p className="mt-4 text-sm text-[var(--color-text-muted)]">No submissions yet.</p>
+      ) : null}
+      {!isLoading && !isError && mine.length > 0 ? (
         <div className="mt-4 space-y-3">
           {mine.map((item) => (
             <div key={item.id} className="rounded-md border border-[var(--color-border)] p-3 text-sm">

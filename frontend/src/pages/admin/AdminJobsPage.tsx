@@ -51,7 +51,7 @@ export function AdminJobsPage() {
     enabled: tab === 'jobs',
   })
 
-  const { data: decisions, isLoading: decisionsLoading } = useQuery({
+  const { data: decisions, isLoading: decisionsLoading, isError: decisionsError } = useQuery({
     queryKey: ['publication-decisions'],
     queryFn: fetchPublicationDecisions,
     enabled: tab === 'catalog',
@@ -212,6 +212,8 @@ export function AdminJobsPage() {
             <CardHeader title="Recorded decisions" />
             {decisionsLoading ? (
               <LoadingState label="Loading decisions" />
+            ) : decisionsError ? (
+              <ErrorState message="Could not load publication decisions." />
             ) : decisions && decisions.length > 0 ? (
               <ul className="space-y-2 text-sm">
                 {decisions.map((item) => (
