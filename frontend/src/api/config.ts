@@ -224,6 +224,12 @@ export const apiEndpoints = {
     ticket: (id: string) => `/api/v1/support/tickets/${id}`,
     replies: (id: string) => `/api/v1/support/tickets/${id}/replies`,
   },
+  notifications: {
+    list: '/api/v1/notifications',
+    unread: '/api/v1/notifications/unread-count',
+    readAll: '/api/v1/notifications/read-all',
+    read: (id: string) => `/api/v1/notifications/${id}/read`,
+  },
   applications: {
     list: '/api/v1/applications',
     detail: (id: string) => `/api/v1/applications/${id}`,

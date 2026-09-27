@@ -10,6 +10,7 @@ from sqlalchemy.orm import selectinload
 from app.core.exceptions import AppException
 from app.models.support_ticket import SupportTicket, SupportTicketMessage, SupportTicketStatusEvent
 from app.models.user import User
+from app.services.notification_service import NotificationService
 from app.schemas.support_ticket import (
     AdminSupportTicketDetail,
     AdminSupportTicketSummary,
@@ -91,7 +92,9 @@ class SupportTicketService:
         payload: SupportReplyCreate,
     ) -> SupportTicketDetail:
         ticket = await self._owned(user, ticket_id)
-        await self._add_reply(ticket, user, payload)
+        _message, created = await self._prepare_reply(ticket, user, payload)
+        if created:
+            await self._commit_reply(ticket, payload)
         return await self.student_detail(user, ticket_id)
 
     async def admin_list(
@@ -133,7 +136,16 @@ class SupportTicketService:
         ticket = await self._loaded(ticket_id)
         if ticket is None:
             raise AppException("Request not found", status_code=404)
-        await self._add_reply(ticket, actor, payload)
+        message, created = await self._prepare_reply(ticket, actor, payload)
+        if created:
+            await NotificationService(self.db).stage_support_reply(
+                recipient_id=ticket.user_id,
+                ticket_id=ticket.id,
+                message_id=message.id,
+                author_id=actor.id,
+                author_role=_role(actor),
+            )
+            await self._commit_reply(ticket, payload)
         return await self.admin_detail(ticket_id)
 
     async def change_status(
@@ -175,15 +187,21 @@ class SupportTicketService:
         self.db.expire(ticket)
         return await self.admin_detail(ticket_id)
 
-    async def _add_reply(self, ticket: SupportTicket, author: User, payload: SupportReplyCreate) -> None:
-        existing = await self._message_for_request(ticket.id, payload.client_request_id)
+    async def _prepare_reply(
+        self,
+        ticket: SupportTicket,
+        author: User,
+        payload: SupportReplyCreate,
+    ) -> tuple[SupportTicketMessage, bool]:
+        ticket_id = ticket.id
+        existing = await self._message_for_request(ticket_id, payload.client_request_id)
         if existing is not None:
             if existing.body != payload.body:
                 raise AppException("This reply was already sent with different text", status_code=409)
-            return
+            return existing, False
         await self._enforce_reply_limit(author.id)
         message = SupportTicketMessage(
-            ticket_id=ticket.id,
+            ticket_id=ticket_id,
             author_id=author.id,
             author_name=_name(author),
             author_role=_role(author),
@@ -193,12 +211,25 @@ class SupportTicketService:
         ticket.updated_at = datetime.now(timezone.utc)
         self.db.add(message)
         try:
+            await self.db.flush()
+        except IntegrityError:
+            await self.db.rollback()
+            existing = await self._message_for_request(ticket_id, payload.client_request_id)
+            if existing is None or existing.body != payload.body:
+                raise AppException("Could not save this reply. Try again.", status_code=409) from None
+            return existing, False
+        return message, True
+
+    async def _commit_reply(self, ticket: SupportTicket, payload: SupportReplyCreate) -> None:
+        ticket_id = ticket.id
+        try:
             await self.db.commit()
         except IntegrityError:
             await self.db.rollback()
-            existing = await self._message_for_request(ticket.id, payload.client_request_id)
+            existing = await self._message_for_request(ticket_id, payload.client_request_id)
             if existing is None or existing.body != payload.body:
                 raise AppException("Could not save this reply. Try again.", status_code=409) from None
+            return
         self.db.expire(ticket)
 
     async def _enforce_ticket_limit(self, user_id: uuid.UUID) -> None:

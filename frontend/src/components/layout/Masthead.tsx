@@ -4,6 +4,7 @@ import { ChevronDown, LogOut, Menu, Moon, Sun, X } from 'lucide-react'
 
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
+import { NotificationBell } from '@/features/notifications/NotificationBell'
 import { isPrimaryNavActive, navigationConfig, primaryNavItems } from '@/components/navigation/navConfig'
 import { useAuth } from '@/hooks/useAuth'
 import { useTheme } from '@/hooks/useTheme'
@@ -118,6 +119,7 @@ export function Masthead({
           </div>
         </nav>
         <div className="masthead-tools">
+          {user ? <NotificationBell /> : null}
           {user ? (
             <Button
               variant="ghost"

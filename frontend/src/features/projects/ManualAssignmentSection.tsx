@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Button } from '@/components/common/Button'
@@ -11,6 +12,7 @@ const inputClass =
 
 export function ManualAssignmentSection({ projectId }: { projectId?: string }) {
   const queryClient = useQueryClient()
+  const location = useLocation()
   const [title, setTitle] = useState('')
   const [link, setLink] = useState('')
   const [note, setNote] = useState('')
@@ -38,6 +40,12 @@ export function ManualAssignmentSection({ projectId }: { projectId?: string }) {
   })
 
   const mine = (data ?? []).filter((item) => !projectId || item.project_id === projectId)
+
+  useEffect(() => {
+    const id = location.hash.replace(/^#/, '')
+    if (!id.startsWith('submission-')) return
+    document.getElementById(id)?.scrollIntoView({ block: 'nearest' })
+  }, [location.hash, data])
 
   return (
     <Card>
@@ -97,7 +105,7 @@ export function ManualAssignmentSection({ projectId }: { projectId?: string }) {
       {!isLoading && !isError && mine.length > 0 ? (
         <div className="mt-4 space-y-3">
           {mine.map((item) => (
-            <div key={item.id} className="rounded-md border border-[var(--color-border)] p-3 text-sm">
+            <div key={item.id} id={`submission-${item.id}`} className="rounded-md border border-[var(--color-border)] p-3 text-sm">
               <p className="font-medium">{item.title}</p>
               <a className="text-[var(--color-accent)] hover:underline" href={item.link} target="_blank" rel="noreferrer">
                 {item.link}

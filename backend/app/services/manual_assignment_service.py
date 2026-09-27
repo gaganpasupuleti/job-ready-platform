@@ -6,12 +6,14 @@ from urllib.parse import urlparse
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import AppException
 from app.models.learn import Project
 from app.models.manual_assignment import AWAITING_REVIEW, REVIEWED, ManualAssignmentSubmission
 from app.models.user import User
+from app.services.notification_service import NotificationService
 
 
 def normalize_https_link(value: str) -> str:
@@ -100,16 +102,38 @@ class ManualAssignmentService:
         note = review_note.strip()
         if len(note) < 3:
             raise AppException("Add a short review note.", status_code=400)
-        row = await self.db.get(ManualAssignmentSubmission, submission_id)
+        row = await self.db.scalar(
+            select(ManualAssignmentSubmission)
+            .where(ManualAssignmentSubmission.id == submission_id)
+            .with_for_update()
+        )
         if row is None:
             raise AppException("Submission not found", status_code=404)
         user = await self.db.get(User, row.user_id)
         if user is None:
             raise AppException("Submission not found", status_code=404)
+        if (row.review_note or "") == note and row.status == REVIEWED:
+            project_title = await self._project_title(row.project_id)
+            return self._report(row, user, project_title)
         row.review_note = note
         row.status = REVIEWED
-        await self.db.commit()
-        await self.db.refresh(row)
+        await NotificationService(self.db).stage_assignment_review(
+            recipient_id=row.user_id,
+            submission_id=row.id,
+            note=note,
+        )
+        try:
+            await self.db.commit()
+        except IntegrityError:
+            await self.db.rollback()
+            row = await self.db.get(ManualAssignmentSubmission, submission_id)
+            if row is None or (row.review_note or "") != note:
+                raise AppException("Could not save this review. Try again.", status_code=409) from None
+            user = await self.db.get(User, row.user_id)
+            if user is None:
+                raise AppException("Submission not found", status_code=404)
+        else:
+            await self.db.refresh(row)
         project_title = await self._project_title(row.project_id)
         return self._report(row, user, project_title)
 

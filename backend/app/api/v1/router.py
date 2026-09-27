@@ -24,6 +24,7 @@ from app.api.v1 import (
     learn,
     mistakes,
     modules,
+    notifications,
     practice,
     readiness,
     sql_practice,
@@ -56,5 +57,6 @@ api_router.include_router(admin_jobs.router, tags=["admin-jobs"])
 api_router.include_router(admin_assignments.router, tags=["admin-assignments"])
 api_router.include_router(admin_support.router, tags=["admin-support"])
 api_router.include_router(support.router, tags=["support"])
+api_router.include_router(notifications.router, tags=["notifications"])
 api_router.include_router(admin_readiness.router, tags=["admin-readiness"])
 api_router.include_router(admin_learn.router, tags=["admin-learn"])
