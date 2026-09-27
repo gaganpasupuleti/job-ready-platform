@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 import { Button } from '@/components/common/Button'
 import { ErrorState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
+import { supportLoadFailed, supportLoadMessage } from '@/features/support/queryState'
 import { useAuth } from '@/hooks/useAuth'
 import {
   SUPPORT_CATEGORIES,
@@ -182,9 +183,9 @@ export function FeedbackPanel({ open, onClose }: { open: boolean; onClose: () =>
             </Link>
           </div>
           {tickets.isLoading ? <LoadingState label="Loading your requests" /> : null}
-          {tickets.isError ? (
+          {supportLoadFailed(tickets) ? (
             <div className="space-y-2">
-              <ErrorState message="Could not load your requests." />
+              <ErrorState message={supportLoadMessage(tickets.error, 'Could not load your requests.')} />
               <Button type="button" variant="secondary" size="sm" onClick={() => tickets.refetch()}>
                 Retry
               </Button>

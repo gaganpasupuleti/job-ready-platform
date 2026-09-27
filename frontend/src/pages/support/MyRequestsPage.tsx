@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
 import { ErrorState, EmptyState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
+import { supportLoadFailed, supportLoadMessage } from '@/features/support/queryState'
 import { SupportTimeline } from '@/features/support/SupportTimeline'
 import { useAuth } from '@/hooks/useAuth'
 import {
@@ -52,9 +53,9 @@ export function MyRequestsPage() {
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">Feedback you have sent, including replies and status.</p>
       </div>
       {tickets.isLoading ? <LoadingState label="Loading your requests" /> : null}
-      {tickets.isError ? (
+      {supportLoadFailed(tickets) ? (
         <div className="space-y-2">
-          <ErrorState message="Could not load your requests." />
+          <ErrorState message={supportLoadMessage(tickets.error, 'Could not load your requests.')} />
           <Button type="button" variant="secondary" size="sm" onClick={() => tickets.refetch()}>
             Retry
           </Button>
@@ -84,9 +85,9 @@ export function MyRequestsPage() {
       ) : null}
 
       {ticketId && ticket.isLoading ? <LoadingState label="Loading request" /> : null}
-      {ticketId && ticket.isError ? (
+      {ticketId && supportLoadFailed(ticket) ? (
         <div className="space-y-2">
-          <ErrorState message={ticket.error instanceof Error ? ticket.error.message : 'Could not load this request.'} />
+          <ErrorState message={supportLoadMessage(ticket.error, 'Could not load this request.')} />
           <Button type="button" variant="secondary" size="sm" onClick={() => ticket.refetch()}>
             Retry
           </Button>
