@@ -16,6 +16,8 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { EmailUnsubscribePage } from '@/pages/EmailUnsubscribePage'
 import { DashboardPage } from '@/pages/DashboardPage'
+import { LibraryBookPage } from '@/pages/library/LibraryBookPage'
+import { LibraryPage } from '@/pages/library/LibraryPage'
 import { MyRequestsPage } from '@/pages/support/MyRequestsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { AptitudePage } from '@/pages/practice/AptitudePage'
@@ -47,6 +49,7 @@ import { CompanyPrepDetailPage } from '@/pages/interviews/CompanyPrepDetailPage'
 import { AdminInterviewPacksPage } from '@/pages/admin/AdminInterviewPacksPage'
 import { AdminAssignmentsPage } from '@/pages/admin/AdminAssignmentsPage'
 import { AdminFeedbackPage } from '@/pages/admin/AdminFeedbackPage'
+import { AdminLibraryPage } from '@/pages/admin/AdminLibraryPage'
 import { AdminJobsPage } from '@/pages/admin/AdminJobsPage'
 import { AdminReadinessPage } from '@/pages/admin/AdminReadinessPage'
 import { JobsApplicationsPage } from '@/pages/jobs/JobsApplicationsPage'
@@ -143,6 +146,8 @@ export function AppRoutes() {
         }
       >
         <Route index element={<DashboardPage />} />
+        <Route path="library" element={<LibraryPage />} />
+        <Route path="library/:bookId" element={<LibraryBookPage />} />
         <Route path="practice" element={<PracticeHubPage />} />
         <Route path="practice/paths/:slug" element={<PracticePathPage />} />
         <Route path="practice/projects" element={<ProjectsPage />} />
@@ -500,6 +505,14 @@ export function AppRoutes() {
         <Route
           path="support/requests/:ticketId"
           element={<MyRequestsPage />}
+        />
+        <Route
+          path="admin/library"
+          element={
+            <AdminRoute>
+              <AdminLibraryPage />
+            </AdminRoute>
+          }
         />
         <Route
           path="admin/feedback"

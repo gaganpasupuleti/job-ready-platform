@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import {
   Award,
+  BookOpen,
   Bookmark,
   Bot,
   Brain,
@@ -101,6 +102,7 @@ export const navigationConfig: NavSection[] = [
     title: 'Progress',
     items: [
       { label: 'Job Readiness', path: '/readiness', icon: 'Target' },
+      { label: 'Library', path: '/library', icon: 'BookOpen' },
       { label: 'Mistake Book', path: '/mistakes', icon: 'FileQuestion' },
       { label: 'Bookmarks', path: '/bookmarks', icon: 'Bookmark' },
       { label: 'Leaderboard', path: '/leaderboard', icon: 'Flame' },
@@ -128,6 +130,7 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Briefcase,
   Target,
   Bookmark,
+  BookOpen,
   Award,
   Flame,
   Server,

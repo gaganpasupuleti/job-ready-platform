@@ -95,6 +95,7 @@ from app.models.learn import (  # noqa: F401
     UserProjectProgress,
     UserProjectTaskProgress,
 )
+from app.models.library import LibraryBook, LibraryBookmark, LibraryReadingStatus  # noqa: F401
 from app.models.readiness import (  # noqa: F401
     MistakeItem,
     RoleSkillRequirement,

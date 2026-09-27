@@ -254,6 +254,15 @@ export const apiEndpoints = {
     review: (id: string) => `/api/v1/mistakes/${id}/review`,
     retrySession: '/api/v1/mistakes/retry-session',
   },
+  library: {
+    books: '/api/v1/library/books',
+    saved: '/api/v1/library/saved',
+    book: (id: string) => `/api/v1/library/books/${id}`,
+    bookmark: (id: string) => `/api/v1/library/books/${id}/bookmark`,
+    readingStatus: (id: string) => `/api/v1/library/books/${id}/reading-status`,
+    adminBooks: '/api/v1/admin/library/books',
+    adminBook: (id: string) => `/api/v1/admin/library/books/${id}`,
+  },
 } as const
 
 export const AUTH_TOKEN_KEY = 'jrp_access_token'
