@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.db.session import AsyncSessionLocal
 from app.models.coding import CodingProblem
@@ -1026,6 +1026,13 @@ async def _ensure_python_course(session) -> Course:
         await session.execute(select(Course).where(Course.slug == "python-foundations"))
     ).scalar_one_or_none()
     if course is not None:
+        # Shared tests used to leave this flag set. The course is completable without Judge0.
+        module_ids = select(CourseModule.id).where(CourseModule.course_id == course.id)
+        await session.execute(
+            update(CourseLesson)
+            .where(CourseLesson.module_id.in_(module_ids))
+            .values(completion_requires_submit=False)
+        )
         return course
 
     course = Course(

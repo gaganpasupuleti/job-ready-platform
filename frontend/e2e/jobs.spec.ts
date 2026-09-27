@@ -36,11 +36,28 @@ test.describe('Jobs portal', () => {
   })
 
   test('mark applied and application detail', async ({ page }) => {
-    await page.goto('/jobs/devops-engineer-cognizant')
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
-    const applyBtn = page.getByRole('button', { name: /mark applied/i })
-    await expect(applyBtn).toBeVisible({ timeout: 15_000 })
-    await applyBtn.click()
+    await page.goto('/jobs')
+    await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible({ timeout: 20_000 })
+    const hrefs = await page.locator('a[href^="/jobs/"]').evaluateAll((nodes) =>
+      nodes
+        .map((node) => node.getAttribute('href') || '')
+        .filter((href) => href && !/^\/jobs\/(saved|applications|recommended)(\/|$)/.test(href)),
+    )
+    let marked = false
+    for (const href of [...new Set(hrefs)]) {
+      await page.goto(href)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
+      const applyBtn = page.getByRole('button', { name: /mark applied/i })
+      try {
+        await expect(applyBtn).toBeVisible({ timeout: 4_000 })
+      } catch {
+        continue
+      }
+      await applyBtn.click()
+      marked = true
+      break
+    }
+    expect(marked, 'a published job still offering Mark applied').toBe(true)
     await expect(page).toHaveURL(/\/jobs\/applications\//, { timeout: 15_000 })
     await page.goto('/jobs/applications')
     await expect(page.getByRole('heading', { name: /applications/i }).first()).toBeVisible({

@@ -17,7 +17,7 @@ export function CourseListPage() {
         <Link to="/practice" className="text-xs text-[var(--color-accent)] hover:underline">
           ← Practice Hub
         </Link>
-        <h2 className="mt-1 text-lg font-semibold text-[var(--color-text)]">Interactive Courses</h2>
+        <h1 className="mt-1 text-lg font-semibold text-[var(--color-text)]">Interactive Courses</h1>
         <p className="text-sm text-[var(--color-text-muted)]">
           Guided lessons with concepts, interactive code, checkpoints, and hints — no AI tutor.
         </p>

@@ -122,7 +122,7 @@ export function Masthead({ compact = false }: { compact?: boolean }) {
             <button
               type="button"
               className="profile-button"
-              aria-label={`Signed in as ${user.username}. Log out`}
+              aria-label={`Signed in as ${user.username}. Logout`}
               onClick={() => logout()}
             >
               {initials}

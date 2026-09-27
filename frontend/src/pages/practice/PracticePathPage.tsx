@@ -39,7 +39,7 @@ export function PracticePathPage() {
           <Link to="/practice" className="text-xs text-[var(--color-accent)] hover:underline">
             ← Practice Hub
           </Link>
-          <h2 className="mt-1 text-lg font-semibold text-[var(--color-text)]">{data.title}</h2>
+          <h1 className="mt-1 text-lg font-semibold text-[var(--color-text)]">{data.title}</h1>
           <p className="text-sm text-[var(--color-text-muted)]">{data.short_description}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             <Badge>{data.difficulty}</Badge>

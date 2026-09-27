@@ -83,7 +83,7 @@ export function PracticeCatalog({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">{title}</h2>
+        <h1 className="text-lg font-semibold text-[var(--color-text)]">{title}</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">{description}</p>
       </div>
 
