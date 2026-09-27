@@ -26,6 +26,21 @@ import {
 
 import type { NavSection } from '@/types'
 
+/** Primary horizontal nav. Coding stays on the existing practice route. */
+export const primaryNavItems: { label: string; path: string; match?: string[] }[] = [
+  { label: 'Jobs', path: '/jobs', match: ['/jobs'] },
+  { label: 'Overview', path: '/', match: ['/'] },
+  { label: 'Practice', path: '/practice', match: ['/practice'] },
+  { label: 'Learn', path: '/learn', match: ['/learn', '/projects', '/practice/projects'] },
+  { label: 'Coding', path: '/practice/coding', match: ['/practice/coding', '/practice/dsa'] },
+  {
+    label: 'Assessments',
+    path: '/practice/aptitude',
+    match: ['/practice/aptitude', '/practice/mcq', '/practice/sessions'],
+  },
+  { label: 'Review', path: '/mistakes', match: ['/mistakes'] },
+]
+
 export const navigationConfig: NavSection[] = [
   {
     title: 'Main',
@@ -121,4 +136,20 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
 export function getNavIcon(name?: string) {
   if (!name) return LayoutDashboard
   return iconMap[name] ?? LayoutDashboard
+}
+
+export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
+  if (item.path === '/') return pathname === '/'
+  let winner: { path: string; length: number } | null = null
+  for (const candidate of primaryNavItems) {
+    if (candidate.path === '/') continue
+    for (const prefix of candidate.match ?? [candidate.path]) {
+      if (prefix === '/') continue
+      const hit = pathname === prefix || pathname.startsWith(`${prefix}/`)
+      if (hit && (!winner || prefix.length > winner.length)) {
+        winner = { path: candidate.path, length: prefix.length }
+      }
+    }
+  }
+  return winner?.path === item.path
 }

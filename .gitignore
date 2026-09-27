@@ -61,3 +61,6 @@ frontend/.vite/
 backend/alembic/versions/*.pyc
 
 backups/
+
+# Superdesign temp artifacts
+.superdesign/tmp/

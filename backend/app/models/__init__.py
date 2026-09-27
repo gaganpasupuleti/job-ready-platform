@@ -46,6 +46,7 @@ from app.models.learn import (
     PracticePath,
     Project,
 )
+from app.models.manual_assignment import ManualAssignmentSubmission
 from app.models.scenario import (
     ScenarioChallenge,
     ScenarioOption,
@@ -125,6 +126,7 @@ __all__ = [
     "CourseModule",
     "CourseLesson",
     "Project",
+    "ManualAssignmentSubmission",
     "CodingProblem",
     "CodingTestCase",
     "CodingSubmission",

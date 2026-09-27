@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { ManualAssignmentSection } from '@/features/projects/ManualAssignmentSection'
 import { completeProjectTask, fetchProject, startProject } from '@/services/learnService'
 
 export function ProjectDetailPage() {
@@ -123,6 +124,8 @@ export function ProjectDetailPage() {
           />
         </div>
       </Card>
+
+      <ManualAssignmentSection projectId={data.id} />
 
       {data.modules.map((mod) => (
         <Card key={mod.id}>

@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { Card } from '@/components/common/Card'
+import { ManualAssignmentSection } from '@/features/projects/ManualAssignmentSection'
 import { fetchProjects } from '@/services/learnService'
 
 export function ProjectsPage() {
@@ -31,6 +32,8 @@ export function ProjectsPage() {
           Guided builds that reuse coding, SQL, and MCQ engines. Original Job Ready content.
         </p>
       </div>
+
+      <ManualAssignmentSection />
 
       <div className="flex gap-2 overflow-x-auto pb-1">
         <button

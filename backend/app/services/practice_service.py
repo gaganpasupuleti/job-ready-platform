@@ -309,6 +309,7 @@ class PracticeService:
             reviews.append(
                 QuestionReviewItem(
                     question_number=sq.question_number,
+                    question_id=question.id,
                     question_text=question.question_text,
                     selected_option_ids=selected_ids,
                     correct_option_ids=correct_ids,

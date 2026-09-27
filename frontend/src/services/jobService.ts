@@ -15,8 +15,10 @@ import type {
   IngestionErrorPublic,
   IngestionRunPublic,
   JobDetail,
+  JobFamilyCounts,
   JobListFilters,
   JobListResponse,
+  PublicationDecision,
   JobPreferenceUpdate,
   JobSourcePublic,
   JobsSummary,
@@ -25,6 +27,11 @@ import type {
 
 export async function fetchJobs(filters?: JobListFilters) {
   const { data } = await apiClient.get<JobListResponse>(apiEndpoints.jobs.list, { params: filters })
+  return data
+}
+
+export async function fetchJobFamilyCounts(filters?: Omit<JobListFilters, 'role_family' | 'sort' | 'page' | 'limit'>) {
+  const { data } = await apiClient.get<JobFamilyCounts>(apiEndpoints.jobs.familyCounts, { params: filters })
   return data
 }
 
@@ -157,6 +164,19 @@ export async function validateJobImport(file: File) {
     apiEndpoints.admin.jobs.importValidate,
     form,
     { headers: { 'Content-Type': undefined } },
+  )
+  return data
+}
+
+export async function fetchPublicationDecisions() {
+  const { data } = await apiClient.get<PublicationDecision[]>(apiEndpoints.admin.jobs.publicationDecisions)
+  return data
+}
+
+export async function recordPublicationDecision(payload: PublicationDecision) {
+  const { data } = await apiClient.post<PublicationDecision>(
+    apiEndpoints.admin.jobs.publicationDecisions,
+    payload,
   )
   return data
 }

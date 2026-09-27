@@ -299,11 +299,30 @@ export interface AdminJobListResponse {
   limit: number
 }
 
+export interface JobFamilyCount {
+  id: string
+  label: string
+  role_id: string
+  count: number
+}
+
+export interface JobFamilyCounts {
+  all: number
+  families: JobFamilyCount[]
+}
+
+export interface PublicationDecision {
+  source: string
+  source_job_id: string
+  decision: 'publish' | 'withhold'
+}
+
 export interface JobListFilters {
   q?: string
   role?: string
   skill?: string
   company?: string
+  role_family?: string
   city?: string
   state?: string
   country?: string

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Button } from '@/components/common/Button'
@@ -10,6 +10,7 @@ import {
   fetchMistakes,
   markMistakeReviewed,
   resolveMistake,
+  startRetrySession,
 } from '@/services/mistakeService'
 
 const FILTERS = ['all', 'mcq', 'sql', 'coding', 'prompt', 'scenario', 'interview'] as const
@@ -17,6 +18,7 @@ const FILTERS = ['all', 'mcq', 'sql', 'coding', 'prompt', 'scenario', 'interview
 export function MistakesPage() {
   const [sourceFilter, setSourceFilter] = useState<string>('all')
   const [view, setView] = useState('recent')
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const { data: summary } = useQuery({ queryKey: ['mistakes-summary'], queryFn: fetchMistakeSummary })
@@ -42,6 +44,15 @@ export function MistakesPage() {
     mutationFn: resolveMistake,
     onSuccess: invalidate,
   })
+  const retryMutation = useMutation({
+    mutationFn: (questionIds: string[]) => startRetrySession(questionIds),
+    onSuccess: (session) => navigate(`/practice/sessions/${session.id}`),
+  })
+
+  const mcqIds = (data ?? [])
+    .filter((item) => item.source_type === 'mcq' && item.status !== 'resolved' && item.source_id)
+    .map((item) => item.source_id)
+    .slice(0, 50)
 
   if (isLoading) return <LoadingState label="Loading mistake book" />
   if (error) return <ErrorState message="Could not load mistakes." />
@@ -68,6 +79,22 @@ export function MistakesPage() {
           />
         </div>
       )}
+
+      {mcqIds.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => retryMutation.mutate([...new Set(mcqIds)])}
+            disabled={retryMutation.isPending}
+          >
+            Retry incorrect ({new Set(mcqIds).size})
+          </Button>
+          {retryMutation.isError ? (
+            <p className="text-sm text-[var(--color-danger)]">Could not start a retry session.</p>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="flex flex-wrap gap-2">
         {['recent', 'repeated', 'unresolved', 'resolved'].map((v) => (
@@ -120,13 +147,22 @@ export function MistakesPage() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {item.retry_href && (
+                  {item.source_type === 'mcq' && item.status !== 'resolved' ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => retryMutation.mutate([item.source_id])}
+                      disabled={retryMutation.isPending}
+                    >
+                      Retry incorrect
+                    </Button>
+                  ) : item.retry_href ? (
                     <Link to={item.retry_href}>
                       <Button size="sm" variant="secondary">
                         Retry
                       </Button>
                     </Link>
-                  )}
+                  ) : null}
                   {item.status !== 'reviewed' && item.status !== 'resolved' && (
                     <Button size="sm" variant="secondary" onClick={() => reviewMutation.mutate(item.id)}>
                       Mark Reviewed

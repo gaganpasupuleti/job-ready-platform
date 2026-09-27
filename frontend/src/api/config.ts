@@ -85,7 +85,10 @@ export const apiEndpoints = {
       importErrors: (runId: string) => `/api/v1/admin/jobs/imports/${runId}/errors`,
       importValidate: '/api/v1/admin/jobs/imports/validate',
       importConfirm: '/api/v1/admin/jobs/imports/confirm',
+      publicationDecisions: '/api/v1/admin/jobs/publication-decisions',
     },
+    assignments: '/api/v1/admin/assignments',
+    assignment: (id: string) => `/api/v1/admin/assignments/${id}`,
     readiness: {
       roles: '/api/v1/admin/readiness/roles',
     },
@@ -208,6 +211,10 @@ export const apiEndpoints = {
     prepare: (id: string) => `/api/v1/jobs/${id}/prepare`,
     preferences: '/api/v1/jobs/preferences',
     match: (id: string) => `/api/v1/jobs/${id}/match`,
+    familyCounts: '/api/v1/jobs/family-counts',
+  },
+  assignments: {
+    list: '/api/v1/assignments',
   },
   applications: {
     list: '/api/v1/applications',

@@ -224,6 +224,15 @@ def parse_reviewed_batch(text: str) -> list[ReviewedIdentity]:
     return names
 
 
+async def list_publication_decisions(db: AsyncSession) -> list[JobPublicationDecision]:
+    rows = (
+        await db.execute(
+            select(JobPublicationDecision).order_by(JobPublicationDecision.updated_at.desc())
+        )
+    ).scalars().all()
+    return list(rows)
+
+
 async def load_publication_decisions(db: AsyncSession) -> dict[str, str]:
     rows = (await db.execute(select(JobPublicationDecision))).scalars().all()
     return {decision_key(row.source, row.source_job_id): row.decision for row in rows}

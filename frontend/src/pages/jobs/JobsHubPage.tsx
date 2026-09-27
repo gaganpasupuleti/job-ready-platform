@@ -10,7 +10,7 @@ import {
   LoadingState,
 } from '@/components/practice-workspace/PracticeWorkspace'
 import { JobCardView } from '@/features/jobs/JobCard'
-import { fetchJobs, fetchJobsSummary } from '@/services/jobService'
+import { fetchJobFamilyCounts, fetchJobs, fetchJobsSummary } from '@/services/jobService'
 
 const inputClass =
   'rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)]'
@@ -23,12 +23,14 @@ export function JobsHubPage() {
   const [company, setCompany] = useState(searchParams.get('company') ?? '')
   const page = Number(searchParams.get('page') ?? '1')
   const sort = searchParams.get('sort') ?? 'newest'
+  const roleFamily = searchParams.get('role_family') ?? ''
 
   const filters = {
     q: searchParams.get('q') || undefined,
     role: searchParams.get('role') || undefined,
     skill: searchParams.get('skill') || undefined,
     company: searchParams.get('company') || undefined,
+    role_family: roleFamily || undefined,
     sort,
     page,
     limit: 20,
@@ -37,6 +39,17 @@ export function JobsHubPage() {
   const { data: summary } = useQuery({
     queryKey: ['jobs-summary'],
     queryFn: fetchJobsSummary,
+  })
+
+  const { data: families } = useQuery({
+    queryKey: ['job-families', filters.q, filters.role, filters.skill, filters.company],
+    queryFn: () =>
+      fetchJobFamilyCounts({
+        q: filters.q,
+        role: filters.role,
+        skill: filters.skill,
+        company: filters.company,
+      }),
   })
 
   const { data, isLoading, error } = useQuery({
@@ -50,7 +63,16 @@ export function JobsHubPage() {
     if (role.trim()) next.set('role', role.trim())
     if (skill.trim()) next.set('skill', skill.trim())
     if (company.trim()) next.set('company', company.trim())
+    if (roleFamily) next.set('role_family', roleFamily)
     if (sort !== 'newest') next.set('sort', sort)
+    next.set('page', '1')
+    setSearchParams(next)
+  }
+
+  const selectFamily = (familyId: string) => {
+    const next = new URLSearchParams(searchParams)
+    if (familyId) next.set('role_family', familyId)
+    else next.delete('role_family')
     next.set('page', '1')
     setSearchParams(next)
   }
@@ -72,7 +94,7 @@ export function JobsHubPage() {
         <div>
           <h1 className="text-lg font-semibold text-[var(--color-text)]">Jobs</h1>
           <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-            Browse openings, save roles, and track applications — no fake match scores.
+            Published listings only. A source row stays hidden until it has an explicit publish decision and a reviewed sync.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -122,6 +144,26 @@ export function JobsHubPage() {
           </Card>
         </div>
       )}
+
+      {families && families.families.some((family) => family.count > 0) ? (
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          <FamilyPill
+            label={`All ${families.all}`}
+            active={!roleFamily}
+            onClick={() => selectFamily('')}
+          />
+          {families.families
+            .filter((family) => family.count > 0)
+            .map((family) => (
+              <FamilyPill
+                key={family.id}
+                label={`${family.label} ${family.count}`}
+                active={roleFamily === family.id}
+                onClick={() => selectFamily(family.id)}
+              />
+            ))}
+        </div>
+      ) : null}
 
       <Card>
         <CardHeader title="Search & filter" />
@@ -203,10 +245,34 @@ export function JobsHubPage() {
         </>
       ) : (
         <EmptyState
-          title="No jobs match your filters"
-          description="Try broader keywords or clear filters to see more openings."
+          title={roleFamily || q || role || skill || company ? 'No published jobs match these filters' : 'No published jobs yet'}
+          description="The catalog lists active jobs only. Source listings stay out until an admin records publish and the reviewed sync is applied."
         />
       )}
     </div>
+  )
+}
+
+function FamilyPill({
+  label,
+  active,
+  onClick,
+}: {
+  label: string
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs ${
+        active
+          ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
+          : 'border-[var(--color-border)] text-[var(--color-text-muted)]'
+      }`}
+      onClick={onClick}
+    >
+      {label}
+    </button>
   )
 }

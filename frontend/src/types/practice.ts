@@ -140,6 +140,7 @@ export interface TopicPerformance {
 
 export interface QuestionReviewItem {
   question_number: number
+  question_id: string
   question_text: string
   selected_option_ids: string[]
   correct_option_ids: string[]
