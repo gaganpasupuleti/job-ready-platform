@@ -19,8 +19,10 @@ from app.schemas.practice import (
     SessionQuestionResponse,
     SessionResultsResponse,
 )
+from app.schemas.practice_tracker import PracticeTrackerResponse
 from app.services.catalog_service import CatalogService
 from app.services.practice_service import PracticeService
+from app.services.practice_tracker_service import PracticeTrackerService
 
 router = APIRouter(prefix="/practice")
 
@@ -31,6 +33,14 @@ async def get_catalog(
     db: AsyncSession = Depends(get_db),
 ) -> CatalogResponse:
     return await CatalogService(db).get_catalog()
+
+
+@router.get("/tracker", response_model=PracticeTrackerResponse)
+async def get_practice_tracker(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> PracticeTrackerResponse:
+    return await PracticeTrackerService(db).snapshot(current_user)
 
 
 @router.post("/sessions", response_model=SessionDetailResponse)
