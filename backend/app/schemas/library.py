@@ -12,7 +12,8 @@ class LibraryBookWrite(BaseModel):
     author: str = Field(min_length=1, max_length=200)
     description: str = Field(default="", max_length=4000)
     category: str = Field(min_length=1, max_length=80)
-    external_url: str = Field(min_length=8, max_length=2000)
+    external_url: str | None = Field(default=None, max_length=2000)
+    storage_key: str | None = Field(default=None, max_length=400)
     status: BookStatus = "draft"
 
 
@@ -21,7 +22,8 @@ class LibraryBookPatch(BaseModel):
     author: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=4000)
     category: str | None = Field(default=None, min_length=1, max_length=80)
-    external_url: str | None = Field(default=None, min_length=8, max_length=2000)
+    external_url: str | None = Field(default=None, max_length=2000)
+    storage_key: str | None = Field(default=None, max_length=400)
     status: BookStatus | None = None
 
 
@@ -31,7 +33,8 @@ class AdminLibraryBook(BaseModel):
     author: str
     description: str
     category: str
-    external_url: str
+    external_url: str | None = None
+    storage_key: str | None = None
     status: BookStatus
 
 
@@ -42,9 +45,11 @@ class StudentLibraryBook(BaseModel):
     description: str
     category: str
     available: bool
+    has_file: bool
     external_url: str | None = None
     bookmarked: bool
     reading_status: ReadingStatus | None = None
+    last_page: int | None = None
 
 
 class StudentLibraryPage(BaseModel):
@@ -54,3 +59,12 @@ class StudentLibraryPage(BaseModel):
 
 class ReadingStatusUpdate(BaseModel):
     status: ReadingStatus
+
+
+class ReadingProgressUpdate(BaseModel):
+    last_page: int = Field(ge=1, le=10000)
+
+
+class ReadLink(BaseModel):
+    url: str
+    expires_in: int

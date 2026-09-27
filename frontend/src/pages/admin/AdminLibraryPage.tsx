@@ -21,6 +21,7 @@ const EMPTY: BookDraft = {
   description: '',
   category: '',
   external_url: '',
+  storage_key: '',
   status: 'draft',
 }
 
@@ -51,7 +52,8 @@ export function AdminLibraryPage() {
       author: book.author,
       description: book.description,
       category: book.category,
-      external_url: book.external_url,
+      external_url: book.external_url ?? '',
+      storage_key: book.storage_key ?? '',
       status: book.status,
     })
   }
@@ -62,7 +64,17 @@ export function AdminLibraryPage() {
       setFormError('Enter a title, author, and category.')
       return
     }
-    if (!draft.external_url.trim().toLowerCase().startsWith('https://')) {
+    const hasLink = draft.external_url.trim().length > 0
+    const hasFile = draft.storage_key.trim().length > 0
+    if (hasLink && hasFile) {
+      setFormError('Choose either an https link or a PDF object key.')
+      return
+    }
+    if (!hasLink && !hasFile) {
+      setFormError('Choose either an https link or a PDF object key.')
+      return
+    }
+    if (hasLink && !draft.external_url.trim().toLowerCase().startsWith('https://')) {
       setFormError('Only https links are allowed.')
       return
     }
@@ -85,7 +97,7 @@ export function AdminLibraryPage() {
       <div>
         <h1 className="text-lg font-semibold text-[var(--color-text)]">Library metadata</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          External https links only. Use a clearly identified local test URL. This does not upload a file.
+          Use an https link or a private PDF object key. The local test key is local-fixtures/jobready-library-fixture.pdf. This does not upload a file.
         </p>
       </div>
       <Card className="min-w-0">
@@ -107,6 +119,11 @@ export function AdminLibraryPage() {
             label="External https URL"
             value={draft.external_url}
             onChange={(external_url) => setDraft({ ...draft, external_url })}
+          />
+          <Field
+            label="PDF object key"
+            value={draft.storage_key}
+            onChange={(storage_key) => setDraft({ ...draft, storage_key })}
           />
           <label className="text-sm">
             <span className="mb-1 block text-xs text-[var(--color-text-muted)]">Status</span>
@@ -170,7 +187,7 @@ export function AdminLibraryPage() {
               <li key={book.id} className="min-w-0 rounded-md border border-[var(--color-border)] p-3">
                 <p className="break-words text-sm font-medium text-[var(--color-text)]">{book.title}</p>
                 <p className="break-words text-xs text-[var(--color-text-muted)]">
-                  {book.author} · {book.category} · {book.status}
+                  {book.author} · {book.category} · {book.storage_key ? 'PDF' : 'Link'} · {book.status}
                 </p>
                 <button type="button" className="mt-2 text-sm text-[var(--color-accent)] hover:underline" onClick={() => edit(book)}>
                   Edit

@@ -1,9 +1,9 @@
-"""External library links. Opening a row does not record reading."""
+"""Library books. Opening a row does not record reading or a page."""
 
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String, func
+from sqlalchemy import DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.session import Base
@@ -17,7 +17,8 @@ class LibraryBook(Base, UUIDPrimaryKeyMixin):
     author: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str] = mapped_column(String(4000), nullable=False, default="")
     category: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
-    external_url: Mapped[str] = mapped_column(String(2000), nullable=False)
+    external_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    storage_key: Mapped[str | None] = mapped_column(String(400), nullable=True)
     status: Mapped[str] = mapped_column(String(16), nullable=False, index=True)
     created_by: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"),
@@ -64,7 +65,8 @@ class LibraryReadingStatus(Base):
         ForeignKey("library_books.id", ondelete="CASCADE"),
         primary_key=True,
     )
-    status: Mapped[str] = mapped_column(String(16), nullable=False)
+    status: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    last_page: Mapped[int | None] = mapped_column(Integer, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import { apiEndpoints } from '@/api/config'
+import { apiEndpoints, AUTH_TOKEN_KEY } from '@/api/config'
 
 export type ReadingStatus = 'not_started' | 'reading' | 'completed'
 export type BookPublication = 'draft' | 'published' | 'archived'
@@ -11,9 +11,11 @@ export type StudentBook = {
   description: string
   category: string
   available: boolean
+  has_file: boolean
   external_url: string | null
   bookmarked: boolean
   reading_status: ReadingStatus | null
+  last_page: number | null
 }
 
 export type StudentBookPage = {
@@ -27,7 +29,8 @@ export type AdminBook = {
   author: string
   description: string
   category: string
-  external_url: string
+  external_url: string | null
+  storage_key: string | null
   status: BookPublication
 }
 
@@ -37,6 +40,7 @@ export type BookDraft = {
   description: string
   category: string
   external_url: string
+  storage_key: string
   status: BookPublication
 }
 
@@ -78,11 +82,55 @@ export async function fetchAdminBooks() {
 }
 
 export async function createAdminBook(payload: BookDraft) {
-  const { data } = await apiClient.post<AdminBook>(apiEndpoints.library.adminBooks, payload)
+  const { data } = await apiClient.post<AdminBook>(apiEndpoints.library.adminBooks, sourcePayload(payload))
   return data
 }
 
 export async function updateAdminBook(id: string, payload: BookDraft) {
-  const { data } = await apiClient.patch<AdminBook>(apiEndpoints.library.adminBook(id), payload)
+  const { data } = await apiClient.patch<AdminBook>(apiEndpoints.library.adminBook(id), sourcePayload(payload))
   return data
+}
+
+export async function fetchReadLink(id: string) {
+  const { data } = await apiClient.get<{ url: string; expires_in: number }>(apiEndpoints.library.readLink(id))
+  return data
+}
+
+export async function saveReadingProgress(id: string, lastPage: number) {
+  const { data } = await apiClient.put<StudentBook>(apiEndpoints.library.progress(id), { last_page: lastPage })
+  return data
+}
+
+export async function fetchLibraryFile(url: string) {
+  const headers: Record<string, string> = {}
+  const token = url.startsWith('/') ? localStorage.getItem(AUTH_TOKEN_KEY) : null
+  if (token) headers.Authorization = `Bearer ${token}`
+  const response = await fetch(url, { headers })
+  if (token && token !== localStorage.getItem(AUTH_TOKEN_KEY)) {
+    throw new Error('Session changed')
+  }
+  if (!response.ok) {
+    let message = 'This PDF file could not be opened.'
+    try {
+      const body = (await response.json()) as { detail?: unknown }
+      if (typeof body.detail === 'string') message = body.detail
+    } catch {
+      message = response.status === 404 ? 'This PDF file is missing.' : message
+    }
+    throw new Error(message)
+  }
+  return response.arrayBuffer()
+}
+
+function sourcePayload(draft: BookDraft) {
+  const payload: Record<string, string> = {
+    title: draft.title.trim(),
+    author: draft.author.trim(),
+    description: draft.description.trim(),
+    category: draft.category.trim(),
+    status: draft.status,
+  }
+  if (draft.storage_key.trim()) payload.storage_key = draft.storage_key.trim()
+  else payload.external_url = draft.external_url.trim()
+  return payload
 }

@@ -1,5 +1,7 @@
-"""Library metadata. This service never requests the external URL."""
+"""Library metadata. This service never requests an external or storage URL."""
 
+import re
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 from uuid import UUID, uuid4
 
@@ -7,13 +9,17 @@ from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.core.exceptions import AppException
+from app.library.fixtures import LOCAL_FIXTURE_KEY, fixture_pdf_bytes
+from app.library.r2 import R2Config, presign_get
 from app.models.library import LibraryBook, LibraryBookmark, LibraryReadingStatus
 from app.models.user import User
 from app.schemas.library import (
     AdminLibraryBook,
     LibraryBookPatch,
     LibraryBookWrite,
+    ReadLink,
     StudentLibraryBook,
     StudentLibraryPage,
 )
@@ -36,6 +42,36 @@ def require_https_url(value: str) -> str:
     return "https" + raw[len(parsed.scheme) :]
 
 
+def require_storage_key(value: str) -> str:
+    raw = value.strip()
+    if not raw or any(character.isspace() for character in raw) or "\\" in raw or ".." in raw:
+        raise AppException("Enter an object key without spaces or parent paths.", status_code=422)
+    if "://" in raw or raw.startswith("/"):
+        raise AppException("The object key cannot be a URL.", status_code=422)
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,399}", raw):
+        raise AppException("The object key contains characters that are not allowed.", status_code=422)
+    return raw
+
+
+def _apply_source(book: LibraryBook, external_url: str | None, storage_key: str | None, *, external_set: bool, storage_set: bool) -> None:
+    if external_set and storage_set:
+        raise AppException("Choose either an https link or a PDF object key.", status_code=422)
+    if storage_set:
+        if storage_key is None or not storage_key.strip():
+            raise AppException("Enter a PDF object key.", status_code=422)
+        book.storage_key = require_storage_key(storage_key)
+        book.external_url = None
+        return
+    if external_set:
+        if external_url is None or not external_url.strip():
+            raise AppException("Enter one https URL without spaces.", status_code=422)
+        book.external_url = require_https_url(external_url)
+        book.storage_key = None
+        return
+    if book.external_url is None and book.storage_key is None:
+        raise AppException("Choose either an https link or a PDF object key.", status_code=422)
+
+
 def _clean_text(value: str, label: str, limit: int) -> str:
     text = value.strip()
     if not text:
@@ -56,9 +92,17 @@ class LibraryService:
             author=_clean_text(payload.author, "author", 200),
             description=payload.description.strip(),
             category=_clean_text(payload.category, "category", 80),
-            external_url=require_https_url(payload.external_url),
+            external_url=None,
+            storage_key=None,
             status=payload.status,
             created_by=admin.id,
+        )
+        _apply_source(
+            book,
+            payload.external_url,
+            payload.storage_key,
+            external_set=payload.external_url is not None,
+            storage_set=payload.storage_key is not None,
         )
         self.db.add(book)
         await self.db.commit()
@@ -75,8 +119,14 @@ class LibraryService:
             book.description = changes["description"].strip()
         if "category" in changes:
             book.category = _clean_text(changes["category"], "category", 80)
-        if "external_url" in changes:
-            book.external_url = require_https_url(changes["external_url"])
+        if "external_url" in changes or "storage_key" in changes:
+            _apply_source(
+                book,
+                changes.get("external_url", book.external_url),
+                changes.get("storage_key", book.storage_key),
+                external_set="external_url" in changes,
+                storage_set="storage_key" in changes,
+            )
         if "status" in changes:
             if changes["status"] not in BOOK_STATUSES:
                 raise AppException("Choose draft, published, or archived.", status_code=422)
@@ -184,6 +234,55 @@ class LibraryService:
         await self.db.commit()
         return await self._student(book, user.id)
 
+    async def set_progress(self, user: User, book_id: UUID, last_page: int) -> StudentLibraryBook:
+        if last_page < 1:
+            raise AppException("Enter a page number.", status_code=422)
+        book = await self._published(book_id)
+        if not book.storage_key:
+            raise AppException("This book has no PDF pages.", status_code=422)
+        row = await self.db.get(LibraryReadingStatus, {"user_id": user.id, "book_id": book.id})
+        if row is None:
+            self.db.add(LibraryReadingStatus(user_id=user.id, book_id=book.id, status=None, last_page=last_page))
+        else:
+            row.last_page = last_page
+        await self.db.commit()
+        return await self._student(book, user.id)
+
+    async def read_link(self, user: User, book_id: UUID) -> ReadLink:
+        book = await self._published_file(book_id)
+        if book.storage_key == LOCAL_FIXTURE_KEY and not settings.library_storage_configured:
+            self._local_fixture_allowed()
+            return ReadLink(url=f"/api/v1/library/books/{book.id}/file", expires_in=300)
+        if not settings.library_storage_configured:
+            raise AppException("PDF storage is not configured.", status_code=503)
+        config = R2Config(
+            account_id=settings.library_r2_account_id.strip(),
+            bucket=settings.library_r2_bucket.strip(),
+            access_key_id=settings.library_r2_access_key_id.strip(),
+            secret_access_key=settings.library_r2_secret_access_key.strip(),
+        )
+        return ReadLink(
+            url=presign_get(config, book.storage_key or "", datetime.now(timezone.utc)),
+            expires_in=300,
+        )
+
+    async def file_bytes(self, user: User, book_id: UUID) -> bytes:
+        book = await self._published_file(book_id)
+        if book.storage_key != LOCAL_FIXTURE_KEY or settings.library_storage_configured:
+            raise AppException("This PDF file is missing.", status_code=404)
+        self._local_fixture_allowed()
+        return fixture_pdf_bytes()
+
+    def _local_fixture_allowed(self) -> None:
+        if settings.app_env.lower() in {"production", "prod"}:
+            raise AppException("PDF storage is not configured.", status_code=503)
+
+    async def _published_file(self, book_id: UUID) -> LibraryBook:
+        book = await self._published(book_id)
+        if not book.storage_key:
+            raise AppException("This book has no PDF.", status_code=404)
+        return book
+
     async def _published(self, book_id: UUID) -> LibraryBook:
         book = await self._book(book_id)
         if book.status != "published":
@@ -214,9 +313,11 @@ class LibraryService:
             description=book.description,
             category=book.category,
             available=published,
+            has_file=book.storage_key is not None,
             external_url=book.external_url if published else None,
             bookmarked=bookmark is not None,
-            reading_status=status.status if status is not None else None,
+            reading_status=status.status if status is not None and status.status else None,
+            last_page=status.last_page if status is not None else None,
         )
 
     @staticmethod
@@ -228,5 +329,6 @@ class LibraryService:
             description=book.description,
             category=book.category,
             external_url=book.external_url,
+            storage_key=book.storage_key,
             status=book.status,  # type: ignore[arg-type]
         )

@@ -260,6 +260,8 @@ export const apiEndpoints = {
     book: (id: string) => `/api/v1/library/books/${id}`,
     bookmark: (id: string) => `/api/v1/library/books/${id}/bookmark`,
     readingStatus: (id: string) => `/api/v1/library/books/${id}/reading-status`,
+    progress: (id: string) => `/api/v1/library/books/${id}/progress`,
+    readLink: (id: string) => `/api/v1/library/books/${id}/read-link`,
     adminBooks: '/api/v1/admin/library/books',
     adminBook: (id: string) => `/api/v1/admin/library/books/${id}`,
   },

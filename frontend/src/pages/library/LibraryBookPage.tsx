@@ -127,14 +127,25 @@ function BookDetail({
             This https link leaves JobReady. Opening it does not set a reading status.
           </span>
         </p>
-      ) : (
+      ) : null}
+      {book.available && book.has_file ? (
+        <p className="mb-4">
+          <Link to={`/library/${book.id}/read`} className="text-sm text-[var(--color-accent)] hover:underline">
+            Read PDF
+          </Link>
+          <span className="mt-1 block break-words text-xs text-[var(--color-text-muted)]">
+            {book.last_page ? `Resume at page ${book.last_page}. ` : ''}Opening the PDF does not change your reading status.
+          </span>
+        </p>
+      ) : null}
+      {!book.available ? (
         <div className="mb-4">
           <EmptyState
             title="This resource is no longer available"
             description="The link is hidden. A bookmark or reading status you already saved is kept."
           />
         </div>
-      )}
+      ) : null}
       <div className="flex flex-wrap gap-2">
         <Button type="button" variant="secondary" size="sm" onClick={onBookmark}>
           {book.bookmarked ? 'Remove bookmark' : 'Bookmark'}

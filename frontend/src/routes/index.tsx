@@ -18,6 +18,7 @@ import { EmailUnsubscribePage } from '@/pages/EmailUnsubscribePage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { LibraryBookPage } from '@/pages/library/LibraryBookPage'
 import { LibraryPage } from '@/pages/library/LibraryPage'
+import { LibraryReaderPage } from '@/pages/library/LibraryReaderPage'
 import { MyRequestsPage } from '@/pages/support/MyRequestsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { AptitudePage } from '@/pages/practice/AptitudePage'
@@ -147,7 +148,8 @@ export function AppRoutes() {
       >
         <Route index element={<DashboardPage />} />
         <Route path="library" element={<LibraryPage />} />
-        <Route path="library/:bookId" element={<LibraryBookPage />} />
+            <Route path="library/:bookId" element={<LibraryBookPage />} />
+            <Route path="library/:bookId/read" element={<LibraryReaderPage />} />
         <Route path="practice" element={<PracticeHubPage />} />
         <Route path="practice/paths/:slug" element={<PracticePathPage />} />
         <Route path="practice/projects" element={<ProjectsPage />} />

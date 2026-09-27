@@ -7,6 +7,14 @@ logger = logging.getLogger(__name__)
 _UNSAFE_JWT_DEFAULT = "change-me-in-production-use-long-random-secret"
 _EMAIL_PLACEHOLDER_KEY = "REPLACE_WITH_REAL_BREVO_API_KEY"
 _EMAIL_PLACEHOLDER_ADDRESS = "notifications@example.com"
+_STORAGE_PLACEHOLDERS = {
+    "",
+    "changeme",
+    "placeholder",
+    "your-access-key",
+    "your-secret-key",
+    "replace-me",
+}
 
 
 class Settings(BaseSettings):
@@ -120,6 +128,13 @@ class Settings(BaseSettings):
     # ambiguous and is not resent.
     email_claim_timeout_seconds: int = 30
 
+    # Private library PDFs. Empty values leave storage unconfigured and do not
+    # contact Cloudflare. These are not printed.
+    library_r2_account_id: str = ""
+    library_r2_bucket: str = ""
+    library_r2_access_key_id: str = ""
+    library_r2_secret_access_key: str = ""
+
     practice_catalog_cache_ttl_seconds: int = 300
     practice_catalog_cache_key: str = "practice:catalog"
 
@@ -188,6 +203,19 @@ class Settings(BaseSettings):
         if self.email_enabled and placeholder:
             return "placeholder_configuration"
         return "email_disabled"
+
+    @property
+    def library_storage_configured(self) -> bool:
+        """True only when R2 account, bucket, and non-placeholder keys are set."""
+        account = (self.library_r2_account_id or "").strip()
+        bucket = (self.library_r2_bucket or "").strip()
+        access = (self.library_r2_access_key_id or "").strip()
+        secret = (self.library_r2_secret_access_key or "").strip()
+        return all(
+            value
+            and value.lower() not in _STORAGE_PLACEHOLDERS
+            for value in (account, bucket, access, secret)
+        )
 
     @property
     def frontend_link_base(self) -> str | None:

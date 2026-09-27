@@ -3,12 +3,13 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
+from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_user
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.library import ReadingStatusUpdate, StudentLibraryBook, StudentLibraryPage
+from app.schemas.library import ReadLink, ReadingProgressUpdate, ReadingStatusUpdate, StudentLibraryBook, StudentLibraryPage
 from app.services.library_service import LibraryService
 
 router = APIRouter(prefix="/library")
@@ -71,3 +72,32 @@ async def set_reading_status(
     svc: LibraryService = Depends(_svc),
 ) -> StudentLibraryBook:
     return await svc.set_reading_status(current_user, book_id, payload.status)
+
+
+@router.put("/books/{book_id}/progress", response_model=StudentLibraryBook)
+async def set_progress(
+    book_id: UUID,
+    payload: ReadingProgressUpdate,
+    current_user: User = Depends(get_current_user),
+    svc: LibraryService = Depends(_svc),
+) -> StudentLibraryBook:
+    return await svc.set_progress(current_user, book_id, payload.last_page)
+
+
+@router.get("/books/{book_id}/read-link", response_model=ReadLink)
+async def read_link(
+    book_id: UUID,
+    current_user: User = Depends(get_current_user),
+    svc: LibraryService = Depends(_svc),
+) -> ReadLink:
+    return await svc.read_link(current_user, book_id)
+
+
+@router.get("/books/{book_id}/file")
+async def read_file(
+    book_id: UUID,
+    current_user: User = Depends(get_current_user),
+    svc: LibraryService = Depends(_svc),
+) -> Response:
+    payload = await svc.file_bytes(current_user, book_id)
+    return Response(content=payload, media_type="application/pdf")

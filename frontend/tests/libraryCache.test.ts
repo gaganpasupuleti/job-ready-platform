@@ -54,4 +54,7 @@ test('saved lists and search caches lose the URL for that book only', () => {
   assert.equal(redacted.items[0].external_url, null)
   const stalePage = redactLibraryPayload(userId, { items: [published], categories: [] }, fetchedAt - 1)
   assert.equal(stalePage.items[0].external_url, null)
+  const withFile = stripBookUrl([{ ...published, file_url: 'https://example.com/signed' }], bookId)
+  assert.equal(withFile[0].file_url, null)
+  assert.equal(withFile[0].available, false)
 })

@@ -13,6 +13,8 @@ function hideBook(userId: string, bookId: string) {
   queryClient.setQueriesData({ queryKey: ['library-book', userId, bookId] }, apply)
   queryClient.setQueriesData({ queryKey: ['library-saved', userId] }, apply)
   queryClient.setQueriesData({ queryKey: ['library-books', userId] }, apply)
+  queryClient.removeQueries({ queryKey: ['library-read-link', userId, bookId] })
+  queryClient.removeQueries({ queryKey: ['library-file', userId, bookId] })
 }
 
 function acceptPayload<T>(userId: string, payload: T, fetchedAt: number): T {

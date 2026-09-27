@@ -4,6 +4,7 @@ export type CacheBook = {
   id: string
   available: boolean
   external_url: string | null
+  file_url?: string | null
 }
 
 export type CacheBookPage = {
@@ -26,12 +27,10 @@ export function redactBook<T extends CacheBook>(userId: string, book: T, fetched
     const key = guardKey(userId, book.id)
     const current = hiddenSince.get(key)
     if (current == null || fetchedAt >= current) hiddenSince.set(key, fetchedAt)
-    return book.external_url == null ? book : { ...book, external_url: null }
+    return clearFile(book)
   }
   const hidden = hiddenSince.get(guardKey(userId, book.id))
-  if (hidden != null && fetchedAt < hidden) {
-    return { ...book, available: false, external_url: null }
-  }
+  if (hidden != null && fetchedAt < hidden) return clearFile(book)
   if (hidden != null) hiddenSince.delete(guardKey(userId, book.id))
   return book
 }
@@ -59,7 +58,13 @@ export function stripBookUrl<T>(data: T, bookId: string): T {
 }
 
 function hide<T extends CacheBook>(book: T): T {
-  return book.available === false && book.external_url == null ? book : { ...book, available: false, external_url: null }
+  return clearFile(book)
+}
+
+function clearFile<T extends CacheBook>(book: T): T {
+  const next = { ...book, available: false as const, external_url: null }
+  if ('file_url' in next) next.file_url = null
+  return next
 }
 
 function isBook(value: unknown): value is CacheBook {
