@@ -65,4 +65,4 @@ async def retry_mcq_session(
     db: AsyncSession = Depends(get_db),
 ) -> SessionDetailResponse:
     practice = PracticeService(db)
-    return await practice.create_retry_session(user, [UUID(q) for q in payload.question_ids])
+    return await practice.create_retry_session(user, list(payload.question_ids))

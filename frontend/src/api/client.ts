@@ -3,6 +3,21 @@ import axios from 'axios'
 import { apiConfig, AUTH_TOKEN_KEY } from '@/api/config'
 import { clearAuthQueryCache } from '@/queryClient'
 
+function requestBearer(headers: { get?: (name: string) => unknown; Authorization?: unknown; authorization?: unknown } | undefined): string {
+  if (!headers) return ''
+  const raw =
+    typeof headers.get === 'function'
+      ? (headers.get('Authorization') ?? headers.get('authorization'))
+      : (headers.Authorization ?? headers.authorization)
+  const text =
+    typeof raw === 'string'
+      ? raw
+      : raw && typeof raw === 'object' && 'toString' in raw
+        ? String(raw)
+        : ''
+  return text.replace(/^Bearer\s+/i, '')
+}
+
 export const apiClient = axios.create({
   baseURL: apiConfig.baseURL,
   timeout: apiConfig.timeout,
@@ -18,26 +33,24 @@ apiClient.interceptors.request.use((config) => {
 })
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const sent = requestBearer(response.config.headers)
+    const current = localStorage.getItem(AUTH_TOKEN_KEY) ?? ''
+    if (sent && sent !== current) {
+      return Promise.reject(new Error('Session changed'))
+    }
+    return response
+  },
   (error) => {
     const status = error.response?.status
     const requestUrl = String(error.config?.url ?? '')
     const isAuthEndpoint = /\/auth\/(login|register)\b/.test(requestUrl)
 
     if (status === 401 && !isAuthEndpoint) {
-      const currentToken = localStorage.getItem(AUTH_TOKEN_KEY)
-      const rawAuth = error.config?.headers?.Authorization ?? error.config?.headers?.authorization
-      const requestAuth = String(
-        typeof rawAuth === 'string'
-          ? rawAuth
-          : rawAuth && typeof rawAuth === 'object' && 'toString' in rawAuth
-            ? String(rawAuth)
-            : '',
-      )
-      const currentBearer = currentToken ? `Bearer ${currentToken}` : ''
+      const current = localStorage.getItem(AUTH_TOKEN_KEY) ?? ''
+      const sent = requestBearer(error.config?.headers)
       // Ignore stale 401s from a previous account after a client-side switch.
-      const matchesCurrentSession =
-        Boolean(currentBearer) && requestAuth === currentBearer
+      const matchesCurrentSession = Boolean(current) && sent === current
 
       if (matchesCurrentSession) {
         localStorage.removeItem(AUTH_TOKEN_KEY)

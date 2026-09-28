@@ -1,9 +1,10 @@
-import { Link, useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { startRetrySession } from '@/services/mistakeService'
 import { fetchResults } from '@/services/practiceService'
 import { formatPercent } from '@/utils/cn'
 
@@ -15,10 +16,20 @@ function formatDuration(seconds: number) {
 
 export function PracticeResultsPage() {
   const { sessionId = '' } = useParams()
+  const navigate = useNavigate()
   const { data, isLoading, error } = useQuery({
     queryKey: ['practice-results', sessionId],
     queryFn: () => fetchResults(sessionId),
     enabled: Boolean(sessionId),
+  })
+
+  const incorrectIds = (data?.questions ?? [])
+    .filter((item) => !item.is_correct && item.selected_option_ids.length > 0 && item.question_id)
+    .map((item) => item.question_id)
+
+  const retry = useMutation({
+    mutationFn: () => startRetrySession(incorrectIds),
+    onSuccess: (session) => navigate(`/practice/sessions/${session.id}`),
   })
 
   if (isLoading) return <p className="text-sm text-[var(--color-text-muted)]">Loading results...</p>
@@ -109,12 +120,21 @@ export function PracticeResultsPage() {
         </div>
       </Card>
 
-      <p className="text-xs text-[var(--color-text-subtle)]">
-        Retry Incorrect is planned for a later practice build.
-      </p>
-      <Link to="/">
-        <Button variant="secondary">Back to Dashboard</Button>
-      </Link>
+      <div className="flex flex-wrap gap-2">
+        {incorrectIds.length > 0 ? (
+          <Button variant="primary" onClick={() => retry.mutate()} disabled={retry.isPending}>
+            Retry incorrect ({incorrectIds.length})
+          </Button>
+        ) : (
+          <p className="text-sm text-[var(--color-text-muted)]">No incorrect questions in this session.</p>
+        )}
+        {retry.isError ? (
+          <p className="text-sm text-[var(--color-danger)]">Could not start a retry session.</p>
+        ) : null}
+        <Link to="/">
+          <Button variant="secondary">Back to Dashboard</Button>
+        </Link>
+      </div>
     </div>
   )
 }

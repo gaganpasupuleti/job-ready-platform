@@ -1,6 +1,7 @@
 """Mistake book API schemas."""
 
 from typing import Any
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -28,4 +29,4 @@ class MistakeSummary(BaseModel):
 
 
 class RetrySessionRequest(BaseModel):
-    question_ids: list[str] = Field(..., min_length=1, max_length=50)
+    question_ids: list[UUID] = Field(..., min_length=1, max_length=50)

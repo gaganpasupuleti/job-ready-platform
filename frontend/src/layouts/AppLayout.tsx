@@ -11,6 +11,10 @@ function getPageTitle(pathname: string): string {
     }
   }
   if (pathname === '/') return 'Overview'
+  if (pathname.startsWith('/library')) return 'Library'
+  if (pathname.startsWith('/support/requests')) return 'My requests'
+  if (pathname.startsWith('/admin/library')) return 'Library'
+  if (pathname.startsWith('/admin/feedback')) return 'Student Feedback'
   if (
     pathname.startsWith('/practice/python') ||
     pathname.startsWith('/practice/compiler') ||

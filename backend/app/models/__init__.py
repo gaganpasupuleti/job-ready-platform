@@ -46,6 +46,11 @@ from app.models.learn import (
     PracticePath,
     Project,
 )
+from app.models.manual_assignment import ManualAssignmentSubmission
+from app.models.email_notification import EmailOutbox, EmailPreference
+from app.models.library import LibraryBook, LibraryBookmark, LibraryReadingStatus
+from app.models.notification import Notification
+from app.models.support_ticket import SupportTicket, SupportTicketMessage, SupportTicketStatusEvent
 from app.models.scenario import (
     ScenarioChallenge,
     ScenarioOption,
@@ -136,6 +141,16 @@ __all__ = [
     "CourseModule",
     "CourseLesson",
     "Project",
+    "ManualAssignmentSubmission",
+    "LibraryBook",
+    "LibraryBookmark",
+    "LibraryReadingStatus",
+    "EmailOutbox",
+    "EmailPreference",
+    "Notification",
+    "SupportTicket",
+    "SupportTicketMessage",
+    "SupportTicketStatusEvent",
     "CodingProblem",
     "CodingTestCase",
     "CodingSubmission",

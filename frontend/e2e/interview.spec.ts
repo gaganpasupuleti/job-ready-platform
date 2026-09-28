@@ -53,9 +53,12 @@ test.describe('Interview practice', () => {
     await expect(mock).toBeVisible({ timeout: 20_000 })
     await mock.click()
     await expect(page).toHaveURL(/\/interviews\/sessions\//)
-    await expect(page.getByText(/expected answer/i)).toHaveCount(0)
+    const hidden = page.getByText(/stay hidden until you click review my answer/i)
+    await expect(hidden).toBeVisible()
+    await expect(page.getByText(/^expected answer$/i)).toHaveCount(0)
     await page.getByRole('button', { name: /review my answer/i }).click()
-    await expect(page.getByText(/expected answer|key point/i).first()).toBeVisible()
+    await expect(hidden).toHaveCount(0)
+    await expect(page.getByText(/^expected answer$/i)).toBeVisible()
   })
 
   test('history progress review and company prep', async ({ page }) => {

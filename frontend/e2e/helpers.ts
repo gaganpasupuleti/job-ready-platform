@@ -44,6 +44,11 @@ export function apiBaseUrl(): string {
 
 const proxiedContexts = new WeakSet<BrowserContext>()
 
+function routeClosed(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error)
+  return /test ended|has been closed|has been disposed|already handled/i.test(message)
+}
+
 /** Relay FE-origin /api/v1 calls to E2E_API_URL (5180 vite proxy may target another backend). */
 export async function attachApiProxy(context: BrowserContext) {
   if (proxiedContexts.has(context)) return
@@ -55,13 +60,19 @@ export async function attachApiProxy(context: BrowserContext) {
     const url = new URL(req.url())
     const proxied =
       url.origin === apiOrigin ? req.url() : `${apiURL}${url.pathname}${url.search}`
-    const response = await route.fetch({
-      url: proxied,
-      method: req.method(),
-      headers: req.headers(),
-      postData: req.postData(),
-    })
-    await route.fulfill({ response })
+    try {
+      const response = await route.fetch({
+        url: proxied,
+        method: req.method(),
+        headers: req.headers(),
+        postData: req.postData(),
+      })
+      await route.fulfill({ response })
+    } catch (error) {
+      // The page can close while a proxied call is still in flight.
+      if (routeClosed(error)) return
+      throw error
+    }
   })
 }
 

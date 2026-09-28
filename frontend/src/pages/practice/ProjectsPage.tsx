@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Card } from '@/components/common/Card'
 import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
+import { ManualAssignmentSection } from '@/features/projects/ManualAssignmentSection'
 import { fetchProjects } from '@/services/learnService'
 
 export function ProjectsPage() {
@@ -33,6 +34,8 @@ export function ProjectsPage() {
           Guided builds that reuse coding, SQL, and MCQ engines. Original Job Ready content.
         </p>
       </div>
+
+      <ManualAssignmentSection />
 
       <div className="filter-chip-row" role="group" aria-label="Project category">
         <button

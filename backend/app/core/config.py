@@ -5,6 +5,16 @@ import warnings
 logger = logging.getLogger(__name__)
 
 _UNSAFE_JWT_DEFAULT = "change-me-in-production-use-long-random-secret"
+_EMAIL_PLACEHOLDER_KEY = "REPLACE_WITH_REAL_BREVO_API_KEY"
+_EMAIL_PLACEHOLDER_ADDRESS = "notifications@example.com"
+_STORAGE_PLACEHOLDERS = {
+    "",
+    "changeme",
+    "placeholder",
+    "your-access-key",
+    "your-secret-key",
+    "replace-me",
+}
 
 
 class Settings(BaseSettings):
@@ -103,6 +113,30 @@ class Settings(BaseSettings):
     admin_bootstrap_email: str = ""
     admin_bootstrap_password: str = ""
 
+    # In-app mail stays off until a verified Brevo sender and a real API key
+    # replace the Railway placeholders. Reading these names does not send mail.
+    email_provider: str = ""
+    email_enabled: bool = False
+    email_from_address: str = ""
+    email_from_name: str = ""
+    brevo_api_key: str = ""
+    frontend_base_url: str = "http://localhost:5173"
+    email_http_timeout_seconds: float = 10.0
+    email_max_attempts: int = 5
+    email_worker_batch_size: int = 20
+    # Must stay longer than the HTTP timeout. A claim that outlives it is
+    # ambiguous and is not resent.
+    email_claim_timeout_seconds: int = 30
+
+    # Private library PDFs. Empty values leave storage unconfigured and do not
+    # contact Cloudflare. These are not printed.
+    library_r2_account_id: str = ""
+    library_r2_bucket: str = ""
+    library_r2_access_key_id: str = ""
+    library_r2_secret_access_key: str = ""
+    library_pdf_max_bytes: int = 20 * 1024 * 1024
+    library_dev_object_dir: str = ""
+
     practice_catalog_cache_ttl_seconds: int = 300
     practice_catalog_cache_key: str = "practice:catalog"
 
@@ -131,6 +165,68 @@ class Settings(BaseSettings):
             raise RuntimeError("DATABASE_URL is required in production.")
         if self.debug:
             warnings.warn("DEBUG=true in production is discouraged.", UserWarning, stacklevel=2)
+
+    @property
+    def email_can_send(self) -> bool:
+        """True only when mail is explicitly enabled with a real Brevo sender and key."""
+        provider = (self.email_provider or "").strip().lower()
+        address = (self.email_from_address or "").strip().lower()
+        key = (self.brevo_api_key or "").strip()
+        return (
+            self.email_enabled
+            and provider == "brevo"
+            and bool(address)
+            and address != _EMAIL_PLACEHOLDER_ADDRESS
+            and "@" in address
+            and bool(key)
+            and key != _EMAIL_PLACEHOLDER_KEY
+        )
+
+    @property
+    def email_block_reason(self) -> str | None:
+        """Why mail must not be sent, or None when email_can_send is true.
+
+        Disabled sending and placeholder credentials are different reasons.
+        Both suppress new outbox rows instead of leaving them queued.
+        """
+        if self.email_can_send:
+            return None
+        provider = (self.email_provider or "").strip().lower()
+        address = (self.email_from_address or "").strip().lower()
+        key = (self.brevo_api_key or "").strip()
+        placeholder = (
+            provider == "brevo"
+            and (
+                not address
+                or "@" not in address
+                or address == _EMAIL_PLACEHOLDER_ADDRESS
+                or not key
+                or key == _EMAIL_PLACEHOLDER_KEY
+            )
+        )
+        if self.email_enabled and placeholder:
+            return "placeholder_configuration"
+        return "email_disabled"
+
+    @property
+    def library_storage_configured(self) -> bool:
+        """True only when R2 account, bucket, and non-placeholder keys are set."""
+        account = (self.library_r2_account_id or "").strip()
+        bucket = (self.library_r2_bucket or "").strip()
+        access = (self.library_r2_access_key_id or "").strip()
+        secret = (self.library_r2_secret_access_key or "").strip()
+        return all(
+            value
+            and value.lower() not in _STORAGE_PLACEHOLDERS
+            for value in (account, bucket, access, secret)
+        )
+
+    @property
+    def frontend_link_base(self) -> str | None:
+        base = (self.frontend_base_url or "").strip().rstrip("/")
+        if base.startswith("https://") or base.startswith("http://"):
+            return base
+        return None
 
 
 settings = Settings()

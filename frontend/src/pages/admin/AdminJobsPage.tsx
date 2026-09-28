@@ -21,6 +21,8 @@ import {
   fetchAdminJobs,
   fetchAdminJobSources,
   fetchJob,
+  fetchPublicationDecisions,
+  recordPublicationDecision,
   updateAdminJob,
   validateJobImport,
 } from '@/services/jobService'
@@ -37,6 +39,9 @@ export function AdminJobsPage() {
   const [title, setTitle] = useState('')
   const [company, setCompany] = useState('')
   const [description, setDescription] = useState('')
+  const [source, setSource] = useState('')
+  const [sourceJobId, setSourceJobId] = useState('')
+  const [decision, setDecision] = useState<'publish' | 'withhold'>('publish')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editCompany, setEditCompany] = useState('')
@@ -52,6 +57,12 @@ export function AdminJobsPage() {
     queryKey: ['admin-jobs', statusFilter],
     queryFn: () => fetchAdminJobs({ status: statusFilter || undefined }),
     enabled: tab === 'jobs',
+  })
+
+  const { data: decisions, isLoading: decisionsLoading, isError: decisionsError } = useQuery({
+    queryKey: ['publication-decisions'],
+    queryFn: fetchPublicationDecisions,
+    enabled: tab === 'catalog',
   })
 
   const { data: sources, isLoading: sourcesLoading } = useQuery({
@@ -115,6 +126,15 @@ export function AdminJobsPage() {
     },
   })
 
+  const decisionMutation = useMutation({
+    mutationFn: recordPublicationDecision,
+    onSuccess: () => {
+      setSource('')
+      setSourceJobId('')
+      queryClient.invalidateQueries({ queryKey: ['publication-decisions'] })
+    },
+  })
+
   const confirmMutation = useMutation({
     mutationFn: confirmJobImport,
     onSuccess: () => {
@@ -161,12 +181,81 @@ export function AdminJobsPage() {
       <PracticeTabs
         tabs={[
           { id: 'jobs', label: 'Jobs' },
+          { id: 'catalog', label: 'Catalog decisions' },
           { id: 'imports', label: 'Imports' },
           { id: 'sources', label: 'Sources' },
         ]}
         value={tab}
         onChange={setTab}
       />
+
+      {tab === 'catalog' && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader
+              title="Publication decision"
+              description="Records publish or withhold for a source job. This does not copy the listing. The student catalog changes only after a reviewed sync apply."
+            />
+            <form
+              className="grid gap-3 sm:grid-cols-2"
+              onSubmit={(event) => {
+                event.preventDefault()
+                decisionMutation.mutate({
+                  source: source.trim(),
+                  source_job_id: sourceJobId.trim(),
+                  decision,
+                })
+              }}
+            >
+              <label className="text-xs text-[var(--color-text-muted)]">
+                Source
+                <input className={inputClass} value={source} onChange={(e) => setSource(e.target.value)} required />
+              </label>
+              <label className="text-xs text-[var(--color-text-muted)]">
+                Source job id
+                <input className={inputClass} value={sourceJobId} onChange={(e) => setSourceJobId(e.target.value)} required />
+              </label>
+              <label className="text-xs text-[var(--color-text-muted)]">
+                Decision
+                <select
+                  className={inputClass}
+                  value={decision}
+                  onChange={(e) => setDecision(e.target.value as 'publish' | 'withhold')}
+                >
+                  <option value="publish">publish</option>
+                  <option value="withhold">withhold</option>
+                </select>
+              </label>
+              <div className="flex items-end">
+                <Button type="submit" variant="primary" disabled={decisionMutation.isPending}>
+                  Save decision
+                </Button>
+              </div>
+            </form>
+            {decisionMutation.isError ? (
+              <p className="mt-2 text-sm text-[var(--color-danger)]">Could not save that decision.</p>
+            ) : null}
+          </Card>
+          <Card>
+            <CardHeader title="Recorded decisions" />
+            {decisionsLoading ? (
+              <LoadingState label="Loading decisions" />
+            ) : decisionsError ? (
+              <ErrorState message="Could not load publication decisions." />
+            ) : decisions && decisions.length > 0 ? (
+              <ul className="space-y-2 text-sm">
+                {decisions.map((item) => (
+                  <li key={`${item.source}/${item.source_job_id}`}>
+                    {item.source}/{item.source_job_id} · {item.decision}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-[var(--color-text-muted)]">No publication decisions yet.</p>
+            )}
+          </Card>
+        </div>
+      )}
 
       {tab === 'jobs' && (
         <div className="space-y-6">

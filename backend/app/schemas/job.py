@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from decimal import Decimal
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -329,3 +329,15 @@ class IngestionErrorPublic(BaseModel):
     external_id: str | None = None
     error_type: str
     message: str
+
+
+class PublicationDecisionWrite(BaseModel):
+    source: str = Field(min_length=1, max_length=40)
+    source_job_id: str = Field(min_length=1, max_length=80)
+    decision: Literal["publish", "withhold"]
+
+
+class PublicationDecisionPublic(BaseModel):
+    source: str
+    source_job_id: str
+    decision: str

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, ArrowUpRight, Terminal } from 'lucide-react'
 
 import { Button } from '@/components/common/Button'
+import { StudentOverview } from '@/features/dashboard/StudentOverview'
 import { EmptyState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
 import { useAuth } from '@/hooks/useAuth'
 import { fetchCodingProgress } from '@/services/codingService'
@@ -69,6 +70,8 @@ export function DashboardPage() {
           </Button>
         </Link>
       </div>
+
+      {uid ? <StudentOverview userId={uid} /> : null}
 
       <div className="desk-grid">
         <div className="desk-primary">
