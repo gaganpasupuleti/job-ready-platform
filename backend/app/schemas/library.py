@@ -50,7 +50,6 @@ class AdminLibraryBook(BaseModel):
     description: str
     category: str
     external_url: str | None = None
-    storage_key: str | None = None
     has_file: bool = False
     status: BookStatus
 

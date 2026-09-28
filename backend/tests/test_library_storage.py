@@ -6,10 +6,19 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.db.session import AsyncSessionLocal
 from app.library.fixtures import fixture_pdf_bytes
 from app.library.storage import DevDiskStorage, StorageError
+from app.models.library import LibraryBook
 
 PDF = fixture_pdf_bytes()
+
+
+async def _stored_key(book_id: str) -> str | None:
+    async with AsyncSessionLocal() as session:
+        book = await session.get(LibraryBook, uuid.UUID(str(book_id)))
+        assert book is not None
+        return book.storage_key
 
 
 def _meta(**overrides):
@@ -102,9 +111,13 @@ async def test_pdf_upload_validates_type_size_and_replaces_safely(client, admin_
     )
     assert uploaded.status_code == 200, uploaded.text
     first = uploaded.json()
+    first_key = await _stored_key(book_id)
+    assert "storage_key" not in first
     assert first["external_url"] is None
-    assert first["storage_key"].startswith(f"library/books/{book_id}/")
-    assert "original-name" not in first["storage_key"]
+    assert first_key is not None
+    assert first_key.startswith(f"library/books/{book_id}/")
+    assert "original-name" not in first_key
+    assert first_key not in uploaded.text
     assert first["has_file"] is True
 
     replaced = await client.post(
@@ -114,9 +127,13 @@ async def test_pdf_upload_validates_type_size_and_replaces_safely(client, admin_
     )
     assert replaced.status_code == 200, replaced.text
     second = replaced.json()
-    assert second["storage_key"] != first["storage_key"]
-    assert not (tmp_path / first["storage_key"]).exists()
-    assert (tmp_path / second["storage_key"]).is_file()
+    second_key = await _stored_key(book_id)
+    assert "storage_key" not in second
+    assert second_key is not None
+    assert second_key != first_key
+    assert second_key not in replaced.text
+    assert not (tmp_path / first_key).exists()
+    assert (tmp_path / second_key).is_file()
 
     published = await client.patch(
         f"/api/v1/admin/library/books/{book_id}",
@@ -128,7 +145,7 @@ async def test_pdf_upload_validates_type_size_and_replaces_safely(client, admin_
     assert link.status_code == 200
     assert link.json()["expires_in"] == 300
     assert link.json()["url"] == f"/api/v1/library/books/{book_id}/file"
-    assert second["storage_key"] not in link.text
+    assert second_key not in link.text
     student = await client.get(f"/api/v1/library/books/{book_id}", headers=owner)
     assert "storage_key" not in student.json()
     assert student.json()["has_file"] is True
@@ -143,9 +160,11 @@ async def test_pdf_upload_validates_type_size_and_replaces_safely(client, admin_
         json={"external_url": "https://example.com/jobready-switched-link"},
     )
     assert switched.status_code == 200
-    assert switched.json()["storage_key"] is None
+    assert "storage_key" not in switched.json()
+    assert switched.json()["has_file"] is False
+    assert await _stored_key(book_id) is None
     assert switched.json()["external_url"].startswith("https://")
-    assert not (tmp_path / second["storage_key"]).exists()
+    assert not (tmp_path / second_key).exists()
 
     back = await client.post(
         f"/api/v1/admin/library/books/{book_id}/file",
@@ -153,8 +172,11 @@ async def test_pdf_upload_validates_type_size_and_replaces_safely(client, admin_
         files=_file(),
     )
     assert back.status_code == 200
+    back_key = await _stored_key(book_id)
+    assert "storage_key" not in back.json()
     assert back.json()["external_url"] is None
     assert back.json()["has_file"] is True
+    assert back_key is not None
 
     archived = await client.patch(
         f"/api/v1/admin/library/books/{book_id}",
@@ -164,11 +186,12 @@ async def test_pdf_upload_validates_type_size_and_replaces_safely(client, admin_
     assert archived.status_code == 200
     hidden = await client.get(f"/api/v1/library/books/{book_id}/read-link", headers=owner)
     assert hidden.status_code == 404
-    assert back.json()["storage_key"] not in hidden.text
+    assert back_key not in hidden.text
     removed = await client.delete(f"/api/v1/admin/library/books/{book_id}/file", headers=admin_auth)
     assert removed.status_code == 200
-    assert removed.json()["storage_key"] is None
+    assert "storage_key" not in removed.json()
     assert removed.json()["has_file"] is False
+    assert await _stored_key(book_id) is None
 
 
 @pytest.mark.asyncio
@@ -182,7 +205,9 @@ async def test_storage_failures_keep_the_previous_pdf(client, admin_auth, monkey
         files=_file(),
     )
     assert uploaded.status_code == 200, uploaded.text
-    original = uploaded.json()["storage_key"]
+    assert "storage_key" not in uploaded.json()
+    original = await _stored_key(book_id)
+    assert original is not None
     calls = {"n": 0}
     real_put = DevDiskStorage.put
 
@@ -202,7 +227,8 @@ async def test_storage_failures_keep_the_previous_pdf(client, admin_auth, monkey
     assert failed.json()["detail"] == "PDF storage could not be reached."
     monkeypatch.setattr(DevDiskStorage, "put", real_put)
     current = await client.get(f"/api/v1/admin/library/books/{book_id}", headers=admin_auth)
-    assert current.json()["storage_key"] == original
+    assert "storage_key" not in current.json()
+    assert await _stored_key(book_id) == original
     assert (tmp_path / original).is_file()
 
     real_commit = AsyncSession.commit
@@ -220,7 +246,8 @@ async def test_storage_failures_keep_the_previous_pdf(client, admin_auth, monkey
     assert saved.json()["detail"] == "The PDF could not be saved."
     monkeypatch.setattr(AsyncSession, "commit", real_commit)
     after = await client.get(f"/api/v1/admin/library/books/{book_id}", headers=admin_auth)
-    assert after.json()["storage_key"] == original
+    assert "storage_key" not in after.json()
+    assert await _stored_key(book_id) == original
     leftovers = [path for path in tmp_path.rglob("*.pdf") if path.name != original.rsplit("/", 1)[-1]]
     assert leftovers == []
 
@@ -236,7 +263,9 @@ async def test_missing_object_and_production_without_r2(client, admin_auth, stud
         files=_file(),
     )
     book_id = created["id"]
-    key = uploaded.json()["storage_key"]
+    assert "storage_key" not in uploaded.json()
+    key = await _stored_key(book_id)
+    assert key is not None
     await client.patch(
         f"/api/v1/admin/library/books/{book_id}",
         headers=admin_auth,

@@ -353,7 +353,6 @@ class LibraryService:
             description=book.description,
             category=book.category,
             external_url=book.external_url,
-            storage_key=book.storage_key,
             has_file=book.storage_key is not None,
             status=book.status,  # type: ignore[arg-type]
         )

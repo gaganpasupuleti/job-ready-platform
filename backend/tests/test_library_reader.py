@@ -6,10 +6,19 @@ from datetime import datetime, timezone
 import pytest
 
 from app.core.config import settings
+from app.db.session import AsyncSessionLocal
 from app.library.fixtures import LOCAL_FIXTURE_KEY, fixture_pdf_bytes
 from app.library.r2 import R2Config, presign_get
+from app.models.library import LibraryBook
 
 FIXTURE_URL = "https://example.com/jobready-local-library-fixture"
+
+
+async def _stored_key(book_id: str) -> str | None:
+    async with AsyncSessionLocal() as session:
+        book = await session.get(LibraryBook, uuid.UUID(str(book_id)))
+        assert book is not None
+        return book.storage_key
 
 
 def _pdf(**overrides):
@@ -67,9 +76,13 @@ async def test_students_cannot_read_a_draft_or_unconfigured_pdf(client, admin_au
     headers, _email = student_auth
     created = await _create(client, admin_auth)
     book_id = created["id"]
-    assert created["storage_key"].startswith(f"library/books/{book_id}/")
-    assert created["storage_key"].endswith(".pdf")
-    assert "local-fixture.pdf" not in created["storage_key"]
+    assert "storage_key" not in created
+    key = await _stored_key(book_id)
+    assert key is not None
+    assert key.startswith(f"library/books/{book_id}/")
+    assert key.endswith(".pdf")
+    assert "local-fixture.pdf" not in key
+    assert key not in str(created)
     assert "storage_key" not in (await client.get("/api/v1/library/books", headers=headers)).json()["items"].__repr__()
 
     for path in (f"/api/v1/library/books/{book_id}/read-link", f"/api/v1/library/books/{book_id}/file"):
