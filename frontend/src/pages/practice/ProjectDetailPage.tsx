@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { humanLabel } from '@/lib/studentLabels'
 import { completeProjectTask, fetchProject, startProject } from '@/services/learnService'
 
 export function ProjectDetailPage() {
@@ -49,18 +50,22 @@ export function ProjectDetailPage() {
           <h1 className="mt-1 text-lg font-semibold text-[var(--color-text)]">{data.title}</h1>
           <p className="text-sm text-[var(--color-text-muted)]">{data.short_description}</p>
           <div className="mt-2 flex flex-wrap gap-2">
-            <Badge>{data.difficulty}</Badge>
-            <Badge>{data.category_key}</Badge>
+            <Badge>{humanLabel(data.difficulty)}</Badge>
+            <Badge>{humanLabel(data.category_key)}</Badge>
             {data.technology && <Badge>{data.technology}</Badge>}
             {data.estimated_minutes != null && <Badge>{data.estimated_minutes} min</Badge>}
             <Badge variant={data.availability === 'available' ? 'success' : 'warning'}>
-              {data.availability}
+              {data.availability === 'coming_soon' ? 'Coming soon' : data.availability === 'available' ? 'Available' : 'Locked'}
             </Badge>
-            <Badge>{data.progress_percent}%</Badge>
+            {data.progress_percent > 0 ? <Badge>{data.progress_percent}%</Badge> : null}
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          {data.status === 'not_started' ? (
+          {data.availability === 'coming_soon' ? (
+            <Button variant="primary" disabled>
+              Not open yet
+            </Button>
+          ) : data.status === 'not_started' || data.progress_percent <= 0 ? (
             <Button variant="primary" onClick={() => start.mutate()} disabled={start.isPending}>
               Start project
             </Button>

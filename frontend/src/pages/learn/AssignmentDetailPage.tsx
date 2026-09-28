@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/common/Button'
 import { Textarea } from '@/components/common/Field'
 import { SafeMarkdown } from '@/components/learn/SafeMarkdown'
+import { statusLabelText } from '@/lib/studentLabels'
 import { LearnSubnav } from '@/components/learn/LearnSubnav'
 import { fetchAssignment, saveAssignmentDraft, submitAssignment } from '@/services/studioService'
 
@@ -75,7 +76,9 @@ export function AssignmentDetailPage() {
               . A browser note is not a substitute for an accepted studio submission.
             </p>
           )}
-          <SafeMarkdown source={data.brief_md} />
+          <div className="reading-shell">
+            <SafeMarkdown source={data.brief_md} />
+          </div>
           <p className="mt-2 text-xs text-[var(--color-text-muted)]">Estimated effort {data.minutes} min. Due date: {data.due_at ?? 'none'}. Version {data.version}.</p>
           <h2 className="mt-4 text-sm font-semibold">Requirements</h2>
           <ul className="list-disc pl-5 text-sm">{data.requirements.map((item) => <li key={item}>{item}</li>)}</ul>
@@ -101,7 +104,7 @@ export function AssignmentDetailPage() {
             <ul className="mt-2 space-y-3 text-sm">
               {data.submissions.map((item) => (
                 <li key={item.id} className="rounded-[5px] border border-[var(--color-border)] p-3">
-                  <p>Attempt {item.attempt} · {item.status} · version {item.version}</p>
+                  <p>Attempt {item.attempt} · {statusLabelText(item.status)} · version {item.version}</p>
                   {item.brief && (
                     <div className="mt-2">
                       <p className="text-xs text-[var(--color-text-muted)]">Filed brief</p>

@@ -2,6 +2,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
 import { LearnSubnav } from '@/components/learn/LearnSubnav'
+import { humanLabel, materialKindLabel } from '@/lib/studentLabels'
 import { fetchStudioCatalog } from '@/services/studioService'
 
 export function MaterialsPage() {
@@ -38,9 +39,9 @@ export function MaterialsPage() {
       </header>
       <div className="mb-4 flex flex-wrap gap-2">
         <Filter label="Family" value={family} onChange={(value) => setFilter('family', value)} options={(data?.families ?? []).map((item) => ({ value: item.id, label: `${item.label} (${item.count})` }))} />
-        <Filter label="Skill" value={skill} onChange={(value) => setFilter('skill', value)} options={(data?.skills ?? []).map((item) => ({ value: item.id, label: `${item.id} (${item.count})` }))} />
-        <Filter label="Level" value={level} onChange={(value) => setFilter('level', value)} options={(data?.levels ?? []).map((item) => ({ value: item.id, label: `${item.id} (${item.count})` }))} />
-        <Filter label="Type" value={kind} onChange={(value) => setFilter('kind', value)} options={(data?.kinds ?? []).map((item) => ({ value: item.id, label: `${item.id} (${item.count})` }))} />
+        <Filter label="Skill" value={skill} onChange={(value) => setFilter('skill', value)} options={(data?.skills ?? []).map((item) => ({ value: item.id, label: `${humanLabel(item.id)} (${item.count})` }))} />
+        <Filter label="Level" value={level} onChange={(value) => setFilter('level', value)} options={(data?.levels ?? []).map((item) => ({ value: item.id, label: `${humanLabel(item.id)} (${item.count})` }))} />
+        <Filter label="Type" value={kind} onChange={(value) => setFilter('kind', value)} options={(data?.kinds ?? []).map((item) => ({ value: item.id, label: `${materialKindLabel(item.id)} (${item.count})` }))} />
         <Filter
           label="Progress"
           value={progress}
@@ -52,18 +53,18 @@ export function MaterialsPage() {
         />
       </div>
       {isLoading ? (
-        <p className="text-sm text-[var(--color-text-muted)]">Loading materials...</p>
+        <p className="text-sm text-[var(--color-text-muted)]" role="status">Loading materials.</p>
       ) : isError ? (
-        <p className="text-sm text-[var(--color-danger)]" role="alert">Unable to load materials.</p>
+        <p className="text-sm text-[var(--color-danger)]" role="alert">Could not load materials. Nothing was marked read.</p>
       ) : (data?.materials.length ?? 0) === 0 ? (
-        <p className="text-sm text-[var(--color-text-muted)]">No published materials match these filters.</p>
+        <p className="text-sm text-[var(--color-text-muted)]" role="status">No published materials match these filters.</p>
       ) : (
         <div className="course-grid">
           {data!.materials.map((item) => (
             <Link key={item.key} to={`/learn/materials/${item.key}`} className="course-tile">
               <strong>{item.title}</strong>
-              <p>{item.kind} · {item.level} · {item.minutes} min</p>
-              <span>{item.read ? 'Marked read' : 'Not marked read'}</span>
+              <p>{materialKindLabel(item.kind)} · {humanLabel(item.level)} · {item.minutes} min</p>
+              {item.read ? <span>Marked read</span> : null}
             </Link>
           ))}
         </div>
@@ -83,6 +84,7 @@ function Filter({
   onChange: (value: string) => void
   options: { value: string; label: string }[]
 }) {
+  if (options.length === 0 && !value) return null
   const id = `filter-${label.toLowerCase()}`
   return (
     <label className="text-sm" htmlFor={id}>

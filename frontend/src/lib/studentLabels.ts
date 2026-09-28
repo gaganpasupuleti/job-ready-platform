@@ -62,6 +62,29 @@ export function statusLabelText(value: string | null | undefined) {
   return humanLabel(value, STATUSES)
 }
 
+const MATERIAL_KINDS: Record<string, string> = {
+  article: 'Article',
+  cheat_sheet: 'Cheat sheet',
+  cheatsheet: 'Cheat sheet',
+  guide: 'Guide',
+  reading: 'Reading',
+}
+
+export function materialKindLabel(value: string | null | undefined) {
+  return humanLabel(value, MATERIAL_KINDS)
+}
+
+/** Several track cards can point at one catalog. Say so instead of implying separate content. */
+export function sharedDestinationNote(
+  href: string | null | undefined,
+  hrefs: Array<string | null | undefined>,
+): string | null {
+  const path = (href ?? '').split('?')[0].replace(/\/$/, '')
+  if (!path) return null
+  const count = hrefs.filter((item) => (item ?? '').split('?')[0].replace(/\/$/, '') === path).length
+  return count > 1 ? 'Several tracks open this same catalog. The topic focus differs.' : null
+}
+
 const RESULTS_HREF = /^\/practice\/sessions\/[^/]+\/results\/?$/
 
 /** MCQ mistake links point at a finished results page. That is not a new attempt. */

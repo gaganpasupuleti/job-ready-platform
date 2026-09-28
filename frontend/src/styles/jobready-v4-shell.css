@@ -1129,6 +1129,13 @@ main#main-content,
   display: flex;
   gap: 0.35rem;
   overflow-x: auto;
+}
+.filter-chip-row.is-wrapped {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+.practice-track-nav,
+.filter-chip-row {
   margin: 0 0 1rem;
   padding-bottom: 0.15rem;
   scrollbar-width: thin;
