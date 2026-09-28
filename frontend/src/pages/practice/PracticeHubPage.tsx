@@ -295,7 +295,7 @@ export function PracticeHubPage() {
         <Link to="/practice/aptitude">Aptitude & Reasoning</Link>
         <Link to="/practice/sql">SQL</Link>
         <Link to="/practice/dsa">Programming & DSA</Link>
-        <Link to="/practice/mcq">Subject quizzes</Link>
+        <Link to="/practice/mcq">Technical MCQs</Link>
         <Link to="/practice/projects">Projects</Link>
         <Link to="/practice/playground">Playground</Link>
         <Link to="/learn/quizzes/pack-crt-shared">CRT pack</Link>

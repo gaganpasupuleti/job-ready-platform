@@ -278,8 +278,8 @@ export function PracticeSessionPage() {
         }
       >
         <span>
-          {session.mode} mode · {answeredCount}/{session.question_count} answered
-          {isMulti ? ' · select all that apply' : ''}
+          {isExam ? 'Timed exam' : 'Practice'} · {answeredCount}/{session.question_count} answered
+          {isMulti ? ' · select all that apply' : ' · one answer'}
         </span>
         <div className="flex flex-wrap items-center gap-3">
           {isExam && secondsLeft != null && (
@@ -361,12 +361,6 @@ export function PracticeSessionPage() {
               <Button variant="ghost" size="sm" onClick={handleToggleReview}>
                 <Flag className="h-4 w-4" />
                 {markedForReview ? 'Marked for review' : 'Mark for review'}
-              </Button>
-            )}
-            {!isExam && (
-              <Button variant="ghost" size="sm" disabled title="Coming soon">
-                <Flag className="h-4 w-4" />
-                Report
               </Button>
             )}
           </div>
@@ -490,7 +484,7 @@ export function PracticeSessionPage() {
           <Card padding="md" className="h-fit">
             <h3 className="mb-2 text-sm font-medium">Question navigator</h3>
             <div className="grid grid-cols-5 gap-1.5">
-              {navigatorQuery.data?.questions.map((item) => {
+              {(navigatorQuery.data?.questions ?? []).map((item) => {
                 let cls =
                   'rounded border px-2 py-1 text-xs text-center cursor-pointer transition-colors'
                 if (item.question_number === questionNumber) {

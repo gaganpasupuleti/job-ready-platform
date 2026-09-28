@@ -9,19 +9,41 @@ function isActiveStatus(status: string) {
   return status.toLowerCase() === 'active'
 }
 
-export function PracticeHistory() {
-  const { data } = useQuery({
+export function PracticeHistory({ categoryNames = [] }: { categoryNames?: string[] }) {
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['practice-history'],
     queryFn: fetchHistory,
   })
 
-  if (!data?.sessions.length) return null
+  if (isLoading) {
+    return <p className="text-sm text-[var(--color-text-muted)]">Loading history for this subject.</p>
+  }
+  if (isError) {
+    return (
+      <p className="text-sm text-[var(--color-danger)]" role="alert">
+        Could not load history for this subject.
+      </p>
+    )
+  }
+
+  const sessions = (data?.sessions ?? []).filter((session) => {
+    if (!categoryNames.length) return true
+    return Boolean(session.category_name && categoryNames.includes(session.category_name))
+  })
 
   return (
     <Card padding="md">
-      <CardHeader title="Recent Practice" description="Resume active exams or review completed sessions" />
+      <CardHeader
+        title="This subject"
+        description="History and resume links stay inside the subjects on this page."
+      />
+      {sessions.length === 0 ? (
+        <p className="text-sm text-[var(--color-text-muted)]" role="status">
+          No sessions for this subject yet.
+        </p>
+      ) : (
       <ul className="divide-y divide-[var(--color-border)]">
-        {data.sessions.slice(0, 8).map((session) => {
+        {sessions.slice(0, 8).map((session) => {
           const active = isActiveStatus(session.status)
           const href = active
             ? `/practice/sessions/${session.id}`
@@ -46,12 +68,13 @@ export function PracticeHistory() {
                 to={href}
                 className="shrink-0 text-xs font-medium text-[var(--color-accent)] hover:underline"
               >
-                {active ? 'Resume' : 'View'}
+                {active ? 'Resume' : 'View results'}
               </Link>
             </li>
           )
         })}
       </ul>
+      )}
     </Card>
   )
 }

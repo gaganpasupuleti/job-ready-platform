@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:mock": "node scripts/dev-mock.mjs",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "test:unit": "node --experimental-strip-types --test scripts/frontend-checks.test.ts",

@@ -294,3 +294,50 @@ Branch `feature/jobready-frontend-redesign`. These rows are not production verif
 | Lesson Next stays closed when the next block is locked; reading lessons omit empty Hints/Solution | Mock Playwright and unit checks |
 | Real coding or SQL run and submit | **Pending.** Local API was not used. Judge0 and Python execution stay off. |
 | `feature/student-library` | Not modified and not integrated |
+
+## Assessment, review, and progress slice — not a Phase 4 close-out
+
+Parent `75ee7b61f7da4ae218ceeba94dbabfd18d54839e`. This section ships in the same local commit. It does not mark Phase 4 complete. Fixture results are not real-API verification. Judge0 stays off. No production submissions were created.
+
+| Item | Status |
+|------|--------|
+| Technical MCQ and aptitude names, subject grouping, compact setup | Done in the UI |
+| History scoped to the subjects on the page | Done. Mock Playwright |
+| Honest catalog loading, empty, and failed states | Done. A missing subject is not reported as an API outage |
+| Answer restore, multi-select, resume, expiry, keyboard focus | Mock Playwright only (`e2e/phase4-assessment-mock.spec.ts`) |
+| Duplicate submit and reconnect | **Partial.** Existing confirm-submit remains. Not retested against a real API |
+| Review topic labels, compact totals, no new retry session | Done. Global weak topics stay labeled as all-subject |
+| Self-check versus lesson completion versus graded results | Done in copy and path/lesson labels. Backend rules unchanged |
+| Unknown or failed progress shown as zero | Guarded on the path page, overview, and review totals |
+| Real assessment run, submit, and persisted progress | **Pending** |
+
+### Mock preview
+
+The fixture server is `frontend/scripts/dev-mock.mjs`. It is opt-in and is not imported by the app. Default port is **8099**, not the normal backend port. The committed Vite proxy still defaults to `http://127.0.0.1:8000`.
+
+Start the fixture API, from `frontend`:
+
+```
+npm run dev:mock
+```
+
+Start the preview against that fixture, in another shell, from `frontend`:
+
+```
+$env:DEV_API_PROXY='http://127.0.0.1:8099'
+npm run dev -- --host 127.0.0.1 --port 5193
+```
+
+Stop each process on its own. Do not stop whatever is listening on port 8000 unless its command line is this fixture script.
+
+### Screenshots
+
+Before: `before-mcq`, `before-aptitude`, `before-mistakes`, `before-overview` at desktop and 390px.
+
+After: `after-mcq`, `after-aptitude`, `after-mistakes`, `after-path` at desktop and 390px.
+
+Files are under `C:\Users\Admin\AppData\Local\Temp\cursor\screenshots`. Page overflow was 0. These shots use the fixture API.
+
+### Next
+
+Phase 5 module coverage (materials, assignments, projects, typing, readiness, interviews, and the remaining track pages) is still open. Real-API coding, SQL, and assessment checks from Phase 4 stay pending.

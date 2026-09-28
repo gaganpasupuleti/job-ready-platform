@@ -106,6 +106,33 @@ export function sqlWeakTopic(
   return { empty: false, title: top[0], count: top[1] }
 }
 
+/** A count from a failed or missing payload stays unknown. */
+export function knownCount(value: number | null | undefined): string {
+  return typeof value === 'number' && Number.isFinite(value) ? String(value) : '—'
+}
+
+/** A percent is shown only when the payload included a finite number. */
+export function knownPercent(value: number | null | undefined): string | null {
+  return typeof value === 'number' && Number.isFinite(value) ? `${value}%` : null
+}
+
+/** Prefer a real topic name. A long question sentence is not a topic label. */
+export function reviewTopicLabel(item: {
+  title?: string | null
+  context?: Record<string, unknown> | null
+}): string {
+  const topic = item.context?.topic_name
+  if (typeof topic === 'string' && topic.trim()) return topic.trim()
+  const title = item.title?.trim() ?? ''
+  if (!title || title.length > 72) return 'Topic not labeled'
+  return title
+}
+
+/** Global weak topics are not restated as if they belonged to the active subject filter. */
+export function showGlobalWeakTopics(sourceFilter: string): boolean {
+  return sourceFilter === 'all'
+}
+
 export function jobsRecommendationCopy(input: {
   preferencesError: boolean
   configured: boolean

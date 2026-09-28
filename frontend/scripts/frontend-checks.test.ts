@@ -7,6 +7,10 @@ import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHre
 import {
   continuationAction,
   coverageLabel,
+  knownCount,
+  knownPercent,
+  reviewTopicLabel,
+  showGlobalWeakTopics,
   jobsRecommendationCopy,
   lessonPanelTabs,
   mistakeAction,
@@ -276,5 +280,30 @@ describe('lesson navigation', () => {
   it('omits solution and hints on a reading lesson without that content', () => {
     assert.deepEqual(lessonPanelTabs('article', { hasHints: false, hasSolution: false }), ['statement', 'help'])
     assert.ok(lessonPanelTabs('worked_example', { hasHints: false, hasSolution: false }).includes('solution'))
+  })
+})
+
+describe('review labels and progress figures', () => {
+  it('uses a topic name instead of a long question', () => {
+    assert.equal(
+      reviewTopicLabel({
+        title: 'Which index plan is cheaper when the filter matches two rows out of a million stored orders?',
+        context: { topic_name: 'Indexes' },
+      }),
+      'Indexes',
+    )
+    assert.equal(reviewTopicLabel({ title: 'Indexes' }), 'Indexes')
+  })
+
+  it('hides global weak topics once a subject filter is active', () => {
+    assert.equal(showGlobalWeakTopics('all'), true)
+    assert.equal(showGlobalWeakTopics('mcq'), false)
+  })
+
+  it('does not turn a missing progress figure into zero', () => {
+    assert.equal(knownCount(undefined), '—')
+    assert.equal(knownCount(0), '0')
+    assert.equal(knownPercent(null), null)
+    assert.equal(knownPercent(20), '20%')
   })
 })

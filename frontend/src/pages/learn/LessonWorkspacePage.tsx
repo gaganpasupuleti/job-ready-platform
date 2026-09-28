@@ -425,6 +425,11 @@ export function LessonWorkspacePage() {
               Mark complete
             </Button>
           )}
+          {data.can_mark_complete && data.status !== 'completed' && (
+            <span className="text-xs text-[var(--color-text-muted)]">
+              Lesson completion. This is not a graded score.
+            </span>
+          )}
           {nextAction.kind === 'open' && (
             <Link to={nextAction.href}>
               <Button variant="secondary">Next</Button>
