@@ -40,6 +40,11 @@ async function shot(page, name) {
   return file
 }
 
+function routeClosed(error) {
+  const message = error instanceof Error ? error.message : String(error)
+  return /test ended|has been closed|has been disposed|already handled/i.test(message)
+}
+
 async function attachApiProxy(context) {
   const apiOrigin = new URL(apiURL).origin
   await context.route(/\/api\/v1\//, async (route) => {
@@ -49,13 +54,18 @@ async function attachApiProxy(context) {
       url.origin === apiOrigin
         ? req.url()
         : `${apiURL}${url.pathname}${url.search}`
-    const response = await route.fetch({
-      url: proxied,
-      method: req.method(),
-      headers: req.headers(),
-      postData: req.postData(),
-    })
-    await route.fulfill({ response })
+    try {
+      const response = await route.fetch({
+        url: proxied,
+        method: req.method(),
+        headers: req.headers(),
+        postData: req.postData(),
+      })
+      await route.fulfill({ response })
+    } catch (error) {
+      if (routeClosed(error)) return
+      throw error
+    }
   })
 }
 
