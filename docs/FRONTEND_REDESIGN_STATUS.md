@@ -403,4 +403,108 @@ Phase 3 jobs and overview UI is in `83783fa`. Seeded application flows and real 
 
 Phase 4 real-API checks stay pending: coding and SQL run/submit, assessment submit, duplicate submit, and reconnect. Judge0 and Python execution stay off.
 
-Phase 6 release gates in the implementation plan stay unchecked: full module accounting including a later student-library merge, responsive and keyboard coverage beyond this slice, seeded non-production workflows, screenshot review against production-like data, secret scan, recorded revision and rollback artifact, and an explicit merge or deploy decision. This Phase 5 slice does not make the redesign complete.
+Phase 6 release gates in the implementation plan stay unchecked. This branch is not release-ready.
+
+## Phase 6 verification — not a release
+
+Parent `cce517e`. Frontend fix commit `90921d4`. Frontend only. `feature/student-library` was not modified or integrated. Nothing was pushed, merged, or deployed. Plan section 11 checkboxes stay unchecked.
+
+### Fixes in this slice
+
+- Learn catalog no longer repeats each course in a sidebar and a tile. Level labels are readable. Progress text says lesson progress.
+- Application pipeline columns use the same labels as the status badge (`Preparing`, not a raw status).
+- Jobs tabs and summary counts stay blank or show an em dash when a count is missing. They do not print `undefined`.
+- The masthead can wrap, so a 200% zoom of the desktop nav does not widen the page.
+- Bookmark tabs wrap at 360px. `Prompt Challenges` is no longer clipped.
+
+### Route and state coverage
+
+UI means the page exists and uses the shared shell. Mock means a Playwright fixture exercised it. Real API means the local backend below. A mock row is not a real-API row.
+
+| Route | UI | Mock | Real API | Notes |
+|-------|----|------|----------|-------|
+| `/jobs` Browse | Implemented | Overflow and long-title fixture | Not rechecked this slice | Counts no longer show `undefined` |
+| `/jobs/recommended` | Implemented | Overflow | Not rechecked | Unconfigured state links to preferences |
+| `/jobs/saved` | Implemented | Empty state in the overflow sweep | Not rechecked | Empty state links to browse |
+| `/jobs/applications` and detail | Implemented | One preparing application; readable stage | Not rechecked | Detail notes were not written |
+| `/jobs/preferences` | Implemented | Labels for role and locations | **Verified** for a new user | Save 204; a second user did not see that role |
+| `/` Overview | Implemented | Overflow sweep | Not rechecked | |
+| `/practice` | Implemented | Overflow sweep | Not rechecked | |
+| `/learn` catalog | Implemented | Single course link; `Beginner` | Not rechecked | Duplicate sidebar removed |
+| `/learn/courses/...` curriculum and lesson | Implemented earlier | Phase 4 lesson mock | Not rechecked | |
+| `/learn/syllabus` | Implemented | Overflow sweep, empty or error if the fixture is thin | Not rechecked | |
+| `/learn/materials`, assignments | Implemented | Phase 5 and Phase 6 | Not rechecked | |
+| `/practice/projects` | Implemented | Phase 5 | Not rechecked | |
+| `/practice/mcq`, `/practice/aptitude`, session, results | Implemented | Phase 4 mock | **Partial real API** | Start, answer restore, complete, and results succeeded. See below |
+| `/practice/dsa` | Implemented | Phase 4 mock; overflow sweep | **Unavailable verified** | `execution_available` is false. Judge0 stays disabled |
+| `/practice/sql` | Implemented | Phase 4 mock; overflow sweep | **Unavailable verified** | SQL sandbox is unavailable. Run and submit were not executed |
+| `/practice/playground`, Python | Implemented | Phase 4 mock | Not rechecked | Python stays locked |
+| `/practice/typing` | Implemented | Phase 6 overflow. Engine not retested | Not a server feature | Timing and scoring were not changed |
+| `/mistakes`, results | Implemented | Phase 4 mock; overflow sweep | Not rechecked | |
+| `/readiness` | Implemented | Phase 5 | Not rechecked | |
+| `/interviews` and secondary interview routes | Hub implemented | Hub overflow and empty progress | Not rechecked | Packs, session, and review were not re-opened |
+| `/ai`, Cloud, DevOps, Cybersecurity, prompts, scenarios | Implemented | Phase 5; home and prompt list in the overflow sweep | Not rechecked | |
+| `/bookmarks` | Implemented | Empty action; tabs wrap at 360 | Not rechecked | |
+| More and account | Implemented | Focus and Escape in Phase 5 | Logout is partial | No Profile or Settings page |
+| Library, Support, Notifications | Absent on this base | — | — | Stay on `feature/student-library`. This blocks full module accounting |
+
+### Checks
+
+| Check | Result |
+|-------|--------|
+| `npm run test:unit` | 20 passed |
+| `npx playwright test e2e/phase6-layout.spec.ts --project=desktop -g "top-level routes"` | 1 passed. Widths 1440, 390, and 360. Page overflow 0 after the bookmark wrap |
+| Same file, representative widths, catalog/applications, and 200% zoom | 3 passed in the run before the bookmark wrap. Zoom was rechecked after the masthead wrap |
+| `npx tsc -b`, `npm run lint`, `npm run build` | Passed. Lint warnings are the pre-existing `set-state-in-effect` set. Build still warns that the main chunk is over 500 kB |
+| `frontend/vite.config.ts` proxy default | Unchanged: `http://127.0.0.1:8000`. `dev-mock.mjs` is still opt-in and not imported by the app |
+| Phase 4 and Phase 5 mock specs | Not re-run as a full suite. Their earlier results stand |
+
+### Real API
+
+The process on port 8000 is uvicorn from `New folder (5)/backend`, revision `d09ae43`, database `jobready_db` on localhost. Redis is unavailable. This is not the redesign worktree and it is not production. Writes used newly registered users only (`phase6-a-*`, `phase6-b-*`, `phase6-restore-*` at example.com). No existing job or user was edited. Evidence: `docs/evidence/phase6/real-api-result.json`.
+
+| Check | Result | Blocks a frontend release? |
+|-------|--------|----------------------------|
+| Judge0 disabled, coding `execution_available` false | Verified | No, for shipping the unavailable state. Yes, for any claim that code execution works |
+| SQL sandbox unavailable | Verified. Run and submit were not sent | No, for the unavailable message. Yes, for a claim that SQL execution works |
+| MCQ start, answer restore, complete, results | Verified on a disposable user | No |
+| Duplicate complete | Both calls returned 200. Rejection was not shown | Yes, for the duplicate-submit release check. The confirm dialog remains |
+| Reconnect | Not tested | Yes, for that release check |
+| Job preference save and isolation | Verified | No |
+| Application persistence | Not rechecked | No, this slice did not change the write contract |
+| Logout | Frontend still clears the local token. The server returned 200 and the same token still loaded `/auth/me` | Yes, for server-side session end. No, for the client clearing its own session |
+| `feature/student-library` | Not integrated | Yes, for the “all modules accounted for” gate |
+
+### Comparable screenshots
+
+Reconstructed in an isolated worktree at `218f1d3`. The main worktree was not checked out. Same fixtures and a 1440px viewport. These are not the original empty before shots.
+
+- Baseline: `docs/evidence/phase6/baseline-218f1d3/` (`materials`, `assignments`, `projects`, `ai`)
+- Current Phase 5 UI: `docs/evidence/phase6/current-cce517e/` for the same four pages
+
+The baseline materials page still shows the raw type. The current AI page says no hosted model is called, and RAG says the catalog is shared. Projects on the baseline still treat coming-soon as a muted link; the current page says the project is not open yet.
+
+### Proposed release and rollback
+
+Do not deploy this branch yet. The unchecked plan gates are still open: student-library merge, duplicate submit, reconnect, SQL and coding execution, and an explicit merge decision.
+
+When a release is later authorized: build `frontend` at the reviewed commit, deploy that artifact through the existing frontend process, smoke-test login and one read-only page, and watch auth and route errors. Do not create a production submission as a smoke test.
+
+Rollback: redeploy the frontend artifact from base `31d9a25` (the revision this branch started from). Do not run a database migration as part of that rollback. This slice did not change the backend.
+
+### Preview
+
+Fixture API, from `frontend`:
+
+```
+npm run dev:mock
+```
+
+Preview against that fixture:
+
+```
+$env:DEV_API_PROXY='http://127.0.0.1:8099'
+npm run dev -- --host 127.0.0.1 --port 5193
+```
+
+The fixture still does not include studio, project, or AI payloads. Those pages were checked with Playwright route interception.
