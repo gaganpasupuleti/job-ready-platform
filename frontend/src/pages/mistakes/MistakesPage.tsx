@@ -6,6 +6,7 @@ import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import { ErrorState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
 import { useAuth } from '@/hooks/useAuth'
+import { mistakeAction, sourceTypeLabel, statusLabelText } from '@/lib/studentLabels'
 import {
   fetchMistakeSummary,
   fetchMistakes,
@@ -78,14 +79,14 @@ export function MistakesPage() {
       )}
 
       <div className="flex flex-wrap gap-2">
-        {['recent', 'repeated', 'unresolved', 'resolved'].map((v) => (
+        {(['recent', 'repeated', 'unresolved', 'resolved'] as const).map((v) => (
           <Button
             key={v}
             size="sm"
             variant={view === v ? 'primary' : 'secondary'}
             onClick={() => setView(v)}
           >
-            {v}
+            {statusLabelText(v)}
           </Button>
         ))}
       </div>
@@ -97,12 +98,12 @@ export function MistakesPage() {
             type="button"
             className={`rounded-full px-3 py-1 text-xs capitalize ${
               sourceFilter === f
-                ? 'bg-[var(--color-accent)] text-white'
+                ? 'bg-[var(--color-accent)] text-[var(--color-surface)]'
                 : 'border border-[var(--color-border)] text-[var(--color-text-muted)]'
             }`}
             onClick={() => setSourceFilter(f)}
           >
-            {f}
+            {sourceTypeLabel(f)}
           </button>
         ))}
       </div>
@@ -113,25 +114,30 @@ export function MistakesPage() {
             <p className="text-sm text-[var(--color-text-muted)]">No mistakes in this view yet.</p>
           </Card>
         ) : (
-          data!.map((item) => (
+          data!.map((item) => {
+            const action = mistakeAction(item.retry_href)
+            return (
             <Card key={item.id}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs uppercase text-[var(--color-text-subtle)]">{item.source_type}</p>
+                  <p className="text-xs text-[var(--color-text-subtle)]">{sourceTypeLabel(item.source_type)}</p>
                   <p className="font-medium text-[var(--color-text)]">{item.title}</p>
                   {item.summary && (
                     <p className="mt-1 text-sm text-[var(--color-text-muted)]">{item.summary}</p>
                   )}
                   <p className="mt-1 text-xs text-[var(--color-text-subtle)]">
                     {item.occurrence_count} occurrence{item.occurrence_count !== 1 ? 's' : ''} ·{' '}
-                    {item.status}
+                    {statusLabelText(item.status)}
                   </p>
+                  {action?.note && (
+                    <p className="mt-1 text-xs text-[var(--color-text-muted)]">{action.note}</p>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {item.retry_href && (
-                    <Link to={item.retry_href}>
+                  {action && (
+                    <Link to={action.href}>
                       <Button size="sm" variant="secondary">
-                        Retry
+                        {action.label}
                       </Button>
                     </Link>
                   )}
@@ -148,7 +154,8 @@ export function MistakesPage() {
                 </div>
               </div>
             </Card>
-          ))
+            )
+          })
         )}
       </div>
     </div>

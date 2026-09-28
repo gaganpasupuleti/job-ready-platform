@@ -58,8 +58,7 @@ export function CourseListPage() {
           <div className="curriculum-hero">
             <h2>Pick a path and keep going.</h2>
             <p>
-              Each course unlocks lessons in order. Progress and completion come from your account —
-              not preview fixtures.
+              Each course unlocks lessons in order. Progress and completion are saved on your account.
             </p>
             <div className="course-grid">
               {(data ?? []).map((course) => (

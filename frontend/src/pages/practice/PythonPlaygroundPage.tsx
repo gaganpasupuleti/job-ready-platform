@@ -30,7 +30,7 @@ export function PythonPlaygroundPage() {
   }
 
   return (
-    <div className="module-page">
+    <div className="module-page workspace-gutter">
       <header className="module-heading">
         <div>
           <p className="text-xs text-[var(--color-text-muted)]">

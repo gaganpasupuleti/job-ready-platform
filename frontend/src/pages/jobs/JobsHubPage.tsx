@@ -334,10 +334,15 @@ export function JobsHubPage() {
           )}
         </>
       ) : (
-        <EmptyState
-          title="No jobs match your filters"
-          description="Try broader keywords or clear filters to see more openings."
-        />
+        <div className="space-y-3">
+          <EmptyState
+            title="No jobs match your filters"
+            description="Try broader keywords or clear filters to see more openings."
+          />
+          <Button type="button" variant="secondary" onClick={clearFilters}>
+            Clear filters
+          </Button>
+        </div>
       )}
     </div>
   )

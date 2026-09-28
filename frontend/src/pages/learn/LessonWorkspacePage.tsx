@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
+import { lessonTypeLabel } from '@/lib/studentLabels'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import {
@@ -395,7 +396,7 @@ export function LessonWorkspacePage() {
             <PracticeProgress percent={data.course_percent ?? 0} label={`${data.course_percent ?? 0}%`} />
           </div>
           <div className="mt-1 flex flex-wrap gap-2">
-            <Badge>{data.lesson_type}</Badge>
+            <Badge>{lessonTypeLabel(data.lesson_type)}</Badge>
             <PracticeStatusBadge status={data.status} />
           </div>
         </div>

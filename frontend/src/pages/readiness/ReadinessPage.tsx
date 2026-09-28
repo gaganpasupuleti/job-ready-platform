@@ -6,6 +6,7 @@ import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
 import { ErrorState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
 import { useAuth } from '@/hooks/useAuth'
+import { coverageLabel, humanLabel, readinessScoreLabel } from '@/lib/studentLabels'
 import { fetchReadiness, refreshReadiness } from '@/services/readinessService'
 
 export function ReadinessPage() {
@@ -26,12 +27,15 @@ export function ReadinessPage() {
   if (isLoading) return <LoadingState label="Loading readiness" />
   if (error || !data) return <ErrorState message="Could not load readiness profile." />
 
-  const showOverall =
-    data.overall_score_ready === true &&
-    data.is_hiring_probability !== true &&
-    data.has_minimum_evidence &&
-    data.score != null
-  const scoreLabel = showOverall ? `${Math.round(data.score!)}%` : 'Building your profile'
+  const scoreLabel = readinessScoreLabel({
+    overallScoreReady: data.overall_score_ready,
+    isHiringProbability: data.is_hiring_probability,
+    hasMinimumEvidence: data.has_minimum_evidence,
+    score: data.score,
+    hasTargetRole: Boolean(data.target_role),
+  })
+  const showOverall = scoreLabel !== 'Not measured yet'
+  const coverageText = coverageLabel(data.core_coverage.covered, data.core_coverage.total)
 
   return (
     <div className="space-y-6">
@@ -57,31 +61,26 @@ export function ReadinessPage() {
           <div>
             <p className="text-3xl font-semibold text-[var(--color-text)]">{scoreLabel}</p>
             <p className="text-xs text-[var(--color-text-muted)]">
-              {showOverall ? 'Skill coverage score' : 'Overall % withheld until evidence is ready'}
+              {showOverall
+                ? 'Skill coverage from practice on this platform. Not a hiring probability.'
+                : 'No readiness score until a target role and enough practice evidence exist.'}
             </p>
-            {data.formula_version ? (
-              <p className="mt-1 text-[10px] text-[var(--color-text-subtle)]">
-                Formula {data.formula_version} · not a hiring probability
-              </p>
-            ) : null}
           </div>
           <div>
-            <p className="text-lg font-medium capitalize text-[var(--color-text)]">
-              {data.evidence_strength}
+            <p className="text-lg font-medium text-[var(--color-text)]">
+              {humanLabel(data.evidence_strength)}
             </p>
             <p className="text-xs text-[var(--color-text-muted)]">Evidence strength</p>
           </div>
           <div>
-            <p className="text-lg font-medium text-[var(--color-text)]">
-              {data.core_coverage.covered} / {data.core_coverage.total}
-            </p>
+            <p className="text-lg font-medium text-[var(--color-text)]">{coverageText}</p>
             <p className="text-xs text-[var(--color-text-muted)]">Core skill coverage</p>
           </div>
         </div>
         {!data.target_role && (
           <p className="mt-4 text-sm">
-            <Link to="/jobs" className="text-[var(--color-accent)] hover:underline">
-              Set your target role in Jobs preferences
+            <Link to="/jobs/preferences" className="text-[var(--color-accent)] hover:underline">
+              Set a target role
             </Link>
           </p>
         )}

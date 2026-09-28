@@ -3,26 +3,26 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Light theme sampled from the Jobs reference: cool paper, white cards, green action. */
+/* Stone paper, graphite text, one muted steel accent. */
 @theme {
-  --font-sans: "Segoe UI", Inter, Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, ui-monospace, monospace;
+  --font-sans: "Source Sans 3", "Segoe UI", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "Cascadia Code", Consolas, ui-monospace, monospace;
 
-  --color-surface: #ffffff;
-  --color-surface-elevated: #ffffff;
-  --color-surface-muted: #f4f6f4;
-  --color-border: #e3e6e4;
-  --color-border-strong: #cfd5d1;
-  --color-text: #1b2832;
-  --color-text-muted: #5d686e;
-  --color-text-subtle: #8b9396;
-  --color-accent: #007c4a;
-  --color-accent-hover: #00663d;
-  --color-accent-muted: #e7f4ed;
-  --color-success: #007c4a;
-  --color-warning: #b5812a;
-  --color-danger: #b44545;
-  --color-brand: #1b2832;
+  --color-surface: #fffcf8;
+  --color-surface-elevated: #fffcf8;
+  --color-surface-muted: #f3f0ea;
+  --color-border: #e4dfd6;
+  --color-border-strong: #d3cdc3;
+  --color-text: #2a2825;
+  --color-text-muted: #5e5952;
+  --color-text-subtle: #847e75;
+  --color-accent: #3f5564;
+  --color-accent-hover: #314351;
+  --color-accent-muted: #e7edf1;
+  --color-success: #2f5d45;
+  --color-warning: #6b5428;
+  --color-danger: #8d3d3d;
+  --color-brand: #2a2825;
 
   --space-page: 1.25rem;
   --space-page-lg: 1.75rem;
@@ -69,21 +69,21 @@
 }
 
 .dark {
-  --color-surface: #17212b;
-  --color-surface-elevated: #1c2833;
-  --color-surface-muted: #0c1118;
-  --color-border: #2a3846;
-  --color-border-strong: #3a4c5c;
-  --color-text: #e7eef5;
-  --color-text-muted: #a8b4c0;
-  --color-text-subtle: #7d8b98;
-  --color-accent: #2f86fe;
-  --color-accent-hover: #5aa3ff;
-  --color-accent-muted: #17324f;
-  --color-success: #3dbe7a;
-  --color-warning: #e0b15a;
-  --color-danger: #e07a7a;
-  --color-brand: #e7eef5;
+  --color-surface: #1c1b19;
+  --color-surface-elevated: #242320;
+  --color-surface-muted: #141311;
+  --color-border: #3a3834;
+  --color-border-strong: #4d4a44;
+  --color-text: #f3efe8;
+  --color-text-muted: #c4beb4;
+  --color-text-subtle: #8f887e;
+  --color-accent: #9eb0be;
+  --color-accent-hover: #c5d2db;
+  --color-accent-muted: #2a333a;
+  --color-success: #8fbfa4;
+  --color-warning: #d4c09a;
+  --color-danger: #e0a3a3;
+  --color-brand: #f3efe8;
 }
 
 * {
@@ -184,6 +184,38 @@ strong,
   display: flex;
   flex-direction: column;
   max-width: none;
+}
+
+.app-shell-focused .page-enter {
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.workspace-gutter {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.75rem var(--page-gutter) 1rem;
+}
+
+.workspace-fill {
+  height: calc(100dvh - 56px);
+  max-height: calc(100dvh - 56px);
+}
+
+.reading-shell {
+  width: min(100%, 42rem);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
 }
 
 .app-shell-assessment {

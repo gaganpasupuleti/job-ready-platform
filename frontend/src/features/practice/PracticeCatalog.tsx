@@ -18,6 +18,7 @@ interface PracticeCatalogProps {
   categorySlug?: string
   topicSlugs?: string[]
   formatLabel?: string
+  showIntro?: boolean
 }
 
 export function PracticeCatalog({
@@ -27,6 +28,7 @@ export function PracticeCatalog({
   categorySlug,
   topicSlugs,
   formatLabel,
+  showIntro = true,
 }: PracticeCatalogProps) {
   const navigate = useNavigate()
   const { data, isLoading, error } = useQuery({
@@ -86,13 +88,17 @@ export function PracticeCatalog({
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">{title}</h1>
-        <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">{description}</p>
-        {formatLabel ? (
-          <p className="mt-1 text-xs text-[var(--color-text-subtle)]">Question format: {formatLabel}</p>
-        ) : null}
-      </div>
+      {showIntro ? (
+        <div>
+          <h1 className="text-[1.75rem] font-semibold leading-tight text-[var(--color-text)]">{title}</h1>
+          <p className="mt-1 text-sm text-[var(--color-text-muted)]">{description}</p>
+          {formatLabel ? (
+            <p className="mt-1 text-xs text-[var(--color-text-subtle)]">Question format: {formatLabel}</p>
+          ) : null}
+        </div>
+      ) : formatLabel ? (
+        <p className="text-xs text-[var(--color-text-subtle)]">Question format: {formatLabel}</p>
+      ) : null}
 
       {(categories?.length ?? 0) > 1 ? (
         <div>

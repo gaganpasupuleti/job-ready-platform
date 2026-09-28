@@ -11,8 +11,8 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 const variants = {
   default: 'bg-[var(--color-surface-muted)] text-[var(--color-text-muted)]',
   accent: 'bg-[var(--color-accent-muted)] text-[var(--color-accent)]',
-  success: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
-  warning: 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+  success: 'bg-[#e7efe9] text-[var(--color-success)] dark:bg-[#243028] dark:text-[#c5ddd0]',
+  warning: 'bg-[#f3eee4] text-[var(--color-warning)] dark:bg-[#322c22] dark:text-[#e4d3b0]',
 }
 
 export function Badge({ children, variant = 'default', className, ...rest }: BadgeProps) {

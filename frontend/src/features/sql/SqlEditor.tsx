@@ -270,7 +270,7 @@ export const SqlEditor = forwardRef<SqlEditorHandle, SqlEditorProps>(function Sq
                 className={cn(
                   'rounded px-2 py-0.5 text-xs font-medium transition-colors',
                   fontPreset === key
-                    ? 'bg-[var(--color-accent)] text-white'
+                    ? 'bg-[var(--color-accent)] text-[var(--color-surface)]'
                     : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]',
                 )}
               >

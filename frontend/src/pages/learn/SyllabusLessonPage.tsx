@@ -85,8 +85,12 @@ export function SyllabusLessonPage() {
               ))}
             </ul>
           </section>
-          <div className="mt-4 min-w-0 rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <SafeMarkdown source={data.material.body_md} />
+          <div className="reading-shell mt-4 min-w-0 rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 sm:p-6">
+            <SafeMarkdown
+              source={data.material.body_md}
+              pageTitle={data.title}
+              ownedHeadings={['Learning objectives', 'Prerequisites', 'Objectives']}
+            />
           </div>
           {data.material.examples.length > 0 && (
             <section className="mt-4">
@@ -100,7 +104,7 @@ export function SyllabusLessonPage() {
           )}
           <section className="mt-4">
             <h2 className="text-sm font-semibold">Recap</h2>
-            <SafeMarkdown source={data.material.summary_md || data.material.summary} />
+            <SafeMarkdown source={data.material.summary_md || data.material.summary} pageTitle={data.title} />
           </section>
           {data.video && (
             <p className="mt-3 text-sm">

@@ -204,7 +204,8 @@ export function ProblemFilters({
           <option value="hard">Hard</option>
         </select>
         <input
-          placeholder="Topic slug"
+          aria-label="Topic"
+          placeholder="Topic"
           value={topicSlug}
           onChange={(e) => onTopicSlugChange(e.target.value)}
           className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"

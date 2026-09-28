@@ -119,7 +119,7 @@ export function SqlPlaygroundPage() {
   }
 
   return (
-    <div className="module-page flex min-h-0 flex-1 flex-col gap-3">
+    <div className="module-page workspace-gutter flex min-h-0 flex-1 flex-col gap-3">
       <header className="module-heading">
         <div>
           <p className="eyebrow">
@@ -191,7 +191,7 @@ export function SqlPlaygroundPage() {
             ))}
           </div>
 
-          <div className="grid min-h-0 flex-1 gap-3 md:grid-cols-[240px_minmax(0,1fr)]">
+          <div className="grid min-h-0 min-w-0 flex-1 gap-3 md:grid-cols-[240px_minmax(0,1fr)]">
             <aside
               className={cn(
                 'min-h-0 overflow-auto rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-3',
@@ -260,10 +260,10 @@ export function SqlPlaygroundPage() {
               </ul>
             </aside>
 
-            <section className="flex min-h-0 flex-col gap-3">
+            <section className="flex min-h-0 min-w-0 flex-col gap-3">
               <div
                 className={cn(
-                  'min-h-[240px] rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)]',
+                  'min-h-[240px] min-w-0 overflow-hidden rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)]',
                   mobileTab === 'editor' ? 'block' : 'hidden md:block',
                 )}
               >

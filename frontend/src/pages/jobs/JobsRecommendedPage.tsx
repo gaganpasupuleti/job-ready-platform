@@ -9,29 +9,51 @@ import {
   PracticeHeader,
 } from '@/components/practice-workspace/PracticeWorkspace'
 import { JobCardView } from '@/features/jobs/JobCard'
-import { fetchRecommendedJobs } from '@/services/jobService'
+import { jobsRecommendationCopy } from '@/lib/studentLabels'
+import { fetchJobPreferences, fetchRecommendedJobs } from '@/services/jobService'
 
 export function JobsRecommendedPage() {
-  const { data, isLoading, error } = useQuery({
+  const jobs = useQuery({
     queryKey: ['jobs-recommended'],
     queryFn: () => fetchRecommendedJobs(),
   })
+  const preferences = useQuery({
+    queryKey: ['job-preferences'],
+    queryFn: fetchJobPreferences,
+  })
 
-  if (isLoading) return <LoadingState label="Loading relevant jobs" />
-  if (error) return <ErrorState message="Unable to load relevant jobs." />
+  if (jobs.isLoading || preferences.isLoading) return <LoadingState label="Loading relevant jobs" />
+  if (jobs.error) return <ErrorState message="Unable to load relevant jobs." />
+
+  const targetName = preferences.data?.target_role_name
+  const configured = preferences.isSuccess && Boolean(preferences.data?.target_role_slug && targetName)
+  const items = jobs.data?.items ?? []
+  const scored = items.some((job) => job.requirement_coverage != null)
+  const recommendation = jobsRecommendationCopy({
+    preferencesError: preferences.isError,
+    configured,
+    targetName,
+    scored,
+    hasItems: items.length > 0,
+  })
 
   return (
-    <div className="space-y-6">
-      <PracticeHeader backTo="/jobs" backLabel="Jobs hub" title="Relevant Jobs">
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Recommended based on your target role and recorded skill evidence — requirement coverage
-          only, not a hiring probability.
-        </p>
+    <div className="space-y-5">
+      <PracticeHeader backTo="/jobs" backLabel="Jobs" title="Relevant jobs" size="page">
+        <p className="mt-1 max-w-2xl text-sm text-[var(--color-text-muted)]">{recommendation.summary}</p>
       </PracticeHeader>
 
-      {data && data.items.length > 0 ? (
+      {recommendation.showPreferencesLink && (
+        <p>
+          <Link to="/jobs/preferences">
+            <Button type="button">Set a target role</Button>
+          </Link>
+        </p>
+      )}
+
+      {items.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {data.items.map((job) => (
+          {items.map((job) => (
             <JobCardView key={job.id} job={job} />
           ))}
         </div>
@@ -39,15 +61,16 @@ export function JobsRecommendedPage() {
         <div className="space-y-3">
           <EmptyState
             title="No relevant jobs yet"
-            description="Update your job preferences or complete more practice to improve recommendations."
+            description={
+              configured
+                ? 'Nothing in the current catalog matches this target role.'
+                : 'Set a target role, or browse the full catalog.'
+            }
           />
-          <p>
-            <Link to="/jobs/preferences" className="text-sm text-[var(--color-accent)] hover:underline">
-              Job preferences
-            </Link>
-          </p>
           <Link to="/jobs">
-            <Button>Browse all jobs</Button>
+            <Button type="button" variant="secondary">
+              Browse all jobs
+            </Button>
           </Link>
         </div>
       )}

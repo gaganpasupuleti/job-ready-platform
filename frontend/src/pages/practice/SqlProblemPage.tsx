@@ -29,7 +29,7 @@ import { SqlWorkbenchLayout } from '@/features/sql/workbench/SqlWorkbenchLayout'
 import { useResizableSqlLayout } from '@/features/sql/workbench/useResizableSqlLayout'
 import { formatSqlQuery } from '@/features/sql/utils/sqlFormatter'
 import { useAuth } from '@/hooks/useAuth'
-import { fetchMistakes, fetchMistakeSummary } from '@/services/mistakeService'
+import { fetchMistakes } from '@/services/mistakeService'
 import {
   fetchSqlExecutionStatus,
   fetchSqlNavigation,
@@ -109,11 +109,6 @@ export function SqlProblemPage() {
   const { data: sqlMistakes } = useQuery({
     queryKey: ['mistakes', 'sql', 'unresolved'],
     queryFn: () => fetchMistakes({ source_type: 'sql', view: 'unresolved' }),
-  })
-
-  const { data: mistakeSummary } = useQuery({
-    queryKey: ['mistakes-summary'],
-    queryFn: fetchMistakeSummary,
   })
 
   const { data: unsolvedProblems } = useQuery({
@@ -526,7 +521,6 @@ export function SqlProblemPage() {
         <SqlReviewCtas
           progress={progress}
           mistakes={sqlMistakes}
-          mistakeSummary={mistakeSummary}
           unsolvedHref={unsolvedHref}
           firstMistakeHref={firstMistakeHref}
         />
@@ -586,7 +580,7 @@ export function SqlProblemPage() {
   )
 
   return (
-    <div className="studio-main flex h-[calc(100vh-7rem)] min-h-[28rem] flex-col overflow-hidden">
+    <div className="studio-main workspace-gutter workspace-fill flex min-h-0 flex-col overflow-hidden">
       <SqlWorkbenchLayout
         topBar={topBar}
         objectExplorer={objectExplorer}

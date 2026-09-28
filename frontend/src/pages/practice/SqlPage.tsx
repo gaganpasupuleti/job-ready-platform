@@ -5,7 +5,7 @@ import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
 import { SqlProblemFilters, SqlProblemList } from '@/features/sql/SqlProblemList'
 import { SqlProgressSummary } from '@/features/sql/SqlProgressSummary'
 import { SqlReviewCtas } from '@/features/sql/SqlReviewCtas'
-import { fetchMistakes, fetchMistakeSummary } from '@/services/mistakeService'
+import { fetchMistakes } from '@/services/mistakeService'
 import { fetchSqlProblems, fetchSqlProgress } from '@/services/sqlService'
 import type { SqlProgressStatus } from '@/types/sql'
 
@@ -34,11 +34,6 @@ export function SqlPage() {
   const { data: sqlMistakes } = useQuery({
     queryKey: ['mistakes', 'sql', 'unresolved'],
     queryFn: () => fetchMistakes({ source_type: 'sql', view: 'unresolved' }),
-  })
-
-  const { data: mistakeSummary } = useQuery({
-    queryKey: ['mistakes-summary'],
-    queryFn: fetchMistakeSummary,
   })
 
   const { data: unsolvedProblems } = useQuery({
@@ -73,7 +68,6 @@ export function SqlPage() {
       <SqlReviewCtas
         progress={progress}
         mistakes={sqlMistakes}
-        mistakeSummary={mistakeSummary}
         unsolvedHref={unsolvedHref}
         firstMistakeHref={firstMistakeHref}
       />

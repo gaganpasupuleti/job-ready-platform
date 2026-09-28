@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
+import { lessonTypeLabel, statusLabelText } from '@/lib/studentLabels'
 import { fetchCourse } from '@/services/learnService'
 
 export function CourseDetailPage() {
@@ -71,7 +72,7 @@ export function CourseDetailPage() {
                     <div>
                       <p className={locked ? 'is-muted' : ''}>{lesson.title}</p>
                       <span>
-                        {lesson.lesson_type} · {lesson.status}
+                        {lessonTypeLabel(lesson.lesson_type)} · {statusLabelText(lesson.status)}
                       </span>
                     </div>
                     {locked ? (

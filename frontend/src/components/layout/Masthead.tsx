@@ -28,7 +28,9 @@ interface MastheadProps {
 export function Masthead({ compact = false }: MastheadProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
+  const [accountOpen, setAccountOpen] = useState(false)
   const moreRef = useRef<HTMLDivElement>(null)
+  const accountRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
@@ -47,12 +49,19 @@ export function Masthead({ compact = false }: MastheadProps) {
   const closeMore = () => setMoreOpen(false)
 
   useEffect(() => {
-    if (!moreOpen) return
+    if (!moreOpen && !accountOpen) return
     const onPointer = (event: MouseEvent) => {
-      if (!moreRef.current?.contains(event.target as Node)) closeMore()
+      if (moreOpen && !moreRef.current?.contains(event.target as Node)) closeMore()
+      if (accountOpen && !accountRef.current?.contains(event.target as Node)) setAccountOpen(false)
     }
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeMore()
+      if (event.key !== 'Escape') return
+      if (accountOpen) {
+        setAccountOpen(false)
+        accountRef.current?.querySelector('button')?.focus()
+        return
+      }
+      closeMore()
     }
     document.addEventListener('mousedown', onPointer)
     document.addEventListener('keydown', onKey)
@@ -60,7 +69,7 @@ export function Masthead({ compact = false }: MastheadProps) {
       document.removeEventListener('mousedown', onPointer)
       document.removeEventListener('keydown', onKey)
     }
-  }, [moreOpen])
+  }, [accountOpen, moreOpen])
 
   return (
     <>
@@ -160,15 +169,49 @@ export function Masthead({ compact = false }: MastheadProps) {
             {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
           </Button>
           {user ? (
-            <button
-              type="button"
-              className="profile-button"
-              aria-label={`Signed in as ${user.username}. Log out`}
-              title={`${user.username} · Log out`}
-              onClick={() => logout()}
-            >
-              {initials}
-            </button>
+            <div className="account-nav" ref={accountRef}>
+              <button
+                type="button"
+                className="profile-button"
+                aria-label={`Account menu for ${user.full_name || user.username}`}
+                aria-haspopup="menu"
+                aria-expanded={accountOpen}
+                aria-controls="account-menu"
+                onClick={() => {
+                  setAccountOpen((open) => {
+                    const next = !open
+                    if (next) {
+                      queueMicrotask(() => accountRef.current?.querySelector('a')?.focus())
+                    }
+                    return next
+                  })
+                }}
+              >
+                {initials}
+              </button>
+              {accountOpen ? (
+                <div id="account-menu" className="account-menu" role="menu" aria-label="Account">
+                  <p className="account-identity">{user.full_name || user.username}</p>
+                  <Link role="menuitem" to="/jobs/preferences" onClick={() => setAccountOpen(false)}>
+                    Job preferences
+                  </Link>
+                  <Link role="menuitem" to="/readiness" onClick={() => setAccountOpen(false)}>
+                    Readiness
+                  </Link>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="account-menu-action"
+                    onClick={() => {
+                      setAccountOpen(false)
+                      logout()
+                    }}
+                  >
+                    Sign out
+                  </button>
+                </div>
+              ) : null}
+            </div>
           ) : null}
           <button
             type="button"

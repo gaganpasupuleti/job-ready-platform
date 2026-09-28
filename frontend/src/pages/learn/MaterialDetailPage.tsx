@@ -56,7 +56,11 @@ export function MaterialDetailPage() {
             <ul className="list-disc pl-5 text-sm">{data.objectives.map((item) => <li key={item}>{item}</li>)}</ul>
           </section>
           <div className="mt-4 min-w-0 rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <SafeMarkdown source={data.body_md} />
+            <SafeMarkdown
+              source={data.body_md}
+              pageTitle={data.title}
+              ownedHeadings={['Learning objectives', 'Objectives', 'Prerequisites']}
+            />
           </div>
           {data.examples.length > 0 && (
             <section className="mt-4">
