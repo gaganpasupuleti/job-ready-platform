@@ -131,8 +131,7 @@ export function SqlPlaygroundPage() {
           </p>
           <h1 data-testid="sql-playground-heading">SQL Playground</h1>
           <p>
-            Explore a sample dataset without opening an assessed problem. Runs are not graded and do
-            not create submissions.
+            Explore a sample dataset. This is not an assessed problem, so there is no Submit action.
           </p>
         </div>
       </header>

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
-import { lessonTypeLabel } from '@/lib/studentLabels'
+import { lessonPanelTabs, lessonTypeLabel, nextLessonAction } from '@/lib/studentLabels'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import {
@@ -184,13 +184,12 @@ export function LessonWorkspacePage() {
   })
 
   const tabs = useMemo(() => {
-    const base: WorkspaceTab[] = ['statement']
-    if (data?.lesson_type === 'interactive_code' || data?.lesson_type === 'practice') {
-      base.push('editor', 'submissions')
-    }
-    base.push('solution', 'hints', 'help')
-    return base
-  }, [data?.lesson_type])
+    if (!data) return ['statement', 'help'] as WorkspaceTab[]
+    return lessonPanelTabs(data.lesson_type, {
+      hasHints: data.hints.length > 0,
+      hasSolution: Boolean(data.solution_json) || data.solution_unlocked,
+    })
+  }, [data])
 
   if (isLoading) return <LoadingState label="Loading lesson" />
 
@@ -206,11 +205,15 @@ export function LessonWorkspacePage() {
   }
 
   const visibleHints = data.hints.slice(0, Math.max(hintIndex, 0))
+  const nextAction = nextLessonAction({
+    nextHref: data.next_href,
+    blocks: data.progress_blocks,
+  })
 
   const panel = (
     <>
       {tab === 'statement' && (
-        <div className="space-y-4">
+        <div className="reading-shell space-y-4">
           <StatementBlocks blocks={data.statement_json?.blocks} />
           {data.steps.length > 0 && (
             <div className="space-y-3">
@@ -393,7 +396,11 @@ export function LessonWorkspacePage() {
             {data.lesson_index && data.lesson_total ? ` · Lesson ${data.lesson_index} of ${data.lesson_total}` : ''}
           </p>
           <div className="mt-2 max-w-sm">
-            <PracticeProgress percent={data.course_percent ?? 0} label={`${data.course_percent ?? 0}%`} />
+            {typeof data.course_percent === 'number' ? (
+              <PracticeProgress percent={data.course_percent} label={`${data.course_percent}%`} />
+            ) : (
+              <p className="text-xs text-[var(--color-text-muted)]">Course progress is not available yet.</p>
+            )}
           </div>
           <div className="mt-1 flex flex-wrap gap-2">
             <Badge>{lessonTypeLabel(data.lesson_type)}</Badge>
@@ -418,10 +425,15 @@ export function LessonWorkspacePage() {
               Mark complete
             </Button>
           )}
-          {data.next_href && (
-            <Link to={data.next_href}>
+          {nextAction.kind === 'open' && (
+            <Link to={nextAction.href}>
               <Button variant="secondary">Next</Button>
             </Link>
+          )}
+          {nextAction.kind === 'blocked' && (
+            <span className="text-sm text-[var(--color-text-muted)]" role="status">
+              Next is locked: {nextAction.reason}
+            </span>
           )}
         </div>
       </div>
@@ -432,16 +444,27 @@ export function LessonWorkspacePage() {
             <Button variant="ghost" size="sm" onClick={() => setOutlineOpen(false)}>
               Close
             </Button>
-            {data.progress_blocks.map((item) => (
-              <Link
-                key={item.id}
-                to={`/learn/courses/${courseSlug}/${item.module_slug}/${item.slug}`}
-                className="mt-2 block text-sm"
-                onClick={() => setOutlineOpen(false)}
-              >
-                {item.title}
-              </Link>
-            ))}
+            {data.progress_blocks.map((item) => {
+              const locked =
+                item.status === 'locked' || item.status === 'unavailable' || item.status === 'coming_soon'
+              if (locked) {
+                return (
+                  <span key={item.id} className="mt-2 block text-sm text-[var(--color-text-muted)]">
+                    {item.title} · locked
+                  </span>
+                )
+              }
+              return (
+                <Link
+                  key={item.id}
+                  to={`/learn/courses/${courseSlug}/${item.module_slug}/${item.slug}`}
+                  className="mt-2 block text-sm"
+                  onClick={() => setOutlineOpen(false)}
+                >
+                  {item.title}
+                </Link>
+              )
+            })}
           </div>
         </div>
       )}
@@ -454,21 +477,27 @@ export function LessonWorkspacePage() {
           {data.progress_blocks.map((item) => {
             const href = `/learn/courses/${courseSlug}/${item.module_slug}/${item.slug}`
             const active = item.slug === lessonSlug && item.module_slug === moduleSlug
+            const locked =
+              item.status === 'locked' || item.status === 'unavailable' || item.status === 'coming_soon'
+            const label = `${item.status === 'completed' ? 'Done · ' : locked ? 'Locked · ' : active ? 'Current · ' : ''}${item.title}`
+            if (locked) {
+              return (
+                <span key={item.id} className="block rounded-md px-2 py-1.5 text-xs text-[var(--color-text-subtle)]">
+                  {label}
+                </span>
+              )
+            }
             return (
               <Link
                 key={item.id}
-                to={item.status === 'locked' ? '#' : href}
+                to={href}
                 className={`block rounded-md px-2 py-1.5 text-xs ${
                   active
                     ? 'bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
-                    : item.status === 'locked'
-                      ? 'pointer-events-none text-[var(--color-text-subtle)]'
-                      : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)]'
+                    : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)]'
                 }`}
-                onClick={(e) => item.status === 'locked' && e.preventDefault()}
               >
-                {item.status === 'completed' ? '✓ ' : item.status === 'locked' ? '🔒 ' : active ? '● ' : '○ '}
-                {item.title}
+                {label}
               </Link>
             )
           })}

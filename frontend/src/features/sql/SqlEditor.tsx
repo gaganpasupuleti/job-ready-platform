@@ -316,8 +316,9 @@ export const SqlEditor = forwardRef<SqlEditorHandle, SqlEditorProps>(function Sq
       </div>
       {!readOnly && (
         <div className="border-t border-[var(--color-border)] px-3 py-1 text-[10px] text-[var(--color-text-subtle)]">
-          Run: Ctrl/Cmd+Enter · Submit: Ctrl/Cmd+Shift+Enter · Format: Ctrl/Cmd+Shift+F · Clear:
-          Ctrl/Cmd+Shift+L
+          {onSubmit
+            ? 'Run: Ctrl/Cmd+Enter · Submit: Ctrl/Cmd+Shift+Enter · Format: Ctrl/Cmd+Shift+F · Clear: Ctrl/Cmd+Shift+L'
+            : 'Run: Ctrl/Cmd+Enter · Format: Ctrl/Cmd+Shift+F · Clear: Ctrl/Cmd+Shift+L'}
         </div>
       )}
     </div>

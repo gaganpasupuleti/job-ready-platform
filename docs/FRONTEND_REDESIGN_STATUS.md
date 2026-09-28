@@ -279,3 +279,18 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 | Preserved | Segoe UI / Cascadia Code stack, JR monogram, auth cache, jobs family filters, SQL workbench, MCQ session/autosave, Python execution locks |
 | Backend | **unchanged** — missing contracts recorded in `docs/FRONTEND_BACKEND_DEPENDENCIES.md` |
 | Merge / deploy | **not done** |
+
+## Phase 4 slice (2026-09-28) — frontend only, mock preview
+
+Branch `feature/jobready-frontend-redesign`. These rows are not production verification. A mock that says Java or SQL can run does not prove the real runtime.
+
+| Check | Result |
+|-------|--------|
+| Compact coding and SQL catalogs, runtime notice before open | Mock preview and `e2e/phase4-mock.spec.ts` |
+| Loading, failed, and unavailable capability copy | Mock Playwright only |
+| Coding pane switch keeps the selected language | Mock Playwright only |
+| SQL Problem / Schema / Editor / Output keeps the draft | Mock Playwright only |
+| Playground has no Submit shortcut; Python has no Run or Submit | Mock Playwright only |
+| Lesson Next stays closed when the next block is locked; reading lessons omit empty Hints/Solution | Mock Playwright and unit checks |
+| Real coding or SQL run and submit | **Pending.** Local API was not used. Judge0 and Python execution stay off. |
+| `feature/student-library` | Not modified and not integrated |

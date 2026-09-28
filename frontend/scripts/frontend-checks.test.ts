@@ -2,13 +2,15 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { marked, type Token, type Tokens } from 'marked'
 
-import { mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
+import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
 import {
   continuationAction,
   coverageLabel,
   jobsRecommendationCopy,
+  lessonPanelTabs,
   mistakeAction,
+  nextLessonAction,
   practiceCountLabel,
   readinessScoreLabel,
   sqlWeakTopic,
@@ -230,5 +232,49 @@ describe('jobs, readiness, practice counts, and continuation', () => {
       'Start',
     )
     assert.equal(continuationAction({ href: '/practice', progress_percent: 10 }).label, 'Explore')
+  })
+})
+
+describe('runtime capability notices', () => {
+  it('keeps loading, failure, and a known outage distinct', () => {
+    assert.equal(capabilityNotice({ pending: true, failed: false, available: undefined, kind: 'code' }).state, 'checking')
+    assert.match(capabilityNotice({ pending: false, failed: true, available: undefined, kind: 'sql' }).text, /Could not check/)
+    assert.equal(
+      capabilityNotice({ pending: false, failed: false, available: false, kind: 'code' }).text,
+      'Code execution is coming soon. You can write code and save drafts.',
+    )
+  })
+
+  it('names runnable languages separately from blocked ones', () => {
+    const notice = capabilityNotice({
+      pending: false,
+      failed: false,
+      available: true,
+      kind: 'code',
+      languages: [
+        { id: 62, name: 'Java', available: true },
+        { id: 71, name: 'Python', available: false },
+      ],
+    })
+    assert.equal(notice.state, 'ready')
+    assert.match(notice.text, /Java/)
+    assert.match(notice.text, /Not available: Python/)
+    assert.doesNotMatch(notice.text, /Run and Submit are available for Python/)
+  })
+})
+
+describe('lesson navigation', () => {
+  it('blocks next when the curriculum item is locked', () => {
+    const next = nextLessonAction({
+      nextHref: '/learn/courses/python/intro/loops',
+      blocks: [{ module_slug: 'intro', slug: 'loops', status: 'locked', title: 'Loops' }],
+    })
+    assert.equal(next.kind, 'blocked')
+    if (next.kind === 'blocked') assert.match(next.reason, /Loops/)
+  })
+
+  it('omits solution and hints on a reading lesson without that content', () => {
+    assert.deepEqual(lessonPanelTabs('article', { hasHints: false, hasSolution: false }), ['statement', 'help'])
+    assert.ok(lessonPanelTabs('worked_example', { hasHints: false, hasSolution: false }).includes('solution'))
   })
 })

@@ -32,6 +32,50 @@ export function resolveLanguageId(choice: number | null, options: RuntimeLanguag
 
 export type RunControlReason = 'checking' | 'error' | 'ready' | 'language' | 'runtime'
 
+/** Catalog and workspace copy for a capability check. Loading and failure stay distinct from a known outage. */
+export function capabilityNotice(input: {
+  pending: boolean
+  failed: boolean
+  available: boolean | undefined
+  kind: 'code' | 'sql'
+  languages?: RuntimeLanguage[]
+}): { state: 'checking' | 'failed' | 'unavailable' | 'ready'; text: string } {
+  if (input.pending) {
+    return {
+      state: 'checking',
+      text: input.kind === 'sql' ? 'Checking whether SQL can run.' : 'Checking whether code can run.',
+    }
+  }
+  if (input.failed) {
+    return {
+      state: 'failed',
+      text:
+        input.kind === 'sql'
+          ? 'Could not check whether SQL can run.'
+          : 'Could not check whether code can run.',
+    }
+  }
+  if (input.available !== true) {
+    return {
+      state: 'unavailable',
+      text:
+        input.kind === 'sql'
+          ? 'SQL execution is unavailable. You can still open a problem and edit a draft.'
+          : 'Code execution is coming soon. You can write code and save drafts.',
+    }
+  }
+  const runnable = (input.languages ?? []).filter((lang) => lang.available !== false).map((lang) => lang.name)
+  const blocked = (input.languages ?? []).filter((lang) => lang.available === false).map((lang) => lang.name)
+  let text =
+    input.kind === 'sql'
+      ? 'SQL run and submit are available.'
+      : runnable.length > 0
+        ? `Run and Submit are available for ${runnable.join(', ')}.`
+        : 'Code execution is available.'
+  if (blocked.length > 0) text += ` Not available: ${blocked.join(', ')}.`
+  return { state: 'ready', text }
+}
+
 export function runControlState(input: {
   statusPending: boolean
   statusError: boolean

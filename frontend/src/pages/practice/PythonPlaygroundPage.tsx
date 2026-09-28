@@ -50,7 +50,7 @@ export function PythonPlaygroundPage() {
             Python — Coming soon
           </h1>
           <p role="status" className="mt-0.5 max-w-2xl text-sm text-[var(--color-text-muted)]">
-            Python execution is locked. This page does not run or grade code.
+            Python execution is locked. This page has no Run or Submit action and does not grade code.
           </p>
         </div>
       </header>

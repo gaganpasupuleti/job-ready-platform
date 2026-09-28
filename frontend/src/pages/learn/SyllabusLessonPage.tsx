@@ -185,10 +185,14 @@ export function SyllabusLessonPage() {
             ) : (
               <span />
             )}
-            {data.next ? (
+            {data.next?.status === 'published' ? (
               <Link to={data.next.href} className="text-[var(--color-accent)] hover:underline">
                 Next: {data.next.title}
               </Link>
+            ) : data.next ? (
+              <span className="text-[var(--color-text-muted)]" role="status">
+                Next is not available yet: {data.next.title}
+              </span>
             ) : (
               <span />
             )}

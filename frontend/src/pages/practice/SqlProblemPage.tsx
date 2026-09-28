@@ -29,6 +29,7 @@ import { SqlWorkbenchLayout } from '@/features/sql/workbench/SqlWorkbenchLayout'
 import { useResizableSqlLayout } from '@/features/sql/workbench/useResizableSqlLayout'
 import { formatSqlQuery } from '@/features/sql/utils/sqlFormatter'
 import { useAuth } from '@/hooks/useAuth'
+import { runControlState } from '@/lib/codingRuntime'
 import { fetchMistakes } from '@/services/mistakeService'
 import {
   fetchSqlExecutionStatus,
@@ -69,7 +70,7 @@ export function SqlProblemPage() {
   const [submitResult, setSubmitResult] = useState<SqlSubmitResponse | null>(null)
   const [resultMode, setResultMode] = useState<ResultMode>(null)
   const [revealedHints, setRevealedHints] = useState(0)
-  const [mobileTab, setMobileTab] = useState<'problem' | 'code' | 'output'>('problem')
+  const [mobileTab, setMobileTab] = useState<'problem' | 'schema' | 'code' | 'output'>('problem')
   const [actionError, setActionError] = useState<string | null>(null)
   const [messages, setMessages] = useState<string[]>([])
   const [preferredBottomTab, setPreferredBottomTab] = useState<SqlBottomTab | null>(null)
@@ -89,7 +90,7 @@ export function SqlProblemPage() {
     enabled: Boolean(slug),
   })
 
-  const { data: executionStatus } = useQuery({
+  const { data: executionStatus, isPending: executionPending, isError: executionError } = useQuery({
     queryKey: ['sql-execution-status'],
     queryFn: fetchSqlExecutionStatus,
     refetchInterval: 30000,
@@ -179,8 +180,22 @@ export function SqlProblemPage() {
     setMessages((prev) => [...prev.slice(-19), 'SQL formatted locally.'])
   }, [query])
 
-  const executionAvailable =
-    problem?.execution_available !== false && executionStatus?.available !== false
+  const runtime = runControlState({
+    statusPending: executionPending,
+    statusError: executionError,
+    executionAvailable: executionStatus?.available,
+    problemExecutionAvailable: problem?.execution_available,
+    languageAvailable: true,
+  })
+  const executionAvailable = runtime.enabled
+  const executionNotice =
+    runtime.reason === 'ready'
+      ? null
+      : runtime.reason === 'checking'
+        ? 'Checking whether SQL can run. Run and Submit stay off until that check finishes.'
+        : runtime.reason === 'error'
+          ? 'Could not check whether SQL can run. Run and Submit stay off until the check succeeds.'
+          : 'SQL execution is unavailable. Run and Submit stay off. Drafts, schema, and hints stay available.'
 
   const runMutation = useMutation({
     mutationFn: () => runSqlQuery(problem!.id, query),
@@ -271,7 +286,7 @@ export function SqlProblemPage() {
 
   const projectReturn = searchParams.get('fromProject')
   const runStateLabel: Record<RunState, string> = {
-    ready: 'Ready',
+    ready: executionAvailable ? 'Ready' : runtime.reason === 'checking' ? 'Checking' : runtime.reason === 'error' ? 'Check failed' : 'Unavailable',
     running: 'Running',
     success: 'Success',
     error: 'Error',
@@ -366,10 +381,9 @@ export function SqlProblemPage() {
           Problem {navigation.position} of {navigation.total}
         </p>
       )}
-      {!executionAvailable && (
-        <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-          SQL execution is temporarily unavailable. You can still edit drafts, review schema, hints,
-          and submissions.
+      {executionNotice && (
+        <div className="capability-note" role="status">
+          {executionNotice}
         </div>
       )}
     </div>
@@ -410,7 +424,7 @@ export function SqlProblemPage() {
         />
         <Card className="min-h-0" padding="md">
           {questionTab === 'problem' && (
-            <div className="space-y-4 text-sm">
+            <div className="reading-shell space-y-4">
               {problem.scenario && (
                 <div>
                   <h2 className="font-medium">Scenario</h2>

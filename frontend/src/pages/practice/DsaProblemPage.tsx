@@ -202,7 +202,7 @@ export function DsaProblemPage() {
       />
       <Card className="min-h-0 flex-1 overflow-y-auto" padding="md">
         {leftTab === 'problem' && (
-          <div className="space-y-4 text-sm">
+          <div className="reading-shell space-y-4">
             <div className="whitespace-pre-wrap">{problem.description}</div>
             {problem.input_format && (
               <div>

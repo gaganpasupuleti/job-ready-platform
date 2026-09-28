@@ -422,6 +422,38 @@
 }
 
 /* Learning desk (Overview) */
+.catalog-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+}
+.catalog-metrics div {
+  min-width: 4.5rem;
+}
+.catalog-metrics dt {
+  font-size: 12px;
+  color: var(--color-text-subtle);
+}
+.catalog-metrics dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.capability-note {
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface-muted);
+  font-size: 13px;
+  color: var(--color-text);
+}
 .home-v4 {
   width: 100%;
 }

@@ -205,6 +205,42 @@ export function practiceCountLabel(input: {
   return countPhrase(input.itemCount)
 }
 
+/** Next is a link only when the curriculum marks that lesson as open. */
+export function nextLessonAction(input: {
+  nextHref?: string | null
+  blocks?: { module_slug: string; slug: string; status: string; title: string }[]
+}): { kind: 'none' } | { kind: 'open'; href: string } | { kind: 'blocked'; title: string; reason: string } {
+  const href = input.nextHref ?? ''
+  if (!href || href === '#') return { kind: 'none' }
+  const match = href.match(/\/learn\/courses\/[^/]+\/([^/]+)\/([^/]+)\/?$/)
+  if (!match) return { kind: 'open', href }
+  const block = (input.blocks ?? []).find((item) => item.module_slug === match[1] && item.slug === match[2])
+  if (!block) return { kind: 'open', href }
+  if (block.status === 'locked' || block.status === 'unavailable' || block.status === 'coming_soon') {
+    return {
+      kind: 'blocked',
+      title: block.title,
+      reason: `Complete the earlier lessons before opening ${block.title}.`,
+    }
+  }
+  return { kind: 'open', href }
+}
+
+const SOLUTION_TYPES = new Set(['interactive_code', 'practice', 'worked_example'])
+
+/** Reading lessons do not grow empty Solution or Hints tabs. */
+export function lessonPanelTabs(
+  lessonType: string | null | undefined,
+  options: { hasHints: boolean; hasSolution: boolean },
+): Array<'statement' | 'editor' | 'submissions' | 'solution' | 'hints' | 'help'> {
+  const tabs: Array<'statement' | 'editor' | 'submissions' | 'solution' | 'hints' | 'help'> = ['statement']
+  if (lessonType === 'interactive_code' || lessonType === 'practice') tabs.push('editor', 'submissions')
+  if (SOLUTION_TYPES.has(lessonType ?? '') || options.hasSolution) tabs.push('solution')
+  if (SOLUTION_TYPES.has(lessonType ?? '') || options.hasHints) tabs.push('hints')
+  tabs.push('help')
+  return tabs
+}
+
 export function pathIsOpen(input: {
   availability?: string | null
   externalRoute: string | null | undefined
