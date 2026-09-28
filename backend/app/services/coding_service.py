@@ -117,6 +117,12 @@ class CodingService:
         payload: PlaygroundRunRequest,
     ) -> PlaygroundRunResponse:
         """Freeform run (not graded). Distinct from assessed problem run/submit."""
+        if payload.language_id == 71:
+            return PlaygroundRunResponse(
+                status="locked",
+                available=False,
+                message="Python execution is locked for this release.",
+            )
         if not self.is_execution_available():
             return PlaygroundRunResponse(
                 status="service_unavailable",
@@ -382,6 +388,8 @@ class CodingService:
         problem = await self.repo.get_problem_by_id(problem_id, load_tests=True)
         if problem is None or not problem.is_active:
             raise AppException("Problem not found", status_code=404)
+        if payload.language_id == 71:
+            raise AppException("Python execution is locked for this release.", status_code=409)
 
         self._ensure_execution_available()
         self._validate_source_code(payload.source_code)

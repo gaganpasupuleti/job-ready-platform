@@ -320,7 +320,7 @@ test.describe('DSA workbench QA', () => {
   test('catalog + problem chrome, fonts, bottom tabs, gating', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto('/practice/dsa')
-    await expect(page.getByRole('heading', { name: /dsa practice/i })).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByRole('heading', { name: /programming & dsa|dsa practice/i })).toBeVisible({ timeout: 30_000 })
 
     await page.goto(`/practice/dsa/${DSA_ID}`)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 30_000 })
@@ -347,7 +347,9 @@ test.describe('DSA workbench QA', () => {
     const ready = await judge0Ready(page)
     if (!ready) {
       await expect(
-        page.getByText(/execution is temporarily unavailable|currently unavailable/i),
+        page.getByRole('status').filter({
+          hasText: 'Code execution is coming soon. You can write code and save drafts.',
+        }),
       ).toBeVisible()
       await expect(page.getByRole('button', { name: /^run$/i })).toBeDisabled()
       await expect(page.getByRole('button', { name: /^submit$/i })).toBeDisabled()

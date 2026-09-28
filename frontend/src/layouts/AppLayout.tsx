@@ -1,64 +1,89 @@
-import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
-import { FeedbackPanel } from '@/features/support/FeedbackPanel'
 import { Masthead } from '@/components/layout/Masthead'
-import { navigationConfig, primaryNavItems } from '@/components/navigation/navConfig'
+import { navigationConfig } from '@/components/navigation/navConfig'
 import { cn } from '@/utils/cn'
 
 function getPageTitle(pathname: string): string {
-  const primary = primaryNavItems.find((item) =>
-    (item.match ?? [item.path]).some((prefix) =>
-      prefix === '/' ? pathname === '/' : pathname === prefix || pathname.startsWith(`${prefix}/`),
-    ),
-  )
-  if (primary && (primary.path === '/' ? pathname === '/' : pathname.startsWith(primary.path))) {
-    return primary.label
-  }
   for (const section of navigationConfig) {
     for (const item of section.items) {
       if (item.path === pathname) return item.label
     }
   }
-  if (pathname.startsWith('/admin/assignments')) return 'Assignments'
-  if (pathname.startsWith('/admin/feedback')) return 'Student Feedback'
+  if (pathname === '/') return 'Overview'
+  if (pathname.startsWith('/library')) return 'Library'
   if (pathname.startsWith('/support/requests')) return 'My requests'
+  if (pathname.startsWith('/admin/library')) return 'Library'
+  if (pathname.startsWith('/admin/feedback')) return 'Student Feedback'
+  if (
+    pathname.startsWith('/practice/python') ||
+    pathname.startsWith('/practice/compiler') ||
+    pathname.startsWith('/practice/playground')
+  ) {
+    return 'Playground'
+  }
+  if (pathname.startsWith('/practice/dsa/')) return 'Coding workspace'
+  if (pathname.startsWith('/practice/sql/')) return 'SQL workspace'
   if (pathname.startsWith('/practice/sessions/')) return 'Practice session'
   return 'JobReady'
 }
 
+type ShellMode = 'standard' | 'focused' | 'assessment'
+
+function resolveShell(pathname: string): ShellMode {
+  if (
+    pathname.startsWith('/practice/dsa/') ||
+    pathname.startsWith('/practice/sql/') ||
+    pathname.startsWith('/practice/python') ||
+    pathname.startsWith('/practice/compiler') ||
+    pathname.startsWith('/practice/playground') ||
+    (pathname.startsWith('/learn/courses/') && pathname.includes('/lessons/'))
+  ) {
+    return 'focused'
+  }
+  if (
+    pathname.startsWith('/practice/sessions/') ||
+    pathname.startsWith('/assessments') ||
+    pathname.includes('/exam')
+  ) {
+    return 'assessment'
+  }
+  return 'standard'
+}
+
 export function AppLayout() {
   const location = useLocation()
-  const [feedbackOpen, setFeedbackOpen] = useState(false)
   const title = getPageTitle(location.pathname)
-  const compact =
-    location.pathname.startsWith('/practice/sessions/') ||
-    location.pathname.startsWith('/practice/sql/') ||
-    location.pathname.startsWith('/practice/dsa/')
-
-  useEffect(() => {
-    if (!feedbackOpen) return
-    function onKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') setFeedbackOpen(false)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [feedbackOpen])
+  const shell = resolveShell(location.pathname)
+  const compact = shell !== 'standard'
+  const wide = shell === 'standard' && location.pathname.startsWith('/jobs') && location.pathname !== '/jobs/preferences'
 
   return (
-    <div className={cn('flex min-h-full flex-col bg-[var(--color-surface-muted)]', 'app-shell-standard')}>
-      <Masthead compact={compact} feedbackOpen={feedbackOpen} onFeedback={() => setFeedbackOpen((open) => !open)} />
-      <div className="jr-subheader">
-        <p className="jr-breadcrumb">
-          <span>Workspace</span>
-          <span aria-hidden="true">/</span>
-          <strong>{title}</strong>
-        </p>
-      </div>
+    <div
+      className={cn(
+        'flex min-h-full flex-col bg-[var(--color-surface-muted)]',
+        shell === 'standard' && 'app-shell-standard',
+        shell === 'focused' && 'app-shell-focused',
+        shell === 'assessment' && 'app-shell-assessment',
+      )}
+      data-shell={shell}
+      data-layout={wide ? 'wide' : 'reading'}
+    >
+      <Masthead compact={compact} />
+      {shell === 'standard' ? (
+        <div className="jr-subheader">
+          <p className="jr-breadcrumb">
+            <span>Workspace</span>
+            <span aria-hidden="true">/</span>
+            <strong>{title}</strong>
+          </p>
+        </div>
+      ) : null}
       <main id="main-content" className="flex-1" tabIndex={-1}>
-        <Outlet key={location.pathname} />
+        <div key={location.pathname} className="page-enter">
+          <Outlet />
+        </div>
       </main>
-      <FeedbackPanel open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </div>
   )
 }

@@ -1,0 +1,33 @@
+{
+  "coding": {
+    "id": "f2e249de-5613-43e0-b4c0-05b86f215786",
+    "slug": "echo-input",
+    "title": "Echo Input",
+    "domain_id": "cc5d73d5-e0ca-405e-9a69-57fdb2b5aa60",
+    "category_id": "729acfae-c702-4c94-afb8-3d8868b9efef",
+    "topic_id": "6ead3f30-e5cb-465b-a04c-8f0bcb4740a4"
+  },
+  "users": {
+    "student": {
+      "email": "e2e.student@jobready.dev",
+      "password": "E2eStudent123!",
+      "username": "e2e_student"
+    },
+    "admin": {
+      "email": "admin@jobready.dev",
+      "password": "Admin123!"
+    }
+  },
+  "path": { "slug": "beginner-arrays" },
+  "project": { "slug": "python-calculator" },
+  "sql_project": { "slug": "sql-ecommerce-analytics" },
+  "course": { "slug": "python-foundations" },
+  "mcq_topic": { "slug": "percentages", "name": "Percentages" },
+  "sql": {
+    "slug": "active-catalog-items",
+    "accepted_query": "SELECT product_name, price\nFROM products\nWHERE is_active = TRUE\nORDER BY price DESC",
+    "wrong_query": "SELECT product_name FROM products LIMIT 1",
+    "invalid_query": "SELECT product_name FROM products WHERE",
+    "blocked_query": "DELETE FROM products"
+  }
+}

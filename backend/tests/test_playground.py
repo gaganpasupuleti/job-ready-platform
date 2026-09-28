@@ -7,7 +7,9 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_playground_run_unavailable_when_judge0_disabled(client, student_auth, monkeypatch):
+async def test_python_playground_stays_locked_when_judge0_disabled(
+    client, student_auth, monkeypatch
+):
     from app.core import config
 
     monkeypatch.setattr(config.settings, "judge0_enabled", False)
@@ -24,9 +26,9 @@ async def test_playground_run_unavailable_when_judge0_disabled(client, student_a
     assert resp.status_code == 200
     body = resp.json()
     assert body["available"] is False
-    assert body["status"] == "service_unavailable"
+    assert body["status"] == "locked"
     assert body["stdout"] == ""
-    assert "unavailable" in (body.get("message") or "").lower()
+    assert "locked" in (body.get("message") or "").lower()
 
 
 @pytest.mark.asyncio

@@ -100,6 +100,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   { label: 'Jobs', path: '/admin/jobs' },
                   { label: 'Assignments', path: '/admin/assignments' },
                   { label: 'Student Feedback', path: '/admin/feedback' },
+                  { label: 'Library', path: '/admin/library' },
                   { label: 'Readiness', path: '/admin/readiness' },
                 ].map((item) => (
                   <li key={item.path}>

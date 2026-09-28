@@ -10,6 +10,7 @@ export const queryClient = new QueryClient({
   },
 })
 
+/** Clear all cached queries on auth transitions (AUTH-01). */
 export function clearAuthQueryCache() {
   resetLibraryUrlGuard()
   queryClient.clear()

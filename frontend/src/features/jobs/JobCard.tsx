@@ -61,6 +61,7 @@ export function JobCardView({
 
       <div className="flex flex-wrap gap-1">
         {job.location_text && <Badge>{job.location_text}</Badge>}
+        {job.experience_bucket && <Badge>{job.experience_bucket}</Badge>}
         {job.is_remote && <Badge variant="accent">Remote</Badge>}
         {workMode && <Badge>{workMode}</Badge>}
         {experience && <Badge>{experience}</Badge>}
@@ -81,6 +82,11 @@ export function JobCardView({
         <p className="text-xs text-[var(--color-text-muted)]">Not enough mapped requirements</p>
       )}
 
+      {job.posted_at && (
+        <p className="text-xs text-[var(--color-text-muted)]">
+          Posted {new Date(job.posted_at).toLocaleDateString()}
+        </p>
+      )}
       {job.top_skills.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {job.top_skills.slice(0, 5).map((skill) => (

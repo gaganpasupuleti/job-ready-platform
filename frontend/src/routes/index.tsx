@@ -1,3 +1,4 @@
+import { TypingPracticePage } from '@/features/typing/TypingPracticePage'
 import { Route, Routes } from 'react-router-dom'
 
 import { AdminRoute, GuestRoute, ProtectedRoute } from '@/components/auth/ProtectedRoute'
@@ -28,6 +29,17 @@ import { SubmissionsPage } from '@/pages/submissions/SubmissionsPage'
 import { CodingPage } from '@/pages/practice/CodingPage'
 import { DsaPage } from '@/pages/practice/DsaPage'
 import { DsaProblemPage } from '@/pages/practice/DsaProblemPage'
+import { PlaygroundHubPage } from '@/pages/practice/PlaygroundHubPage'
+import { PythonPlaygroundPage } from '@/pages/practice/PythonPlaygroundPage'
+import { SqlPlaygroundPage } from '@/pages/practice/SqlPlaygroundPage'
+import { MaterialsPage } from '@/pages/learn/MaterialsPage'
+import { MaterialDetailPage } from '@/pages/learn/MaterialDetailPage'
+import { AssignmentsPage } from '@/pages/learn/AssignmentsPage'
+import { AssignmentDetailPage } from '@/pages/learn/AssignmentDetailPage'
+import { SyllabusPage } from '@/pages/learn/SyllabusPage'
+import { SyllabusLessonPage } from '@/pages/learn/SyllabusLessonPage'
+import { QuizPackPage } from '@/pages/learn/QuizPackPage'
+import { AdminStudioReviewsPage } from '@/pages/admin/AdminStudioReviewsPage'
 import { McqPage } from '@/pages/practice/McqPage'
 import { PracticeResultsPage } from '@/pages/practice/PracticeResultsPage'
 import { PracticeSessionPage } from '@/pages/practice/PracticeSessionPage'
@@ -57,6 +69,7 @@ import { JobsApplicationsPage } from '@/pages/jobs/JobsApplicationsPage'
 import { JobApplicationDetailPage } from '@/pages/jobs/JobApplicationDetailPage'
 import { JobDetailPage } from '@/pages/jobs/JobDetailPage'
 import { JobsHubPage } from '@/pages/jobs/JobsHubPage'
+import { JobsPreferencesPage } from '@/pages/jobs/JobsPreferencesPage'
 import { JobsRecommendedPage } from '@/pages/jobs/JobsRecommendedPage'
 import { JobsSavedPage } from '@/pages/jobs/JobsSavedPage'
 import { ReadinessPage } from '@/pages/readiness/ReadinessPage'
@@ -151,12 +164,20 @@ export function AppRoutes() {
             <Route path="library/:bookId" element={<LibraryBookPage />} />
             <Route path="library/:bookId/read" element={<LibraryReaderPage />} />
         <Route path="practice" element={<PracticeHubPage />} />
+        <Route path="practice/typing" element={<TypingPracticePage />} />
         <Route path="practice/paths/:slug" element={<PracticePathPage />} />
         <Route path="practice/projects" element={<ProjectsPage />} />
         <Route path="practice/projects/:slug" element={<ProjectDetailPage />} />
         <Route path="projects/:slug/tasks/:taskId" element={<ProjectTaskPage />} />
         <Route path="projects/:slug" element={<ProjectDetailPage />} />
         <Route path="learn" element={<CourseListPage />} />
+        <Route path="learn/syllabus" element={<SyllabusPage />} />
+        <Route path="learn/syllabus/:key" element={<SyllabusLessonPage />} />
+        <Route path="learn/materials" element={<MaterialsPage />} />
+        <Route path="learn/materials/:key" element={<MaterialDetailPage />} />
+        <Route path="learn/assignments" element={<AssignmentsPage />} />
+        <Route path="learn/assignments/:key" element={<AssignmentDetailPage />} />
+        <Route path="learn/quizzes/:key" element={<QuizPackPage />} />
         <Route path="learn/courses/:slug" element={<CourseDetailPage />} />
         <Route
           path="learn/courses/:courseSlug/:moduleSlug/:lessonSlug"
@@ -167,6 +188,11 @@ export function AppRoutes() {
         <Route path="practice/dsa" element={<DsaPage />} />
         <Route path="practice/dsa/:problemId" element={<DsaProblemPage />} />
         <Route path="practice/coding" element={<CodingPage />} />
+        <Route path="practice/python" element={<PythonPlaygroundPage />} />
+        <Route path="practice/compiler" element={<PythonPlaygroundPage />} />
+        <Route path="practice/compiler/python" element={<PythonPlaygroundPage />} />
+        <Route path="practice/playground" element={<PlaygroundHubPage />} />
+        <Route path="practice/playground/sql" element={<SqlPlaygroundPage />} />
         <Route path="practice/sql" element={<SqlPage />} />
         <Route path="practice/sql/:slug" element={<SqlProblemPage />} />
         <Route path="submissions" element={<SubmissionsPage />} />
@@ -187,6 +213,7 @@ export function AppRoutes() {
         <Route path="company-prep" element={<CompanyPrepPage />} />
         <Route path="company-prep/:slug" element={<CompanyPrepDetailPage />} />
         <Route path="jobs" element={<JobsHubPage />} />
+        <Route path="jobs/preferences" element={<JobsPreferencesPage />} />
         <Route path="jobs/recommended" element={<JobsRecommendedPage />} />
         <Route path="jobs/saved" element={<JobsSavedPage />} />
         <Route path="jobs/applications" element={<JobsApplicationsPage />} />
@@ -260,6 +287,14 @@ export function AppRoutes() {
           />
         ))}
 
+        <Route
+          path="admin/studio/reviews"
+          element={
+            <AdminRoute>
+              <AdminStudioReviewsPage />
+            </AdminRoute>
+          }
+        />
         <Route
           path="admin/questions"
           element={

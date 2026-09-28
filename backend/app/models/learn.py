@@ -574,3 +574,4 @@ class UserProjectTaskProgress(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     last_activity_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     checklist_state: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    brief_snapshot: Mapped[dict | None] = mapped_column(JSONB, nullable=True)

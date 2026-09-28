@@ -1,232 +1,322 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/common/Button'
-import { Card, CardHeader } from '@/components/common/Card'
 import {
   EmptyState,
   ErrorState,
   LoadingState,
 } from '@/components/practice-workspace/PracticeWorkspace'
+import { CatalogSelect } from '@/features/jobs/CatalogSelect'
 import { JobCardView } from '@/features/jobs/JobCard'
-import { fetchJobFamilyCounts, fetchJobs, fetchJobsSummary } from '@/services/jobService'
+import { useAuth } from '@/hooks/useAuth'
+import { fetchJobFamilyCounts, fetchJobFilterOptions, fetchJobs, fetchJobsSummary } from '@/services/jobService'
 
 const inputClass =
   'rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)]'
 
+function param(searchParams: URLSearchParams, key: string) {
+  const value = searchParams.get(key)?.trim()
+  return value || undefined
+}
+
 export function JobsHubPage() {
+  const { user } = useAuth()
+  const uid = user?.id
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
-  const [role, setRole] = useState(searchParams.get('role') ?? '')
   const [skill, setSkill] = useState(searchParams.get('skill') ?? '')
-  const [company, setCompany] = useState(searchParams.get('company') ?? '')
-  const page = Number(searchParams.get('page') ?? '1')
-  const sort = searchParams.get('sort') ?? 'newest'
-  const roleFamily = searchParams.get('role_family') ?? ''
+  const [locationQuery, setLocationQuery] = useState('')
+  const [companyQuery, setCompanyQuery] = useState('')
+  const [showAllFamilies, setShowAllFamilies] = useState(false)
 
-  const filters = {
-    q: searchParams.get('q') || undefined,
-    role: searchParams.get('role') || undefined,
-    skill: searchParams.get('skill') || undefined,
-    company: searchParams.get('company') || undefined,
-    role_family: roleFamily || undefined,
+  const page = Number(searchParams.get('page') ?? '1') || 1
+  const sort = searchParams.get('sort') ?? 'newest'
+  const family = param(searchParams, 'role_family')
+  const location = param(searchParams, 'location')
+  const company = param(searchParams, 'company')
+  const experience = param(searchParams, 'experience_bucket')
+  const role = param(searchParams, 'role')
+
+  useEffect(() => {
+    setQ(searchParams.get('q') ?? '')
+    setSkill(searchParams.get('skill') ?? '')
+  }, [searchParams])
+
+  const applied = {
+    q: param(searchParams, 'q'),
+    skill: param(searchParams, 'skill'),
+    company,
+    location,
+    role_family: family,
+    experience_bucket: experience,
+    role,
     sort,
     page,
     limit: 20,
   }
+  const countFilters = {
+    q: applied.q,
+    skill: applied.skill,
+    company,
+    location,
+    experience_bucket: experience,
+    role,
+  }
 
   const { data: summary } = useQuery({
-    queryKey: ['jobs-summary'],
+    queryKey: ['jobs-summary', uid],
     queryFn: fetchJobsSummary,
+    enabled: Boolean(uid),
   })
 
-  const { data: families } = useQuery({
-    queryKey: ['job-families', filters.q, filters.role, filters.skill, filters.company],
+  const families = useQuery({
+    queryKey: ['job-family-counts', uid, countFilters],
+    queryFn: () => fetchJobFamilyCounts(countFilters),
+    enabled: Boolean(uid),
+  })
+
+  const options = useQuery({
+    queryKey: ['job-filter-options', uid, locationQuery, companyQuery, location, company],
     queryFn: () =>
-      fetchJobFamilyCounts({
-        q: filters.q,
-        role: filters.role,
-        skill: filters.skill,
-        company: filters.company,
+      fetchJobFilterOptions({
+        location_q: locationQuery || undefined,
+        company_q: companyQuery || undefined,
+        location,
+        company,
       }),
+    enabled: Boolean(uid),
   })
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['jobs', filters],
-    queryFn: () => fetchJobs(filters),
+    queryKey: ['jobs', uid, applied],
+    queryFn: () => fetchJobs(applied),
+    enabled: Boolean(uid),
   })
 
+  const pills = useMemo(() => {
+    const rows = families.data?.families ?? []
+    if (!family) return rows
+    return [...rows].sort((left, right) => Number(right.id === family) - Number(left.id === family))
+  }, [families.data, family])
+
+  const writeParams = (patch: Record<string, string | undefined>, resetPage = true) => {
+    const next = new URLSearchParams(searchParams)
+    for (const [key, value] of Object.entries(patch)) {
+      if (value) next.set(key, value)
+      else next.delete(key)
+    }
+    if (resetPage) next.set('page', '1')
+    if ((next.get('sort') ?? 'newest') === 'newest') next.delete('sort')
+    setSearchParams(next)
+  }
+
   const applyFilters = () => {
+    writeParams({
+      q: q.trim() || undefined,
+      skill: skill.trim() || undefined,
+    })
+  }
+
+  const clearFilters = () => {
+    setQ('')
+    setSkill('')
+    setLocationQuery('')
+    setCompanyQuery('')
     const next = new URLSearchParams()
-    if (q.trim()) next.set('q', q.trim())
-    if (role.trim()) next.set('role', role.trim())
-    if (skill.trim()) next.set('skill', skill.trim())
-    if (company.trim()) next.set('company', company.trim())
-    if (roleFamily) next.set('role_family', roleFamily)
     if (sort !== 'newest') next.set('sort', sort)
     next.set('page', '1')
     setSearchParams(next)
   }
 
-  const selectFamily = (familyId: string) => {
-    const next = new URLSearchParams(searchParams)
-    if (familyId) next.set('role_family', familyId)
-    else next.delete('role_family')
-    next.set('page', '1')
-    setSearchParams(next)
-  }
-
-  const goToPage = (nextPage: number) => {
-    const next = new URLSearchParams(searchParams)
-    next.set('page', String(nextPage))
-    setSearchParams(next)
-  }
-
-  if (isLoading) return <LoadingState label="Loading jobs" />
-  if (error) return <ErrorState message="Unable to load jobs." />
-
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.limit)) : 1
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="module-page jobs-portal">
+      <header className="module-heading">
         <div>
-          <h1 className="text-lg font-semibold text-[var(--color-text)]">Jobs</h1>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-            Published listings only. A source row stays hidden until it has an explicit publish decision and a reviewed sync.
-          </p>
+          <p className="eyebrow">Careers</p>
+          <h1>Jobs</h1>
+          <p>Browse openings, save roles, and track applications — live listings only.</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link to="/jobs/recommended">
-            <Button>Relevant jobs</Button>
-          </Link>
-          <Link to="/jobs/saved">
-            <Button>Saved</Button>
-          </Link>
-          <Link to="/jobs/applications">
-            <Button variant="primary">Applications</Button>
-          </Link>
-        </div>
-      </div>
+      </header>
+
+      <nav className="jobs-tabs" aria-label="Jobs sections">
+        <Link to="/jobs" className="active" aria-current="page">
+          Browse
+        </Link>
+        <Link to="/jobs/recommended">Relevant</Link>
+        <Link to="/jobs/saved">Saved{summary ? ` (${summary.saved_count})` : ''}</Link>
+        <Link to="/jobs/applications">
+          Applications{summary ? ` (${summary.applications_total})` : ''}
+        </Link>
+        <Link to="/jobs/preferences">Preferences</Link>
+      </nav>
 
       {summary && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card padding="sm">
-            <p className="text-xs text-[var(--color-text-muted)]">Saved</p>
-            <p className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
-              {summary.saved_count}
-            </p>
-          </Card>
-          <Card padding="sm">
-            <p className="text-xs text-[var(--color-text-muted)]">Applications</p>
-            <p className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
-              {summary.applications_total}
-            </p>
-            <p className="text-xs text-[var(--color-text-subtle)]">
+        <div className="jobs-summary-strip">
+          <article>
+            <p>Saved</p>
+            <strong>{summary.saved_count}</strong>
+          </article>
+          <article>
+            <p>Applications</p>
+            <strong>{summary.applications_total}</strong>
+            <p>
               {summary.applied_count} applied · {summary.interview_count} interview
             </p>
-          </Card>
-          <Card padding="sm">
-            <p className="text-xs text-[var(--color-text-muted)]">Offers</p>
-            <p className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
-              {summary.offer_count}
-            </p>
-          </Card>
-          <Card padding="sm">
-            <p className="text-xs text-[var(--color-text-muted)]">Follow-ups</p>
-            <p className="mt-1 text-2xl font-semibold text-[var(--color-text)]">
-              {summary.follow_ups_due}
-            </p>
-            <p className="text-xs text-[var(--color-text-subtle)]">
+          </article>
+          <article>
+            <p>Offers</p>
+            <strong>{summary.offer_count}</strong>
+          </article>
+          <article>
+            <p>Follow-ups due</p>
+            <strong>{summary.follow_ups_due}</strong>
+            <p>
               {summary.follow_ups_overdue} overdue · {summary.follow_ups_today} today
             </p>
-          </Card>
+          </article>
         </div>
       )}
 
-      {families && families.families.some((family) => family.count > 0) ? (
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          <FamilyPill
-            label={`All ${families.all}`}
-            active={!roleFamily}
-            onClick={() => selectFamily('')}
-          />
-          {families.families
-            .filter((family) => family.count > 0)
-            .map((family) => (
-              <FamilyPill
-                key={family.id}
-                label={`${family.label} ${family.count}`}
-                active={roleFamily === family.id}
-                onClick={() => selectFamily(family.id)}
-              />
+      <section className="jobs-family-panel" aria-label="Job families">
+        {families.isLoading ? (
+          <p className="jobs-family-status" role="status">
+            Loading role counts
+          </p>
+        ) : families.isError ? (
+          <p className="jobs-family-status" role="alert">
+            Unable to load role counts
+          </p>
+        ) : (
+          <div className={showAllFamilies ? 'jobs-family-pills' : 'jobs-family-pills is-collapsed'}>
+            <button
+              type="button"
+              className="jobs-family-pill"
+              aria-pressed={!family}
+              onClick={() => writeParams({ role_family: undefined })}
+            >
+              <span>All jobs</span>
+              <span className="jobs-family-count">{families.data?.all ?? ''}</span>
+            </button>
+            {pills.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className="jobs-family-pill"
+                aria-pressed={family === item.id}
+                onClick={() => writeParams({ role_family: family === item.id ? undefined : item.id })}
+              >
+                <span>{item.label}</span>
+                <span className="jobs-family-count">{item.count}</span>
+              </button>
             ))}
-        </div>
-      ) : null}
-
-      <Card>
-        <CardHeader title="Search & filter" />
-        <div className="flex flex-wrap gap-2">
-          <input
-            className={inputClass}
-            placeholder="Keywords"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-          <input
-            className={inputClass}
-            placeholder="Role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          />
-          <input
-            className={inputClass}
-            placeholder="Skill"
-            value={skill}
-            onChange={(e) => setSkill(e.target.value)}
-          />
-          <input
-            className={inputClass}
-            placeholder="Company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-          />
-          <select
-            className={inputClass}
-            value={sort}
-            onChange={(e) => {
-              const next = new URLSearchParams(searchParams)
-              next.set('sort', e.target.value)
-              setSearchParams(next)
-            }}
+          </div>
+        )}
+        {!families.isLoading && !families.isError && (
+          <button
+            type="button"
+            className="jobs-family-toggle"
+            aria-expanded={showAllFamilies}
+            onClick={() => setShowAllFamilies((current) => !current)}
           >
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="company">Company</option>
-          </select>
-          <Button type="button" variant="primary" onClick={applyFilters}>Search</Button>
-        </div>
-      </Card>
+            {showAllFamilies ? 'Show fewer' : 'Show all roles'}
+          </button>
+        )}
+      </section>
 
-      {data && data.items.length > 0 ? (
+      <div className="jobs-filter-bar">
+        <input
+          className={inputClass}
+          placeholder="Keywords"
+          value={q}
+          onChange={(event) => setQ(event.target.value)}
+          aria-label="Keywords"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') applyFilters()
+          }}
+        />
+        <input
+          className={inputClass}
+          placeholder="Skill"
+          value={skill}
+          onChange={(event) => setSkill(event.target.value)}
+          aria-label="Skill"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') applyFilters()
+          }}
+        />
+        <CatalogSelect
+          label="Location"
+          value={location ?? ''}
+          options={options.data?.locations ?? []}
+          loading={options.isLoading}
+          error={options.isError}
+          onQueryChange={setLocationQuery}
+          onChange={(next) => writeParams({ location: next || undefined })}
+        />
+        <CatalogSelect
+          label="Company"
+          value={company ?? ''}
+          options={options.data?.companies ?? []}
+          loading={options.isLoading}
+          error={options.isError}
+          onQueryChange={setCompanyQuery}
+          onChange={(next) => writeParams({ company: next || undefined })}
+        />
+        <select
+          className={inputClass}
+          value={experience ?? ''}
+          aria-label="Experience"
+          onChange={(event) => writeParams({ experience_bucket: event.target.value || undefined })}
+        >
+          <option value="">Any experience</option>
+          {(experience && !(options.data?.experience_buckets ?? []).includes(experience)
+            ? [experience, ...(options.data?.experience_buckets ?? [])]
+            : (options.data?.experience_buckets ?? [])
+          ).map((bucket) => (
+            <option key={bucket} value={bucket}>
+              {bucket}
+            </option>
+          ))}
+        </select>
+        <select
+          className={inputClass}
+          value={sort}
+          aria-label="Sort jobs"
+          onChange={(event) => writeParams({ sort: event.target.value }, false)}
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="company">Company</option>
+        </select>
+        <Button type="button" variant="primary" onClick={applyFilters}>
+          Search
+        </Button>
+        <Button type="button" variant="secondary" onClick={clearFilters}>
+          Clear filters
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <LoadingState label="Loading jobs" />
+      ) : error ? (
+        <ErrorState message="Unable to load jobs." />
+      ) : data && data.items.length > 0 ? (
         <>
           <p className="text-sm text-[var(--color-text-muted)]">
             {data.total} job{data.total !== 1 ? 's' : ''} found
           </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {data.items.map((job) => (
               <JobCardView key={job.id} job={job} />
             ))}
           </div>
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2">
-              <Button
-                type="button"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => goToPage(page - 1)}
-              >
+              <Button type="button" size="sm" disabled={page <= 1} onClick={() => writeParams({ page: String(page - 1) }, false)}>
                 Previous
               </Button>
               <span className="text-sm text-[var(--color-text-muted)]">
@@ -236,7 +326,7 @@ export function JobsHubPage() {
                 type="button"
                 size="sm"
                 disabled={page >= totalPages}
-                onClick={() => goToPage(page + 1)}
+                onClick={() => writeParams({ page: String(page + 1) }, false)}
               >
                 Next
               </Button>
@@ -245,34 +335,10 @@ export function JobsHubPage() {
         </>
       ) : (
         <EmptyState
-          title={roleFamily || q || role || skill || company ? 'No published jobs match these filters' : 'No published jobs yet'}
-          description="The catalog lists active jobs only. Source listings stay out until an admin records publish and the reviewed sync is applied."
+          title="No jobs match your filters"
+          description="Try broader keywords or clear filters to see more openings."
         />
       )}
     </div>
-  )
-}
-
-function FamilyPill({
-  label,
-  active,
-  onClick,
-}: {
-  label: string
-  active: boolean
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs ${
-        active
-          ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
-          : 'border-[var(--color-border)] text-[var(--color-text-muted)]'
-      }`}
-      onClick={onClick}
-    >
-      {label}
-    </button>
   )
 }

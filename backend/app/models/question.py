@@ -17,6 +17,7 @@ class Question(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         nullable=False,
     )
     title: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    content_key: Mapped[str | None] = mapped_column(String(160), unique=True, index=True, nullable=True)
     question_text: Mapped[str] = mapped_column(Text, nullable=False)
     explanation: Mapped[str | None] = mapped_column(Text, nullable=True)
     difficulty: Mapped[Difficulty] = mapped_column(

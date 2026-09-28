@@ -48,6 +48,20 @@ pg_restore --clean --if-exists --no-owner --dbname="postgresql://USER:PASS@HOST:
 python scripts/smoke.py --base-url http://127.0.0.1:8000
 ```
 
+### Application database recovery (verified 2026-09-14)
+
+This is the method that produced a restorable archive. Do not back up the Jobs server. Volume backup create is still not the working path. Do not print database URLs or passwords into logs.
+
+1. From a machine already signed in to Railway, stream a custom-format dump from the application Postgres service named `Postgres` (database `railway`), not the Jobs server:
+   `railway ssh -p <project> -e production -s Postgres -- pg_dump -Fc --no-owner --no-acl -d railway`
+   Write stdout to a file outside the git repo. A valid archive starts with `PGDMP`.
+2. On a machine with PostgreSQL client tools that can read the archive (dump version 1.16 was restored with the local PostgreSQL 17 client), use an already-authorized local administrative connection to create a new empty database. Do not grant the application role `CREATEDB`. Make the application role the owner of that empty database, then `pg_restore --no-owner --no-acl` into it as that role.
+3. Point only that disposable database at `alembic upgrade head`. Do not run the upgrade against production from a rehearsal.
+4. Start the backend with that database URL and smoke health, studio catalog, and a student read. Production stays on its current revision until a separately approved migration.
+5. To recover production, restore the same archive into a new database or a maintenance window target, then repoint the backend. Do not `DROP` the live application database as the first step.
+
+Rehearsal on 2026-09-14 used a fresh dump of the application Postgres, restored into a local disposable database, and upgraded `018_job_source_taxonomy` through `020_content_version_history`. Existing job, question, user, project, and SQL counts matched the dump. Studio tables and version-history columns existed after the upgrade. The live application database was not migrated.
+
 ### Local restore drill (performed 2026-09-04)
 
 Without `pg_dump` on PATH, a logical round-trip was verified in the app DB:

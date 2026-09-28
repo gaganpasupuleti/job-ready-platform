@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "packs": [
+    {
+      "key": "pack-data-analyst",
+      "title": "Data analyst SQL and tables",
+      "kind": "technical",
+      "families": [
+        "data-analyst"
+      ],
+      "version": 1,
+      "question_keys": [
+        "da-q01",
+        "da-q02",
+        "da-q03",
+        "da-q04",
+        "da-q05",
+        "da-q06",
+        "da-q07",
+        "da-q08",
+        "da-q09",
+        "da-q10"
+      ],
+      "instructions": "Practice mode reveals explanations after you answer, using the existing practice rules. There is no negative marking. SQL items are PostgreSQL. Amounts in the CRT table are unnamed currency units unless a question says otherwise. A job skill tag is topic context, not an employer confirmation."
+    },
+    {
+      "key": "pack-data-engineer",
+      "title": "Data engineer joins and validation",
+      "kind": "technical",
+      "families": [
+        "data-engineer"
+      ],
+      "version": 1,
+      "question_keys": [
+        "de-q01",
+        "de-q02",
+        "de-q03",
+        "de-q04",
+        "de-q05",
+        "de-q06",
+        "de-q07",
+        "de-q08",
+        "de-q09",
+        "de-q10"
+      ],
+      "instructions": "Practice mode reveals explanations after you answer, using the existing practice rules. There is no negative marking. SQL items are PostgreSQL. Amounts in the CRT table are unnamed currency units unless a question says otherwise. A job skill tag is topic context, not an employer confirmation."
+    },
+    {
+      "key": "pack-python-dev",
+      "title": "Python collections and exceptions",
+      "kind": "technical",
+      "families": [
+        "python-dev"
+      ],
+      "version": 1,
+      "question_keys": [
+        "py-q01",
+        "py-q02",
+        "py-q03",
+        "py-q04",
+        "py-q05",
+        "py-q06",
+        "py-q07",
+        "py-q08",
+        "py-q09",
+        "py-q10"
+      ],
+      "instructions": "Practice mode reveals explanations after you answer, using the existing practice rules. There is no negative marking. SQL items are PostgreSQL. Amounts in the CRT table are unnamed currency units unless a question says otherwise. A job skill tag is topic context, not an employer confirmation."
+    },
+    {
+      "key": "pack-crt-shared",
+      "title": "CRT: aptitude, reasoning, verbal, and tables",
+      "kind": "crt",
+      "families": [],
+      "version": 1,
+      "question_keys": [
+        "crt-q01",
+        "crt-q02",
+        "crt-q03",
+        "crt-q04",
+        "crt-q05",
+        "crt-q06",
+        "crt-q07",
+        "crt-q08",
+        "crt-q09",
+        "crt-q10",
+        "crt-q11",
+        "crt-q12",
+        "crt-q13",
+        "crt-q14",
+        "crt-q15",
+        "crt-q16",
+        "crt-q17",
+        "crt-q18",
+        "crt-q19",
+        "crt-q20"
+      ],
+      "instructions": "Practice mode reveals explanations after you answer, using the existing practice rules. There is no negative marking. SQL items are PostgreSQL. Amounts in the CRT table are unnamed currency units unless a question says otherwise. A job skill tag is topic context, not an employer confirmation."
+    }
+  ]
+}

@@ -67,8 +67,8 @@ async def test_run_public_tests_only(client, student_auth, coding_problem_id):
         f"/api/v1/coding/problems/{coding_problem_id}/run",
         headers=_headers(student_auth),
         json={
-            "source_code": "import sys\nprint(sys.stdin.read().strip())",
-            "language_id": 71,
+            "source_code": "process.stdin.pipe(process.stdout)",
+            "language_id": 63,
         },
     )
     assert run.status_code == 200, run.text
@@ -85,8 +85,8 @@ async def test_submit_hides_hidden_io(client, student_auth, coding_problem_id):
         f"/api/v1/coding/problems/{coding_problem_id}/submit",
         headers=_headers(student_auth),
         json={
-            "source_code": "import sys\nprint(sys.stdin.read().strip())",
-            "language_id": 71,
+            "source_code": "process.stdin.pipe(process.stdout)",
+            "language_id": 63,
         },
     )
     assert submit.status_code == 200, submit.text
@@ -107,8 +107,8 @@ async def test_submit_updates_progress(client, student_auth, coding_problem_id):
         f"/api/v1/coding/problems/{coding_problem_id}/submit",
         headers=_headers(student_auth),
         json={
-            "source_code": "import sys\nprint(sys.stdin.read().strip())",
-            "language_id": 71,
+            "source_code": "process.stdin.pipe(process.stdout)",
+            "language_id": 63,
         },
     )
     assert submit.status_code == 200
@@ -211,12 +211,12 @@ async def test_list_submissions_with_filters(client, student_auth, coding_proble
     await client.post(
         f"/api/v1/coding/problems/{coding_problem_id}/submit",
         headers=headers,
-        json={"source_code": "print('x')", "language_id": 71},
+        json={"source_code": "console.log('x')", "language_id": 63},
     )
     response = await client.get(
         "/api/v1/coding/submissions",
         headers=headers,
-        params={"problem_id": coding_problem_id, "language_id": 71},
+        params={"problem_id": coding_problem_id, "language_id": 63},
     )
     assert response.status_code == 200
     body = response.json()
@@ -242,7 +242,7 @@ async def test_judge0_disabled_returns_503(client, student_auth, coding_problem_
     run = await client.post(
         f"/api/v1/coding/problems/{coding_problem_id}/run",
         headers=_headers(student_auth),
-        json={"source_code": "print(1)", "language_id": 71},
+        json={"source_code": "console.log(1)", "language_id": 63},
     )
     assert run.status_code == 503
 
@@ -258,7 +258,7 @@ async def test_source_too_long_rejected(client, student_auth, coding_problem_id,
     run = await client.post(
         f"/api/v1/coding/problems/{coding_problem_id}/run",
         headers=_headers(student_auth),
-        json={"source_code": "print(1)\n" * 20, "language_id": 71},
+        json={"source_code": "console.log(1)\n" * 20, "language_id": 63},
     )
     assert run.status_code == 400
 

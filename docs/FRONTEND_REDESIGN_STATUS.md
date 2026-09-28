@@ -152,25 +152,29 @@ Live coding execution/grading remains **blocked** (`enabled=false`, `available=f
 | Field | Value |
 |-------|-------|
 | Reference | `backend/design-reference/jobready-v4` (README + INTEGRATION_NOTES) |
-| FE tip after shell | `a08af51` (`a08af5108cb0749bb63705dc1cd7ed123f466224`); shell land `a979c2e` |
-| Shell | Horizontal **masthead** + JR monogram `jobready.` + primary nav (Overview/Practice/Learn/Playground/Assessments/Review/Jobs) + More drawer |
+| FE tip after shell | 4edecee (4edeceee286f46521812bf0ecd679b1f04cb306a); modules land 3cd1665 |
+| Shell | Horizontal **masthead** + JR monogram `jobready.` + primary nav + More drawer |
 | Tokens | Stone canvas `#E8EAE7` / surface `#F4F5F1` / steel accent `#40596B` |
-| Overview | Live continue/readiness/SQL/coding/mistakes — **no** preview fixtures or local quiz scoring |
-| Jobs | Existing live Jobs portal retained in nav (not preview `jobs-data.js`) |
-| Judge0 | Still **blocked**; coding e2e only asserts unavailable + drafts |
-| package.json / lockfile | **unchanged** (no reference Vite package swap) |
+| Overview | Live continue/readiness — preserved |
+| Practice hub / Learn | V4 queue rows, track selectors, curriculum layout — **live APIs** |
+| Studios | `studio-main` / `studio-topline` / `editor-toolbar` on DSA/SQL/Python — Monaco/drafts/Run-Submit preserved; Judge0 unavailable honest |
+| Jobs | Live hub tabs + filter bar; Mark applied when preparing/saved/none; post-apply View application |
+| Judge0 | Still **blocked** (separate infra); coding e2e = unavailable + drafts only |
+| package.json / lockfile | **unchanged** |
 
-### Browser checks (reused API :8000 / Vite :5173 — no restart)
+### Browser checks (reused API PID 20912 / Vite PID 25088)
 
-| Suite | Result | Notes |
-|-------|--------|-------|
-| `npm run lint` | **0** (warnings only, pre-existing) | FE tip |
-| `npm run build` | **passed** | `tsc -b && vite build` |
-| Playwright desktop hub+mcq+coding | **11/11** | `E2E_SKIP_WEBSERVER=1` |
-| Playwright mobile hub+mcq | **9/9** | mobile project testMatch extended |
-| Playwright jobs desktop | **4/5** | `mark applied` failed (button missing on seeded job — data/state, not masthead) |
+| Suite | Kind | Result | Notes |
+|-------|------|--------|-------|
+| lint / build | functional | **passed** | FE tip |
+| desktop hub+mcq+coding+jobs+shots | functional + visual | **15 passed / 2 skipped** | jobs mark-applied fixed; shots under `e2e/artifacts/v4-modules/` |
+| mark applied desktop+mobile | functional | **2/2** | dynamic clean listing; persist + refresh asserts |
+| mobile hub+jobs+shots (excl. dirty apply flake) | mixed | hub/shots OK; apply fixed on rerun | |
+| Judge0 live grading | — | **not run** | provider unreachable |
 
-Skipped / not claimed: reference preview sample-output grading; RapidAPI Judge0; full module restyle of Learn/SQL/DSA beyond shell.
+**Functional vs visual:** Jobs apply/persist, hub search, MCQ, coding unavailable+drafts = functional. `v4-modules-shots` PNGs = visual comparison artifacts vs reference (manual review).
+
+Skipped / not claimed: enabling Judge0; importing preview `jobs-data.js`; BE ledger commits.
 
 ## Verification gap close-out (this checkpoint)
 
@@ -263,3 +267,15 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 - `e2e/visual-foundation.spec.ts`, `e2e/visual-foundation-shots.spec.ts`, artifacts under `e2e/artifacts/visual-foundation/`
 - Ledgers mirrored across streams for PR reviewability
 - 2026-09-12: stack provenance confirmed (integ cwd + tip SHA MATCH); bind 10048 documented as duplicate-start
+
+## Responsive v5 (2026-09-14) — frontend only
+
+| Field | Value |
+|-------|-------|
+| Branch | `feature/jobready-frontend-responsive-v5` |
+| Base | `origin/master` @ `ab55fce` |
+| Worktree | `../jobready-fe-responsive` |
+| Scope | Colors, pill size, spacing, content-rail alignment, breakpoints, practice track nav |
+| Preserved | Segoe UI / Cascadia Code stack, JR monogram, auth cache, jobs family filters, SQL workbench, MCQ session/autosave, Python execution locks |
+| Backend | **unchanged** — missing contracts recorded in `docs/FRONTEND_BACKEND_DEPENDENCIES.md` |
+| Merge / deploy | **not done** |

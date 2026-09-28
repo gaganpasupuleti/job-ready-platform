@@ -10,9 +10,10 @@ test.describe('Bookmarks', () => {
     await page.goto(`/practice/sql/${fixtures.sql.slug}`)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 30_000 })
     const bookmark = page.getByRole('button', { name: /bookmark/i }).first()
-    if (!(await bookmark.count())) {
-      test.skip(true, 'Bookmark control not present on SQL page')
-    }
+    await expect(
+      bookmark,
+      'SQL studio bookmark control must be present on the supported problem route',
+    ).toBeVisible({ timeout: 20_000 })
     await bookmark.click()
     await page.goto('/bookmarks')
     await expect(page.getByText(new RegExp(fixtures.sql.slug.replace(/-/g, ' '), 'i')).or(

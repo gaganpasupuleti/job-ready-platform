@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "packs": [
+    {
+      "key": "pack-java-backend",
+      "title": "Java classes, main, and blank titles",
+      "kind": "technical",
+      "families": [
+        "java-backend"
+      ],
+      "version": 1,
+      "question_keys": [
+        "jb-q01",
+        "jb-q02",
+        "jb-q03",
+        "jb-q04",
+        "jb-q05",
+        "jb-q06",
+        "jb-q07",
+        "jb-q08",
+        "jb-q09",
+        "jb-q10"
+      ],
+      "instructions": "Practice mode reveals explanations after you answer, using the existing practice rules. There is no negative marking. Java and React items are reading checks. This site does not compile Java or render React. HTTP items use the six-row log printed in the question. CRT data-interpretation items use the channel table printed in the question. Currency is unnamed. A job skill tag is topic context, not an employer confirmation. This pack is not last week's shop table."
+    },
+    {
+      "key": "pack-frontend-react",
+      "title": "React props, state, and a controlled input",
+      "kind": "technical",
+      "families": [
+        "frontend-react"
+      ],
+      "version": 1,
+      "question_keys": [
+        "fr-q01",
+        "fr-q02",
+        "fr-q03",
+        "fr-q04",
+        "fr-q05",
+        "fr-q06",
+        "fr-q07",
+        "fr-q08",
+        "fr-q09",
+        "fr-q10"
+      ],
+      "instructions": "Practice mode reveals explanations after you answer, using the existing practice rules. There is no negative marking. Java and React items are reading checks. This site does not compile Java or render React. HTTP items use the six-row log printed in the question. CRT data-interpretation items use the channel table printed in the question. Currency is unnamed. A job skill tag is topic context, not an employer confirmation. This pack is not last week's shop table."
+    },
+    {
+      "key": "pack-fullstack-web",
+      "title": "HTTP status codes in a ticket log",
+      "kind": "technical",
+      "families": [
+        "fullstack-web"
+      ],
+      "version": 1,
+      "question_keys": [
+        "fs-q01",
+        "fs-q02",
+        "fs-q03",
+        "fs-q04",
+        "fs-q05",
+        "fs-q06",
+        "fs-q07",
+        "fs-q08",
+        "fs-q09",
+        "fs-q10"
+      ],
+      "instructions": "Practice mode reveals explanations after you answer, using the existing practice rules. There is no negative marking. Java and React items are reading checks. This site does not compile Java or render React. HTTP items use the six-row log printed in the question. CRT data-interpretation items use the channel table printed in the question. Currency is unnamed. A job skill tag is topic context, not an employer confirmation. This pack is not last week's shop table."
+    },
+    {
+      "key": "pack-crt-2026-09-14",
+      "title": "CRT: averages, rates, relations, sentences, and a channel table",
+      "kind": "crt",
+      "families": [],
+      "version": 1,
+      "question_keys": [
+        "crt2-q01",
+        "crt2-q02",
+        "crt2-q03",
+        "crt2-q04",
+        "crt2-q05",
+        "crt2-q06",
+        "crt2-q07",
+        "crt2-q08",
+        "crt2-q09",
+        "crt2-q10",
+        "crt2-q11",
+        "crt2-q12",
+        "crt2-q13",
+        "crt2-q14",
+        "crt2-q15",
+        "crt2-q16",
+        "crt2-q17",
+        "crt2-q18",
+        "crt2-q19",
+        "crt2-q20"
+      ],
+      "instructions": "Practice mode reveals explanations after you answer, using the existing practice rules. There is no negative marking. Java and React items are reading checks. This site does not compile Java or render React. HTTP items use the six-row log printed in the question. CRT data-interpretation items use the channel table printed in the question. Currency is unnamed. A job skill tag is topic context, not an employer confirmation. This pack is not last week's shop table."
+    }
+  ]
+}

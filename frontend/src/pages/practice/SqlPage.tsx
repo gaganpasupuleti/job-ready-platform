@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
+import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
 import { SqlProblemFilters, SqlProblemList } from '@/features/sql/SqlProblemList'
 import { SqlProgressSummary } from '@/features/sql/SqlProgressSummary'
 import { SqlReviewCtas } from '@/features/sql/SqlReviewCtas'
@@ -57,7 +58,8 @@ export function SqlPage() {
   }, [unsolvedProblems])
 
   return (
-    <div className="space-y-6">
+    <div className="module-page space-y-4">
+      <PracticeTrackNav />
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-text)]">SQL Practice</h2>
         <p className="text-sm text-[var(--color-text-muted)]">

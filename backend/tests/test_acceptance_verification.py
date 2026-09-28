@@ -202,7 +202,7 @@ async def test_enabled_playground_quota_concurrency_and_release(monkeypatch):
     service = coding_mod.CodingService(db=None, executor=provider)
     assert service.is_execution_available() is True
     user = _user()
-    payload = PlaygroundRunRequest(source_code="print(1)", language_id=71, stdin="")
+    payload = PlaygroundRunRequest(source_code="console.log(1)", language_id=63, stdin="")
 
     first = await service.playground_run(user, payload)
     second = await service.playground_run(user, payload)

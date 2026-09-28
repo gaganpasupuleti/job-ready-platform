@@ -1,0 +1,41 @@
+{
+  "key": "orders-payment-quality",
+  "version": 1,
+  "title": "Orders and payment quality",
+  "families": [
+    "data-analyst",
+    "data-engineer"
+  ],
+  "skills": [
+    "sql",
+    "joins"
+  ],
+  "scenario": "A small shop recorded orders and payments in separate tables. Some orders have no payment row. Cancelled orders must not be treated as revenue.",
+  "outcome": "A reviewer can see which orders are paid, which have no payment, and a written note that does not invent zeros.",
+  "dataset_file": "dataset.sql",
+  "milestones": [
+    {
+      "title": "Paid totals",
+      "type": "sql",
+      "sql_problem_slug": "orders-paid-totals",
+      "deliverable": "Accepted SQL Studio submission for paid count and sum."
+    },
+    {
+      "title": "Orders missing a payment",
+      "type": "sql",
+      "sql_problem_slug": "orders-missing-payment",
+      "deliverable": "Accepted SQL Studio submission using IS NULL."
+    },
+    {
+      "title": "Revenue by customer",
+      "type": "sql",
+      "sql_problem_slug": "orders-revenue-by-customer",
+      "deliverable": "Accepted SQL Studio submission excluding cancelled orders."
+    },
+    {
+      "title": "Findings note",
+      "type": "review",
+      "deliverable": "Short note on what a missing payment means. This is not an automatic grade."
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 
+import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
 import { SUPPORTED_LANGUAGES } from '@/constants/languages'
 import {
   CodingProblemList,
@@ -10,7 +11,7 @@ import {
 import { fetchCodingProblems, fetchCodingProgress } from '@/services/codingService'
 
 export function CodingPage() {
-  const [languageId, setLanguageId] = useState<number>(71)
+  const [languageId, setLanguageId] = useState<number>(62)
 
   const { data: progress } = useQuery({
     queryKey: ['coding-progress'],
@@ -23,10 +24,11 @@ export function CodingPage() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="module-page space-y-4">
+      <PracticeTrackNav />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">Coding Practice</h2>
-        <p className="text-sm text-[var(--color-text-muted)]">
+        <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">Coding Practice</h1>
+        <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
           Language-focused practice using the same coding engine as DSA. Pick a language to filter
           problems with starter templates.
         </p>
@@ -34,19 +36,24 @@ export function CodingPage() {
 
       {progress && <CodingProgressSummary progress={progress} />}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Language filter">
         {SUPPORTED_LANGUAGES.map((lang) => (
           <button
             key={lang.id}
             type="button"
             onClick={() => setLanguageId(lang.id)}
-            className={`rounded-md border px-3 py-1.5 text-sm ${
-              languageId === lang.id
-                ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
-                : 'border-[var(--color-border)] bg-[var(--color-surface)]'
+            aria-pressed={languageId === lang.id}
+            disabled={lang.id === 71}
+            title={lang.id === 71 ? 'Python — Coming soon' : lang.name}
+            className={`h-7 rounded-[var(--radius-control)] border px-2.5 text-xs ${
+              lang.id === 71
+                ? 'cursor-not-allowed border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-text-muted)]'
+                : languageId === lang.id
+                  ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]'
+                  : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
             }`}
           >
-            {lang.shortLabel}
+            {lang.id === 71 ? 'Python — Coming soon' : lang.shortLabel}
           </button>
         ))}
       </div>
@@ -59,11 +66,10 @@ export function CodingPage() {
       />
 
       <p className="text-xs text-[var(--color-text-muted)]">
-        Problems open in the shared workspace at{' '}
-        <Link to="/practice/dsa" className="text-[var(--color-accent)] hover:underline">
-          DSA Practice
+        <Link to="/practice/playground" className="text-[var(--color-accent)] hover:underline">
+          Playground
         </Link>
-        .
+        . Online Python execution is locked.
       </p>
     </div>
   )

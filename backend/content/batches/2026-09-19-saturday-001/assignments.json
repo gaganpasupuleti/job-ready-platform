@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "assignments": [
+    {
+      "key": "da-assign-paid-totals",
+      "title": "Report paid order totals",
+      "families": [
+        "data-analyst"
+      ],
+      "skills": [
+        "sql",
+        "aggregation"
+      ],
+      "mode": "sql_evidence",
+      "minutes": 40,
+      "audience": "Fresher",
+      "goal": "Write the paid-order count and amount total for the sample orders, and explain NULL handling.",
+      "requirements": [
+        "Use the orders table in the linked SQL problem",
+        "PostgreSQL dialect",
+        "Do not treat a NULL amount as zero unless you write COALESCE"
+      ],
+      "deliverables": [
+        "The query you submitted in SQL Studio",
+        "Two sentences on what COUNT(*) counted"
+      ],
+      "hints": [
+        "Filter status before you aggregate"
+      ],
+      "prerequisites": [
+        "da-sql-filter-agg"
+      ],
+      "rubric": [
+        {
+          "criterion": "Filters paid rows",
+          "points": 2
+        },
+        {
+          "criterion": "Count and sum match the seed",
+          "points": 2
+        },
+        {
+          "criterion": "NULL explanation is accurate",
+          "points": 1
+        }
+      ],
+      "sql_problem_slug": "orders-paid-totals",
+      "brief": "Submit the SQL Studio result for the linked problem. A written claim without an accepted server-side submission does not satisfy the SQL part.",
+      "version": 1
+    },
+    {
+      "key": "de-assign-local-validate",
+      "title": "Validate an order row on your computer",
+      "families": [
+        "data-engineer"
+      ],
+      "skills": [
+        "python",
+        "validation"
+      ],
+      "mode": "local_python",
+      "minutes": 45,
+      "audience": "Fresher",
+      "goal": "Write a local Python function that rejects a missing amount and a duplicate id, then share the code as text or an HTTPS repository URL.",
+      "requirements": [
+        "Run it on your own computer. The site will not execute it.",
+        "Do not claim an automatic grade.",
+        "Manual review only."
+      ],
+      "deliverables": [
+        "Function text or HTTPS repository URL",
+        "Two example inputs and the reasons they were rejected"
+      ],
+      "hints": [
+        "Raise ValueError with the field name"
+      ],
+      "prerequisites": [
+        "de-python-validation"
+      ],
+      "rubric": [
+        {
+          "criterion": "Missing amount is rejected",
+          "points": 2
+        },
+        {
+          "criterion": "Duplicate id is rejected",
+          "points": 2
+        },
+        {
+          "criterion": "Examples match the code",
+          "points": 1
+        }
+      ],
+      "sql_problem_slug": null,
+      "brief": "This assignment is local execution and manual review. The locked playground is not part of the submission path."
+    },
+    {
+      "key": "py-assign-exceptions",
+      "title": "Functions that return or raise",
+      "families": [
+        "python-dev"
+      ],
+      "skills": [
+        "python",
+        "exceptions"
+      ],
+      "mode": "local_python",
+      "minutes": 40,
+      "audience": "Fresher",
+      "goal": "On your computer, write parse_amount and a caller that records ValueError. Submit the code as text or an HTTPS URL.",
+      "requirements": [
+        "Local execution only",
+        "No automatic Python grading",
+        "Do not use a bare except"
+      ],
+      "deliverables": [
+        "Code text or HTTPS repository URL",
+        "One successful call and one ValueError call"
+      ],
+      "hints": [
+        "int('no') raises ValueError"
+      ],
+      "prerequisites": [
+        "py-functions-exceptions"
+      ],
+      "rubric": [
+        {
+          "criterion": "Success path returns an int",
+          "points": 2
+        },
+        {
+          "criterion": "Invalid text raises or records ValueError",
+          "points": 2
+        },
+        {
+          "criterion": "No bare except",
+          "points": 1
+        }
+      ],
+      "sql_problem_slug": null,
+      "brief": "Label: solve this on your own computer. The online runner stays locked and will not grade this work."
+    }
+  ]
+}

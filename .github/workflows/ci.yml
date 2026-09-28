@@ -220,6 +220,8 @@ jobs:
         run: |
           alembic upgrade head
           python -m app.seed.e2e ../frontend/e2e/fixtures/manifest.json
+          python scripts/content_batch.py --batch content/batches/2026-09-19-saturday-001 --apply --target local
+          python scripts/content_batch.py --batch content/batches/2026-09-14-syllabus-001 --apply --target local
       - name: Install frontend
         working-directory: frontend
         run: npm ci

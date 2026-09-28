@@ -12,6 +12,10 @@ export interface ReadinessOverview {
   trend: { score: number; created_at: string; evidence_strength: string }[]
   recommended_actions: RecommendationAction[]
   message: string | null
+  formula_version?: string
+  formula_label?: string
+  overall_score_ready?: boolean
+  is_hiring_probability?: boolean
 }
 
 export interface SkillReadinessItem {

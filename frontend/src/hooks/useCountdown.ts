@@ -2,22 +2,27 @@ import { useEffect, useState } from 'react'
 
 export function useCountdown(expiresAt?: string | null, remainingSeconds?: number | null) {
   const [secondsLeft, setSecondsLeft] = useState<number | null>(() => {
-    if (remainingSeconds != null) return remainingSeconds
+    if (remainingSeconds != null && Number.isFinite(remainingSeconds)) return remainingSeconds
     if (expiresAt) {
-      return Math.max(0, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000))
+      const ms = new Date(expiresAt).getTime()
+      if (!Number.isFinite(ms)) return null
+      return Math.max(0, Math.floor((ms - Date.now()) / 1000))
     }
     return null
   })
 
   useEffect(() => {
-    if (remainingSeconds != null) {
+    if (remainingSeconds != null && Number.isFinite(remainingSeconds)) {
       setSecondsLeft(remainingSeconds)
       return
     }
     if (expiresAt) {
-      setSecondsLeft(
-        Math.max(0, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000)),
-      )
+      const ms = new Date(expiresAt).getTime()
+      if (!Number.isFinite(ms)) {
+        setSecondsLeft(null)
+        return
+      }
+      setSecondsLeft(Math.max(0, Math.floor((ms - Date.now()) / 1000)))
     }
   }, [expiresAt, remainingSeconds])
 

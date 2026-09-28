@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
+import { JOBS_ONBOARDING_KEY, JOBS_PREFERENCES } from '@/components/navigation/navConfig'
 import { useAuth } from '@/hooks/useAuth'
 
 const FIELD_META = {
@@ -29,8 +30,9 @@ export function RegisterPage() {
     setLoading(true)
     setError(null)
     try {
+      sessionStorage.setItem(JOBS_ONBOARDING_KEY, '1')
       await register(form)
-      navigate('/', { replace: true })
+      navigate(JOBS_PREFERENCES, { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {

@@ -61,6 +61,10 @@ async def _complete_task_row(db: AsyncSession, user_id: UUID, task: ProjectTask)
     if row is None:
         row = UserProjectTaskProgress(user_id=user_id, task_id=task.id)
         db.add(row)
+    if not row.brief_snapshot:
+        from app.content.version_snapshots import task_brief_snapshot
+
+        row.brief_snapshot = task_brief_snapshot(task)
     if row.status == ProgressStatus.COMPLETED:
         return
     row.status = ProgressStatus.COMPLETED

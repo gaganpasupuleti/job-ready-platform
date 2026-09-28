@@ -92,29 +92,43 @@ class JobService:
         ).scalars().all()
         return set(rows)
 
-    async def _practice_links(self, skill_names: list[str], role_names: list[str]) -> list[JobPracticeLink]:
+    async def _practice_links(
+        self, skill_names: list[str], role_names: list[str], role_family: str | None = None
+    ) -> list[JobPracticeLink]:
         links: list[JobPracticeLink] = []
+        family_paths = {
+            "data-analyst": [
+                ("Data Analyst materials", "/learn/materials?family=data-analyst"),
+                ("Data Analyst quiz", "/learn/quizzes/pack-data-analyst"),
+                ("Orders SQL project", "/projects/orders-payment-quality"),
+            ],
+            "data-engineer": [
+                ("Data Engineer materials", "/learn/materials?family=data-engineer"),
+                ("Data Engineer quiz", "/learn/quizzes/pack-data-engineer"),
+                ("Orders SQL project", "/projects/orders-payment-quality"),
+            ],
+            "python-dev": [
+                ("Python materials", "/learn/materials?family=python-dev"),
+                ("Python quiz", "/learn/quizzes/pack-python-dev"),
+            ],
+        }
+        if role_family in family_paths:
+            for label, path in family_paths[role_family]:
+                links.append(JobPracticeLink(label=label, path=path, reason="Published family preparation"))
         lower = {s.lower() for s in skill_names}
         if any(s in lower for s in ("sql", "postgresql", "mysql")):
-            links.append(JobPracticeLink(label="SQL Practice", path="/practice/sql", reason="SQL skill"))
+            links.append(JobPracticeLink(label="SQL Practice", path="/practice/sql", reason="Catalog skill tag, not employer confirmation"))
         if any(s in lower for s in ("python", "dsa")):
-            links.append(JobPracticeLink(label="Coding / DSA", path="/practice/coding", reason="Programming"))
+            links.append(JobPracticeLink(label="Python materials", path="/learn/materials?family=python-dev", reason="Catalog skill tag, not employer confirmation"))
         if any(s in lower for s in ("aws", "cloud", "azure", "gcp")):
-            links.append(JobPracticeLink(label="Cloud Practice", path="/cloud", reason="Cloud skills"))
+            links.append(JobPracticeLink(label="Cloud Practice", path="/cloud", reason="Catalog skill tag, not employer confirmation"))
         if any(s in lower for s in ("devops", "kubernetes", "terraform")):
-            links.append(JobPracticeLink(label="DevOps", path="/devops", reason="DevOps skills"))
+            links.append(JobPracticeLink(label="DevOps", path="/devops", reason="Catalog skill tag, not employer confirmation"))
         if any(s in lower for s in ("rag", "generative ai", "prompt engineering", "agents")):
-            links.append(JobPracticeLink(label="AI Practice", path="/ai", reason="AI skills"))
-        if any("data engineer" in r.lower() for r in role_names):
-            links.append(
-                JobPracticeLink(
-                    label="Data Engineering Pack",
-                    path="/interviews/packs/data-engineer-intermediate",
-                    reason="Role match",
-                )
-            )
+            links.append(JobPracticeLink(label="AI Practice", path="/ai", reason="Catalog skill tag, not employer confirmation"))
         if not links:
-            links.append(JobPracticeLink(label="Practice Hub", path="/practice", reason="General practice"))
+            links.append(JobPracticeLink(label="General preparation", path="/learn", reason="No mapped family content"))
+            links.append(JobPracticeLink(label="CRT aptitude", path="/learn/quizzes/pack-crt-shared", reason="Shared campus recruitment practice"))
         return links
 
     async def _to_card(self, job: Job, user_id: UUID | None, saved: set[UUID]) -> JobCard:
@@ -469,7 +483,7 @@ class JobService:
             is_saved=job.id in saved,
             application_id=app.id if app else None,
             application_status=app.status if app else None,
-            practice_links=await self._practice_links(skill_names, role_names),
+            practice_links=await self._practice_links(skill_names, role_names, job.role_family),
             interview_prep_url=interview_url,
             company_prep_url=company_prep_url,
             match=match,

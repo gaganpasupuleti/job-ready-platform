@@ -27,88 +27,107 @@ import {
 
 import type { NavSection } from '@/types'
 
-/** Primary horizontal nav. Coding stays on the existing practice route. */
+/** Primary horizontal nav — Jobs is the jobs-first destination; other routes stay. */
 export const primaryNavItems: { label: string; path: string; match?: string[] }[] = [
   { label: 'Jobs', path: '/jobs', match: ['/jobs'] },
   { label: 'Overview', path: '/', match: ['/'] },
   { label: 'Practice', path: '/practice', match: ['/practice'] },
-  { label: 'Learn', path: '/learn', match: ['/learn', '/projects', '/practice/projects'] },
-  { label: 'Coding', path: '/practice/coding', match: ['/practice/coding', '/practice/dsa'] },
+  { label: 'Learn', path: '/learn', match: ['/learn', '/projects'] },
+  { label: 'Playground', path: '/practice/playground', match: ['/practice/playground', '/practice/python', '/practice/compiler'] },
   {
     label: 'Assessments',
     path: '/practice/aptitude',
-    match: ['/practice/aptitude', '/practice/mcq', '/practice/sessions'],
+    match: ['/practice/aptitude', '/practice/mcq', '/practice/sessions', '/assessments'],
   },
   { label: 'Review', path: '/mistakes', match: ['/mistakes'] },
 ]
 
+/** Secondary destinations kept reachable (More drawer / footer links). */
 export const navigationConfig: NavSection[] = [
   {
-    title: 'Main',
-    items: [{ label: 'Dashboard', path: '/', icon: 'LayoutDashboard' }],
+    title: 'Today',
+    items: [
+      { label: 'Jobs', path: '/jobs', icon: 'Briefcase' },
+      { label: 'Overview', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Practice', path: '/practice', icon: 'Target' },
+      { label: 'Learn', path: '/learn', icon: 'ListChecks' },
+      { label: 'Playground', path: '/practice/playground', icon: 'Terminal' },
+      { label: 'Assessments', path: '/practice/aptitude', icon: 'FileQuestion' },
+      { label: 'Review', path: '/mistakes', icon: 'FileQuestion' },
+    ],
   },
   {
-    title: 'Practice',
+    title: 'Practice tracks',
     items: [
-      { label: 'Practice Hub', path: '/practice', icon: 'Target' },
-      { label: 'Courses', path: '/learn', icon: 'ListChecks' },
-      { label: 'Projects', path: '/practice/projects', icon: 'Wrench' },
-      { label: 'Aptitude / CRT', path: '/practice/aptitude', icon: 'Brain' },
+      { label: 'SQL', path: '/practice/sql', icon: 'Database' },
       { label: 'DSA', path: '/practice/dsa', icon: 'Code2' },
       { label: 'Coding', path: '/practice/coding', icon: 'Terminal' },
-      { label: 'SQL', path: '/practice/sql', icon: 'Database' },
+      { label: 'Typing', path: '/practice/typing', icon: 'Terminal' },
       { label: 'Technical MCQs', path: '/practice/mcq', icon: 'FileQuestion' },
+      { label: 'Aptitude / CRT', path: '/practice/aptitude', icon: 'Brain' },
+      { label: 'Projects', path: '/practice/projects', icon: 'Wrench' },
     ],
   },
   {
-    title: 'AI Era',
+    title: 'More',
     items: [
+      { label: 'Library', path: '/library', icon: 'BookOpen' },
+      { label: 'My requests', path: '/support/requests', icon: 'MessageSquare' },
+      { label: 'Job Readiness', path: '/readiness', icon: 'Target' },
       { label: 'AI Home', path: '/ai', icon: 'Sparkles' },
-      { label: 'Generative AI', path: '/ai/genai', icon: 'Bot' },
       { label: 'Prompt Engineering', path: '/ai/prompt-engineering', icon: 'MessageSquare' },
-      { label: 'RAG', path: '/ai/rag', icon: 'Database' },
-      { label: 'AI Agents', path: '/ai/agents', icon: 'Users' },
-      { label: 'MCP', path: '/ai/mcp', icon: 'Server' },
-      { label: 'AI Progress', path: '/ai/progress', icon: 'Target' },
-    ],
-  },
-  {
-    title: 'Infrastructure',
-    items: [
       { label: 'Cloud', path: '/cloud', icon: 'Cloud' },
       { label: 'DevOps', path: '/devops', icon: 'Wrench' },
       { label: 'Cybersecurity', path: '/cybersecurity', icon: 'Shield' },
+      { label: 'Interview Prep', path: '/interviews', icon: 'Users' },
+      { label: 'Bookmarks', path: '/bookmarks', icon: 'Bookmark' },
+      { label: 'Recommended Jobs', path: '/jobs/recommended', icon: 'Target' },
+      { label: 'Applications', path: '/jobs/applications', icon: 'Award' },
+    ],
+  },
+]
+
+/** Grouped More menu. Existing routes stay; this is layout, not a new destination set. */
+export const moreMenuGroups: { title: string; items: { label: string; path: string }[] }[] = [
+  {
+    title: 'Practice',
+    items: [
+      { label: 'SQL', path: '/practice/sql' },
+      { label: 'DSA', path: '/practice/dsa' },
+      { label: 'Coding', path: '/practice/coding' },
+      { label: 'Typing', path: '/practice/typing' },
+      { label: 'Technical MCQs', path: '/practice/mcq' },
+      { label: 'Aptitude / CRT', path: '/practice/aptitude' },
     ],
   },
   {
     title: 'Career',
     items: [
-      { label: 'Interview Prep', path: '/interviews', icon: 'Users' },
-      { label: 'Company Prep', path: '/company-prep', icon: 'Building2' },
-      { label: 'Assessments', path: '/assessments', icon: 'ListChecks' },
-      { label: 'Contests', path: '/contests', icon: 'Trophy' },
+      { label: 'Library', path: '/library' },
+      { label: 'My requests', path: '/support/requests' },
+      { label: 'Projects', path: '/practice/projects' },
+      { label: 'Job Readiness', path: '/readiness' },
+      { label: 'Interview Prep', path: '/interviews' },
+      { label: 'Bookmarks', path: '/bookmarks' },
+      { label: 'Recommended Jobs', path: '/jobs/recommended' },
+      { label: 'Applications', path: '/jobs/applications' },
     ],
   },
   {
-    title: 'Jobs',
+    title: 'AI & Engineering',
     items: [
-      { label: 'Browse Jobs', path: '/jobs', icon: 'Briefcase' },
-      { label: 'Recommended Jobs', path: '/jobs/recommended', icon: 'Target' },
-      { label: 'Saved Jobs', path: '/jobs/saved', icon: 'Bookmark' },
-      { label: 'Applications', path: '/jobs/applications', icon: 'Award' },
-    ],
-  },
-  {
-    title: 'Progress',
-    items: [
-      { label: 'Job Readiness', path: '/readiness', icon: 'Target' },
-      { label: 'Library', path: '/library', icon: 'BookOpen' },
-      { label: 'Mistake Book', path: '/mistakes', icon: 'FileQuestion' },
-      { label: 'Bookmarks', path: '/bookmarks', icon: 'Bookmark' },
-      { label: 'Leaderboard', path: '/leaderboard', icon: 'Flame' },
+      { label: 'AI Home', path: '/ai' },
+      { label: 'Prompt Engineering', path: '/ai/prompt-engineering' },
+      { label: 'Cloud', path: '/cloud' },
+      { label: 'DevOps', path: '/devops' },
+      { label: 'Cybersecurity', path: '/cybersecurity' },
     ],
   },
 ]
+
+export const JOBS_HOME = '/jobs'
+export const JOBS_PREFERENCES = '/jobs/preferences'
+export const JOBS_ONBOARDING_KEY = 'jr_jobs_onboarding'
 
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   LayoutDashboard,
@@ -129,8 +148,8 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Trophy,
   Briefcase,
   Target,
-  Bookmark,
   BookOpen,
+  Bookmark,
   Award,
   Flame,
   Server,
@@ -141,18 +160,24 @@ export function getNavIcon(name?: string) {
   return iconMap[name] ?? LayoutDashboard
 }
 
-export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
-  if (item.path === '/') return pathname === '/'
-  let winner: { path: string; length: number } | null = null
-  for (const candidate of primaryNavItems) {
-    if (candidate.path === '/') continue
-    for (const prefix of candidate.match ?? [candidate.path]) {
-      if (prefix === '/') continue
-      const hit = pathname === prefix || pathname.startsWith(`${prefix}/`)
-      if (hit && (!winner || prefix.length > winner.length)) {
-        winner = { path: candidate.path, length: prefix.length }
-      }
-    }
+function matchingPrefix(pathname: string, item: (typeof primaryNavItems)[number]) {
+  const matchers = item.match ?? [item.path]
+  let best = ''
+  for (const prefix of matchers) {
+    const hit =
+      prefix === '/'
+        ? pathname === '/'
+        : pathname === prefix || pathname.startsWith(`${prefix}/`)
+    if (hit && prefix.length > best.length) best = prefix
   }
-  return winner?.path === item.path
+  return best
+}
+
+/** Longest matching destination wins, so only one primary item is current. */
+export function isPrimaryNavActive(pathname: string, item: (typeof primaryNavItems)[number]) {
+  const ranked = primaryNavItems
+    .map((candidate) => ({ candidate, prefix: matchingPrefix(pathname, candidate) }))
+    .filter((row) => row.prefix.length > 0)
+    .sort((left, right) => right.prefix.length - left.prefix.length)
+  return ranked[0]?.candidate === item
 }

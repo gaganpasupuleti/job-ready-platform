@@ -64,6 +64,7 @@ class SqlProblem(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     estimated_time_seconds: Mapped[int] = mapped_column(Integer, default=300, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_sample: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    content_version: Mapped[int] = mapped_column(Integer, default=1, nullable=False, server_default="1")
     created_by: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id"), nullable=True
     )
@@ -164,6 +165,7 @@ class SqlSubmission(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     execution_time_ms: Mapped[float | None] = mapped_column(Float, nullable=True)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
     feedback: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    content_version: Mapped[int | None] = mapped_column(Integer, nullable=True)
     submitted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -189,3 +191,4 @@ class SqlProblemProgress(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     first_solved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     last_attempt_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     best_execution_time_ms: Mapped[float | None] = mapped_column(Float, nullable=True)
+    content_version: Mapped[int | None] = mapped_column(Integer, nullable=True)

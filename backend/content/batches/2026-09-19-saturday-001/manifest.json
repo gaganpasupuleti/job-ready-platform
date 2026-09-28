@@ -1,0 +1,74 @@
+{
+  "batch_id": "2026-09-19-saturday-001",
+  "schema_version": 1,
+  "change_reason": "Initial Saturday batch for data analyst, data engineer, and Python developer, plus a shared CRT pack.",
+  "authorization": "local-apply-only until an explicit production publication decision",
+  "items": [
+    {
+      "path": "materials.json",
+      "sha256": "8097b0fdc3a00f76801933dce704eb9f631fdb9d9b5dfecb75e6501c175e06df",
+      "content_type": "materials"
+    },
+    {
+      "path": "assignments.json",
+      "sha256": "9a1712e03fc6cc838ac7a189b317c1315f82f9a603304856d1d2911bfb1db81c",
+      "content_type": "assignments"
+    },
+    {
+      "path": "questions.json",
+      "sha256": "f4a8934c098b53c807e2e00ff6a3ebf5156b292008b0e53006e0908eee9caf10",
+      "content_type": "questions"
+    },
+    {
+      "path": "project.json",
+      "sha256": "f2b9127b192142221c6e3789bc2fafdc09fc6c5eb2776296c06c8f5bc2521de0",
+      "content_type": "project"
+    },
+    {
+      "path": "packs.json",
+      "sha256": "88ceb9f745780a4341d01dac9ecea4b36a5115560aab844e878e1f88a1b5bb35",
+      "content_type": "packs"
+    },
+    {
+      "path": "dataset.sql",
+      "sha256": "9605941208be7b5fdbae83fa38f8b13482307f20b13c1889dbb2610b6c0e1bda",
+      "content_type": "dataset"
+    },
+    {
+      "path": "materials/da-sql-filter-agg.md",
+      "sha256": "13a0b61d433f25895d9ca79560bca7fde8fbf0d698ebb52ff8282cb3987c7769",
+      "content_type": "material_body",
+      "key": "da-sql-filter-agg"
+    },
+    {
+      "path": "materials/da-read-a-table.md",
+      "sha256": "2b9b1363c81165931d3826d3da2e0660ee9c7cb45d3e3b96ad9bea399f67ede6",
+      "content_type": "material_body",
+      "key": "da-read-a-table"
+    },
+    {
+      "path": "materials/de-joins-nulls.md",
+      "sha256": "905135755827a85f71d0b98c77e5c41be74f51dd8180a9fed6017409d706ea40",
+      "content_type": "material_body",
+      "key": "de-joins-nulls"
+    },
+    {
+      "path": "materials/de-python-validation.md",
+      "sha256": "5151b7657a077613792e64bc0c4bf7438973b83f482ea98332e0bd8ccefc1ffd",
+      "content_type": "material_body",
+      "key": "de-python-validation"
+    },
+    {
+      "path": "materials/py-collections-flow.md",
+      "sha256": "b1cc69dd57479b1e469ce64e24b0b09b92b2e632cad89dc2aa54f290810de074",
+      "content_type": "material_body",
+      "key": "py-collections-flow"
+    },
+    {
+      "path": "materials/py-functions-exceptions.md",
+      "sha256": "424a7e42ed8d7108f6a4bcf6833f9f3095ece60764b788ca6f7ea1af8634faf0",
+      "content_type": "material_body",
+      "key": "py-functions-exceptions"
+    }
+  ]
+}

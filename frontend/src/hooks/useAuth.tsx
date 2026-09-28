@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 
+import { AUTH_TOKEN_KEY } from '@/api/config'
 import { getAuthToken } from '@/api/client'
 import { clearAuthQueryCache } from '@/queryClient'
 import { fetchMe, login, logoutApi, register } from '@/services/authService'
@@ -45,26 +46,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setIsLoading(false))
   }, [refreshUser])
 
+  // Cross-tab sign-out / token clear: drop private caches and session user.
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.storageArea !== localStorage) return
+      if (event.key !== AUTH_TOKEN_KEY && event.key !== null) return
+      if (!event.newValue) {
+        clearAuthQueryCache()
+        setUser(null)
+      }
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       isLoading,
       isAuthenticated: Boolean(user),
       login: async (payload) => {
-        const response = await login(payload)
         clearAuthQueryCache()
+        const response = await login(payload)
         setUser(response.user)
         return response
       },
       register: async (payload) => {
-        const response = await register(payload)
         clearAuthQueryCache()
+        const response = await register(payload)
         setUser(response.user)
         return response
       },
       logout: async () => {
         try {
           await logoutApi()
+        } catch {
+          // Failed logout must still clear local session + private caches.
         } finally {
           clearAuthQueryCache()
           setUser(null)

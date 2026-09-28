@@ -41,6 +41,11 @@ export function JobsRecommendedPage() {
             title="No relevant jobs yet"
             description="Update your job preferences or complete more practice to improve recommendations."
           />
+          <p>
+            <Link to="/jobs/preferences" className="text-sm text-[var(--color-accent)] hover:underline">
+              Job preferences
+            </Link>
+          </p>
           <Link to="/jobs">
             <Button>Browse all jobs</Button>
           </Link>

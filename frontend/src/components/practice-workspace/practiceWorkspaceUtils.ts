@@ -22,6 +22,23 @@ export function apiErrorMessage(error: unknown, fallback = 'Request failed.') {
   return fallback
 }
 
+export const CODE_EXECUTION_LOCKED_MESSAGE =
+  'Code execution is coming soon. You can write code and save drafts.'
+
+/** Swallow Run/Submit shortcuts while Judge0-backed execution is locked. */
+export function useLockExecutionShortcuts(locked: boolean) {
+  useEffect(() => {
+    if (!locked) return
+    const onKey = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key !== 'Enter') return
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [locked])
+}
+
 export function useWorkspaceShortcuts(handlers: {
   run?: () => void
   submit?: () => void

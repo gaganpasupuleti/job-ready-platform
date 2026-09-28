@@ -1,0 +1,1706 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "key": "da-q01",
+      "stem": "A table has one row per order. Which clause keeps only status = 'paid' before you count rows?",
+      "skill": "sql-filter",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "GROUP BY",
+          "correct": false,
+          "why": "Groups after filtering."
+        },
+        {
+          "key": "B",
+          "text": "WHERE",
+          "correct": true,
+          "why": "WHERE chooses rows before aggregates."
+        },
+        {
+          "key": "C",
+          "text": "ORDER BY",
+          "correct": false,
+          "why": "Sorts the output."
+        },
+        {
+          "key": "D",
+          "text": "HAVING",
+          "correct": false,
+          "why": "Filters groups, not source rows."
+        }
+      ],
+      "explanation": "WHERE removes rows first. HAVING filters groups after GROUP BY."
+    },
+    {
+      "key": "da-q02",
+      "stem": "Select every statement that is true for PostgreSQL when amount can be NULL.",
+      "skill": "sql-aggregation",
+      "difficulty": "medium",
+      "mode": "multi",
+      "options": [
+        {
+          "key": "A",
+          "text": "SUM(amount) skips NULL",
+          "correct": true,
+          "why": "SUM ignores NULL and adds the remaining numbers."
+        },
+        {
+          "key": "B",
+          "text": "COUNT(amount) skips NULL",
+          "correct": true,
+          "why": "COUNT(column) ignores NULL."
+        },
+        {
+          "key": "C",
+          "text": "COUNT(*) skips NULL amounts",
+          "correct": false,
+          "why": "COUNT(*) counts the row even when amount is NULL."
+        },
+        {
+          "key": "D",
+          "text": "SUM of only NULL amounts is 0",
+          "correct": false,
+          "why": "SUM of no non-NULL values is NULL, not 0."
+        }
+      ],
+      "explanation": "Two statements are true. COUNT(*) still counts the row. A sum of only NULLs is NULL unless you COALESCE.",
+      "version": 2
+    },
+    {
+      "key": "da-q03",
+      "stem": "You need one row per status with the number of orders. Which pair is required?",
+      "skill": "sql-aggregation",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "WHERE and ORDER BY",
+          "correct": false,
+          "why": "That pair does not build groups."
+        },
+        {
+          "key": "B",
+          "text": "GROUP BY and COUNT(*)",
+          "correct": true,
+          "why": "GROUP BY status plus COUNT(*) builds the summary."
+        },
+        {
+          "key": "C",
+          "text": "JOIN and DISTINCT only",
+          "correct": false,
+          "why": "A join is not required on one table."
+        },
+        {
+          "key": "D",
+          "text": "LIMIT and OFFSET",
+          "correct": false,
+          "why": "LIMIT only trims output."
+        }
+      ],
+      "explanation": "Group by the status, then count rows in each group."
+    },
+    {
+      "key": "da-q04",
+      "stem": "Paid orders have amounts 1000 and NULL. In PostgreSQL, what is SUM(amount)?",
+      "skill": "sql-aggregation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "1000",
+          "correct": true,
+          "why": "SUM skips NULL, so the total is 1000."
+        },
+        {
+          "key": "B",
+          "text": "0",
+          "correct": false,
+          "why": "SUM does not turn the remaining NULL into a zero total."
+        },
+        {
+          "key": "C",
+          "text": "NULL",
+          "correct": false,
+          "why": "SUM of a non-NULL value is not NULL."
+        },
+        {
+          "key": "D",
+          "text": "2000",
+          "correct": false,
+          "why": "NULL is not treated as 1000."
+        }
+      ],
+      "explanation": "SUM ignores NULL. It does not add a zero unless you COALESCE."
+    },
+    {
+      "key": "da-q05",
+      "stem": "Which statement about a grouped result is supported by the columns you selected?",
+      "skill": "tabular",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Two status rows mean two customers",
+          "correct": false,
+          "why": "Customer is not in the result."
+        },
+        {
+          "key": "B",
+          "text": "Two status rows mean two groups of orders",
+          "correct": true,
+          "why": "Each group is one status."
+        },
+        {
+          "key": "C",
+          "text": "The row count is profit",
+          "correct": false,
+          "why": "No profit column exists."
+        },
+        {
+          "key": "D",
+          "text": "Alphabetical status means newest first",
+          "correct": false,
+          "why": "Order is unspecified without ORDER BY."
+        }
+      ],
+      "explanation": "Do not read a grain the SELECT list does not contain."
+    },
+    {
+      "key": "da-q06",
+      "stem": "A filter 'groups with more than 3 orders' belongs in which clause?",
+      "skill": "sql-aggregation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "WHERE",
+          "correct": false,
+          "why": "WHERE cannot see the group total unless you repeat a subquery."
+        },
+        {
+          "key": "B",
+          "text": "HAVING",
+          "correct": true,
+          "why": "HAVING filters after grouping."
+        },
+        {
+          "key": "C",
+          "text": "SELECT only",
+          "correct": false,
+          "why": "SELECT does not filter rows."
+        },
+        {
+          "key": "D",
+          "text": "FROM",
+          "correct": false,
+          "why": "FROM names tables."
+        }
+      ],
+      "explanation": "Conditions on aggregates belong in HAVING."
+    },
+    {
+      "key": "da-q07",
+      "stem": "DISTINCT city after a customer join tells you what?",
+      "skill": "tabular",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Number of orders",
+          "correct": false,
+          "why": "DISTINCT is not a count of orders."
+        },
+        {
+          "key": "B",
+          "text": "Set of city values present",
+          "correct": true,
+          "why": "It returns unique city values in the result."
+        },
+        {
+          "key": "C",
+          "text": "Profit by city",
+          "correct": false,
+          "why": "No profit column is named."
+        },
+        {
+          "key": "D",
+          "text": "That every city has an order",
+          "correct": false,
+          "why": "Cities with no join match never appear."
+        }
+      ],
+      "explanation": "DISTINCT removes duplicate values. It is not a business total."
+    },
+    {
+      "key": "da-q08",
+      "stem": "An analyst writes AVG(amount) on paid orders. A NULL amount is in the paid set. PostgreSQL AVG...",
+      "skill": "sql-aggregation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Counts that NULL as 0",
+          "correct": false,
+          "why": "AVG does not treat NULL as 0."
+        },
+        {
+          "key": "B",
+          "text": "Ignores that NULL",
+          "correct": true,
+          "why": "AVG skips NULL, like SUM."
+        },
+        {
+          "key": "C",
+          "text": "Fails the query",
+          "correct": false,
+          "why": "A NULL in the column does not fail AVG."
+        },
+        {
+          "key": "D",
+          "text": "Returns 0",
+          "correct": false,
+          "why": "It returns the average of the non-NULL amounts."
+        }
+      ],
+      "explanation": "If you want a missing amount to act as zero, write that with COALESCE."
+    },
+    {
+      "key": "da-q09",
+      "stem": "Which comparison is safe when the brief never defines currency?",
+      "skill": "tabular",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Call the column profit in rupees",
+          "correct": false,
+          "why": "That invents both profit and a currency."
+        },
+        {
+          "key": "B",
+          "text": "Report the number and say the unit is unspecified",
+          "correct": true,
+          "why": "State the unknown instead of guessing."
+        },
+        {
+          "key": "C",
+          "text": "Convert it to USD",
+          "correct": false,
+          "why": "No rate was given."
+        },
+        {
+          "key": "D",
+          "text": "Drop the column",
+          "correct": false,
+          "why": "The column can still be used if labeled as stored."
+        }
+      ],
+      "explanation": "Do not invent units the table does not give."
+    },
+    {
+      "key": "da-q10",
+      "stem": "You have SELECT city, SUM(amount) without GROUP BY or an aggregate-only query. In PostgreSQL this is...",
+      "skill": "sql-aggregation",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Always valid",
+          "correct": false,
+          "why": "PostgreSQL rejects a bare city beside SUM."
+        },
+        {
+          "key": "B",
+          "text": "Invalid unless city is grouped or aggregated",
+          "correct": true,
+          "why": "city must be in GROUP BY or wrapped."
+        },
+        {
+          "key": "C",
+          "text": "A window function",
+          "correct": false,
+          "why": "No OVER clause is present."
+        },
+        {
+          "key": "D",
+          "text": "A left join",
+          "correct": false,
+          "why": "This is not a join."
+        }
+      ],
+      "explanation": "PostgreSQL requires grouped columns to appear in GROUP BY."
+    },
+    {
+      "key": "de-q01",
+      "stem": "You need every order, including those with no payment row. Which join from orders?",
+      "skill": "joins",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "INNER JOIN payments",
+          "correct": false,
+          "why": "Inner join drops unpaid orders."
+        },
+        {
+          "key": "B",
+          "text": "LEFT JOIN payments",
+          "correct": true,
+          "why": "Left join keeps every order."
+        },
+        {
+          "key": "C",
+          "text": "CROSS JOIN customers",
+          "correct": false,
+          "why": "Cross join multiplies rows."
+        },
+        {
+          "key": "D",
+          "text": "NATURAL JOIN only",
+          "correct": false,
+          "why": "Natural join depends on shared names and can surprise you."
+        }
+      ],
+      "explanation": "Start from orders and left join payments."
+    },
+    {
+      "key": "de-q02",
+      "stem": "In PostgreSQL, which predicate finds a missing payment id after a left join?",
+      "skill": "nulls",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "p.id = NULL",
+          "correct": false,
+          "why": "= NULL is unknown, not true."
+        },
+        {
+          "key": "B",
+          "text": "p.id IS NULL",
+          "correct": true,
+          "why": "IS NULL is the SQL null test."
+        },
+        {
+          "key": "C",
+          "text": "p.id = 0",
+          "correct": false,
+          "why": "Zero is a value, not missing."
+        },
+        {
+          "key": "D",
+          "text": "p.id <> p.id",
+          "correct": false,
+          "why": "That comparison is not the null test."
+        }
+      ],
+      "explanation": "Use IS NULL. Do not use = NULL."
+    },
+    {
+      "key": "de-q03",
+      "stem": "WHERE p.amount > 0 placed after a LEFT JOIN payments removes what?",
+      "skill": "joins",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Nothing",
+          "correct": false,
+          "why": "The WHERE still filters the result."
+        },
+        {
+          "key": "B",
+          "text": "Orders whose joined amount is NULL or not greater than 0",
+          "correct": true,
+          "why": "NULL > 0 is unknown, so those rows drop, and the left join behaves like an inner join."
+        },
+        {
+          "key": "C",
+          "text": "Only cancelled orders",
+          "correct": false,
+          "why": "Status is not in the predicate."
+        },
+        {
+          "key": "D",
+          "text": "Duplicate customers",
+          "correct": false,
+          "why": "This does not deduplicate."
+        }
+      ],
+      "explanation": "A WHERE on the right table after a left join drops unmatched rows."
+    },
+    {
+      "key": "de-q04",
+      "stem": "Two rows have amount NULL. SUM(amount) in PostgreSQL is...",
+      "skill": "nulls",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "0",
+          "correct": false,
+          "why": "SUM of no non-NULL values is NULL, not 0."
+        },
+        {
+          "key": "B",
+          "text": "NULL",
+          "correct": true,
+          "why": "There is no number to add."
+        },
+        {
+          "key": "C",
+          "text": "2",
+          "correct": false,
+          "why": "COUNT would be the row count, not SUM."
+        },
+        {
+          "key": "D",
+          "text": "An error",
+          "correct": false,
+          "why": "SUM of all NULL inputs returns NULL."
+        }
+      ],
+      "explanation": "If you need zero, write COALESCE(SUM(amount), 0)."
+    },
+    {
+      "key": "de-q05",
+      "stem": "A Python row is {'id': 1} and amount is required. What should a strict local check do?",
+      "skill": "validation",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Store amount 0",
+          "correct": false,
+          "why": "Zero was not in the row."
+        },
+        {
+          "key": "B",
+          "text": "Reject the row because amount is missing",
+          "correct": true,
+          "why": "A required key that is absent fails the check."
+        },
+        {
+          "key": "C",
+          "text": "Skip the key and continue as valid",
+          "correct": false,
+          "why": "Silent skip hides the defect."
+        },
+        {
+          "key": "D",
+          "text": "Call the online runner",
+          "correct": false,
+          "why": "Online Python execution is locked and is not the check."
+        }
+      ],
+      "explanation": "Reject missing required fields. Do not invent zero."
+    },
+    {
+      "key": "de-q06",
+      "stem": "A payload uses the string '12' for an integer amount. A strict validator should...",
+      "skill": "validation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Accept it because it looks numeric",
+          "correct": false,
+          "why": "Looking numeric is not the declared type."
+        },
+        {
+          "key": "B",
+          "text": "Reject it until the brief allows coercion",
+          "correct": true,
+          "why": "Reject unless the brief says to coerce."
+        },
+        {
+          "key": "C",
+          "text": "Save it as a date",
+          "correct": false,
+          "why": "The field is an amount."
+        },
+        {
+          "key": "D",
+          "text": "Drop the id",
+          "correct": false,
+          "why": "The id is not the defect."
+        }
+      ],
+      "explanation": "Type checks follow the schema, not a guess."
+    },
+    {
+      "key": "de-q07",
+      "stem": "An ingestion run sees the same order id twice. The brief says ids are unique. The load should...",
+      "skill": "validation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Keep both rows",
+          "correct": false,
+          "why": "Both rows violate uniqueness."
+        },
+        {
+          "key": "B",
+          "text": "Reject the duplicate with the id in the reason",
+          "correct": true,
+          "why": "Report the duplicate id and do not silently merge."
+        },
+        {
+          "key": "C",
+          "text": "Average the amounts",
+          "correct": false,
+          "why": "Averaging invents a value."
+        },
+        {
+          "key": "D",
+          "text": "Mark both paid",
+          "correct": false,
+          "why": "Status was not in the defect."
+        }
+      ],
+      "explanation": "Uniqueness failures are rejected, not repaired by invention."
+    },
+    {
+      "key": "de-q08",
+      "stem": "COALESCE(p.amount, 0) means...",
+      "skill": "nulls",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Drop the row if amount is NULL",
+          "correct": false,
+          "why": "COALESCE replaces a value; it does not drop the row."
+        },
+        {
+          "key": "B",
+          "text": "Use 0 when amount is NULL",
+          "correct": true,
+          "why": "The first non-NULL argument is used."
+        },
+        {
+          "key": "C",
+          "text": "Convert text to a date",
+          "correct": false,
+          "why": "No date cast is involved."
+        },
+        {
+          "key": "D",
+          "text": "Inner-join the payment",
+          "correct": false,
+          "why": "COALESCE is not a join."
+        }
+      ],
+      "explanation": "Use COALESCE only when the brief wants a replacement."
+    },
+    {
+      "key": "de-q09",
+      "stem": "Which Python exception fits int('no') during a local parse?",
+      "skill": "python",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "KeyError",
+          "correct": false,
+          "why": "KeyError is a missing mapping key."
+        },
+        {
+          "key": "B",
+          "text": "ValueError",
+          "correct": true,
+          "why": "int() raises ValueError on a non-integer string."
+        },
+        {
+          "key": "C",
+          "text": "ImportError",
+          "correct": false,
+          "why": "Nothing is being imported."
+        },
+        {
+          "key": "D",
+          "text": "StopIteration",
+          "correct": false,
+          "why": "The iterator is not exhausted here."
+        }
+      ],
+      "explanation": "Catch ValueError if the brief says invalid text is a handled case."
+    },
+    {
+      "key": "de-q10",
+      "stem": "A left join keeps an order when the payment table has no match. The payment columns in that result are...",
+      "skill": "joins",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "0",
+          "correct": false,
+          "why": "Zero is not supplied by the join."
+        },
+        {
+          "key": "B",
+          "text": "NULL",
+          "correct": true,
+          "why": "Unmatched right-side columns are NULL."
+        },
+        {
+          "key": "C",
+          "text": "The order id copied again",
+          "correct": false,
+          "why": "The order id stays on the order side."
+        },
+        {
+          "key": "D",
+          "text": "An empty string",
+          "correct": false,
+          "why": "PostgreSQL does not insert an empty string."
+        }
+      ],
+      "explanation": "NULL means no matching payment row, not a zero payment."
+    },
+    {
+      "key": "py-q01",
+      "stem": "You need to remember order ids in arrival order, including a repeated id. Which collection?",
+      "skill": "collections",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "set",
+          "correct": false,
+          "why": "A set drops duplicates and does not promise your visit order for this need."
+        },
+        {
+          "key": "B",
+          "text": "list",
+          "correct": true,
+          "why": "A list keeps order and duplicates."
+        },
+        {
+          "key": "C",
+          "text": "The keys of a dict only",
+          "correct": false,
+          "why": "Dict keys are unique."
+        },
+        {
+          "key": "D",
+          "text": "A single integer",
+          "correct": false,
+          "why": "One integer cannot hold the sequence."
+        }
+      ],
+      "explanation": "Use a list when both order and duplicates matter."
+    },
+    {
+      "key": "py-q02",
+      "stem": "A set is the better default when the only question is whether an id was already seen. Why?",
+      "skill": "collections",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Sets keep every duplicate",
+          "correct": false,
+          "why": "Sets do not keep duplicates."
+        },
+        {
+          "key": "B",
+          "text": "Membership tests are the job a set is built for",
+          "correct": true,
+          "why": "Membership is the set operation you need."
+        },
+        {
+          "key": "C",
+          "text": "Sets sort amounts",
+          "correct": false,
+          "why": "A set is not a numeric sort."
+        },
+        {
+          "key": "D",
+          "text": "Sets replace exceptions",
+          "correct": false,
+          "why": "Sets do not handle errors."
+        }
+      ],
+      "explanation": "seen = set() then `if id in seen` matches the question."
+    },
+    {
+      "key": "py-q03",
+      "stem": "d.get('city') when 'city' is absent returns...",
+      "skill": "collections",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "KeyError",
+          "correct": false,
+          "why": "d['city'] raises KeyError. get does not."
+        },
+        {
+          "key": "B",
+          "text": "None, unless you pass a default",
+          "correct": true,
+          "why": "get returns None by default."
+        },
+        {
+          "key": "C",
+          "text": "An empty list",
+          "correct": false,
+          "why": "You did not pass a list default."
+        },
+        {
+          "key": "D",
+          "text": "The string 'city'",
+          "correct": false,
+          "why": "The key is not returned as the value."
+        }
+      ],
+      "explanation": "Use get when absence is a normal case. Use brackets when absence is a bug."
+    },
+    {
+      "key": "py-q04",
+      "stem": "A function has no return statement and you call it. The result is...",
+      "skill": "functions",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "[]",
+          "correct": false,
+          "why": "An empty list is written return []."
+        },
+        {
+          "key": "B",
+          "text": "None",
+          "correct": true,
+          "why": "A missing return yields None."
+        },
+        {
+          "key": "C",
+          "text": "0",
+          "correct": false,
+          "why": "0 must be returned."
+        },
+        {
+          "key": "D",
+          "text": "False",
+          "correct": false,
+          "why": "False must be returned."
+        }
+      ],
+      "explanation": "None and [] are different. Do not treat them as the same empty result."
+    },
+    {
+      "key": "py-q05",
+      "stem": "Why is `def f(items=[]):` a poor default for a fresh list each call?",
+      "skill": "functions",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The list is copied every call",
+          "correct": false,
+          "why": "The default is not copied per call."
+        },
+        {
+          "key": "B",
+          "text": "The same list object is reused",
+          "correct": true,
+          "why": "The default object is created once and shared."
+        },
+        {
+          "key": "C",
+          "text": "Python rejects the syntax",
+          "correct": false,
+          "why": "The syntax is legal."
+        },
+        {
+          "key": "D",
+          "text": "It always raises TypeError",
+          "correct": false,
+          "why": "It does not always raise."
+        }
+      ],
+      "explanation": "Use None and create a new list inside the function."
+    },
+    {
+      "key": "py-q06",
+      "stem": "int('12.5') raises which exception?",
+      "skill": "exceptions",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "ValueError",
+          "correct": true,
+          "why": "The string is not an integer literal."
+        },
+        {
+          "key": "B",
+          "text": "TypeError",
+          "correct": false,
+          "why": "TypeError is the wrong type of object, not this parse."
+        },
+        {
+          "key": "C",
+          "text": "IndexError",
+          "correct": false,
+          "why": "No index is used."
+        },
+        {
+          "key": "D",
+          "text": "None",
+          "correct": false,
+          "why": "A raised exception is not None."
+        }
+      ],
+      "explanation": "int() accepts '12' and rejects '12.5' with ValueError."
+    },
+    {
+      "key": "py-q07",
+      "stem": "Which handler matches the stated failure and nothing broader?",
+      "skill": "exceptions",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "except:",
+          "correct": false,
+          "why": "A bare except hides control-flow exceptions too."
+        },
+        {
+          "key": "B",
+          "text": "except Exception:",
+          "correct": false,
+          "why": "Exception is still very wide."
+        },
+        {
+          "key": "C",
+          "text": "except ValueError:",
+          "correct": true,
+          "why": "ValueError matches the parse failure named in the brief."
+        },
+        {
+          "key": "D",
+          "text": "except BaseException: pass",
+          "correct": false,
+          "why": "BaseException also catches system exits."
+        }
+      ],
+      "explanation": "Catch the exception you can handle."
+    },
+    {
+      "key": "py-q08",
+      "stem": "for name in names: if name == 'stop': break. What happens when 'stop' is seen?",
+      "skill": "control-flow",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The loop leaves",
+          "correct": true,
+          "why": "break exits the loop."
+        },
+        {
+          "key": "B",
+          "text": "The name is skipped and the loop continues",
+          "correct": false,
+          "why": "continue would skip to the next item."
+        },
+        {
+          "key": "C",
+          "text": "The function returns 0",
+          "correct": false,
+          "why": "There is no return."
+        },
+        {
+          "key": "D",
+          "text": "An exception is raised",
+          "correct": false,
+          "why": "break is not an exception."
+        }
+      ],
+      "explanation": "break leaves. continue goes to the next item."
+    },
+    {
+      "key": "py-q09",
+      "stem": "A local script should record a rejected row by...",
+      "skill": "control-flow",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Printing nothing and returning the row as valid",
+          "correct": false,
+          "why": "Silence marks a bad row as valid."
+        },
+        {
+          "key": "B",
+          "text": "Returning the row and a reason, or raising a named error",
+          "correct": true,
+          "why": "The caller needs the reason."
+        },
+        {
+          "key": "C",
+          "text": "Calling the locked playground",
+          "correct": false,
+          "why": "The playground cannot execute it."
+        },
+        {
+          "key": "D",
+          "text": "Deleting the source file",
+          "correct": false,
+          "why": "Do not destroy the input."
+        }
+      ],
+      "explanation": "Validation reports a reason. It does not pretend the row was clean."
+    },
+    {
+      "key": "py-q10",
+      "stem": "Which pair is a list method that adds one item at the end, and the mistake of using it on a set?",
+      "skill": "collections",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "append, and sets use add",
+          "correct": true,
+          "why": "list.append adds one item. set.add is the set operation."
+        },
+        {
+          "key": "B",
+          "text": "add, and lists use append",
+          "correct": false,
+          "why": "Those names are swapped."
+        },
+        {
+          "key": "C",
+          "text": "push, and both use push",
+          "correct": false,
+          "why": "Python lists do not use push."
+        },
+        {
+          "key": "D",
+          "text": "insert, and sets use append",
+          "correct": false,
+          "why": "Sets do not use append."
+        }
+      ],
+      "explanation": "Match the method to the collection. A locked editor will not correct this for you."
+    },
+    {
+      "key": "crt-q01",
+      "stem": "A book costs 240. A 25% discount is applied once. What is the sale price?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "180",
+          "correct": true,
+          "why": "240 minus 25% is 180."
+        },
+        {
+          "key": "B",
+          "text": "200",
+          "correct": false,
+          "why": "That is a smaller discount."
+        },
+        {
+          "key": "C",
+          "text": "215",
+          "correct": false,
+          "why": "That is not 25% off 240."
+        },
+        {
+          "key": "D",
+          "text": "60",
+          "correct": false,
+          "why": "60 is the discount, not the price."
+        }
+      ],
+      "explanation": "25% of 240 is 60. 240 - 60 = 180."
+    },
+    {
+      "key": "crt-q02",
+      "stem": "A train covers 180 km in 3 hours at a steady speed. What is the speed in km/h?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "50",
+          "correct": false,
+          "why": "180/3 is not 50."
+        },
+        {
+          "key": "B",
+          "text": "60",
+          "correct": true,
+          "why": "180/3 = 60."
+        },
+        {
+          "key": "C",
+          "text": "90",
+          "correct": false,
+          "why": "That would be 180/2."
+        },
+        {
+          "key": "D",
+          "text": "540",
+          "correct": false,
+          "why": "That multiplies instead of dividing."
+        }
+      ],
+      "explanation": "Speed = distance / time = 60 km/h. No stops are stated."
+    },
+    {
+      "key": "crt-q03",
+      "stem": "The ratio of apples to oranges is 3:2. There are 20 oranges. How many apples?",
+      "skill": "quantitative",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "12",
+          "correct": false,
+          "why": "That uses 20 as the apples."
+        },
+        {
+          "key": "B",
+          "text": "30",
+          "correct": true,
+          "why": "3/2 * 20 = 30."
+        },
+        {
+          "key": "C",
+          "text": "32",
+          "correct": false,
+          "why": "That is not the stated ratio."
+        },
+        {
+          "key": "D",
+          "text": "8",
+          "correct": false,
+          "why": "That subtracts instead of scaling."
+        }
+      ],
+      "explanation": "If 2 parts are 20, 1 part is 10, so 3 parts are 30."
+    },
+    {
+      "key": "crt-q04",
+      "stem": "Simple interest on 2000 at 5% per year for 2 years is...",
+      "skill": "quantitative",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "100",
+          "correct": false,
+          "why": "That is one year."
+        },
+        {
+          "key": "B",
+          "text": "200",
+          "correct": true,
+          "why": "2000 * 0.05 * 2 = 200."
+        },
+        {
+          "key": "C",
+          "text": "2100",
+          "correct": false,
+          "why": "That adds a year of interest into the principal label."
+        },
+        {
+          "key": "D",
+          "text": "500",
+          "correct": false,
+          "why": "5% of 2000 is 100, not 500."
+        }
+      ],
+      "explanation": "Simple interest does not compound. The interest is 200, not the amount 2200."
+    },
+    {
+      "key": "crt-q05",
+      "stem": "A rectangle is 8 by 5. A wrong answer treats those numbers as the perimeter. What is the area?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "13",
+          "correct": false,
+          "why": "That adds one pair of sides."
+        },
+        {
+          "key": "B",
+          "text": "26",
+          "correct": false,
+          "why": "That is the perimeter."
+        },
+        {
+          "key": "C",
+          "text": "40",
+          "correct": true,
+          "why": "8 * 5 = 40."
+        },
+        {
+          "key": "D",
+          "text": "80",
+          "correct": false,
+          "why": "That doubles the area."
+        }
+      ],
+      "explanation": "Area is length times width. Perimeter would be 26."
+    },
+    {
+      "key": "crt-q06",
+      "stem": "All coaches in a set are mentors. Some mentors are alumni. Which conclusion must follow?",
+      "skill": "reasoning",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "All coaches are alumni",
+          "correct": false,
+          "why": "Some mentors are alumni does not force every coach to be one."
+        },
+        {
+          "key": "B",
+          "text": "Some coaches may be alumni, but it is not forced",
+          "correct": true,
+          "why": "The overlap with coaches is not required by the sentences."
+        },
+        {
+          "key": "C",
+          "text": "No mentor is a coach",
+          "correct": false,
+          "why": "Coaches are mentors, so that is false."
+        },
+        {
+          "key": "D",
+          "text": "Every alumni is a coach",
+          "correct": false,
+          "why": "The sentences do not reverse that way."
+        }
+      ],
+      "explanation": "Do not promote 'some' into 'all'."
+    },
+    {
+      "key": "crt-q07",
+      "stem": "Find the next number: 2, 6, 12, 20, ?",
+      "skill": "reasoning",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "28",
+          "correct": false,
+          "why": "The gaps are 4, 6, 8, so the next gap is 10, not 8."
+        },
+        {
+          "key": "B",
+          "text": "30",
+          "correct": true,
+          "why": "20 + 10 = 30."
+        },
+        {
+          "key": "C",
+          "text": "32",
+          "correct": false,
+          "why": "The gap is not 12."
+        },
+        {
+          "key": "D",
+          "text": "24",
+          "correct": false,
+          "why": "That repeats a gap of 4."
+        }
+      ],
+      "explanation": "The differences increase by 2: 4, 6, 8, 10."
+    },
+    {
+      "key": "crt-q08",
+      "stem": "If North becomes West by a rotation of the map labels, a person facing East after the same rotation faces...",
+      "skill": "reasoning",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "North",
+          "correct": true,
+          "why": "If every direction label turns the same way, East moves to the old North position in this consistent turn."
+        },
+        {
+          "key": "B",
+          "text": "South",
+          "correct": false,
+          "why": "South is a 180-degree turn."
+        },
+        {
+          "key": "C",
+          "text": "West",
+          "correct": false,
+          "why": "West was the image of North, not East."
+        },
+        {
+          "key": "D",
+          "text": "East",
+          "correct": false,
+          "why": "The facing label changes with the same rotation."
+        }
+      ],
+      "explanation": "North->West is a 90-degree turn. East follows to North."
+    },
+    {
+      "key": "crt-q09",
+      "stem": "Five people sit in a row. A is left of B. C is right of B. D is between A and B. Who is immediately right of A?",
+      "skill": "reasoning",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "C",
+          "correct": false,
+          "why": "C is on the other side of B."
+        },
+        {
+          "key": "B",
+          "text": "D",
+          "correct": true,
+          "why": "D is between A and B, so D sits immediately right of A if A is left of B."
+        },
+        {
+          "key": "C",
+          "text": "B",
+          "correct": false,
+          "why": "B is further right, with D between."
+        },
+        {
+          "key": "D",
+          "text": "Cannot be anyone but C",
+          "correct": false,
+          "why": "C is not between A and B."
+        }
+      ],
+      "explanation": "Order from the left is A, D, B, and C further right. Immediate right of A is D."
+    },
+    {
+      "key": "crt-q10",
+      "stem": "A statement says 'only pens are blue' in a puzzle. Which reading is the careful one?",
+      "skill": "reasoning",
+      "difficulty": "hard",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Every pen is blue",
+          "correct": false,
+          "why": "'Only pens are blue' does not say every pen is blue."
+        },
+        {
+          "key": "B",
+          "text": "If it is blue, it is a pen; a pen might not be blue",
+          "correct": true,
+          "why": "Blue things are pens. Pens can be other colors."
+        },
+        {
+          "key": "C",
+          "text": "Nothing blue exists",
+          "correct": false,
+          "why": "The sentence does not deny blue things."
+        },
+        {
+          "key": "D",
+          "text": "Every object is a pen",
+          "correct": false,
+          "why": "It does not speak about every object."
+        }
+      ],
+      "explanation": "Only A are B means B implies A, not that every A is B."
+    },
+    {
+      "key": "crt-q11",
+      "stem": "Choose the sentence that is grammatically consistent.",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "The report were filed yesterday.",
+          "correct": false,
+          "why": "'Report' is singular, so 'were' does not agree."
+        },
+        {
+          "key": "B",
+          "text": "The report was filed yesterday.",
+          "correct": true,
+          "why": "Singular subject with 'was' agrees."
+        },
+        {
+          "key": "C",
+          "text": "The report filed were yesterday.",
+          "correct": false,
+          "why": "The verb phrase is out of order and does not agree."
+        },
+        {
+          "key": "D",
+          "text": "Were filed the report.",
+          "correct": false,
+          "why": "The auxiliary is placed without a question structure."
+        }
+      ],
+      "explanation": "A singular subject takes 'was' in this past statement."
+    },
+    {
+      "key": "crt-q12",
+      "stem": "'The brief is ambiguous about units' means the writer...",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Named rupees",
+          "correct": false,
+          "why": "Ambiguous means the unit was not settled."
+        },
+        {
+          "key": "B",
+          "text": "Did not make the unit clear",
+          "correct": true,
+          "why": "The unit is unclear."
+        },
+        {
+          "key": "C",
+          "text": "Proved the total",
+          "correct": false,
+          "why": "Ambiguity is not a proof."
+        },
+        {
+          "key": "D",
+          "text": "Removed the table",
+          "correct": false,
+          "why": "The table may still be present."
+        }
+      ],
+      "explanation": "Ambiguous means more than one reading is open."
+    },
+    {
+      "key": "crt-q13",
+      "stem": "Which revision removes a vague claim without adding a fact?",
+      "skill": "verbal",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Revenue is excellent.",
+          "correct": false,
+          "why": "Excellent is not measured."
+        },
+        {
+          "key": "B",
+          "text": "The table shows revenue of 8000 for Books.",
+          "correct": true,
+          "why": "8000 is the table value, not a new claim."
+        },
+        {
+          "key": "C",
+          "text": "The employer demands this skill.",
+          "correct": false,
+          "why": "The mapping does not prove an employer demand."
+        },
+        {
+          "key": "D",
+          "text": "The candidate is hired.",
+          "correct": false,
+          "why": "Hiring is not in the table."
+        }
+      ],
+      "explanation": "Cite the number that is on the page."
+    },
+    {
+      "key": "crt-q14",
+      "stem": "Select the pair that matches in meaning.",
+      "skill": "verbal",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "omit / include",
+          "correct": false,
+          "why": "Those are opposites."
+        },
+        {
+          "key": "B",
+          "text": "prerequisite / requirement that comes first",
+          "correct": true,
+          "why": "A prerequisite is something required beforehand."
+        },
+        {
+          "key": "C",
+          "text": "null / zero in every dialect",
+          "correct": false,
+          "why": "NULL is not defined as zero."
+        },
+        {
+          "key": "D",
+          "text": "submit / delete",
+          "correct": false,
+          "why": "Submit does not mean delete."
+        }
+      ],
+      "explanation": "Use the ordinary meaning. Do not import a SQL rule into the word 'null' here."
+    },
+    {
+      "key": "crt-q15",
+      "stem": "A concise instruction for a locked tool is...",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Use three badges and also a warning panel that repeats the same sentence",
+          "correct": false,
+          "why": "Repeating the same lock does not add information."
+        },
+        {
+          "key": "B",
+          "text": "Say once that execution is unavailable",
+          "correct": true,
+          "why": "One lock message is enough."
+        },
+        {
+          "key": "C",
+          "text": "Claim the tool graded the draft",
+          "correct": false,
+          "why": "A locked tool did not grade anything."
+        },
+        {
+          "key": "D",
+          "text": "Tell the student the draft was deleted",
+          "correct": false,
+          "why": "Drafts must not be deleted by the lock."
+        }
+      ],
+      "explanation": "State the lock once. Do not invent a result."
+    },
+    {
+      "key": "crt-q16",
+      "stem": "Using only this table, which category has the highest revenue?\n\n| Category | Units sold | Revenue | Returns |\n| --- | --- | --- | --- |\n| Books | 40 | 8000 | 2 |\n| Pens | 100 | 2500 | 5 |\n| Bags | 10 | 6000 | 1 |\n| Cards | 50 | 1500 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Pens",
+          "correct": false,
+          "why": "Pens have the most units, not the most revenue."
+        },
+        {
+          "key": "B",
+          "text": "Books",
+          "correct": true,
+          "why": "Books show 8000."
+        },
+        {
+          "key": "C",
+          "text": "Bags",
+          "correct": false,
+          "why": "Bags show 6000."
+        },
+        {
+          "key": "D",
+          "text": "Cards",
+          "correct": false,
+          "why": "Cards show 1500."
+        }
+      ],
+      "explanation": "Compare the Revenue column only."
+    },
+    {
+      "key": "crt-q17",
+      "stem": "Using only this table, which category sold the most units?\n\n| Category | Units sold | Revenue | Returns |\n| --- | --- | --- | --- |\n| Books | 40 | 8000 | 2 |\n| Pens | 100 | 2500 | 5 |\n| Bags | 10 | 6000 | 1 |\n| Cards | 50 | 1500 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "Books",
+          "correct": false,
+          "why": "40 is less than 100."
+        },
+        {
+          "key": "B",
+          "text": "Bags",
+          "correct": false,
+          "why": "10 is the smallest."
+        },
+        {
+          "key": "C",
+          "text": "Pens",
+          "correct": true,
+          "why": "Pens show 100."
+        },
+        {
+          "key": "D",
+          "text": "Cards",
+          "correct": false,
+          "why": "50 is less than 100."
+        }
+      ],
+      "explanation": "Units sold is the second column."
+    },
+    {
+      "key": "crt-q18",
+      "stem": "Revenue per unit for Books, using only this table, is...\n\n| Category | Units sold | Revenue | Returns |\n| --- | --- | --- | --- |\n| Books | 40 | 8000 | 2 |\n| Pens | 100 | 2500 | 5 |\n| Bags | 10 | 6000 | 1 |\n| Cards | 50 | 1500 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "20",
+          "correct": false,
+          "why": "That divides the wrong way."
+        },
+        {
+          "key": "B",
+          "text": "200",
+          "correct": true,
+          "why": "8000 / 40 = 200."
+        },
+        {
+          "key": "C",
+          "text": "8000",
+          "correct": false,
+          "why": "That is total revenue, not per unit."
+        },
+        {
+          "key": "D",
+          "text": "40",
+          "correct": false,
+          "why": "That is the unit count."
+        }
+      ],
+      "explanation": "Divide Books revenue by Books units. No rounding is required."
+    },
+    {
+      "key": "crt-q19",
+      "stem": "The return rate for Pens, as returns divided by units sold, is...\n\n| Category | Units sold | Revenue | Returns |\n| --- | --- | --- | --- |\n| Books | 40 | 8000 | 2 |\n| Pens | 100 | 2500 | 5 |\n| Bags | 10 | 6000 | 1 |\n| Cards | 50 | 1500 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "medium",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "5%",
+          "correct": true,
+          "why": "5 / 100 = 0.05, which is 5%."
+        },
+        {
+          "key": "B",
+          "text": "20%",
+          "correct": false,
+          "why": "That uses a different pair of cells."
+        },
+        {
+          "key": "C",
+          "text": "50%",
+          "correct": false,
+          "why": "That treats 50 cards as the denominator."
+        },
+        {
+          "key": "D",
+          "text": "1%",
+          "correct": false,
+          "why": "1 return belongs to Bags."
+        }
+      ],
+      "explanation": "State the rate as returns / units sold. Pens are 5/100."
+    },
+    {
+      "key": "crt-q20",
+      "stem": "Total revenue across the four categories is...\n\n| Category | Units sold | Revenue | Returns |\n| --- | --- | --- | --- |\n| Books | 40 | 8000 | 2 |\n| Pens | 100 | 2500 | 5 |\n| Bags | 10 | 6000 | 1 |\n| Cards | 50 | 1500 | 0 |",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "options": [
+        {
+          "key": "A",
+          "text": "16000",
+          "correct": false,
+          "why": "That drops Cards or mis-adds."
+        },
+        {
+          "key": "B",
+          "text": "18000",
+          "correct": true,
+          "why": "8000+2500+6000+1500 = 18000."
+        },
+        {
+          "key": "C",
+          "text": "200",
+          "correct": false,
+          "why": "200 is a per-unit figure, not a total."
+        },
+        {
+          "key": "D",
+          "text": "8000",
+          "correct": false,
+          "why": "8000 is Books alone."
+        }
+      ],
+      "explanation": "Add the four revenue cells. Returns are not subtracted unless the question says so."
+    }
+  ]
+}

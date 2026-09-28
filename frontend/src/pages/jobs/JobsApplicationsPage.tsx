@@ -12,6 +12,7 @@ import {
   PracticeTabs,
 } from '@/components/practice-workspace/PracticeWorkspace'
 import { ApplicationStatusBadge } from '@/features/jobs/ApplicationStatusBadge'
+import { useAuth } from '@/hooks/useAuth'
 import { fetchApplications } from '@/services/jobService'
 import type { ApplicationStatus, ApplicationSummary } from '@/types/job'
 
@@ -59,10 +60,13 @@ function ApplicationCard({ app }: { app: ApplicationSummary }) {
 }
 
 export function JobsApplicationsPage() {
+  const { user } = useAuth()
+  const uid = user?.id
   const [view, setView] = useState<'kanban' | 'list'>('kanban')
   const { data, isLoading, error } = useQuery({
-    queryKey: ['applications'],
+    queryKey: ['applications', uid],
     queryFn: () => fetchApplications(),
+    enabled: Boolean(uid),
   })
 
   const grouped = useMemo(() => {

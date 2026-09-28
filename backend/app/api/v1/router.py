@@ -29,7 +29,9 @@ from app.api.v1 import (
     notifications,
     practice,
     readiness,
+    sql_playground,
     sql_practice,
+    studio,
     support,
 )
 
@@ -39,6 +41,7 @@ api_router.include_router(modules.router, tags=["modules"])
 api_router.include_router(auth.router, tags=["auth"])
 api_router.include_router(practice.router, tags=["practice"])
 api_router.include_router(coding.router, tags=["coding"])
+api_router.include_router(sql_playground.router, tags=["sql-playground"])
 api_router.include_router(sql_practice.router, tags=["sql"])
 api_router.include_router(interview.router, tags=["interview"])
 api_router.include_router(interviews.router, tags=["interviews"])
@@ -64,3 +67,4 @@ api_router.include_router(support.router, tags=["support"])
 api_router.include_router(notifications.router, tags=["notifications"])
 api_router.include_router(admin_readiness.router, tags=["admin-readiness"])
 api_router.include_router(admin_learn.router, tags=["admin-learn"])
+api_router.include_router(studio.router, tags=["studio"])
