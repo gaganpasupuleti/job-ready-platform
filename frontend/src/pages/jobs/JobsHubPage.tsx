@@ -147,9 +147,11 @@ export function JobsHubPage() {
           Browse
         </Link>
         <Link to="/jobs/recommended">Relevant</Link>
-        <Link to="/jobs/saved">Saved{summary ? ` (${summary.saved_count})` : ''}</Link>
+        <Link to="/jobs/saved">
+          Saved{typeof summary?.saved_count === 'number' ? ` (${summary.saved_count})` : ''}
+        </Link>
         <Link to="/jobs/applications">
-          Applications{summary ? ` (${summary.applications_total})` : ''}
+          Applications{typeof summary?.applications_total === 'number' ? ` (${summary.applications_total})` : ''}
         </Link>
         <Link to="/jobs/preferences">Preferences</Link>
       </nav>
@@ -158,24 +160,26 @@ export function JobsHubPage() {
         <div className="jobs-summary-strip">
           <article>
             <p>Saved</p>
-            <strong>{summary.saved_count}</strong>
+            <strong>{typeof summary.saved_count === 'number' ? summary.saved_count : '—'}</strong>
           </article>
           <article>
             <p>Applications</p>
-            <strong>{summary.applications_total}</strong>
+            <strong>{typeof summary.applications_total === 'number' ? summary.applications_total : '—'}</strong>
             <p>
-              {summary.applied_count} applied · {summary.interview_count} interview
+              {typeof summary.applied_count === 'number' ? summary.applied_count : '—'} applied ·{' '}
+              {typeof summary.interview_count === 'number' ? summary.interview_count : '—'} interview
             </p>
           </article>
           <article>
             <p>Offers</p>
-            <strong>{summary.offer_count}</strong>
+            <strong>{typeof summary.offer_count === 'number' ? summary.offer_count : '—'}</strong>
           </article>
           <article>
             <p>Follow-ups due</p>
-            <strong>{summary.follow_ups_due}</strong>
+            <strong>{typeof summary.follow_ups_due === 'number' ? summary.follow_ups_due : '—'}</strong>
             <p>
-              {summary.follow_ups_overdue} overdue · {summary.follow_ups_today} today
+              {typeof summary.follow_ups_overdue === 'number' ? summary.follow_ups_overdue : '—'} overdue ·{' '}
+              {typeof summary.follow_ups_today === 'number' ? summary.follow_ups_today : '—'} today
             </p>
           </article>
         </div>

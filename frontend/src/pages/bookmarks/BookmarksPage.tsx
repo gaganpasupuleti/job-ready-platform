@@ -56,7 +56,7 @@ export function BookmarksPage() {
         </p>
       </div>
 
-      <div className="flex gap-2 border-b border-[var(--color-border)]">
+      <div className="flex flex-wrap gap-2 border-b border-[var(--color-border)]">
         {(['mcq', 'coding', 'sql', 'prompt'] as Tab[]).map((key) => (
           <button
             key={key}

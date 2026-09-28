@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { LearnSubnav } from '@/components/learn/LearnSubnav'
+import { humanLabel } from '@/lib/studentLabels'
 import { fetchCourses } from '@/services/learnService'
 
 export function CourseListPage() {
@@ -36,51 +37,25 @@ export function CourseListPage() {
       ) : (data ?? []).length === 0 ? (
         <p className="text-sm text-[var(--color-text-muted)]">No courses available yet.</p>
       ) : (
-        <div className="learn-layout">
-          <aside className="curriculum-sidebar" aria-label="Course list">
-            <p className="label">Courses</p>
-            {(data ?? []).map((course) => (
-              <Link
-                key={course.id}
-                to={`/learn/courses/${course.slug}`}
-                className="curriculum-track"
-              >
-                <div>
-                  <strong>{course.title}</strong>
-                  <span>
-                    {course.level}
-                    {course.progress_percent > 0 ? ` · ${course.progress_percent}%` : ''}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </aside>
-          <div className="curriculum-hero">
-            <h2>Pick a path and keep going.</h2>
-            <p>
-              Each course unlocks lessons in order. Progress and completion are saved on your account.
-            </p>
-            <div className="course-grid">
-              {(data ?? []).map((course) => (
-                <Link
-                  key={course.id}
-                  to={`/learn/courses/${course.slug}`}
-                  className="course-tile"
-                >
-                  <div className="flex flex-wrap gap-1.5">
-                    <strong>{course.title}</strong>
-                    <Badge>{course.level}</Badge>
-                    {course.is_featured && <Badge variant="success">Featured</Badge>}
-                  </div>
-                  <p>{course.summary}</p>
-                  <span>
-                    {course.lesson_count} lessons
-                    {course.progress_percent > 0 ? ` · ${course.progress_percent}% complete` : ''}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
+        <div className="course-grid">
+          {(data ?? []).map((course) => (
+            <Link
+              key={course.id}
+              to={`/learn/courses/${course.slug}`}
+              className="course-tile"
+            >
+              <div className="flex flex-wrap gap-1.5">
+                <strong>{course.title}</strong>
+                <Badge>{humanLabel(course.level)}</Badge>
+                {course.is_featured && <Badge variant="success">Featured</Badge>}
+              </div>
+              <p>{course.summary}</p>
+              <span>
+                {course.lesson_count} lessons
+                {course.progress_percent > 0 ? ` · ${course.progress_percent}% lesson progress` : ''}
+              </span>
+            </Link>
+          ))}
         </div>
       )}
     </div>
