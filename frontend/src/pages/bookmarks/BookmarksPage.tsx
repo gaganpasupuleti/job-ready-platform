@@ -75,9 +75,9 @@ export function BookmarksPage() {
 
       {tab === 'mcq' && (
         <Card>
-          <CardHeader title={`MCQ bookmarks (${mcqBookmarks?.length ?? 0})`} />
+          <CardHeader title={mcqLoading ? 'MCQ bookmarks' : `MCQ bookmarks (${mcqBookmarks?.length ?? 0})`} />
           {mcqLoading ? (
-            <p className="text-sm text-[var(--color-text-muted)]">Loading...</p>
+            <p className="text-sm text-[var(--color-text-muted)]" role="status">Loading bookmarks.</p>
           ) : mcqBookmarks?.length ? (
             <div className="space-y-3">
               {mcqBookmarks.map((item) => (
@@ -91,7 +91,10 @@ export function BookmarksPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-[var(--color-text-muted)]">No MCQ bookmarks yet.</p>
+            <p className="text-sm text-[var(--color-text-muted)]" role="status">
+              No MCQ bookmarks yet.{' '}
+              <Link to="/practice/mcq" className="text-[var(--color-accent)] hover:underline">Browse technical MCQs</Link>
+            </p>
           )}
         </Card>
       )}
@@ -132,9 +135,9 @@ export function BookmarksPage() {
 
       {tab === 'prompt' && (
         <Card>
-          <CardHeader title={`Prompt challenge bookmarks (${promptBookmarks?.length ?? 0})`} />
+          <CardHeader title={promptLoading ? 'Prompt challenge bookmarks' : `Prompt challenge bookmarks (${promptBookmarks?.length ?? 0})`} />
           {promptLoading ? (
-            <p className="text-sm text-[var(--color-text-muted)]">Loading...</p>
+            <p className="text-sm text-[var(--color-text-muted)]" role="status">Loading bookmarks.</p>
           ) : promptBookmarks?.length ? (
             <div className="space-y-3">
               {promptBookmarks.map((item) => (
@@ -149,7 +152,10 @@ export function BookmarksPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-[var(--color-text-muted)]">No prompt challenge bookmarks yet.</p>
+            <p className="text-sm text-[var(--color-text-muted)]" role="status">
+              No prompt challenge bookmarks yet.{' '}
+              <Link to="/ai/prompt-engineering/challenges" className="text-[var(--color-accent)] hover:underline">Browse prompt challenges</Link>
+            </p>
           )}
         </Card>
       )}

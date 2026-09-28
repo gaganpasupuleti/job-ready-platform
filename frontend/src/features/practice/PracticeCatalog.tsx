@@ -89,7 +89,9 @@ export function PracticeCatalog({
   if (!domain || (categories?.length ?? 0) === 0) {
     return (
       <Card>
-        <h1 className="text-[1.75rem] font-semibold leading-tight text-[var(--color-text)]">{title}</h1>
+        {showIntro ? (
+          <h1 className="text-[1.75rem] font-semibold leading-tight text-[var(--color-text)]">{title}</h1>
+        ) : null}
         <p className="mt-1 text-sm text-[var(--color-text-muted)]" role="status">
           This subject is not available yet. No session was created.
         </p>

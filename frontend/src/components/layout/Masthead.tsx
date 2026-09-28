@@ -62,6 +62,7 @@ export function Masthead({ compact = false }: MastheadProps) {
         return
       }
       closeMore()
+      moreRef.current?.querySelector('button')?.focus()
     }
     document.addEventListener('mousedown', onPointer)
     document.addEventListener('keydown', onKey)
@@ -105,7 +106,14 @@ export function Masthead({ compact = false }: MastheadProps) {
               className={cn('more-nav-trigger nav-item', moreOpen && 'open')}
               aria-expanded={moreOpen}
               aria-haspopup="true"
-              onClick={() => setMoreOpen((v) => !v)}
+              onClick={() => {
+                setAccountOpen(false)
+                setMoreOpen((open) => {
+                  const next = !open
+                  if (next) queueMicrotask(() => moreRef.current?.querySelector('a')?.focus())
+                  return next
+                })
+              }}
             >
               More
               <ChevronDown className="more-chevron" aria-hidden />

@@ -78,9 +78,9 @@ export function ReadinessPage() {
           </div>
         </div>
         {!data.target_role && (
-          <p className="mt-4 text-sm">
-            <Link to="/jobs/preferences" className="text-[var(--color-accent)] hover:underline">
-              Set a target role
+          <p className="mt-4">
+            <Link to="/jobs/preferences">
+              <Button>Set a target role</Button>
             </Link>
           </p>
         )}
@@ -89,7 +89,7 @@ export function ReadinessPage() {
           className="mt-4 text-sm text-[var(--color-accent)] hover:underline"
           onClick={() => setShowWhy((v) => !v)}
         >
-          {showWhy ? 'Hide' : 'Why this score?'}
+          {showWhy ? 'Hide evidence' : 'What evidence is included?'}
         </button>
         {showWhy && data.why_breakdown.length > 0 && (
           <div className="mt-3 space-y-2 rounded-md border border-[var(--color-border)] p-3 text-sm">
@@ -119,7 +119,7 @@ export function ReadinessPage() {
 
       {data.recommended_actions.length > 0 && (
         <Card>
-          <CardHeader title="Recommended Next" description="Deterministic actions based on your gaps" />
+          <CardHeader title="Recommended next" description="Practice chosen from recorded gaps. This is not a new score." />
           <div className="space-y-3">
             {data.recommended_actions.map((action) => (
               <div

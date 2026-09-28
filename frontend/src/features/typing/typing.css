@@ -1,13 +1,13 @@
 .typing-studio {
-  --tp-bg: #f6f7f5;
-  --tp-card: #fff;
-  --tp-text: #202823;
-  --tp-muted: #66746e;
-  --tp-line: #e1e7e2;
-  --tp-key: #f0f3ef;
-  --tp-accent: #087f65;
-  --tp-soft: #e7f3ed;
-  --tp-error: #b94040;
+  --tp-bg: var(--color-bg);
+  --tp-card: var(--color-surface);
+  --tp-text: var(--color-text);
+  --tp-muted: var(--color-text-muted);
+  --tp-line: var(--color-border);
+  --tp-key: var(--color-surface-muted);
+  --tp-accent: var(--color-accent);
+  --tp-soft: var(--color-surface-muted);
+  --tp-error: var(--color-danger);
   color: var(--tp-text);
   width: 100%;
   min-width: 0;

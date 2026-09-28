@@ -3,7 +3,20 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { Card, CardHeader } from '@/components/common/Card'
+import { continuationAction, sharedDestinationNote } from '@/lib/studentLabels'
 import { fetchAiHome } from '@/services/aiService'
+
+const TRACK_BLURB: Record<string, string> = {
+  genai: 'How models generate text, embeddings, and evaluation.',
+  rag: 'Retrieval, chunking, and grounding. Often the same catalog as Generative AI.',
+  'prompt-engineering': 'Instruction design and structured outputs, plus prompt challenges.',
+  agents: 'Loops, tools, and guardrails. There is no live agent runtime.',
+  mcp: 'Host, client, and server concepts. Practice stays in the shared AI catalog.',
+  'tool-calling': 'When a model should call a tool, and what it must confirm.',
+  evaluation: 'Golden sets and groundedness checks.',
+  security: 'Prompt injection and trust boundaries. No offensive labs.',
+  'system-design': 'How an assistant, a retriever, and a tool fit together.',
+}
 
 export function AiHomePage() {
   const { data, isLoading } = useQuery({ queryKey: ['ai-home'], queryFn: fetchAiHome })
@@ -13,8 +26,7 @@ export function AiHomePage() {
       <div>
         <h2 className="text-lg font-semibold text-[var(--color-text)]">AI Practice</h2>
         <p className="text-sm text-[var(--color-text-muted)]">
-          GenAI, RAG, agents, MCP, and security MCQs plus deterministic prompt challenges. No external LLM
-          API is required.
+          GenAI, RAG, agents, MCP, and security questions, plus prompt challenges. No hosted model is called.
         </p>
       </div>
 
@@ -23,27 +35,33 @@ export function AiHomePage() {
       {data && (
         <>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {data.tracks.map((track) => (
-              <Link
-                key={track.key}
-                to={track.href}
-                className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 hover:border-[var(--color-accent)]"
-              >
-                <h3 className="font-medium text-[var(--color-text)]">{track.label}</h3>
-                <p className="mt-1 text-xs text-[var(--color-text-muted)]">Open track</p>
-              </Link>
-            ))}
+            {data.tracks.map((track) => {
+              const shared = sharedDestinationNote(track.href, data.tracks.map((item) => item.href))
+              return (
+                <Link
+                  key={track.key}
+                  to={track.href}
+                  className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 hover:border-[var(--color-accent)]"
+                >
+                  <h3 className="font-medium text-[var(--color-text)]">{track.label}</h3>
+                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                    {TRACK_BLURB[track.key] ?? 'Practice questions for this topic.'}
+                  </p>
+                  {shared ? <p className="mt-2 text-xs text-[var(--color-text-subtle)]">{shared}</p> : null}
+                </Link>
+              )
+            })}
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
-              <CardHeader title="Continue AI practice" />
+              <CardHeader title="Where to go next" />
               {data.continue_ai ? (
                 <Link to={data.continue_ai} className="text-sm text-[var(--color-accent)] hover:underline">
-                  Resume {data.continue_ai}
+                  {continuationAction({ href: data.continue_ai, progress_percent: 1 }).label} AI practice
                 </Link>
               ) : (
-                <p className="text-sm text-[var(--color-text-muted)]">Start with Generative AI MCQs.</p>
+                <p className="text-sm text-[var(--color-text-muted)]">No saved AI lesson yet. Open a track above.</p>
               )}
               <p className="mt-3 text-xs text-[var(--color-text-subtle)]">
                 Prompt challenges attempted {data.prompt_progress.attempted} · mastered{' '}

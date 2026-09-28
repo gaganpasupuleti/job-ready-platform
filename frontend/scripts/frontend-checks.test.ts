@@ -6,6 +6,8 @@ import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlSt
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
 import {
   continuationAction,
+  materialKindLabel,
+  sharedDestinationNote,
   coverageLabel,
   knownCount,
   knownPercent,
@@ -280,6 +282,28 @@ describe('lesson navigation', () => {
   it('omits solution and hints on a reading lesson without that content', () => {
     assert.deepEqual(lessonPanelTabs('article', { hasHints: false, hasSolution: false }), ['statement', 'help'])
     assert.ok(lessonPanelTabs('worked_example', { hasHints: false, hasSolution: false }).includes('solution'))
+  })
+})
+
+describe('phase 5 labels', () => {
+  it('names a cheat sheet without repeating an unread status', () => {
+    assert.equal(materialKindLabel('cheat_sheet'), 'Cheat sheet')
+  })
+
+  it('does not call a track home Continue', () => {
+    assert.equal(continuationAction({ href: '/ai', progress_percent: 1 }).label, 'Explore')
+    assert.equal(
+      continuationAction({ href: '/ai/prompt-engineering/challenges/summarize', progress_percent: 40 }).label,
+      'Continue',
+    )
+  })
+
+  it('says when several tracks open one catalog', () => {
+    assert.match(
+      sharedDestinationNote('/practice/mcq?topic=rag', ['/practice/mcq', '/practice/mcq?topic=rag']) ?? '',
+      /same catalog/,
+    )
+    assert.equal(sharedDestinationNote('/cloud/iam', ['/cloud/iam', '/devops']), null)
   })
 })
 
