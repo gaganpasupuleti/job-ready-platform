@@ -340,4 +340,67 @@ Files are under `C:\Users\Admin\AppData\Local\Temp\cursor\screenshots`. Page ove
 
 ### Next
 
-Phase 5 module coverage (materials, assignments, projects, typing, readiness, interviews, and the remaining track pages) is still open. Real-API coding, SQL, and assessment checks from Phase 4 stay pending.
+Phase 5 module coverage is recorded below. Real-API coding, SQL, and assessment checks from Phase 4 stay pending.
+
+## Phase 5 — remaining student modules (not a redesign close-out)
+
+Parent `218f1d334f2c683a043c9900cdfddc05b9c0c5c4`. Local commits `8bbc7b0` (materials, assignments, projects) and `0411570` (typing, readiness, interviews, tracks, bookmarks, More). Frontend only. Backend, migrations, service configuration, Judge0, and `feature/student-library` were not changed. Nothing was pushed, merged, or deployed. Mock checks are not production verification.
+
+| Module | Status |
+|--------|--------|
+| Materials | Done in the UI. Type and level labels are readable. Unread items no longer repeat “Not marked read”. Empty filter lists are hidden. Read state, download, and the self-reported note stay. |
+| Assignments | Done in the UI. A family filter appears only when there is more than one family. Locked, draft, and not-started stay distinct. Instructions stay in the reading column. Rubric, answer text, evidence URL, draft, and manual submit stay. |
+| Projects | Done in the UI. Available projects are listed first. Coming-soon items are not links and are not also labeled available. Category chips wrap. No generic submission form was added. |
+| Typing | Partial visual alignment only. Shared text, surface, and accent tokens replace the private green palette. Layout, fullscreen, passages, scoring, and timing were not changed. |
+| Readiness | Done in the UI for the existing payload. Unconfigured users get “Set a target role” to job preferences. The page does not calculate a new score. Evidence copy replaces the formula prompt. |
+| Interviews | Done in the UI. A hub with no reviewed questions says so, instead of a 0% bar. An empty session does not pretend it has a question number. |
+| AI, Cloud, DevOps, Cybersecurity | Done in the UI. Track cards describe the topic. Continue is used only for a saved lesson, problem, project, or challenge. Shared catalog destinations are labeled as shared. |
+| Prompt challenges and scenarios | Done in the UI. One heading, readable links, no invented best score, wider scenario text, and larger answer targets. |
+| Bookmarks | Done in the UI. Empty MCQ and prompt lists link to a real catalog. Counts are omitted while loading. |
+| More and account | Done for the existing menu. Opening More focuses the first destination. Escape returns focus to More. No Profile or Settings page was added. |
+| Library, Support, Notifications | Blocked. They are not on this base. They stay on `feature/student-library` and were not removed or integrated. |
+
+### Checks
+
+| Check | Result |
+|-------|--------|
+| `npm run test:unit` | 20 passed |
+| `npx playwright test e2e/phase5-mock.spec.ts --project=desktop` | 8 passed. Every `/api` call is fulfilled in the spec. Unmatched API calls return 599. |
+| `npx tsc -b` and `npm run build` | Passed. The existing large-chunk warning remains. |
+| `npm run lint` | Exit 0. Pre-existing `set-state-in-effect` warnings were not introduced by this slice and were not rewritten. |
+| Desktop 1440 and 390 | After shots for materials, assignments, projects, typing, readiness, interviews, AI, prompt challenges, and bookmarks. Page overflow 0. |
+| 768 | Projects, typing, and bookmarks. Page overflow 0. |
+| Keyboard | Mock test: More opens with focus on the first link; Escape returns focus to More. |
+| Real studio, project, readiness, interview, AI, and scenario APIs | **Pending.** |
+| Real coding, SQL, and assessment run/submit from Phase 4 | **Pending.** |
+
+### Screenshots
+
+Fixture-backed, not production. Paths are under `docs/evidence/phase5/`.
+
+Before: `before/materials-1440.png`, `before/assignments-1440.png`, `before/projects-1440.png`, `before/typing-1440.png`, `before/readiness-1440.png`, `before/interviews-1440.png`, `before/ai-1440.png`, `before/prompts-1440.png`, `before/bookmarks-1440.png`, plus the same names at `390`, `before/projects-768.png`, and `before/more-menu-1440.png`. The before preview did not include studio, project, or AI fixtures, so several before shots are empty or error states.
+
+After: the same route names at `1440` and `390` under `after/`, plus `after/projects-768.png`, `after/typing-768.png`, and `after/bookmarks-768.png`. After shots intercept `/api` in the browser, so they show the new layout with fixture data.
+
+### Preview
+
+The fixture server is still `frontend/scripts/dev-mock.mjs` on port **8099**. It does not yet include studio, project, interview, or AI payloads. Phase 5 browser checks used Playwright route interception instead.
+
+```
+npm run dev:mock
+```
+
+```
+$env:DEV_API_PROXY='http://127.0.0.1:8099'
+npm run dev -- --host 127.0.0.1 --port 5193
+```
+
+Stop each process on its own. Do not stop port 8000 unless that listener is this fixture.
+
+### Still open
+
+Phase 3 jobs and overview UI is in `83783fa`. Seeded application flows and real job data are not signed off.
+
+Phase 4 real-API checks stay pending: coding and SQL run/submit, assessment submit, duplicate submit, and reconnect. Judge0 and Python execution stay off.
+
+Phase 6 release gates in the implementation plan stay unchecked: full module accounting including a later student-library merge, responsive and keyboard coverage beyond this slice, seeded non-production workflows, screenshot review against production-like data, secret scan, recorded revision and rollback artifact, and an explicit merge or deploy decision. This Phase 5 slice does not make the redesign complete.
