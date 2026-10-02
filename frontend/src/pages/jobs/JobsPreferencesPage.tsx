@@ -83,7 +83,7 @@ export function JobsPreferencesPage() {
               onChange={(event) => setRole(event.target.value)}
             >
               <option value="">No target role yet</option>
-              {data.roles.map((item) => (
+              {(data.roles ?? []).map((item) => (
                 <option key={item.slug} value={item.slug}>
                   {item.name}
                 </option>

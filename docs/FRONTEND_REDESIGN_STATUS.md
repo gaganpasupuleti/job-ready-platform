@@ -508,3 +508,68 @@ npm run dev -- --host 127.0.0.1 --port 5193
 ```
 
 The fixture still does not include studio, project, or AI payloads. Those pages were checked with Playwright route interception.
+
+## Closeout — 2026-10-03
+
+Audited revision `5c7cf41`, then the preferences fix in the following commit. Frontend only. `feature/student-library` was not integrated. Nothing was pushed, merged, or deployed. Plan section 11 stays unchecked.
+
+### Frontend
+
+Fixture preview: `http://127.0.0.1:5193` with `DEV_API_PROXY=http://127.0.0.1:8099`. `GET /api/v1/health` returned `{"ok":true}`. That body is the fixture, not the local API.
+
+| Finding | Evidence | Result |
+|---------|----------|--------|
+| Job preferences crashed when `roles` was missing | `docs/evidence/phase6/audit-5c7cf41/_jobs_preferences-1440.png` | Fixed. `(data.roles ?? [])`. Recheck showed the form at 1440 and 390 with page overflow 0: `preferences-after-fix-1440.png`, `preferences-after-fix-390.png` |
+| SQL problem shows execution unavailable | Fixture payload `execution_available: false`. `sql-unavailable-1440.png` | No code change. The banner says SQL execution is unavailable and Run/Submit stay off |
+| Coding problem shows the locked sentence when execution is off | Fixture execution status was overridden to unavailable. `coding-unavailable-1440.png` | The page says code execution is coming soon. The fixture’s own coding status says available; that override is not the live API |
+| Jobs, courses, interviews, AI, and bookmarks showed loading or an error while the fixture returned 404 | Audit notes in `audit-5c7cf41/findings.json` | Fixture gap. Interviews settled to “Unable to load interview hub.” No layout overflow on the swept routes |
+| Jobs request abort | `jobs-error-1440.png` | Caught during the loading state. Not a crash and not an `undefined` count |
+
+### Real API
+
+Local API `http://127.0.0.1:8000`, backend revision `d09ae43` on `feature/student-library`, database `jobready_db` on localhost. Writes used new `phase6-close-*` and `phase6-ui-*` users at example.com. Evidence: `docs/evidence/phase6/real-api-closeout.json` and `docs/evidence/phase6/browser-auth-closeout.json`.
+
+`GET /api/v1/health` returned degraded: database ok, redis unavailable, sql sandbox unavailable, judge0 disabled.
+
+| Check | Result |
+|-------|--------|
+| Repeated MCQ complete | Passed. Same score `-0.25`, accuracy `0`, completed time, and one history row. One session and one answer before and after the retry. A second answer on the same question returned 400 |
+| Mistake rows | Completion itself wrote none. One backfill of that user created 1 mistake item and 1 source event. A second backfill left both counts at 1 |
+| Reconnect | Passed. The saved wrong option was restored on a later GET |
+| Uncertain complete | Passed. Discarding the first complete body and calling complete again returned the same result |
+| Protected route | Passed in the browser. `/practice` without a token opened login |
+| Logout cleanup | Passed on the client. The login page returned and `jrp_access_token` was removed |
+| Account switch and late 401 | Passed. After user B signed in, a delayed 401 for user A’s preferences request did not clear B. `/auth/me` stayed user B |
+| Preference isolation | Passed. User A saved `ai-agent-engineer` (204). User B’s role stayed null |
+| Server token revocation | Failed as a backend gap. Logout returned “Logged out successfully” and the same bearer still loaded `/auth/me`. `AuthService.logout` does not revoke the JWT. Not changed |
+| Coding execution | `execution_available` false, provider none, judge0 disabled |
+| SQL sandbox | `sandbox_unavailable`. `sql_execution_enabled` is true, but port 5433 is closed and Docker is not installed. Port 5432, the app database, is open. Config and volumes were not changed. Run and submit were not sent |
+
+### Jobs coverage and import
+
+Run from the main workspace backend. Read-only coverage and a dry-run import. `--confirm` was not used. No jobs were published.
+
+| Item | Result |
+|------|--------|
+| Coverage command | `python -m app.jobs.coverage`. SELECT plus ROLLBACK |
+| Target | localhost `jobready_db` |
+| Counts | 240 jobs, 197 active, 0 expired, 43 archived or inactive. Saved 39. Applications 101 |
+| Mapping | Company 51/197 (25.9%), role 24/197 (12.2%), skill 31/197 (15.7%). Active roles: 173 unmapped, Data Analyst 14, Python Developer 4, and one each for AI Engineer, Data Engineer, DevOps Engineer, GenAI Engineer, SOC Analyst, and SQL Developer |
+| Gap counts | No company 146, no role 173, no skill 166, no location 29, no valid apply URL 162, malformed URLs 0 |
+| Import command | `python -m app.jobs.import_csv content/phase11_jobs_sample.csv` |
+| Input | `backend/content/phase11_jobs_sample.csv`, the only jobs CSV in the tree. Rows are sample demo data |
+| Dry run | NEW 12, UPDATE 0, DUPLICATE 0, INVALID 0, then ROLLBACK |
+| Student listings | Unchanged. Confirming would insert those 12 rows as ACTIVE, which is the student listing filter, so they would not stay unpublished. There is no second mapping command |
+
+Copies of the coverage and dry-run JSON are in the main workspace at `docs/evidence/jobs-coverage-2026-10-03.json` and `docs/evidence/jobs-import-dry-run-2026-10-03.json`. They are not part of this frontend branch.
+
+### Remaining blockers
+
+| Blocker | Owner | Next action |
+|---------|-------|-------------|
+| `feature/student-library` is not on this branch | Release owner | Keep it separate until an explicit merge is requested |
+| Server logout does not revoke the JWT | Backend | Add revocation only if the product requires a dead token after logout |
+| SQL sandbox process is not running on port 5433 | Local infrastructure | Start the documented sandbox without changing production config, then rerun SQL execution |
+| Judge0 stays disabled | Release decision | Leave it off until execution is intentionally enabled |
+| 173 active jobs have no role mapping, and the sample CSV is unpublished | Jobs content | Supply a reviewed source and mapping rules. Do not confirm the sample file into this database |
+| Plan section 11 release gates | Release owner | Leave them unchecked. This branch is not release-ready |
