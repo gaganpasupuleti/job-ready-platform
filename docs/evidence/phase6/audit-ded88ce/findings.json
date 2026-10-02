@@ -1,0 +1,45 @@
+{
+  "base": "ded88ceb0b763690705d61fd28484054ff9c0cae",
+  "preview": "http://127.0.0.1:5193",
+  "fixture": "http://127.0.0.1:8099",
+  "fixture_health": {"ok": true},
+  "label": "Development fixtures. Not the local API.",
+  "widths": [1440, 390],
+  "overflow_on_asserted_shots": 0,
+  "routes": {
+    "/jobs": {
+      "populated": "1 job found and company Northwind",
+      "empty": "No jobs match your filters",
+      "error": "Unable to load jobs."
+    },
+    "/learn": {
+      "populated": "Python for analysts",
+      "empty": "No courses available yet.",
+      "error": "Unable to load courses."
+    },
+    "/interviews": {
+      "populated": "SQL screen",
+      "empty": "No packs yet",
+      "error": "Unable to load interview hub."
+    },
+    "/ai": {
+      "populated": "Generative AI",
+      "empty": "No saved AI lesson yet.",
+      "error": "Unable to load AI practice."
+    },
+    "/bookmarks": {
+      "populated": "MCQ, Echo Input, Bookstore joins, Name the audience",
+      "empty": "No MCQ bookmarks yet. No coding bookmarks yet. No SQL bookmarks yet. No prompt challenge bookmarks yet.",
+      "error": "Unable to load bookmarks."
+    },
+    "/jobs/preferences": {
+      "loading": "status Loading job preferences, save button absent",
+      "populated": ["No target role yet", "Data Analyst", "SQL Developer"],
+      "missing_roles": "The role list did not load. Save disabled. Forced submit sent no PUT. Browse jobs omitted target_role_slug.",
+      "empty_roles": "The role catalog is empty. PUT omitted target_role_slug.",
+      "invalid_role": "PUT was not sent",
+      "populated_save": {"target_role_slug": "sql-developer"},
+      "error": "Unable to load job preferences. Save button absent."
+    }
+  }
+}

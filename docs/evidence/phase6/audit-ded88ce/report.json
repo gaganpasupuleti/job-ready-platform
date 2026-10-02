@@ -1,0 +1,54 @@
+[
+  {
+    "route": "/jobs",
+    "state": "populated-card",
+    "width": 1440,
+    "overflow": 0,
+    "found": "Northwind"
+  },
+  {
+    "route": "/jobs",
+    "state": "populated-card",
+    "width": 390,
+    "overflow": 0,
+    "found": "Northwind"
+  },
+  {
+    "route": "/jobs",
+    "state": "error-fresh",
+    "width": 1440,
+    "overflow": 0,
+    "familyChipVisible": true
+  },
+  {
+    "route": "/jobs",
+    "state": "error-fresh",
+    "width": 390,
+    "overflow": 0,
+    "familyChipVisible": true
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "Coding Problems",
+    "state": "populated",
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "SQL Problems",
+    "state": "populated",
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "Prompt Challenges",
+    "state": "populated",
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "Coding Problems",
+    "width": 390,
+    "overflow": 0
+  }
+]

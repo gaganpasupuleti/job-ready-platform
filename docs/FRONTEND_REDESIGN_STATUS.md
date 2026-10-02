@@ -573,3 +573,98 @@ Copies of the coverage and dry-run JSON are in the main workspace at `docs/evide
 | Judge0 stays disabled | Release decision | Leave it off until execution is intentionally enabled |
 | 173 active jobs have no role mapping, and the sample CSV is unpublished | Jobs content | Supply a reviewed source and mapping rules. Do not confirm the sample file into this database |
 | Plan section 11 release gates | Release owner | Leave them unchecked. This branch is not release-ready |
+
+## Gate classification — 2026-10-03, after `ded88ce`
+
+The earlier closeout counted fixture 404s and a caught loading frame as visual checks. Those shots stay in `audit-5c7cf41` as the record of that gap. They are not a successful audit of populated, empty, or error states. This section replaces the SQL and fixture rows in that closeout.
+
+Preview stayed `http://127.0.0.1:5193` with `DEV_API_PROXY=http://127.0.0.1:8099`. Fixture health was `{"ok":true}`. `npx tsc -b` passed after the page changes. The proxy default in `frontend/vite.config.ts` is still `http://127.0.0.1:8000`.
+
+### Frontend defects
+
+| Defect | Result |
+|--------|--------|
+| A missing `roles` field was treated like an empty catalog | Fixed. Missing catalog says “The role list did not load. Your saved role is unchanged.” Empty catalog says “The role catalog is empty. Your saved role is unchanged.” A loaded catalog renders the role select |
+| AI home had no error state | Fixed. HTTP 500 shows “Unable to load AI practice.” |
+| Bookmark query failures looked like empty lists | Fixed. HTTP 500 shows “Unable to load bookmarks.” Empty coding and SQL lists say “No coding bookmarks yet.” and “No SQL bookmarks yet.” |
+
+Checked in the browser against the fixture, at the working tree that contains these fixes. Evidence: `docs/evidence/phase6/audit-ded88ce/` and `preferences-report.json`.
+
+| Preference case | Observed |
+|-----------------|----------|
+| Loading | Status “Loading job preferences”. Save button absent |
+| Populated catalog | Options “No target role yet”, “Data Analyst”, “SQL Developer”. Saving SQL Developer sent `target_role_slug: "sql-developer"` |
+| Missing `roles` | Saved role “Data Analyst” stayed visible. Save disabled. A forced form submit sent no PUT. “Browse jobs” sent only `preferred_locations` |
+| `roles: []` | Saved role stayed visible. The PUT omitted `target_role_slug` |
+| Role value outside the catalog and the saved slug | No PUT |
+| HTTP 500 | “Unable to load job preferences.” Save button absent |
+
+The PUT body still uses the existing fields: `target_role_slug` only when the catalog has at least one role, plus `preferred_locations` and `remote_preference`. Omitting `target_role_slug` is how the current API keeps a saved role. A present null still clears it, so the empty and missing states do not send that key.
+
+### Visual and behavioral verification
+
+Fixture states, desktop 1440 and 390, page overflow 0 on the asserted shots. Text was required before each screenshot. A 404 was not used as the error state.
+
+| Route | Populated | Empty | Error |
+|-------|-----------|-------|-------|
+| `/jobs` | “1 job found” and company Northwind | “No jobs match your filters” | “Unable to load jobs.” Family chip stayed available on a fresh error load |
+| `/learn` | “Python for analysts” | “No courses available yet.” | “Unable to load courses.” |
+| `/interviews` | “SQL screen” | “No packs yet” | “Unable to load interview hub.” |
+| `/ai` | “Generative AI” | “No saved AI lesson yet.” | “Unable to load AI practice.” |
+| `/bookmarks` | MCQ text, “Echo Input”, “Bookstore joins”, “Name the audience” | The four empty sentences for MCQ, coding, SQL, and prompt tabs | “Unable to load bookmarks.” on each tab |
+| `/jobs/preferences` | Select and 390 shot | Empty-catalog copy | Error copy, plus the loading and missing-catalog cases above |
+
+These six routes are the ones fully audited for populated, empty, and error content in this pass. Overview, practice sessions, lessons, projects, readiness, and the secondary interview and AI pages were not reopened.
+
+### Backend policy — logout
+
+`create_access_token` sets `sub` and `exp`, signed HS256. `jwt_access_token_expire_minutes` defaults to `60 * 24`, so a token lasts 24 hours. `AuthService.logout` returns “Logged out successfully” and does not record a revocation. The frontend logout still removes `jrp_access_token` and clears the query cache. A late 401 is ignored when its bearer does not match the token now in storage. Whether logout must make the old token unusable is an open product decision. No backend change was made.
+
+### Infrastructure
+
+| Item | Result |
+|------|--------|
+| App database | localhost port 5432, database `jobready_db`. It was not used to run student SQL |
+| SQL sandbox | Documented target is localhost port 5433, database `jobready_sql_sandbox`. Docker is not installed. PostgreSQL 17 is installed, so a separate cluster was started with `pg_ctl` on `127.0.0.1:5433`. Data directory: `%LOCALAPPDATA%\Temp\jr-sql-sandbox`. It is not a Windows service and it is not the port 5432 data directory. Config was not changed |
+| SQL run and submit | Disposable user. Problem `cf860d0c-674d-4c1e-b59b-8b2a013d828e`. Run HTTP 200, status `ok`, one `sandbox_probe` row. Submit HTTP 200, status `wrong_answer`, because the probe columns are not `product_name, price`. The sandbox executed the query. Evidence: `docs/evidence/phase6/sql-sandbox-2026-10-03.json` |
+| Health | database ok, redis unavailable, sql_sandbox ok, judge0 disabled |
+| Durability | This cluster lives under Temp. A reboot or a cleanup of that directory removes it. The documented Docker Compose file was not started |
+
+### Content quality
+
+Read-only proposal from the live catalog. No job row was updated. `content/phase11_jobs_sample.csv` was not confirmed. Confirming that importer sets `status` to ACTIVE, which is the student listing filter. There is no second publication step.
+
+| Item | Count |
+|------|-------|
+| Active jobs | 197 |
+| Already mapped | 24 |
+| Unmapped | 173 |
+| Unambiguous suggestions | 11, all Data Engineer, title matched `infer_roles` |
+| More than one catalog role | 0 |
+| No rule match, left as needs review | 162 |
+| Coverage if the 11 are approved | 35 of 197 active jobs |
+
+116 of the unmapped jobs store `role_family` `data-engineer` without a title that matches a catalog role. `role_family` was not used as a mapping rule. No new roles were invented.
+
+Proposal: `docs/evidence/jobs-role-mapping-proposal-2026-10-03.md` and `.json` in the main workspace (`New folder (5)`). Those files are not on this frontend branch.
+
+### Intentionally outside this release
+
+| Item | Why it is outside |
+|------|-------------------|
+| `feature/student-library` | Not merged. Library, support, and notification pages stay on that branch |
+| Judge0 | Disabled. Coding execution is not a prerequisite unless the release scope says students can run code |
+| Plan section 11 | Still unchecked |
+
+### Release reading
+
+The six routes above are ready for visual review from `docs/evidence/phase6/audit-ded88ce/`.
+
+This branch is not ready to deploy. The open gates are the logout revocation decision, the unmapped job catalog, the unconfirmed sample CSV, the temporary SQL cluster, Redis, and the excluded student-library work. Judge0 stays a scope choice.
+
+| Next action | Owner |
+|-------------|-------|
+| Review the 11 Data Engineer suggestions and the 162 needs-review rows. Do not confirm the sample CSV | Jobs content |
+| Decide whether logout must revoke the JWT before it expires | Backend policy |
+| Replace the Temp SQL cluster with the documented sandbox before a release that claims SQL execution in a durable environment | Local infrastructure |
+| Keep `feature/student-library` separate until a merge is requested | Release owner |

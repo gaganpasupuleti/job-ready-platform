@@ -14,17 +14,24 @@ interface SqlProblemListProps {
   problems: SqlProblemListItem[]
   total: number
   isLoading: boolean
+  emptyMessage?: string
   progressMap?: Map<string, SqlProgressStatus | null | undefined>
 }
 
-export function SqlProblemList({ problems, total, isLoading, progressMap }: SqlProblemListProps) {
+export function SqlProblemList({
+  problems,
+  total,
+  isLoading,
+  emptyMessage = 'No problems match your filters.',
+  progressMap,
+}: SqlProblemListProps) {
   return (
     <Card>
       <CardHeader title={`Problems (${total})`} />
       {isLoading ? (
         <p className="text-sm text-[var(--color-text-muted)]">Loading problems...</p>
       ) : problems.length === 0 ? (
-        <p className="text-sm text-[var(--color-text-muted)]">No problems match your filters.</p>
+        <p className="text-sm text-[var(--color-text-muted)]">{emptyMessage}</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">

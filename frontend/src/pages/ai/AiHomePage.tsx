@@ -19,7 +19,7 @@ const TRACK_BLURB: Record<string, string> = {
 }
 
 export function AiHomePage() {
-  const { data, isLoading } = useQuery({ queryKey: ['ai-home'], queryFn: fetchAiHome })
+  const { data, isLoading, isError } = useQuery({ queryKey: ['ai-home'], queryFn: fetchAiHome })
 
   return (
     <div className="space-y-6">
@@ -31,6 +31,11 @@ export function AiHomePage() {
       </div>
 
       {isLoading && <p className="text-sm text-[var(--color-text-muted)]">Loading...</p>}
+      {isError && (
+        <p className="text-sm text-[var(--color-danger)]" role="alert">
+          Unable to load AI practice.
+        </p>
+      )}
 
       {data && (
         <>

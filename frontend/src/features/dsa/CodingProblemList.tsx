@@ -15,6 +15,7 @@ interface CodingProblemListProps {
   problems: CodingProblemListItem[]
   total: number
   isLoading: boolean
+  emptyMessage?: string
   problemLinkPrefix?: string
   progressMap?: Map<string, ProblemProgressStatus | null | undefined>
 }
@@ -23,6 +24,7 @@ export function CodingProblemList({
   problems,
   total,
   isLoading,
+  emptyMessage = 'No problems match your filters.',
   problemLinkPrefix = '/practice/dsa',
   progressMap,
 }: CodingProblemListProps) {
@@ -32,7 +34,7 @@ export function CodingProblemList({
       {isLoading ? (
         <p className="text-sm text-[var(--color-text-muted)]">Loading problems...</p>
       ) : problems.length === 0 ? (
-        <p className="text-sm text-[var(--color-text-muted)]">No problems match your filters.</p>
+        <p className="text-sm text-[var(--color-text-muted)]">{emptyMessage}</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="problem-table w-full text-left text-sm">

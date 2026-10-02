@@ -83,7 +83,17 @@ const routes = {
     is_hiring_probability: false,
   },
   'GET /api/v1/mistakes/summary': { open_count: 3, top_weak_topics: [{ title: 'Probability', count: 4 }] },
-  'GET /api/v1/jobs/preferences': { target_role_slug: null, target_role_name: null },
+  'GET /api/v1/jobs/preferences': {
+    completed: true,
+    target_role_slug: 'data-analyst',
+    target_role_name: 'Data Analyst',
+    preferred_locations: ['Hyderabad'],
+    remote_preference: 'hybrid',
+    roles: [
+      { slug: 'data-analyst', name: 'Data Analyst' },
+      { slug: 'sql-developer', name: 'SQL Developer' },
+    ],
+  },
   'GET /api/v1/jobs/recommended': {
     items: [
       {
@@ -453,6 +463,169 @@ routes['GET /api/v1/learn/courses/python/intro/variables'] = {
 }
 routes['GET /api/v1/courses/python/modules/intro/lessons/variables'] =
   routes['GET /api/v1/learn/courses/python/intro/variables']
+
+const jobCard = {
+  id: 'job-1',
+  slug: 'data-analyst-sample',
+  title: 'Data Analyst',
+  company_name: 'Northwind',
+  company_slug: 'northwind',
+  location_text: 'Hyderabad',
+  work_mode: 'hybrid',
+  employment_type: 'full_time',
+  experience_min_years: 0,
+  experience_max_years: 2,
+  posted_at: '2026-09-20T00:00:00Z',
+  status: 'active',
+  is_remote: false,
+  top_skills: ['SQL', 'Excel'],
+  is_saved: true,
+  role_family: 'Data Analyst',
+  experience_bucket: '0-2',
+}
+
+routes['GET /api/v1/jobs'] = { items: [jobCard], total: 1, page: 1, limit: 20 }
+routes['GET /api/v1/jobs/family-counts'] = {
+  all: 1,
+  families: [{ id: 'data-analyst', label: 'Data Analyst', role_id: 'role-da', count: 1 }],
+}
+routes['GET /api/v1/jobs/filter-options'] = {
+  locations: ['Hyderabad'],
+  companies: ['Northwind'],
+  experience_buckets: ['0-2'],
+}
+routes['GET /api/v1/jobs/summary'] = {
+  saved_count: 1,
+  applications_total: 1,
+  applied_count: 0,
+  interview_count: 0,
+  offer_count: 0,
+  rejected_count: 0,
+  follow_ups_due: 0,
+  follow_ups_today: 0,
+  follow_ups_overdue: 0,
+}
+routes['GET /api/v1/jobs/saved'] = [
+  { id: 'saved-1', job_id: 'job-1', saved_at: '2026-09-21T00:00:00Z', job: jobCard },
+]
+routes['GET /api/v1/applications'] = [
+  {
+    id: 'app-1',
+    job_id: 'job-1',
+    job_title: 'Data Analyst',
+    company_name: 'Northwind',
+    status: 'preparing',
+    applied_at: null,
+    next_follow_up_at: null,
+    priority: 'medium',
+    job_status: 'active',
+  },
+]
+routes['GET /api/v1/courses'] = [
+  {
+    id: 'course-python',
+    slug: 'python',
+    title: 'Python for analysts',
+    summary: 'Variables, tables, and a first query.',
+    level: 'beginner',
+    primary_language_key: 'python',
+    lesson_count: 2,
+    progress_percent: 20,
+    is_featured: true,
+  },
+]
+routes['GET /api/v1/interviews/hub'] = {
+  continue_session: null,
+  packs: [
+    {
+      id: 'pack-1',
+      slug: 'sql-screen',
+      title: 'SQL screen',
+      description: 'Joins and aggregates for a first-round screen.',
+      experience_level: 'fresher',
+      question_count: 4,
+    },
+  ],
+  progress: {
+    questions_reviewed: 1,
+    sessions_completed: 0,
+    needs_review: 1,
+    high_confidence_percent: null,
+    average_key_point_coverage: null,
+    by_role: {},
+    by_skill: {},
+    by_type: {},
+    by_experience: {},
+  },
+  needs_review_count: 1,
+  recent_sessions: [],
+}
+routes['GET /api/v1/ai/home'] = {
+  tracks: [
+    { key: 'genai', label: 'Generative AI', href: '/ai/genai' },
+    { key: 'rag', label: 'RAG', href: '/ai/rag' },
+  ],
+  continue_ai: null,
+  weak_topics: ['Retrieval'],
+  prompt_progress: { attempted: 1, mastered: 0 },
+  topics: [
+    {
+      key: 'rag',
+      label: 'RAG',
+      mcq_attempts: 2,
+      mcq_accuracy: 50,
+      prompt_attempts: 1,
+      prompt_mastered: 0,
+      best_prompt_score: 0,
+    },
+  ],
+  recommended: ['Retrieval'],
+  paths: [{ slug: 'sql-practice', title: 'SQL practice', href: '/practice/sql' }],
+}
+routes['GET /api/v1/practice/bookmarks'] = [
+  {
+    id: 'bm-mcq-1',
+    title: 'Index choice',
+    question_text: 'Which index helps a selective filter?',
+    difficulty: 'easy',
+    topic_name: 'Indexes',
+  },
+]
+routes['GET /api/v1/coding/bookmarks'] = [
+  {
+    id: 'echo',
+    slug: 'echo',
+    title: 'Echo Input',
+    difficulty: 'easy',
+    domain_id: 'd',
+    category_id: 'c',
+    topic_id: 't',
+    topic_name: 'Implementation',
+    tags: ['strings'],
+    progress_status: 'unsolved',
+  },
+]
+routes['GET /api/v1/sql/bookmarks'] = [
+  {
+    id: 'joins',
+    slug: 'joins',
+    title: 'Bookstore joins',
+    difficulty: 'medium',
+    topic_id: 't',
+    topic_name: 'Joins',
+    tags: ['join'],
+    progress_status: 'unsolved',
+  },
+]
+routes['GET /api/v1/ai/prompt-bookmarks'] = [
+  {
+    id: 'prompt-1',
+    slug: 'audience',
+    title: 'Name the audience',
+    difficulty: 'easy',
+    task_type: 'rewrite',
+  },
+]
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://127.0.0.1')
