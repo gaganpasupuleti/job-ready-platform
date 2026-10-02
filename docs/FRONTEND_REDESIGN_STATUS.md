@@ -668,3 +668,88 @@ This branch is not ready to deploy. The open gates are the logout revocation dec
 | Decide whether logout must revoke the JWT before it expires | Backend policy |
 | Replace the Temp SQL cluster with the documented sandbox before a release that claims SQL execution in a durable environment | Local infrastructure |
 | Keep `feature/student-library` separate until a merge is requested | Release owner |
+
+## Release decision — after the remaining frontend checks
+
+Checked against frontend working tree on `feature/jobready-frontend-redesign` (parent `a0352aa`) and backend `feature/student-library` at `d09ae43`. The backend was not modified. `feature/student-library` was not merged. Nothing was pushed or deployed.
+
+Preview used for the new screenshots: `http://127.0.0.1:5193`, fixture `http://127.0.0.1:8099`, health `{"ok":true}`. A second Vite process is also listening on `http://127.0.0.1:5195` and proxies to the local API. The screenshots in this section are from port 5193.
+
+### Route coverage
+
+| Route | State | Evidence | Revision |
+|-------|-------|----------|----------|
+| `/jobs`, `/learn`, `/interviews`, `/ai`, `/bookmarks`, `/jobs/preferences` | Populated, empty, and error at 1440 and 390 | `docs/evidence/phase6/audit-ded88ce/` | Captured with the fixes committed in `a0352aa`. Preference behavior was rerun on the current tree: loading hides Save, a missing catalog does not PUT, an empty catalog omits `target_role_slug`, an unknown slug does not PUT, and a catalog choice sends `sql-developer` |
+| `/` | Populated continue card “Python for analysts”, 1440 and 390, overflow 0 | `docs/evidence/phase6/audit-a0352aa/overview-*.png` | Fresh. Earlier ledger row was “not rechecked” |
+| `/practice/sessions/session-1` | Active practice question, both widths | `session-*.png` in that folder | Fresh fixture. Real API MCQ complete remains the earlier closeout, not a new browser session |
+| `/practice/sessions/session-1/results` | “Practice Complete”, both widths | `results-*.png` | Fresh fixture |
+| `/learn/courses/python/intro/variables` | “Variables and types”, both widths | `lesson-*.png` | Fresh. Lesson fixture already existed |
+| `/learn/syllabus/prompt-engineering` | “Prompt Engineering”, both widths | `syllabus-lesson-*.png` | Fresh. Syllabus lesson fixture already existed |
+| `/practice/projects` and `/practice/projects/bookstore-report` | Populated list and detail, both widths. Detail HTTP 500 shows “Could not load this project.” | `projects-*.png`, `project-detail-*.png`, `project-detail-error-1440.png` | Fresh. The detail page previously stayed on “Loading project...” after a failed request |
+| `/readiness` | “No target role selected”, both widths | `readiness-*.png` | Fresh. Fixture already returned a profile with no target role |
+
+### SQL submission
+
+The wrong-answer probe remains in `docs/evidence/phase6/sql-sandbox-2026-10-03.json`. A later disposable user submitted the stored solution for `active-catalog-items` (`cf860d0c-674d-4c1e-b59b-8b2a013d828e`) on the same temporary sandbox.
+
+| Check | Result |
+|-------|--------|
+| Run | HTTP 200, status `ok`, columns `product_name`, `price`, 3 rows. Sample row `Ultrawide Monitor`, `249` |
+| Submit | HTTP 200, status `accepted`, message `Accepted` |
+| Progress | `solved_count` 1 before and after a second GET. Problem `progress_status` changed from `unsolved` to `solved` |
+| Evidence | `docs/evidence/phase6/sql-accepted-2026-10-03.json` |
+
+### Redis and the temporary SQL cluster
+
+Redis is unavailable on the local API. These workflows keep working without it:
+
+| Workflow | When Redis is down |
+|----------|-------------------|
+| Login failure throttle | Process-local counter for this API process |
+| Practice catalog cache | Cache read, write, and invalidation are skipped |
+| SQL and coding run/submit limits | The request is allowed. The limit is not shared across processes |
+| Health | `redis` is `unavailable`. Overall status stays ok unless the database fails or the SQL sandbox is unavailable while SQL execution is enabled |
+
+Redis does not block this frontend release. A deployment with more than one API process needs Redis if login throttles and execution limits must be shared. Judge0 stays disabled, so coding execution is outside this release.
+
+The SQL cluster is a `pg_ctl` process on `127.0.0.1:5433` with its data directory in `%LOCALAPPDATA%\Temp\jr-sql-sandbox`. It is not a Windows service. Stopping the process, rebooting, or cleaning Temp removes it. It is evidence that the current backend can run and accept SQL. It is not a production sandbox. The deployment prerequisite for SQL execution is the documented sandbox database (`jobready_sql_sandbox` on the sandbox URL, as in `docs/SQL_PRACTICE.md` and `infra/docker-compose.yml`). The application database on port 5432 must not be used for student SQL.
+
+### Checks on this tree
+
+| Check | Result |
+|-------|--------|
+| Preference browser cases | Passed, as listed above |
+| `npx tsc -b` | Passed |
+| `npm run build` | Passed. `tsc -b` and Vite 8.2.2. Existing warning: main chunk `dist/assets/index-BOUtPVtT.js` is 901.31 kB, over 500 kB |
+| `npm run lint` | Passed with 34 existing oxlint warnings. They are `set-state-in-effect`, `only-export-components`, `exhaustive-deps`, `immutability`, and `preserve-manual-memoization`. No new lint error. `JobsPreferencesPage.tsx` still warns on the effect that copies a loaded preference into the form |
+
+The full Playwright suite, MCQ idempotency rerun, and jobs coverage command were not repeated. Their earlier results still stand.
+
+### Gates
+
+| Gate | Result | Impact | Smallest next action |
+|------|--------|--------|----------------------|
+| Frontend defects found in this pass | Passed | Project detail now shows an error instead of staying on the loading line | None |
+| Visual coverage for the routes in the tables above | Passed | Reviewers can use the two evidence folders | None |
+| Accepted SQL on the isolated sandbox | Passed | Local execution and saved progress work | None for the frontend |
+| Redis unavailable | Passed for this release | Single-process login throttle and execution limits are local | Add Redis only when a multi-process deploy needs shared limits |
+| Logout revocation | Open policy decision | After logout the client token is gone, and the same JWT still works until it expires, 24 hours by default | Accept that behavior for this release, or schedule a backend revocation change. Do not treat it as a frontend defect |
+| Job role mapping | Content gap, proposal unapplied | 24 of 197 active jobs have a role. The 11 suggestions are not written | Review `docs/evidence/jobs-role-mapping-proposal-2026-10-03.md` in the main workspace. Do not confirm the sample CSV |
+| Temporary SQL cluster | Local only | A cleanup removes the sandbox used for this proof | Provide the documented sandbox in the target environment before claiming SQL execution there |
+| Library pages and Judge0 | Outside this release | Not blockers | Leave them out until a later scope asks for them |
+
+### Backend compatibility and rollback
+
+This frontend uses the existing API. Preference saves still omit `target_role_slug` when the catalog is missing or empty, and send it when the catalog has a role. No migration is part of this branch.
+
+Rollback is a frontend redeploy of base `31d9a25`. Do not run a database migration for that rollback. The backend revision exercised here is `d09ae43`.
+
+### Verdicts
+
+| Question | Verdict |
+|----------|---------|
+| Ready for visual review | Yes. Use `docs/evidence/phase6/audit-ded88ce/` and `docs/evidence/phase6/audit-a0352aa/` |
+| Ready for a PR | Yes. Frontend-only branch. The open items above are policy, content, and environment notes for the reviewer, not frontend failures |
+| Ready for deployment | No. Record the logout decision, and provide the documented SQL sandbox in the target environment before claiming SQL execution there. Redis, Judge0, and the library branch do not decide that |
+
+Review handoff: read this section, the two evidence folders, and the SQL accepted JSON. Do not apply the jobs proposal or confirm `content/phase11_jobs_sample.csv` as part of the review.

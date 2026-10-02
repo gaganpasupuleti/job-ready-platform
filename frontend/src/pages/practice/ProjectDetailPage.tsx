@@ -11,7 +11,7 @@ export function ProjectDetailPage() {
   const { slug = '' } = useParams()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['project', slug],
     queryFn: () => fetchProject(slug),
     enabled: Boolean(slug),
@@ -34,8 +34,11 @@ export function ProjectDetailPage() {
     },
   })
 
-  if (isLoading || !data) {
-    return <p className="text-sm text-[var(--color-text-muted)]">Loading project...</p>
+  if (isLoading) {
+    return <p className="text-sm text-[var(--color-text-muted)]" role="status">Loading project...</p>
+  }
+  if (isError || !data) {
+    return <p className="text-sm text-[var(--color-danger)]" role="alert">Could not load this project.</p>
   }
 
   const currentHref = data.current_task_href

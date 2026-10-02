@@ -1,0 +1,106 @@
+[
+  {
+    "projectsStatus": 200
+  },
+  {
+    "route": "/",
+    "width": 1440,
+    "overflow": 0,
+    "found": "Python for analysts"
+  },
+  {
+    "route": "/practice/sessions/session-1",
+    "width": 1440,
+    "overflow": 0,
+    "found": "Which index helps a selective filter?"
+  },
+  {
+    "route": "/practice/sessions/session-1/results",
+    "width": 1440,
+    "overflow": 0,
+    "found": "Practice Complete"
+  },
+  {
+    "route": "/learn/courses/python/intro/variables",
+    "width": 1440,
+    "overflow": 0,
+    "found": "Variables and types"
+  },
+  {
+    "route": "/learn/syllabus/prompt-engineering",
+    "width": 1440,
+    "overflow": 0,
+    "found": "Prompt Engineering"
+  },
+  {
+    "route": "/practice/projects",
+    "width": 1440,
+    "overflow": 0,
+    "found": "Bookstore report"
+  },
+  {
+    "route": "/practice/projects/bookstore-report",
+    "width": 1440,
+    "overflow": 0,
+    "found": "List paid orders"
+  },
+  {
+    "route": "/readiness",
+    "width": 1440,
+    "overflow": 0,
+    "found": "No target role selected"
+  },
+  {
+    "route": "/",
+    "width": 390,
+    "overflow": 0,
+    "found": "Python for analysts"
+  },
+  {
+    "route": "/practice/sessions/session-1",
+    "width": 390,
+    "overflow": 0,
+    "found": "Which index helps a selective filter?"
+  },
+  {
+    "route": "/practice/sessions/session-1/results",
+    "width": 390,
+    "overflow": 0,
+    "found": "Practice Complete"
+  },
+  {
+    "route": "/learn/courses/python/intro/variables",
+    "width": 390,
+    "overflow": 0,
+    "found": "Variables and types"
+  },
+  {
+    "route": "/learn/syllabus/prompt-engineering",
+    "width": 390,
+    "overflow": 0,
+    "found": "Prompt Engineering"
+  },
+  {
+    "route": "/practice/projects",
+    "width": 390,
+    "overflow": 0,
+    "found": "Bookstore report"
+  },
+  {
+    "route": "/practice/projects/bookstore-report",
+    "width": 390,
+    "overflow": 0,
+    "found": "List paid orders"
+  },
+  {
+    "route": "/readiness",
+    "width": 390,
+    "overflow": 0,
+    "found": "No target role selected"
+  },
+  {
+    "route": "/practice/projects/bookstore-report",
+    "state": "error",
+    "overflow": 0
+  }
+]
