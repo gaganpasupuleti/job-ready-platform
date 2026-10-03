@@ -5,18 +5,20 @@ import { Bookmark } from 'lucide-react'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
+import { humanLabel } from '@/lib/studentLabels'
 import type { JobCard } from '@/types/job'
 
 function formatExperience(min: number | null, max: number | null) {
+  if (min === 0 && max === 0) return null
   if (min != null && max != null) return `${min}–${max} yrs`
   if (min != null) return `${min}+ yrs`
   if (max != null) return `Up to ${max} yrs`
   return null
 }
 
-function formatWorkMode(mode: string | null) {
-  if (!mode) return null
-  return mode.replace(/_/g, ' ')
+function formatToken(value: string | null) {
+  if (!value || value.toLowerCase() === 'unknown') return null
+  return humanLabel(value)
 }
 
 export function JobCardView({
@@ -31,7 +33,7 @@ export function JobCardView({
   saving?: boolean
 }) {
   const experience = formatExperience(job.experience_min_years, job.experience_max_years)
-  const workMode = formatWorkMode(job.work_mode)
+  const workMode = formatToken(job.work_mode)
 
   return (
     <Card padding="md" className="flex flex-col gap-3">
@@ -39,11 +41,11 @@ export function JobCardView({
         <div className="min-w-0 flex-1">
           <Link
             to={`/jobs/${job.slug}`}
-            className="font-medium text-[var(--color-text)] hover:underline"
+            className="text-[15px] font-semibold leading-snug text-[var(--color-text)] hover:underline"
           >
             {job.title}
           </Link>
-          <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">{job.company_name}</p>
+          <p className="mt-0.5 text-[13px] text-[var(--color-text-muted)]">{job.company_name}</p>
         </div>
         {onToggleSave && (
           <Button
@@ -65,9 +67,7 @@ export function JobCardView({
         {job.is_remote && <Badge variant="accent">Remote</Badge>}
         {workMode && <Badge>{workMode}</Badge>}
         {experience && <Badge>{experience}</Badge>}
-        {job.employment_type && (
-          <Badge>{job.employment_type.replace(/_/g, ' ')}</Badge>
-        )}
+        {formatToken(job.employment_type) && <Badge>{formatToken(job.employment_type)}</Badge>}
       </div>
 
       {job.requirement_coverage != null && (

@@ -1,0 +1,66 @@
+[
+  {
+    "preferences": "loading",
+    "saveButtonCount": 0,
+    "overflow": 0
+  },
+  {
+    "preferences": "populated",
+    "options": [
+      "No target role yet",
+      "Data Analyst",
+      "SQL Developer"
+    ],
+    "overflow": 0
+  },
+  {
+    "preferences": "invalid-role-submit",
+    "roleValue": "not-a-role",
+    "putBody": null,
+    "url": "http://127.0.0.1:5193/jobs/preferences"
+  },
+  {
+    "preferences": "populated-save",
+    "putBody": {
+      "preferred_locations": [
+        "Hyderabad"
+      ],
+      "remote_preference": "hybrid",
+      "target_role_slug": "sql-developer"
+    },
+    "url": "http://127.0.0.1:5193/jobs"
+  },
+  {
+    "preferences": "missing-roles",
+    "saveDisabled": true,
+    "forcedSubmitBody": null,
+    "browseBody": {
+      "preferred_locations": [
+        "Hyderabad"
+      ]
+    },
+    "overflow": 0,
+    "url": "http://127.0.0.1:5193/jobs"
+  },
+  {
+    "preferences": "empty-roles",
+    "overflow": 0,
+    "putBody": {
+      "preferred_locations": [
+        "Hyderabad"
+      ],
+      "remote_preference": "hybrid"
+    },
+    "url": "http://127.0.0.1:5193/jobs"
+  },
+  {
+    "preferences": "error",
+    "saveButtonCount": 0,
+    "savedRoleVisible": 0,
+    "overflow": 0
+  },
+  {
+    "preferences": "populated-390",
+    "overflow": 0
+  }
+]

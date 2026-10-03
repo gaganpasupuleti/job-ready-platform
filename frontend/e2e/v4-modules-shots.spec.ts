@@ -54,7 +54,7 @@ test.describe('V4 module visual shots', () => {
       timeout: 20_000,
     })
     await expect(
-      page.getByText('Python execution is locked. This page does not run or grade code.').first(),
+      page.getByText('Python execution is locked. This page has no Run or Submit action and does not grade code.').first(),
     ).toBeVisible()
     await expect(page.getByText('Python — Coming soon').first()).toBeVisible()
     await expect(page.getByRole('button', { name: /^run$/i })).toHaveCount(0)

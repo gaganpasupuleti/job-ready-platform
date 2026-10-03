@@ -40,26 +40,26 @@ test.describe('Dashboard and Practice Hub', () => {
   test('practice path progress is idempotent', async ({ page }) => {
     await page.goto(`/practice/paths/${fixtures.path.slug}`)
     // Prefer test id; fall back to visible progress copy if Badge attrs regress.
-    const progress = page.getByTestId('path-progress').or(page.getByText(/%\s*progress/i).first())
+    const progress = page.getByTestId('path-progress').or(page.getByText(/\d+%\s*self-check/i).first())
     await expect(progress).toBeVisible({ timeout: 20_000 })
     const before = (await progress.innerText()).trim()
-    expect(before).toMatch(/%\s*progress/i)
-    const complete = page.getByRole('button', { name: /^(done|mark complete|complete)$/i }).first()
+    expect(before).toMatch(/\d+%\s*self-check/i)
+    const complete = page.getByRole('button', { name: /^mark done$/i }).first()
     if (await complete.isEnabled().catch(() => false)) {
       await complete.click()
       await page.waitForTimeout(500)
-      const again = page.getByRole('button', { name: /^(done|completed|mark complete|complete)$/i }).first()
+      const again = page.getByRole('button', { name: /^mark done$/i }).first()
       if (await again.isEnabled().catch(() => false)) {
         await again.click()
       }
       await page.reload()
       await expect(
-        page.getByTestId('path-progress').or(page.getByText(/%\s*progress/i).first()),
+        page.getByTestId('path-progress').or(page.getByText(/\d+%\s*self-check/i).first()),
       ).toBeVisible({ timeout: 20_000 })
     }
     const after = (
-      await page.getByTestId('path-progress').or(page.getByText(/%\s*progress/i).first()).innerText()
+      await page.getByTestId('path-progress').or(page.getByText(/\d+%\s*self-check/i).first()).innerText()
     ).trim()
-    expect(after).toMatch(/%\s*progress/i)
+    expect(after).toMatch(/\d+%\s*self-check/i)
   })
 })

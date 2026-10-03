@@ -1,0 +1,204 @@
+{
+  "health": {
+    "status": 404,
+    "body": {
+      "detail": "Not Found"
+    }
+  },
+  "register": {
+    "a": 200,
+    "b": 200
+  },
+  "coding": {
+    "status": 200,
+    "body": {
+      "enabled": false,
+      "available": false,
+      "provider": "none",
+      "message": "Code execution is currently unavailable.",
+      "languages": [
+        {
+          "id": 71,
+          "key": "python",
+          "name": "Python (3.8.1)",
+          "available": false
+        },
+        {
+          "id": 62,
+          "key": "java",
+          "name": "Java (OpenJDK 13.0.1)",
+          "available": false
+        },
+        {
+          "id": 54,
+          "key": "cpp",
+          "name": "C++ (GCC 9.2.0)",
+          "available": false
+        },
+        {
+          "id": 63,
+          "key": "javascript",
+          "name": "JavaScript (Node.js 12.14.0)",
+          "available": false
+        }
+      ]
+    }
+  },
+  "sql": {
+    "status": 200,
+    "body": {
+      "available": false,
+      "status": "sandbox_unavailable",
+      "dialect": "postgresql",
+      "message": "SQL sandbox is unavailable. Please try again later.",
+      "timeout_ms": 3000,
+      "max_rows": 500
+    }
+  },
+  "protected_me": 200,
+  "anon_me": 401,
+  "catalog": {
+    "status": 200,
+    "topic_found": true
+  },
+  "session_create": 200,
+  "answer": {
+    "status": 200,
+    "correct": false
+  },
+  "reconnect": {
+    "status": 200,
+    "answered": true,
+    "selection_restored": true
+  },
+  "second_answer": 400,
+  "tracker_before_complete": {
+    "status": 200,
+    "attempted": 1,
+    "events": 1,
+    "graded": 0,
+    "week": null
+  },
+  "history_before": {
+    "status": 200,
+    "sessions": 1
+  },
+  "complete_1": {
+    "status": 200,
+    "view": {
+      "status": "completed",
+      "score": -0.25,
+      "correct_count": 0,
+      "incorrect_count": 1,
+      "unanswered_count": 0,
+      "completed_at": "2026-10-02T18:41:58.896410+00:00",
+      "accuracy": 0.0,
+      "questions": [
+        {
+          "n": 1,
+          "correct": false,
+          "marks": -0.25
+        }
+      ]
+    }
+  },
+  "complete_2": {
+    "status": 200,
+    "view": {
+      "status": "completed",
+      "score": -0.25,
+      "correct_count": 0,
+      "incorrect_count": 1,
+      "unanswered_count": 0,
+      "completed_at": "2026-10-02T18:41:58.896410+00:00",
+      "accuracy": 0.0,
+      "questions": [
+        {
+          "n": 1,
+          "correct": false,
+          "marks": -0.25
+        }
+      ]
+    }
+  },
+  "results_after_retry": {
+    "status": 200,
+    "view": {
+      "status": "completed",
+      "score": -0.25,
+      "correct_count": 0,
+      "incorrect_count": 1,
+      "unanswered_count": 0,
+      "completed_at": "2026-10-02T18:41:58.896410+00:00",
+      "accuracy": 0.0,
+      "questions": [
+        {
+          "n": 1,
+          "correct": false,
+          "marks": -0.25
+        }
+      ]
+    }
+  },
+  "idempotent_payload": true,
+  "tracker_after_retry": {
+    "status": 200,
+    "attempted": 1,
+    "events": 1,
+    "graded": 1,
+    "week": null
+  },
+  "history_after": {
+    "status": 200,
+    "sessions": 1,
+    "matching": [
+      {
+        "score": -0.25,
+        "correct": 0,
+        "incorrect": 1
+      }
+    ]
+  },
+  "rows_after_complete": {
+    "sessions": 1,
+    "answers": 1,
+    "mistake_items": 0,
+    "mistake_events": 0,
+    "occurrence_sum": 0
+  },
+  "backfill_1": {
+    "mistakes": 1,
+    "snapshot": false
+  },
+  "rows_after_backfill_1": {
+    "sessions": 1,
+    "answers": 1,
+    "mistake_items": 1,
+    "mistake_events": 1,
+    "occurrence_sum": 1
+  },
+  "backfill_2": {
+    "mistakes": 1,
+    "snapshot": false
+  },
+  "rows_after_backfill_2": {
+    "sessions": 1,
+    "answers": 1,
+    "mistake_items": 1,
+    "mistake_events": 1,
+    "occurrence_sum": 1
+  },
+  "preferences": {
+    "save": 204,
+    "a_status": 200,
+    "a_role": "ai-agent-engineer",
+    "b_status": 200,
+    "b_role": null
+  },
+  "logout": {
+    "logout_status": 200,
+    "message": "Logged out successfully",
+    "me_after_logout": 200,
+    "server_still_accepts_token": true
+  }
+}

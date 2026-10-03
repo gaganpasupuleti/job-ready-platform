@@ -14,13 +14,16 @@ export function AptitudePage() {
         domainSlug="placement"
         categorySlug="aptitude"
       />
-      <nav className="flex flex-wrap gap-3 px-4 pb-4 text-sm" aria-label="Published CRT packs">
+      <nav className="space-y-2 px-4 pb-4 text-sm" aria-label="Published CRT packs">
+        <p className="text-xs font-medium text-[var(--color-text-muted)]">Published packs</p>
+        <div className="flex flex-wrap gap-3">
         <Link to="/learn/quizzes/pack-crt-shared" className="text-[var(--color-accent)] hover:underline">
           CRT pack, week 1
         </Link>
         <Link to="/learn/quizzes/pack-crt-2026-09-14" className="text-[var(--color-accent)] hover:underline">
           CRT pack, 14 Sep
         </Link>
+        </div>
       </nav>
     </div>
   )

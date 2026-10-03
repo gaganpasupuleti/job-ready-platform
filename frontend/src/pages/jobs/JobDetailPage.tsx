@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { SafeMarkdown } from '@/components/learn/SafeMarkdown'
+import { prepareRichText } from '@/lib/richText'
 import {
   ErrorState,
   LoadingState,
@@ -94,7 +96,7 @@ export function JobDetailPage() {
 
   return (
     <div className="jobs-detail space-y-5">
-      <PracticeHeader backTo="/jobs" backLabel="Jobs hub" title={data.title}>
+      <PracticeHeader backTo="/jobs" backLabel="Jobs" title={data.title} size="page">
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">{data.company_name}</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {data.application_status && (
@@ -178,24 +180,18 @@ export function JobDetailPage() {
         <div className="space-y-4 lg:col-span-2">
           <Card>
             <CardHeader title="Description" />
-            <div className="prose prose-sm max-w-none text-sm text-[var(--color-text)] whitespace-pre-wrap">
-              {data.description}
-            </div>
+            <SafeMarkdown source={prepareRichText(data.description || '')} className="reading-shell" />
           </Card>
           {data.requirements_text && (
             <Card>
               <CardHeader title="Requirements" />
-              <p className="text-sm whitespace-pre-wrap text-[var(--color-text)]">
-                {data.requirements_text}
-              </p>
+              <SafeMarkdown source={prepareRichText(data.requirements_text)} className="reading-shell" />
             </Card>
           )}
           {data.responsibilities_text && (
             <Card>
               <CardHeader title="Responsibilities" />
-              <p className="text-sm whitespace-pre-wrap text-[var(--color-text)]">
-                {data.responsibilities_text}
-              </p>
+              <SafeMarkdown source={prepareRichText(data.responsibilities_text)} className="reading-shell" />
             </Card>
           )}
         </div>

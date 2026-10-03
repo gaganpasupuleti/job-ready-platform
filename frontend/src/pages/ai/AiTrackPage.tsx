@@ -66,20 +66,25 @@ export function AiTrackPage({ track }: { track: keyof typeof TRACKS }) {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-lg font-semibold text-[var(--color-text)]">{config.title}</h1>
+        <h1 className="text-[1.75rem] font-semibold leading-tight text-[var(--color-text)]">{config.title}</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">{config.description}</p>
       </div>
+      {config.categorySlug === 'generative-ai' && track !== 'genai' ? (
+        <p className="text-sm text-[var(--color-text-muted)]">
+          These questions live in the Generative AI catalog. This page filters that shared set.
+        </p>
+      ) : null}
       {track === 'prompt-engineering' && (
         <p className="text-sm text-[var(--color-text-muted)]">
-          Interactive challenges:{' '}
           <Link className="text-[var(--color-accent)] hover:underline" to="/ai/prompt-engineering/challenges">
-            /ai/prompt-engineering/challenges
+            Open prompt challenges
           </Link>
         </p>
       )}
       <PracticeCatalog
         title={config.title}
         description={config.description}
+        showIntro={false}
         domainSlug="ai"
         categorySlug={config.categorySlug}
         topicSlugs={config.topicSlugs}

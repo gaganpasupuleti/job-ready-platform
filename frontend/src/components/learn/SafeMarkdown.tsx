@@ -1,17 +1,8 @@
 import { marked, type Token, type Tokens } from 'marked'
 import { Fragment, type ReactNode } from 'react'
 
-const SAFE_URL = /^(https?:\/\/|mailto:)/i
-
-function stripControls(value: string): string {
-  let out = ''
-  for (const char of value) {
-    const code = char.charCodeAt(0)
-    if (code <= 31 || code === 127) continue
-    out += char
-  }
-  return out
-}
+import { isDroppedMarkdownToken, omitChromeOwnedBlocks, safeHref } from '@/lib/richText'
+import { cn } from '@/utils/cn'
 
 /** marked escapes text for HTML. React text nodes must receive the decoded characters. */
 function textOf(value: string): string {
@@ -23,34 +14,14 @@ function textOf(value: string): string {
     .replace(/&amp;/g, '&')
 }
 
-/** Drop raw HTML tokens and refuse javascript:, data:, and protocol-relative links. */
-function safeHref(href: string | null | undefined): string | null {
-  if (!href) return null
-  const compact = stripControls(href).replace(/\s+/g, '')
-  if (!compact || compact.startsWith('//')) return null
-  let decoded = compact
-  try {
-    decoded = decodeURIComponent(compact)
-  } catch {
-    return null
-  }
-  const scheme = stripControls(decoded).replace(/\s+/g, '').toLowerCase()
-  if (/^(javascript|data|vbscript|file|blob):/.test(scheme)) return null
-  if (compact.startsWith('/') || compact.startsWith('#')) return compact
-  return SAFE_URL.test(compact) ? compact : null
-}
-
 function inline(tokens: Token[] | undefined, key: string): ReactNode {
   if (!tokens?.length) return null
   return tokens.map((token, index) => renderToken(token, `${key}.${index}`))
 }
 
 function renderToken(token: Token, key: string): ReactNode {
+  if (isDroppedMarkdownToken(token.type)) return null
   switch (token.type) {
-    case 'space':
-    case 'def':
-    case 'html':
-      return null
     case 'heading': {
       const heading = token as Tokens.Heading
       const depth = Math.min(Math.max(heading.depth, 1), 4)
@@ -149,7 +120,26 @@ function renderToken(token: Token, key: string): ReactNode {
   }
 }
 
-export function SafeMarkdown({ source }: { source: string }) {
-  const tokens = marked.lexer(source, { gfm: true, breaks: false })
-  return <div className="learn-md">{tokens.map((token, index) => renderToken(token, String(index)))}</div>
+export function SafeMarkdown({
+  source,
+  breaks = false,
+  className,
+  pageTitle,
+  ownedHeadings,
+}: {
+  source: string
+  breaks?: boolean
+  className?: string
+  pageTitle?: string | null
+  ownedHeadings?: string[]
+}) {
+  const tokens = omitChromeOwnedBlocks(marked.lexer(source, { gfm: true, breaks }), {
+    title: pageTitle,
+    headings: ownedHeadings,
+  })
+  return (
+    <div className={cn('learn-md', className)}>
+      {tokens.map((token, index) => renderToken(token, String(index)))}
+    </div>
+  )
 }

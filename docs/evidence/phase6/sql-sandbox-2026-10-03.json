@@ -1,0 +1,54 @@
+﻿{
+  "health": {
+    "status": "ok",
+    "service": "job-ready-platform-api",
+    "checks": {
+      "database": "ok",
+      "redis": "unavailable",
+      "sql_sandbox": "ok",
+      "judge0": "disabled"
+    }
+  },
+  "execution_status": {
+    "available": true,
+    "status": "available",
+    "dialect": "postgresql",
+    "message": null,
+    "timeout_ms": 3000,
+    "max_rows": 500
+  },
+  "register": 200,
+  "problem": "cf860d0c-674d-4c1e-b59b-8b2a013d828e",
+  "run": {
+    "http": 200,
+    "body": {
+      "status": "ok",
+      "error": null,
+      "columns": [
+        "sandbox_probe"
+      ],
+      "row_count": 1,
+      "row_sample": [
+        [
+          1
+        ]
+      ]
+    }
+  },
+  "submit": {
+    "http": 200,
+    "body": {
+      "status": "wrong_answer",
+      "error": null,
+      "columns": [
+        "sandbox_probe"
+      ],
+      "message": "Your query ran successfully, but the result did not match the expected answer. Expected columns: product_name, price. Your columns: sandbox_probe.",
+      "row_sample": [
+        [
+          1
+        ]
+      ]
+    }
+  }
+}

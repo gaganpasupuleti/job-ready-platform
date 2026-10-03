@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 export function PlaygroundHubPage() {
   return (
-    <div className="module-page">
+    <div className="module-page workspace-gutter">
       <header className="module-heading">
         <div>
           <p className="eyebrow">Playground</p>

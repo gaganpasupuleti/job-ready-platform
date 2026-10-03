@@ -279,3 +279,477 @@ Fatal bind error was **not** Redis. Evidence from failed start attempt: `Applica
 | Preserved | Segoe UI / Cascadia Code stack, JR monogram, auth cache, jobs family filters, SQL workbench, MCQ session/autosave, Python execution locks |
 | Backend | **unchanged** — missing contracts recorded in `docs/FRONTEND_BACKEND_DEPENDENCIES.md` |
 | Merge / deploy | **not done** |
+
+## Phase 4 slice (2026-09-28) — frontend only, mock preview
+
+Branch `feature/jobready-frontend-redesign`. These rows are not production verification. A mock that says Java or SQL can run does not prove the real runtime.
+
+| Check | Result |
+|-------|--------|
+| Compact coding and SQL catalogs, runtime notice before open | Mock preview and `e2e/phase4-mock.spec.ts` |
+| Loading, failed, and unavailable capability copy | Mock Playwright only |
+| Coding pane switch keeps the selected language | Mock Playwright only |
+| SQL Problem / Schema / Editor / Output keeps the draft | Mock Playwright only |
+| Playground has no Submit shortcut; Python has no Run or Submit | Mock Playwright only |
+| Lesson Next stays closed when the next block is locked; reading lessons omit empty Hints/Solution | Mock Playwright and unit checks |
+| Real coding or SQL run and submit | **Pending.** Local API was not used. Judge0 and Python execution stay off. |
+| `feature/student-library` | Not modified and not integrated |
+
+## Assessment, review, and progress slice — not a Phase 4 close-out
+
+Parent `75ee7b61f7da4ae218ceeba94dbabfd18d54839e`. This section ships in the same local commit. It does not mark Phase 4 complete. Fixture results are not real-API verification. Judge0 stays off. No production submissions were created.
+
+| Item | Status |
+|------|--------|
+| Technical MCQ and aptitude names, subject grouping, compact setup | Done in the UI |
+| History scoped to the subjects on the page | Done. Mock Playwright |
+| Honest catalog loading, empty, and failed states | Done. A missing subject is not reported as an API outage |
+| Answer restore, multi-select, resume, expiry, keyboard focus | Mock Playwright only (`e2e/phase4-assessment-mock.spec.ts`) |
+| Duplicate submit and reconnect | **Partial.** Existing confirm-submit remains. Not retested against a real API |
+| Review topic labels, compact totals, no new retry session | Done. Global weak topics stay labeled as all-subject |
+| Self-check versus lesson completion versus graded results | Done in copy and path/lesson labels. Backend rules unchanged |
+| Unknown or failed progress shown as zero | Guarded on the path page, overview, and review totals |
+| Real assessment run, submit, and persisted progress | **Pending** |
+
+### Mock preview
+
+The fixture server is `frontend/scripts/dev-mock.mjs`. It is opt-in and is not imported by the app. Default port is **8099**, not the normal backend port. The committed Vite proxy still defaults to `http://127.0.0.1:8000`.
+
+Start the fixture API, from `frontend`:
+
+```
+npm run dev:mock
+```
+
+Start the preview against that fixture, in another shell, from `frontend`:
+
+```
+$env:DEV_API_PROXY='http://127.0.0.1:8099'
+npm run dev -- --host 127.0.0.1 --port 5193
+```
+
+Stop each process on its own. Do not stop whatever is listening on port 8000 unless its command line is this fixture script.
+
+### Screenshots
+
+Before: `before-mcq`, `before-aptitude`, `before-mistakes`, `before-overview` at desktop and 390px.
+
+After: `after-mcq`, `after-aptitude`, `after-mistakes`, `after-path` at desktop and 390px.
+
+Files are under `C:\Users\Admin\AppData\Local\Temp\cursor\screenshots`. Page overflow was 0. These shots use the fixture API.
+
+### Next
+
+Phase 5 module coverage is recorded below. Real-API coding, SQL, and assessment checks from Phase 4 stay pending.
+
+## Phase 5 — remaining student modules (not a redesign close-out)
+
+Parent `218f1d334f2c683a043c9900cdfddc05b9c0c5c4`. Local commits `8bbc7b0` (materials, assignments, projects) and `0411570` (typing, readiness, interviews, tracks, bookmarks, More). Frontend only. Backend, migrations, service configuration, Judge0, and `feature/student-library` were not changed. Nothing was pushed, merged, or deployed. Mock checks are not production verification.
+
+| Module | Status |
+|--------|--------|
+| Materials | Done in the UI. Type and level labels are readable. Unread items no longer repeat “Not marked read”. Empty filter lists are hidden. Read state, download, and the self-reported note stay. |
+| Assignments | Done in the UI. A family filter appears only when there is more than one family. Locked, draft, and not-started stay distinct. Instructions stay in the reading column. Rubric, answer text, evidence URL, draft, and manual submit stay. |
+| Projects | Done in the UI. Available projects are listed first. Coming-soon items are not links and are not also labeled available. Category chips wrap. No generic submission form was added. |
+| Typing | Partial visual alignment only. Shared text, surface, and accent tokens replace the private green palette. Layout, fullscreen, passages, scoring, and timing were not changed. |
+| Readiness | Done in the UI for the existing payload. Unconfigured users get “Set a target role” to job preferences. The page does not calculate a new score. Evidence copy replaces the formula prompt. |
+| Interviews | Done in the UI. A hub with no reviewed questions says so, instead of a 0% bar. An empty session does not pretend it has a question number. |
+| AI, Cloud, DevOps, Cybersecurity | Done in the UI. Track cards describe the topic. Continue is used only for a saved lesson, problem, project, or challenge. Shared catalog destinations are labeled as shared. |
+| Prompt challenges and scenarios | Done in the UI. One heading, readable links, no invented best score, wider scenario text, and larger answer targets. |
+| Bookmarks | Done in the UI. Empty MCQ and prompt lists link to a real catalog. Counts are omitted while loading. |
+| More and account | Done for the existing menu. Opening More focuses the first destination. Escape returns focus to More. No Profile or Settings page was added. |
+| Library, Support, Notifications | Blocked. They are not on this base. They stay on `feature/student-library` and were not removed or integrated. |
+
+### Checks
+
+| Check | Result |
+|-------|--------|
+| `npm run test:unit` | 20 passed |
+| `npx playwright test e2e/phase5-mock.spec.ts --project=desktop` | 8 passed. Every `/api` call is fulfilled in the spec. Unmatched API calls return 599. |
+| `npx tsc -b` and `npm run build` | Passed. The existing large-chunk warning remains. |
+| `npm run lint` | Exit 0. Pre-existing `set-state-in-effect` warnings were not introduced by this slice and were not rewritten. |
+| Desktop 1440 and 390 | After shots for materials, assignments, projects, typing, readiness, interviews, AI, prompt challenges, and bookmarks. Page overflow 0. |
+| 768 | Projects, typing, and bookmarks. Page overflow 0. |
+| Keyboard | Mock test: More opens with focus on the first link; Escape returns focus to More. |
+| Real studio, project, readiness, interview, AI, and scenario APIs | **Pending.** |
+| Real coding, SQL, and assessment run/submit from Phase 4 | **Pending.** |
+
+### Screenshots
+
+Fixture-backed, not production. Paths are under `docs/evidence/phase5/`.
+
+Before: `before/materials-1440.png`, `before/assignments-1440.png`, `before/projects-1440.png`, `before/typing-1440.png`, `before/readiness-1440.png`, `before/interviews-1440.png`, `before/ai-1440.png`, `before/prompts-1440.png`, `before/bookmarks-1440.png`, plus the same names at `390`, `before/projects-768.png`, and `before/more-menu-1440.png`. The before preview did not include studio, project, or AI fixtures, so several before shots are empty or error states.
+
+After: the same route names at `1440` and `390` under `after/`, plus `after/projects-768.png`, `after/typing-768.png`, and `after/bookmarks-768.png`. After shots intercept `/api` in the browser, so they show the new layout with fixture data.
+
+### Preview
+
+The fixture server is still `frontend/scripts/dev-mock.mjs` on port **8099**. It does not yet include studio, project, interview, or AI payloads. Phase 5 browser checks used Playwright route interception instead.
+
+```
+npm run dev:mock
+```
+
+```
+$env:DEV_API_PROXY='http://127.0.0.1:8099'
+npm run dev -- --host 127.0.0.1 --port 5193
+```
+
+Stop each process on its own. Do not stop port 8000 unless that listener is this fixture.
+
+### Still open
+
+Phase 3 jobs and overview UI is in `83783fa`. Seeded application flows and real job data are not signed off.
+
+Phase 4 real-API checks stay pending: coding and SQL run/submit, assessment submit, duplicate submit, and reconnect. Judge0 and Python execution stay off.
+
+Phase 6 release gates in the implementation plan stay unchecked. This branch is not release-ready.
+
+## Phase 6 verification — not a release
+
+Parent `cce517e`. Frontend fix commit `90921d4`. Frontend only. `feature/student-library` was not modified or integrated. Nothing was pushed, merged, or deployed. Plan section 11 checkboxes stay unchecked.
+
+### Fixes in this slice
+
+- Learn catalog no longer repeats each course in a sidebar and a tile. Level labels are readable. Progress text says lesson progress.
+- Application pipeline columns use the same labels as the status badge (`Preparing`, not a raw status).
+- Jobs tabs and summary counts stay blank or show an em dash when a count is missing. They do not print `undefined`.
+- The masthead can wrap, so a 200% zoom of the desktop nav does not widen the page.
+- Bookmark tabs wrap at 360px. `Prompt Challenges` is no longer clipped.
+
+### Route and state coverage
+
+UI means the page exists and uses the shared shell. Mock means a Playwright fixture exercised it. Real API means the local backend below. A mock row is not a real-API row.
+
+| Route | UI | Mock | Real API | Notes |
+|-------|----|------|----------|-------|
+| `/jobs` Browse | Implemented | Overflow and long-title fixture | Not rechecked this slice | Counts no longer show `undefined` |
+| `/jobs/recommended` | Implemented | Overflow | Not rechecked | Unconfigured state links to preferences |
+| `/jobs/saved` | Implemented | Empty state in the overflow sweep | Not rechecked | Empty state links to browse |
+| `/jobs/applications` and detail | Implemented | One preparing application; readable stage | Not rechecked | Detail notes were not written |
+| `/jobs/preferences` | Implemented | Labels for role and locations | **Verified** for a new user | Save 204; a second user did not see that role |
+| `/` Overview | Implemented | Overflow sweep | Not rechecked | |
+| `/practice` | Implemented | Overflow sweep | Not rechecked | |
+| `/learn` catalog | Implemented | Single course link; `Beginner` | Not rechecked | Duplicate sidebar removed |
+| `/learn/courses/...` curriculum and lesson | Implemented earlier | Phase 4 lesson mock | Not rechecked | |
+| `/learn/syllabus` | Implemented | Overflow sweep, empty or error if the fixture is thin | Not rechecked | |
+| `/learn/materials`, assignments | Implemented | Phase 5 and Phase 6 | Not rechecked | |
+| `/practice/projects` | Implemented | Phase 5 | Not rechecked | |
+| `/practice/mcq`, `/practice/aptitude`, session, results | Implemented | Phase 4 mock | **Partial real API** | Start, answer restore, complete, and results succeeded. See below |
+| `/practice/dsa` | Implemented | Phase 4 mock; overflow sweep | **Unavailable verified** | `execution_available` is false. Judge0 stays disabled |
+| `/practice/sql` | Implemented | Phase 4 mock; overflow sweep | **Unavailable verified** | SQL sandbox is unavailable. Run and submit were not executed |
+| `/practice/playground`, Python | Implemented | Phase 4 mock | Not rechecked | Python stays locked |
+| `/practice/typing` | Implemented | Phase 6 overflow. Engine not retested | Not a server feature | Timing and scoring were not changed |
+| `/mistakes`, results | Implemented | Phase 4 mock; overflow sweep | Not rechecked | |
+| `/readiness` | Implemented | Phase 5 | Not rechecked | |
+| `/interviews` and secondary interview routes | Hub implemented | Hub overflow and empty progress | Not rechecked | Packs, session, and review were not re-opened |
+| `/ai`, Cloud, DevOps, Cybersecurity, prompts, scenarios | Implemented | Phase 5; home and prompt list in the overflow sweep | Not rechecked | |
+| `/bookmarks` | Implemented | Empty action; tabs wrap at 360 | Not rechecked | |
+| More and account | Implemented | Focus and Escape in Phase 5 | Logout is partial | No Profile or Settings page |
+| Library, Support, Notifications | Absent on this base | — | — | Stay on `feature/student-library`. This blocks full module accounting |
+
+### Checks
+
+| Check | Result |
+|-------|--------|
+| `npm run test:unit` | 20 passed |
+| `npx playwright test e2e/phase6-layout.spec.ts --project=desktop -g "top-level routes"` | 1 passed. Widths 1440, 390, and 360. Page overflow 0 after the bookmark wrap |
+| Same file, representative widths, catalog/applications, and 200% zoom | 3 passed in the run before the bookmark wrap. Zoom was rechecked after the masthead wrap |
+| `npx tsc -b`, `npm run lint`, `npm run build` | Passed. Lint warnings are the pre-existing `set-state-in-effect` set. Build still warns that the main chunk is over 500 kB |
+| `frontend/vite.config.ts` proxy default | Unchanged: `http://127.0.0.1:8000`. `dev-mock.mjs` is still opt-in and not imported by the app |
+| Phase 4 and Phase 5 mock specs | Not re-run as a full suite. Their earlier results stand |
+
+### Real API
+
+The process on port 8000 is uvicorn from `New folder (5)/backend`, revision `d09ae43`, database `jobready_db` on localhost. Redis is unavailable. This is not the redesign worktree and it is not production. Writes used newly registered users only (`phase6-a-*`, `phase6-b-*`, `phase6-restore-*` at example.com). No existing job or user was edited. Evidence: `docs/evidence/phase6/real-api-result.json`.
+
+| Check | Result | Blocks a frontend release? |
+|-------|--------|----------------------------|
+| Judge0 disabled, coding `execution_available` false | Verified | No, for shipping the unavailable state. Yes, for any claim that code execution works |
+| SQL sandbox unavailable | Verified. Run and submit were not sent | No, for the unavailable message. Yes, for a claim that SQL execution works |
+| MCQ start, answer restore, complete, results | Verified on a disposable user | No |
+| Duplicate complete | Both calls returned 200. Rejection was not shown | Yes, for the duplicate-submit release check. The confirm dialog remains |
+| Reconnect | Not tested | Yes, for that release check |
+| Job preference save and isolation | Verified | No |
+| Application persistence | Not rechecked | No, this slice did not change the write contract |
+| Logout | Frontend still clears the local token. The server returned 200 and the same token still loaded `/auth/me` | Yes, for server-side session end. No, for the client clearing its own session |
+| `feature/student-library` | Not integrated | Yes, for the “all modules accounted for” gate |
+
+### Comparable screenshots
+
+Reconstructed in an isolated worktree at `218f1d3`. The main worktree was not checked out. Same fixtures and a 1440px viewport. These are not the original empty before shots.
+
+- Baseline: `docs/evidence/phase6/baseline-218f1d3/` (`materials`, `assignments`, `projects`, `ai`)
+- Current Phase 5 UI: `docs/evidence/phase6/current-cce517e/` for the same four pages
+
+The baseline materials page still shows the raw type. The current AI page says no hosted model is called, and RAG says the catalog is shared. Projects on the baseline still treat coming-soon as a muted link; the current page says the project is not open yet.
+
+### Proposed release and rollback
+
+Do not deploy this branch yet. The unchecked plan gates are still open: student-library merge, duplicate submit, reconnect, SQL and coding execution, and an explicit merge decision.
+
+When a release is later authorized: build `frontend` at the reviewed commit, deploy that artifact through the existing frontend process, smoke-test login and one read-only page, and watch auth and route errors. Do not create a production submission as a smoke test.
+
+Rollback: redeploy the frontend artifact from base `31d9a25` (the revision this branch started from). Do not run a database migration as part of that rollback. This slice did not change the backend.
+
+### Preview
+
+Fixture API, from `frontend`:
+
+```
+npm run dev:mock
+```
+
+Preview against that fixture:
+
+```
+$env:DEV_API_PROXY='http://127.0.0.1:8099'
+npm run dev -- --host 127.0.0.1 --port 5193
+```
+
+The fixture still does not include studio, project, or AI payloads. Those pages were checked with Playwright route interception.
+
+## Closeout — 2026-10-03
+
+Audited revision `5c7cf41`, then the preferences fix in the following commit. Frontend only. `feature/student-library` was not integrated. Nothing was pushed, merged, or deployed. Plan section 11 stays unchecked.
+
+### Frontend
+
+Fixture preview: `http://127.0.0.1:5193` with `DEV_API_PROXY=http://127.0.0.1:8099`. `GET /api/v1/health` returned `{"ok":true}`. That body is the fixture, not the local API.
+
+| Finding | Evidence | Result |
+|---------|----------|--------|
+| Job preferences crashed when `roles` was missing | `docs/evidence/phase6/audit-5c7cf41/_jobs_preferences-1440.png` | Fixed. `(data.roles ?? [])`. Recheck showed the form at 1440 and 390 with page overflow 0: `preferences-after-fix-1440.png`, `preferences-after-fix-390.png` |
+| SQL problem shows execution unavailable | Fixture payload `execution_available: false`. `sql-unavailable-1440.png` | No code change. The banner says SQL execution is unavailable and Run/Submit stay off |
+| Coding problem shows the locked sentence when execution is off | Fixture execution status was overridden to unavailable. `coding-unavailable-1440.png` | The page says code execution is coming soon. The fixture’s own coding status says available; that override is not the live API |
+| Jobs, courses, interviews, AI, and bookmarks showed loading or an error while the fixture returned 404 | Audit notes in `audit-5c7cf41/findings.json` | Fixture gap. Interviews settled to “Unable to load interview hub.” No layout overflow on the swept routes |
+| Jobs request abort | `jobs-error-1440.png` | Caught during the loading state. Not a crash and not an `undefined` count |
+
+### Real API
+
+Local API `http://127.0.0.1:8000`, backend revision `d09ae43` on `feature/student-library`, database `jobready_db` on localhost. Writes used new `phase6-close-*` and `phase6-ui-*` users at example.com. Evidence: `docs/evidence/phase6/real-api-closeout.json` and `docs/evidence/phase6/browser-auth-closeout.json`.
+
+`GET /api/v1/health` returned degraded: database ok, redis unavailable, sql sandbox unavailable, judge0 disabled.
+
+| Check | Result |
+|-------|--------|
+| Repeated MCQ complete | Passed. Same score `-0.25`, accuracy `0`, completed time, and one history row. One session and one answer before and after the retry. A second answer on the same question returned 400 |
+| Mistake rows | Completion itself wrote none. One backfill of that user created 1 mistake item and 1 source event. A second backfill left both counts at 1 |
+| Reconnect | Passed. The saved wrong option was restored on a later GET |
+| Uncertain complete | Passed. Discarding the first complete body and calling complete again returned the same result |
+| Protected route | Passed in the browser. `/practice` without a token opened login |
+| Logout cleanup | Passed on the client. The login page returned and `jrp_access_token` was removed |
+| Account switch and late 401 | Passed. After user B signed in, a delayed 401 for user A’s preferences request did not clear B. `/auth/me` stayed user B |
+| Preference isolation | Passed. User A saved `ai-agent-engineer` (204). User B’s role stayed null |
+| Server token revocation | Failed as a backend gap. Logout returned “Logged out successfully” and the same bearer still loaded `/auth/me`. `AuthService.logout` does not revoke the JWT. Not changed |
+| Coding execution | `execution_available` false, provider none, judge0 disabled |
+| SQL sandbox | `sandbox_unavailable`. `sql_execution_enabled` is true, but port 5433 is closed and Docker is not installed. Port 5432, the app database, is open. Config and volumes were not changed. Run and submit were not sent |
+
+### Jobs coverage and import
+
+Run from the main workspace backend. Read-only coverage and a dry-run import. `--confirm` was not used. No jobs were published.
+
+| Item | Result |
+|------|--------|
+| Coverage command | `python -m app.jobs.coverage`. SELECT plus ROLLBACK |
+| Target | localhost `jobready_db` |
+| Counts | 240 jobs, 197 active, 0 expired, 43 archived or inactive. Saved 39. Applications 101 |
+| Mapping | Company 51/197 (25.9%), role 24/197 (12.2%), skill 31/197 (15.7%). Active roles: 173 unmapped, Data Analyst 14, Python Developer 4, and one each for AI Engineer, Data Engineer, DevOps Engineer, GenAI Engineer, SOC Analyst, and SQL Developer |
+| Gap counts | No company 146, no role 173, no skill 166, no location 29, no valid apply URL 162, malformed URLs 0 |
+| Import command | `python -m app.jobs.import_csv content/phase11_jobs_sample.csv` |
+| Input | `backend/content/phase11_jobs_sample.csv`, the only jobs CSV in the tree. Rows are sample demo data |
+| Dry run | NEW 12, UPDATE 0, DUPLICATE 0, INVALID 0, then ROLLBACK |
+| Student listings | Unchanged. Confirming would insert those 12 rows as ACTIVE, which is the student listing filter, so they would not stay unpublished. There is no second mapping command |
+
+Copies of the coverage and dry-run JSON are in the main workspace at `docs/evidence/jobs-coverage-2026-10-03.json` and `docs/evidence/jobs-import-dry-run-2026-10-03.json`. They are not part of this frontend branch.
+
+### Remaining blockers
+
+| Blocker | Owner | Next action |
+|---------|-------|-------------|
+| `feature/student-library` is not on this branch | Release owner | Keep it separate until an explicit merge is requested |
+| Server logout does not revoke the JWT | Backend | Add revocation only if the product requires a dead token after logout |
+| SQL sandbox process is not running on port 5433 | Local infrastructure | Start the documented sandbox without changing production config, then rerun SQL execution |
+| Judge0 stays disabled | Release decision | Leave it off until execution is intentionally enabled |
+| 173 active jobs have no role mapping, and the sample CSV is unpublished | Jobs content | Supply a reviewed source and mapping rules. Do not confirm the sample file into this database |
+| Plan section 11 release gates | Release owner | Leave them unchecked. This branch is not release-ready |
+
+## Gate classification — 2026-10-03, after `ded88ce`
+
+The earlier closeout counted fixture 404s and a caught loading frame as visual checks. Those shots stay in `audit-5c7cf41` as the record of that gap. They are not a successful audit of populated, empty, or error states. This section replaces the SQL and fixture rows in that closeout.
+
+Preview stayed `http://127.0.0.1:5193` with `DEV_API_PROXY=http://127.0.0.1:8099`. Fixture health was `{"ok":true}`. `npx tsc -b` passed after the page changes. The proxy default in `frontend/vite.config.ts` is still `http://127.0.0.1:8000`.
+
+### Frontend defects
+
+| Defect | Result |
+|--------|--------|
+| A missing `roles` field was treated like an empty catalog | Fixed. Missing catalog says “The role list did not load. Your saved role is unchanged.” Empty catalog says “The role catalog is empty. Your saved role is unchanged.” A loaded catalog renders the role select |
+| AI home had no error state | Fixed. HTTP 500 shows “Unable to load AI practice.” |
+| Bookmark query failures looked like empty lists | Fixed. HTTP 500 shows “Unable to load bookmarks.” Empty coding and SQL lists say “No coding bookmarks yet.” and “No SQL bookmarks yet.” |
+
+Checked in the browser against the fixture, at the working tree that contains these fixes. Evidence: `docs/evidence/phase6/audit-ded88ce/` and `preferences-report.json`.
+
+| Preference case | Observed |
+|-----------------|----------|
+| Loading | Status “Loading job preferences”. Save button absent |
+| Populated catalog | Options “No target role yet”, “Data Analyst”, “SQL Developer”. Saving SQL Developer sent `target_role_slug: "sql-developer"` |
+| Missing `roles` | Saved role “Data Analyst” stayed visible. Save disabled. A forced form submit sent no PUT. “Browse jobs” sent only `preferred_locations` |
+| `roles: []` | Saved role stayed visible. The PUT omitted `target_role_slug` |
+| Role value outside the catalog and the saved slug | No PUT |
+| HTTP 500 | “Unable to load job preferences.” Save button absent |
+
+The PUT body still uses the existing fields: `target_role_slug` only when the catalog has at least one role, plus `preferred_locations` and `remote_preference`. Omitting `target_role_slug` is how the current API keeps a saved role. A present null still clears it, so the empty and missing states do not send that key.
+
+### Visual and behavioral verification
+
+Fixture states, desktop 1440 and 390, page overflow 0 on the asserted shots. Text was required before each screenshot. A 404 was not used as the error state.
+
+| Route | Populated | Empty | Error |
+|-------|-----------|-------|-------|
+| `/jobs` | “1 job found” and company Northwind | “No jobs match your filters” | “Unable to load jobs.” Family chip stayed available on a fresh error load |
+| `/learn` | “Python for analysts” | “No courses available yet.” | “Unable to load courses.” |
+| `/interviews` | “SQL screen” | “No packs yet” | “Unable to load interview hub.” |
+| `/ai` | “Generative AI” | “No saved AI lesson yet.” | “Unable to load AI practice.” |
+| `/bookmarks` | MCQ text, “Echo Input”, “Bookstore joins”, “Name the audience” | The four empty sentences for MCQ, coding, SQL, and prompt tabs | “Unable to load bookmarks.” on each tab |
+| `/jobs/preferences` | Select and 390 shot | Empty-catalog copy | Error copy, plus the loading and missing-catalog cases above |
+
+These six routes are the ones fully audited for populated, empty, and error content in this pass. Overview, practice sessions, lessons, projects, readiness, and the secondary interview and AI pages were not reopened.
+
+### Backend policy — logout
+
+`create_access_token` sets `sub` and `exp`, signed HS256. `jwt_access_token_expire_minutes` defaults to `60 * 24`, so a token lasts 24 hours. `AuthService.logout` returns “Logged out successfully” and does not record a revocation. The frontend logout still removes `jrp_access_token` and clears the query cache. A late 401 is ignored when its bearer does not match the token now in storage. Whether logout must make the old token unusable is an open product decision. No backend change was made.
+
+### Infrastructure
+
+| Item | Result |
+|------|--------|
+| App database | localhost port 5432, database `jobready_db`. It was not used to run student SQL |
+| SQL sandbox | Documented target is localhost port 5433, database `jobready_sql_sandbox`. Docker is not installed. PostgreSQL 17 is installed, so a separate cluster was started with `pg_ctl` on `127.0.0.1:5433`. Data directory: `%LOCALAPPDATA%\Temp\jr-sql-sandbox`. It is not a Windows service and it is not the port 5432 data directory. Config was not changed |
+| SQL run and submit | Disposable user. Problem `cf860d0c-674d-4c1e-b59b-8b2a013d828e`. Run HTTP 200, status `ok`, one `sandbox_probe` row. Submit HTTP 200, status `wrong_answer`, because the probe columns are not `product_name, price`. The sandbox executed the query. Evidence: `docs/evidence/phase6/sql-sandbox-2026-10-03.json` |
+| Health | database ok, redis unavailable, sql_sandbox ok, judge0 disabled |
+| Durability | This cluster lives under Temp. A reboot or a cleanup of that directory removes it. The documented Docker Compose file was not started |
+
+### Content quality
+
+Read-only proposal from the live catalog. No job row was updated. `content/phase11_jobs_sample.csv` was not confirmed. Confirming that importer sets `status` to ACTIVE, which is the student listing filter. There is no second publication step.
+
+| Item | Count |
+|------|-------|
+| Active jobs | 197 |
+| Already mapped | 24 |
+| Unmapped | 173 |
+| Unambiguous suggestions | 11, all Data Engineer, title matched `infer_roles` |
+| More than one catalog role | 0 |
+| No rule match, left as needs review | 162 |
+| Coverage if the 11 are approved | 35 of 197 active jobs |
+
+116 of the unmapped jobs store `role_family` `data-engineer` without a title that matches a catalog role. `role_family` was not used as a mapping rule. No new roles were invented.
+
+Proposal: `docs/evidence/jobs-role-mapping-proposal-2026-10-03.md` and `.json` in the main workspace (`New folder (5)`). Those files are not on this frontend branch.
+
+### Intentionally outside this release
+
+| Item | Why it is outside |
+|------|-------------------|
+| `feature/student-library` | Not merged. Library, support, and notification pages stay on that branch |
+| Judge0 | Disabled. Coding execution is not a prerequisite unless the release scope says students can run code |
+| Plan section 11 | Still unchecked |
+
+### Release reading
+
+The six routes above are ready for visual review from `docs/evidence/phase6/audit-ded88ce/`.
+
+This branch is not ready to deploy. The open gates are the logout revocation decision, the unmapped job catalog, the unconfirmed sample CSV, the temporary SQL cluster, Redis, and the excluded student-library work. Judge0 stays a scope choice.
+
+| Next action | Owner |
+|-------------|-------|
+| Review the 11 Data Engineer suggestions and the 162 needs-review rows. Do not confirm the sample CSV | Jobs content |
+| Decide whether logout must revoke the JWT before it expires | Backend policy |
+| Replace the Temp SQL cluster with the documented sandbox before a release that claims SQL execution in a durable environment | Local infrastructure |
+| Keep `feature/student-library` separate until a merge is requested | Release owner |
+
+## Release decision — after the remaining frontend checks
+
+Checked against frontend working tree on `feature/jobready-frontend-redesign` (parent `a0352aa`) and backend `feature/student-library` at `d09ae43`. The backend was not modified. `feature/student-library` was not merged. Nothing was pushed or deployed.
+
+Preview used for the new screenshots: `http://127.0.0.1:5193`, fixture `http://127.0.0.1:8099`, health `{"ok":true}`. A second Vite process is also listening on `http://127.0.0.1:5195` and proxies to the local API. The screenshots in this section are from port 5193.
+
+### Route coverage
+
+| Route | State | Evidence | Revision |
+|-------|-------|----------|----------|
+| `/jobs`, `/learn`, `/interviews`, `/ai`, `/bookmarks`, `/jobs/preferences` | Populated, empty, and error at 1440 and 390 | `docs/evidence/phase6/audit-ded88ce/` | Captured with the fixes committed in `a0352aa`. Preference behavior was rerun on the current tree: loading hides Save, a missing catalog does not PUT, an empty catalog omits `target_role_slug`, an unknown slug does not PUT, and a catalog choice sends `sql-developer` |
+| `/` | Populated continue card “Python for analysts”, 1440 and 390, overflow 0 | `docs/evidence/phase6/audit-a0352aa/overview-*.png` | Fresh. Earlier ledger row was “not rechecked” |
+| `/practice/sessions/session-1` | Active practice question, both widths | `session-*.png` in that folder | Fresh fixture. Real API MCQ complete remains the earlier closeout, not a new browser session |
+| `/practice/sessions/session-1/results` | “Practice Complete”, both widths | `results-*.png` | Fresh fixture |
+| `/learn/courses/python/intro/variables` | “Variables and types”, both widths | `lesson-*.png` | Fresh. Lesson fixture already existed |
+| `/learn/syllabus/prompt-engineering` | “Prompt Engineering”, both widths | `syllabus-lesson-*.png` | Fresh. Syllabus lesson fixture already existed |
+| `/practice/projects` and `/practice/projects/bookstore-report` | Populated list and detail, both widths. Detail HTTP 500 shows “Could not load this project.” | `projects-*.png`, `project-detail-*.png`, `project-detail-error-1440.png` | Fresh. The detail page previously stayed on “Loading project...” after a failed request |
+| `/readiness` | “No target role selected”, both widths | `readiness-*.png` | Fresh. Fixture already returned a profile with no target role |
+
+### SQL submission
+
+The wrong-answer probe remains in `docs/evidence/phase6/sql-sandbox-2026-10-03.json`. A later disposable user submitted the stored solution for `active-catalog-items` (`cf860d0c-674d-4c1e-b59b-8b2a013d828e`) on the same temporary sandbox.
+
+| Check | Result |
+|-------|--------|
+| Run | HTTP 200, status `ok`, columns `product_name`, `price`, 3 rows. Sample row `Ultrawide Monitor`, `249` |
+| Submit | HTTP 200, status `accepted`, message `Accepted` |
+| Progress | `solved_count` 1 before and after a second GET. Problem `progress_status` changed from `unsolved` to `solved` |
+| Evidence | `docs/evidence/phase6/sql-accepted-2026-10-03.json` |
+
+### Redis and the temporary SQL cluster
+
+Redis is unavailable on the local API. These workflows keep working without it:
+
+| Workflow | When Redis is down |
+|----------|-------------------|
+| Login failure throttle | Process-local counter for this API process |
+| Practice catalog cache | Cache read, write, and invalidation are skipped |
+| SQL and coding run/submit limits | The request is allowed. The limit is not shared across processes |
+| Health | `redis` is `unavailable`. Overall status stays ok unless the database fails or the SQL sandbox is unavailable while SQL execution is enabled |
+
+Redis does not block this frontend release. A deployment with more than one API process needs Redis if login throttles and execution limits must be shared. Judge0 stays disabled, so coding execution is outside this release.
+
+The SQL cluster is a `pg_ctl` process on `127.0.0.1:5433` with its data directory in `%LOCALAPPDATA%\Temp\jr-sql-sandbox`. It is not a Windows service. Stopping the process, rebooting, or cleaning Temp removes it. It is evidence that the current backend can run and accept SQL. It is not a production sandbox. The deployment prerequisite for SQL execution is the documented sandbox database (`jobready_sql_sandbox` on the sandbox URL, as in `docs/SQL_PRACTICE.md` and `infra/docker-compose.yml`). The application database on port 5432 must not be used for student SQL.
+
+### Checks on this tree
+
+| Check | Result |
+|-------|--------|
+| Preference browser cases | Passed, as listed above |
+| `npx tsc -b` | Passed |
+| `npm run build` | Passed. `tsc -b` and Vite 8.2.2. Existing warning: main chunk `dist/assets/index-BOUtPVtT.js` is 901.31 kB, over 500 kB |
+| `npm run lint` | Passed with 34 existing oxlint warnings. They are `set-state-in-effect`, `only-export-components`, `exhaustive-deps`, `immutability`, and `preserve-manual-memoization`. No new lint error. `JobsPreferencesPage.tsx` still warns on the effect that copies a loaded preference into the form |
+
+The full Playwright suite, MCQ idempotency rerun, and jobs coverage command were not repeated. Their earlier results still stand.
+
+### Gates
+
+| Gate | Result | Impact | Smallest next action |
+|------|--------|--------|----------------------|
+| Frontend defects found in this pass | Passed | Project detail now shows an error instead of staying on the loading line | None |
+| Visual coverage for the routes in the tables above | Passed | Reviewers can use the two evidence folders | None |
+| Accepted SQL on the isolated sandbox | Passed | Local execution and saved progress work | None for the frontend |
+| Redis unavailable | Passed for this release | Single-process login throttle and execution limits are local | Add Redis only when a multi-process deploy needs shared limits |
+| Logout revocation | Open policy decision | After logout the client token is gone, and the same JWT still works until it expires, 24 hours by default | Accept that behavior for this release, or schedule a backend revocation change. Do not treat it as a frontend defect |
+| Job role mapping | Content gap, proposal unapplied | 24 of 197 active jobs have a role. The 11 suggestions are not written | Review `docs/evidence/jobs-role-mapping-proposal-2026-10-03.md` in the main workspace. Do not confirm the sample CSV |
+| Temporary SQL cluster | Local only | A cleanup removes the sandbox used for this proof | Provide the documented sandbox in the target environment before claiming SQL execution there |
+| Library pages and Judge0 | Outside this release | Not blockers | Leave them out until a later scope asks for them |
+
+### Backend compatibility and rollback
+
+This frontend uses the existing API. Preference saves still omit `target_role_slug` when the catalog is missing or empty, and send it when the catalog has a role. No migration is part of this branch.
+
+Rollback is a frontend redeploy of base `31d9a25`. Do not run a database migration for that rollback. The backend revision exercised here is `d09ae43`.
+
+### Verdicts
+
+| Question | Verdict |
+|----------|---------|
+| Ready for visual review | Yes. Use `docs/evidence/phase6/audit-ded88ce/` and `docs/evidence/phase6/audit-a0352aa/` |
+| Ready for a PR | Yes. Frontend-only branch. The open items above are policy, content, and environment notes for the reviewer, not frontend failures |
+| Ready for deployment | No. Record the logout decision, and provide the documented SQL sandbox in the target environment before claiming SQL execution there. Redis, Judge0, and the library branch do not decide that |
+
+Review handoff: read this section, the two evidence folders, and the SQL accepted JSON. Do not apply the jobs proposal or confirm `content/phase11_jobs_sample.csv` as part of the review.

@@ -16,25 +16,25 @@ type Tab = 'mcq' | 'coding' | 'sql' | 'prompt'
 export function BookmarksPage() {
   const [tab, setTab] = useState<Tab>('mcq')
 
-  const { data: mcqBookmarks, isLoading: mcqLoading } = useQuery({
+  const { data: mcqBookmarks, isLoading: mcqLoading, isError: mcqError } = useQuery({
     queryKey: ['mcq-bookmarks'],
     queryFn: fetchPracticeBookmarks,
     enabled: tab === 'mcq',
   })
 
-  const { data: codingBookmarks, isLoading: codingLoading } = useQuery({
+  const { data: codingBookmarks, isLoading: codingLoading, isError: codingError } = useQuery({
     queryKey: ['coding-bookmarks'],
     queryFn: fetchCodingBookmarks,
     enabled: tab === 'coding',
   })
 
-  const { data: sqlBookmarks, isLoading: sqlLoading } = useQuery({
+  const { data: sqlBookmarks, isLoading: sqlLoading, isError: sqlError } = useQuery({
     queryKey: ['sql-bookmarks'],
     queryFn: fetchSqlBookmarks,
     enabled: tab === 'sql',
   })
 
-  const { data: promptBookmarks, isLoading: promptLoading } = useQuery({
+  const { data: promptBookmarks, isLoading: promptLoading, isError: promptError } = useQuery({
     queryKey: ['prompt-bookmarks'],
     queryFn: fetchPromptBookmarks,
     enabled: tab === 'prompt',
@@ -56,7 +56,7 @@ export function BookmarksPage() {
         </p>
       </div>
 
-      <div className="flex gap-2 border-b border-[var(--color-border)]">
+      <div className="flex flex-wrap gap-2 border-b border-[var(--color-border)]">
         {(['mcq', 'coding', 'sql', 'prompt'] as Tab[]).map((key) => (
           <button
             key={key}
@@ -75,9 +75,11 @@ export function BookmarksPage() {
 
       {tab === 'mcq' && (
         <Card>
-          <CardHeader title={`MCQ bookmarks (${mcqBookmarks?.length ?? 0})`} />
+          <CardHeader title={mcqLoading ? 'MCQ bookmarks' : `MCQ bookmarks (${mcqBookmarks?.length ?? 0})`} />
           {mcqLoading ? (
-            <p className="text-sm text-[var(--color-text-muted)]">Loading...</p>
+            <p className="text-sm text-[var(--color-text-muted)]" role="status">Loading bookmarks.</p>
+          ) : mcqError ? (
+            <p className="text-sm text-[var(--color-danger)]" role="alert">Unable to load bookmarks.</p>
           ) : mcqBookmarks?.length ? (
             <div className="space-y-3">
               {mcqBookmarks.map((item) => (
@@ -91,18 +93,26 @@ export function BookmarksPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-[var(--color-text-muted)]">No MCQ bookmarks yet.</p>
+            <p className="text-sm text-[var(--color-text-muted)]" role="status">
+              No MCQ bookmarks yet.{' '}
+              <Link to="/practice/mcq" className="text-[var(--color-accent)] hover:underline">Browse technical MCQs</Link>
+            </p>
           )}
         </Card>
       )}
 
       {tab === 'coding' && (
         <>
+          {codingError ? (
+            <p className="text-sm text-[var(--color-danger)]" role="alert">Unable to load bookmarks.</p>
+          ) : (
           <CodingProblemList
             problems={codingBookmarks?.items ?? []}
             total={codingBookmarks?.total ?? 0}
             isLoading={codingLoading}
+            emptyMessage="No coding bookmarks yet."
           />
+          )}
           <p className="text-xs text-[var(--color-text-muted)]">
             Open a problem from{' '}
             <Link to="/practice/dsa" className="text-[var(--color-accent)] hover:underline">
@@ -115,11 +125,16 @@ export function BookmarksPage() {
 
       {tab === 'sql' && (
         <>
+          {sqlError ? (
+            <p className="text-sm text-[var(--color-danger)]" role="alert">Unable to load bookmarks.</p>
+          ) : (
           <SqlProblemList
             problems={sqlBookmarks?.items ?? []}
             total={sqlBookmarks?.total ?? 0}
             isLoading={sqlLoading}
+            emptyMessage="No SQL bookmarks yet."
           />
+          )}
           <p className="text-xs text-[var(--color-text-muted)]">
             Open a problem from{' '}
             <Link to="/practice/sql" className="text-[var(--color-accent)] hover:underline">
@@ -132,9 +147,11 @@ export function BookmarksPage() {
 
       {tab === 'prompt' && (
         <Card>
-          <CardHeader title={`Prompt challenge bookmarks (${promptBookmarks?.length ?? 0})`} />
+          <CardHeader title={promptLoading ? 'Prompt challenge bookmarks' : `Prompt challenge bookmarks (${promptBookmarks?.length ?? 0})`} />
           {promptLoading ? (
-            <p className="text-sm text-[var(--color-text-muted)]">Loading...</p>
+            <p className="text-sm text-[var(--color-text-muted)]" role="status">Loading bookmarks.</p>
+          ) : promptError ? (
+            <p className="text-sm text-[var(--color-danger)]" role="alert">Unable to load bookmarks.</p>
           ) : promptBookmarks?.length ? (
             <div className="space-y-3">
               {promptBookmarks.map((item) => (
@@ -149,7 +166,10 @@ export function BookmarksPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-[var(--color-text-muted)]">No prompt challenge bookmarks yet.</p>
+            <p className="text-sm text-[var(--color-text-muted)]" role="status">
+              No prompt challenge bookmarks yet.{' '}
+              <Link to="/ai/prompt-engineering/challenges" className="text-[var(--color-accent)] hover:underline">Browse prompt challenges</Link>
+            </p>
           )}
         </Card>
       )}

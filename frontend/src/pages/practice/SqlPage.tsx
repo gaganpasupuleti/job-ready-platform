@@ -5,8 +5,9 @@ import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
 import { SqlProblemFilters, SqlProblemList } from '@/features/sql/SqlProblemList'
 import { SqlProgressSummary } from '@/features/sql/SqlProgressSummary'
 import { SqlReviewCtas } from '@/features/sql/SqlReviewCtas'
-import { fetchMistakes, fetchMistakeSummary } from '@/services/mistakeService'
-import { fetchSqlProblems, fetchSqlProgress } from '@/services/sqlService'
+import { capabilityNotice } from '@/lib/codingRuntime'
+import { fetchMistakes } from '@/services/mistakeService'
+import { fetchSqlExecutionStatus, fetchSqlProblems, fetchSqlProgress } from '@/services/sqlService'
 import type { SqlProgressStatus } from '@/types/sql'
 
 export function SqlPage() {
@@ -18,6 +19,16 @@ export function SqlPage() {
   const { data: progress } = useQuery({
     queryKey: ['sql-progress'],
     queryFn: fetchSqlProgress,
+  })
+  const execution = useQuery({
+    queryKey: ['sql-execution-status'],
+    queryFn: fetchSqlExecutionStatus,
+  })
+  const runtime = capabilityNotice({
+    pending: execution.isPending,
+    failed: execution.isError,
+    available: execution.data?.available,
+    kind: 'sql',
   })
 
   const { data: problems, isLoading } = useQuery({
@@ -34,11 +45,6 @@ export function SqlPage() {
   const { data: sqlMistakes } = useQuery({
     queryKey: ['mistakes', 'sql', 'unresolved'],
     queryFn: () => fetchMistakes({ source_type: 'sql', view: 'unresolved' }),
-  })
-
-  const { data: mistakeSummary } = useQuery({
-    queryKey: ['mistakes-summary'],
-    queryFn: fetchMistakeSummary,
   })
 
   const { data: unsolvedProblems } = useQuery({
@@ -61,19 +67,21 @@ export function SqlPage() {
     <div className="module-page space-y-4">
       <PracticeTrackNav />
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)]">SQL Practice</h2>
+        <h1 className="text-[1.75rem] font-semibold leading-tight text-[var(--color-text)]">SQL Practice</h1>
         <p className="text-sm text-[var(--color-text-muted)]">
           Query writing exercises with schema exploration, run/submit feedback, and progress
           tracking.
         </p>
       </div>
 
+      <p className="capability-note" role="status" data-runtime-state={runtime.state}>
+        {runtime.text}
+      </p>
       {progress && <SqlProgressSummary progress={progress} />}
 
       <SqlReviewCtas
         progress={progress}
         mistakes={sqlMistakes}
-        mistakeSummary={mistakeSummary}
         unsolvedHref={unsolvedHref}
         firstMistakeHref={firstMistakeHref}
       />

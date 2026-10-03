@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, ArrowUpRight, Terminal } from 'lucide-react'
 
 import { Button } from '@/components/common/Button'
-import { EmptyState, LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
+import { LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
 import { useAuth } from '@/hooks/useAuth'
+import { continuationAction, knownPercent, readinessScoreLabel } from '@/lib/studentLabels'
 import { fetchCodingProgress } from '@/services/codingService'
 import { fetchContinueLearning } from '@/services/learnService'
 import { fetchMistakeSummary } from '@/services/mistakeService'
@@ -14,17 +15,17 @@ import { fetchSqlProgress } from '@/services/sqlService'
 export function DashboardPage() {
   const { user } = useAuth()
   const uid = user?.id
-  const { data: continueItems, isLoading: continueLoading } = useQuery({
+  const { data: continueItems, isLoading: continueLoading, isError: continueError } = useQuery({
     queryKey: ['continue-learning', uid],
     queryFn: fetchContinueLearning,
     enabled: Boolean(uid),
   })
-  const { data: coding } = useQuery({
+  const { data: coding, isError: codingError } = useQuery({
     queryKey: ['coding-progress', uid],
     queryFn: fetchCodingProgress,
     enabled: Boolean(uid),
   })
-  const { data: sql } = useQuery({
+  const { data: sql, isError: sqlError } = useQuery({
     queryKey: ['sql-progress', uid],
     queryFn: fetchSqlProgress,
     enabled: Boolean(uid),
@@ -42,10 +43,16 @@ export function DashboardPage() {
 
   const nextAction = readiness?.recommended_actions?.[0]
   const primary = continueItems?.[0]
-  const showScore =
-    readiness?.overall_score_ready === true &&
-    readiness.has_minimum_evidence &&
-    readiness.score != null
+  const primaryAction = primary ? continuationAction(primary) : null
+  const scoreLabel = readiness
+    ? readinessScoreLabel({
+        overallScoreReady: readiness.overall_score_ready,
+        isHiringProbability: readiness.is_hiring_probability,
+        hasMinimumEvidence: readiness.has_minimum_evidence,
+        score: readiness.score,
+        hasTargetRole: Boolean(readiness.target_role),
+      })
+    : null
   const displayName = user?.full_name?.split(' ')[0] || user?.username || 'there'
 
   return (
@@ -58,7 +65,9 @@ export function DashboardPage() {
             Welcome back, {displayName}.
             {readiness?.target_role?.name
               ? ` Target role: ${readiness.target_role.name}.`
-              : ' Your next step is ready.'}
+              : readiness
+                ? ' No target role is set.'
+                : ''}
           </p>
         </div>
         <Link to="/practice/playground">
@@ -76,7 +85,11 @@ export function DashboardPage() {
             <div className="feature-kicker">
               <span>{primary?.subtitle || 'Continue learning'}</span>
               <span>
-                {primary ? `${primary.progress_percent}%` : 'Pick a path'}
+                {continueError
+                  ? 'Progress unavailable'
+                  : primary
+                    ? (knownPercent(primary.progress_percent) ?? 'Progress unavailable')
+                    : 'Pick a path'}
               </span>
             </div>
             <div className="feature-content">
@@ -84,16 +97,18 @@ export function DashboardPage() {
                 <span className="overline">Continue your path</span>
                 {continueLoading ? (
                   <LoadingState label="Loading continue learning" />
+                ) : continueError ? (
+                  <p role="alert">Saved progress could not be loaded.</p>
                 ) : primary ? (
                   <>
                     <h2>{primary.title}</h2>
                     <p>{primary.subtitle || 'Pick up where you left off'}</p>
                     <span className="feature-description">
-                      Live progress from your account — not a preview fixture.
+                      {primaryAction?.note ?? 'This progress is saved on your account.'}
                     </span>
                     <Link to={primary.href}>
                       <Button variant="primary" className="inline-flex items-center gap-2">
-                        Continue
+                        {primaryAction?.label ?? 'Explore'}
                         <ArrowRight className="h-4 w-4" aria-hidden />
                       </Button>
                     </Link>
@@ -129,18 +144,11 @@ export function DashboardPage() {
                       <strong>{item.title}</strong>
                       {item.subtitle ? <span className="mt-0.5 block">{item.subtitle}</span> : null}
                     </div>
-                    <span>{item.progress_percent}%</span>
+                    <span>{continuationAction(item).label}</span>
                   </Link>
                 ))}
               </div>
             </section>
-          )}
-
-          {!continueLoading && (continueItems?.length ?? 0) === 0 && (
-            <EmptyState
-              title="No recent learning activity"
-              description="Start a course, project, or practice path to see it here."
-            />
           )}
 
           <section>
@@ -150,9 +158,11 @@ export function DashboardPage() {
                 <div>
                   <strong>SQL practice</strong>
                   <span className="mt-0.5 block">
-                    {sql
-                      ? `${sql.solved_count} / ${sql.total_problems} solved`
-                      : 'Catalog and workbench'}
+                    {sqlError
+                      ? 'Progress could not be loaded.'
+                      : sql
+                        ? `${sql.solved_count} / ${sql.total_problems} solved`
+                        : 'Catalog and workbench'}
                   </span>
                 </div>
                 <span>SQL</span>
@@ -161,9 +171,11 @@ export function DashboardPage() {
                 <div>
                   <strong>DSA / coding</strong>
                   <span className="mt-0.5 block">
-                    {coding
-                      ? `${coding.solved_count} / ${coding.total_problems} solved`
-                      : 'Assessed problems'}
+                    {codingError
+                      ? 'Progress could not be loaded.'
+                      : coding
+                        ? `${coding.solved_count} / ${coding.total_problems} solved`
+                        : 'Assessed problems'}
                   </span>
                 </div>
                 <span>Code</span>
@@ -183,12 +195,14 @@ export function DashboardPage() {
           <div className="desk-card">
             <h3>Readiness</h3>
             <p className="text-2xl font-semibold text-[var(--color-text)]">
-              {showScore ? `${Math.round(readiness!.score!)}%` : 'Building'}
+              {scoreLabel ?? 'Checking readiness'}
             </p>
             <p>
-              {showScore
+              {scoreLabel && scoreLabel !== 'Not measured yet'
                 ? 'Based on verified practice — not a hiring probability.'
-                : 'Need more verified evidence before a readiness score.'}
+                : readiness?.target_role
+                  ? 'Need more verified evidence before a readiness score.'
+                  : 'Set a target role before readiness can be measured.'}
             </p>
             {(readiness?.strong_skills?.length ?? 0) > 0 && (
               <p className="mt-2">
@@ -200,22 +214,30 @@ export function DashboardPage() {
                 Needs evidence: {readiness!.missing_skills.slice(0, 3).join(', ')}
               </p>
             )}
-            <Link
-              to="/readiness"
-              className="mt-3 inline-block text-xs font-medium text-[var(--color-accent)] hover:underline"
-            >
-              Open readiness →
-            </Link>
+            {readiness && !readiness.target_role ? (
+              <Link
+                to="/jobs/preferences"
+                className="mt-3 inline-block text-xs font-medium text-[var(--color-accent)] hover:underline"
+              >
+                Set a target role
+              </Link>
+            ) : (
+              <Link
+                to="/readiness"
+                className="mt-3 inline-block text-xs font-medium text-[var(--color-accent)] hover:underline"
+              >
+                Open readiness
+              </Link>
+            )}
           </div>
 
           <div className="desk-card">
             <h3>Today&apos;s focus</h3>
             <ul>
-              {nextAction ? <li>{nextAction.title}</li> : <li>Complete one practice session</li>}
+              {nextAction ? <li>{nextAction.title}</li> : <li>Choose a practice path</li>}
               <li>
-                Review mistakes ({mistakeSummary?.open_count ?? 0} open)
+                {mistakeSummary ? `Review mistakes (${mistakeSummary.open_count} open)` : 'Review mistakes'}
               </li>
-              <li>Keep a playground draft for warm-up</li>
             </ul>
             {nextAction ? (
               <Link to={nextAction.href} className="mt-3 inline-block">

@@ -7,7 +7,8 @@ import {
   CodingProgressSummary,
   ProblemFilters,
 } from '@/features/dsa/CodingProblemList'
-import { fetchCodingProblems, fetchCodingProgress } from '@/services/codingService'
+import { capabilityNotice } from '@/lib/codingRuntime'
+import { fetchCodingProblems, fetchCodingProgress, fetchExecutionStatus } from '@/services/codingService'
 import type { ProblemProgressStatus } from '@/types/coding'
 
 export function DsaPage() {
@@ -20,6 +21,17 @@ export function DsaPage() {
   const { data: progress } = useQuery({
     queryKey: ['coding-progress'],
     queryFn: fetchCodingProgress,
+  })
+  const execution = useQuery({
+    queryKey: ['coding-execution-status'],
+    queryFn: fetchExecutionStatus,
+  })
+  const runtime = capabilityNotice({
+    pending: execution.isPending,
+    failed: execution.isError,
+    available: execution.data?.available,
+    kind: 'code',
+    languages: execution.data?.languages,
   })
 
   const { data: problems, isLoading } = useQuery({
@@ -45,13 +57,16 @@ export function DsaPage() {
     <div className="module-page space-y-4">
       <PracticeTrackNav />
       <div>
-        <h1 className="text-lg font-semibold text-[var(--color-text)]">Programming & DSA</h1>
+        <h1 className="text-[1.75rem] font-semibold leading-tight text-[var(--color-text)]">Programming & DSA</h1>
         <p className="text-sm text-[var(--color-text-muted)]">
           Topic-organized coding problems with run/submit, progress tracking, and hidden test
           evaluation.
         </p>
       </div>
 
+      <p className="capability-note" role="status" data-runtime-state={runtime.state}>
+        {runtime.text}
+      </p>
       {progress && <CodingProgressSummary progress={progress} />}
 
       {topics.length > 0 ? (
