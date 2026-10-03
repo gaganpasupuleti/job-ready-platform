@@ -17,7 +17,7 @@ test.describe('Python Playground', () => {
     })
     await expect(mainHeading).toBeVisible({ timeout: 15_000 })
     await expect(mainHeading).toHaveCount(1)
-    await expect(page.getByText('Python execution is locked. This page does not run or grade code.')).toBeVisible()
+    await expect(page.getByText('Python execution is locked. This page has no Run or Submit action and does not grade code.')).toBeVisible()
     await expect(page.getByRole('button', { name: /^run$/i })).toHaveCount(0)
     await expect(page.locator('.monaco-editor')).toHaveCount(0)
   })
@@ -34,7 +34,7 @@ test.describe('Python Playground', () => {
       if (request.url().includes('/playground/run') && request.method() === 'POST') runCalls += 1
     })
     await page.goto('/practice/python')
-    await expect(page.getByText('Python execution is locked. This page does not run or grade code.')).toBeVisible({
+    await expect(page.getByText('Python execution is locked. This page has no Run or Submit action and does not grade code.')).toBeVisible({
       timeout: 15_000,
     })
     await page.keyboard.press('Control+Enter')

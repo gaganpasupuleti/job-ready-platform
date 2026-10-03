@@ -123,11 +123,13 @@ export function DsaProblemPage() {
     problem?.starter_code[String(languageId)] ??
     (problem ? Object.values(problem.starter_code)[0] ?? '' : '')
 
+  const draftEnabled = resolvedLanguageId != null
   const { sourceCode, setSourceCode, resetCode, initialized } = useCodingDraft(
     user?.id,
     problemId,
     languageId,
     starterForLang,
+    draftEnabled,
   )
 
   useLockExecutionShortcuts(!executionAvailable)
@@ -172,7 +174,7 @@ export function DsaProblemPage() {
     rootRef: editorRootRef,
   })
 
-  if (isLoading || !initialized) return <LoadingState label="Loading coding problem" />
+  if (isLoading || (draftEnabled && !initialized)) return <LoadingState label="Loading coding problem" />
   if (error || !problem) return <ErrorState message={apiErrorMessage(error, 'Problem not found.')} />
 
   const selectedLanguageName = selectedLanguage?.name ?? (resolvedLanguageId != null ? getLanguageName(resolvedLanguageId) : 'No language listed')

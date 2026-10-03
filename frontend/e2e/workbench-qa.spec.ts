@@ -134,22 +134,32 @@ test.describe('SQL workbench QA', () => {
 
     const workspaceTabs = page.getByRole('tablist', { name: 'Workspace' })
     await expect(workspaceTabs).toBeVisible()
-    await expect(workspaceTabs.getByRole('button', { name: /^problem$/i })).toBeVisible()
-    await expect(workspaceTabs.getByRole('button', { name: /^code$/i })).toBeVisible()
-    await expect(workspaceTabs.getByRole('button', { name: /^output$/i })).toBeVisible()
+    await expect(workspaceTabs.getByRole('tab', { name: /^problem$/i })).toBeVisible()
+    await expect(workspaceTabs.getByRole('tab', { name: /^schema$/i })).toBeVisible()
+    await expect(workspaceTabs.getByRole('tab', { name: /^editor$/i })).toBeVisible()
+    await expect(workspaceTabs.getByRole('tab', { name: /^output$/i })).toBeVisible()
 
     // Only one workspace mode visible at a time — no desktop 3-pane duplication
     await expect(page.getByRole('button', { name: 'Resize side panel' })).toHaveCount(0)
 
-    await workspaceTabs.getByRole('button', { name: /^problem$/i }).click()
-    await expect(page.getByText(/^Schema$/)).toBeVisible()
+    await workspaceTabs.getByRole('tab', { name: /^problem$/i }).click()
     await expect(page.getByText('Practice Question')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Collapse Schema explorer' })).toHaveCount(0)
+    await expect(page.locator('.monaco-editor:visible')).toHaveCount(0)
 
-    await workspaceTabs.getByRole('button', { name: /^code$/i }).click()
+    await workspaceTabs.getByRole('tab', { name: /^schema$/i }).click()
+    await expect(page.getByRole('button', { name: 'Collapse Schema explorer' })).toBeVisible()
+    await expect(page.getByText('Practice Question')).toHaveCount(0)
+    await expect(page.locator('.monaco-editor:visible')).toHaveCount(0)
+
+    await workspaceTabs.getByRole('tab', { name: /^editor$/i }).click()
     await expect(page.locator('.monaco-editor:visible').first()).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByRole('button', { name: 'Collapse Schema explorer' })).toHaveCount(0)
 
-    await workspaceTabs.getByRole('button', { name: /^output$/i }).click()
+    await workspaceTabs.getByRole('tab', { name: /^output$/i }).click()
     await expect(page.getByRole('tablist', { name: 'Results' })).toBeVisible()
+    await expect(page.locator('.monaco-editor:visible')).toHaveCount(0)
+    await expect(page.getByText('Practice Question')).toHaveCount(0)
   })
 
   test('narrow viewport (<1024) Problem|Code|Output', async ({ page }) => {

@@ -51,7 +51,7 @@ test.describe('Visual foundation keyboard & shells', () => {
     await page.getByRole('button', { name: fixtures.mcq_topic.name, exact: true }).click()
     await page.getByRole('button', { name: /^easy$/i }).click()
     await page.getByRole('combobox').selectOption('5')
-    await page.getByRole('button', { name: /^exam$/i }).click()
+    await page.getByRole('button', { name: /^timed exam$/i }).click()
     await page.getByRole('button', { name: /start session/i }).click()
     await expect(page).toHaveURL(/\/practice\/sessions\//, { timeout: 20_000 })
     await expect(page.locator('[data-shell="assessment"]')).toBeVisible()

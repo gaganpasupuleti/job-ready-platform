@@ -26,7 +26,7 @@ test.describe('MCQ practice and exam', () => {
 
   test('exam mode can be selected from aptitude catalog', async ({ page }) => {
     await page.goto('/practice/aptitude')
-    await page.getByRole('button', { name: /^exam$/i }).click()
+    await page.getByRole('button', { name: /^timed exam$/i }).click()
     await expect(page.getByText(/answers stay hidden|answers and explanations are hidden/i)).toBeVisible()
   })
 
@@ -35,7 +35,7 @@ test.describe('MCQ practice and exam', () => {
     await page.getByRole('button', { name: fixtures.mcq_topic.name, exact: true }).click()
     await page.getByRole('button', { name: /^easy$/i }).click()
     await page.getByRole('combobox').selectOption('5')
-    await page.getByRole('button', { name: /^exam$/i }).click()
+    await page.getByRole('button', { name: /^timed exam$/i }).click()
     await page.getByRole('button', { name: /start session/i }).click()
     await expect(page).toHaveURL(/\/practice\/sessions\//, { timeout: 20_000 })
     const sessionUrl = page.url()
@@ -56,7 +56,7 @@ test.describe('MCQ practice and exam', () => {
     await page.getByRole('button', { name: fixtures.mcq_topic.name, exact: true }).click()
     await page.getByRole('button', { name: /^easy$/i }).click()
     await page.getByRole('combobox').selectOption('5')
-    await page.getByRole('button', { name: /^exam$/i }).click()
+    await page.getByRole('button', { name: /^timed exam$/i }).click()
     await page.getByRole('button', { name: /start session/i }).click()
     await expect(page).toHaveURL(/\/practice\/sessions\/[^/]+$/, { timeout: 20_000 })
     await expect(page.getByRole('group', { name: /answer options/i })).toBeVisible({
@@ -76,7 +76,7 @@ test.describe('MCQ practice and exam', () => {
     await page.getByRole('button', { name: fixtures.mcq_topic.name, exact: true }).click()
     await page.getByRole('button', { name: /^easy$/i }).click()
     await page.getByRole('combobox').selectOption('5')
-    await page.getByRole('button', { name: /^exam$/i }).click()
+    await page.getByRole('button', { name: /^timed exam$/i }).click()
     await page.getByRole('button', { name: /start session/i }).click()
     await expect(page).toHaveURL(/\/practice\/sessions\/[^/]+$/, { timeout: 20_000 })
     const sessionUrl = page.url()
