@@ -14,7 +14,7 @@ export function NotFoundPage() {
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link
             to="/"
-            className="inline-flex h-9 items-center rounded-md bg-[var(--color-accent)] px-4 text-sm font-medium text-white"
+            className="inline-flex h-9 items-center rounded-md bg-[var(--color-accent)] px-4 text-sm font-medium text-[var(--color-surface)]"
           >
             Dashboard
           </Link>

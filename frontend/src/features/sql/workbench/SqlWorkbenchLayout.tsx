@@ -15,8 +15,8 @@ interface SqlWorkbenchLayoutProps {
   bottomPanel: ReactNode
   statusBar?: ReactNode
   layout: ResizableSqlLayout
-  mobileTab: 'problem' | 'code' | 'output'
-  onMobileTab: (tab: 'problem' | 'code' | 'output') => void
+  mobileTab: 'problem' | 'schema' | 'code' | 'output'
+  onMobileTab: (tab: 'problem' | 'schema' | 'code' | 'output') => void
 }
 
 export function SqlWorkbenchLayout({
@@ -46,28 +46,37 @@ export function SqlWorkbenchLayout({
       <div className="sql-workbench flex min-h-0 flex-1 flex-col overflow-hidden">
         {topBar}
         <div className="mb-2 flex gap-1 px-1" role="tablist" aria-label="Workspace">
-          {(['problem', 'code', 'output'] as const).map((tab) => (
+          {(
+            [
+              ['problem', 'Problem'],
+              ['schema', 'Schema'],
+              ['code', 'Editor'],
+              ['output', 'Output'],
+            ] as const
+          ).map(([tab, label]) => (
             <button
               key={tab}
               type="button"
+              role="tab"
+              aria-selected={mobileTab === tab}
               className={cn(
-                'flex-1 rounded-md border px-2 py-1.5 text-sm capitalize',
+                'flex-1 rounded-md border px-2 py-1.5 text-sm',
                 mobileTab === tab
                   ? 'border-[var(--color-accent)] text-[var(--color-accent)]'
                   : 'border-[var(--color-border)] text-[var(--color-text-muted)]',
               )}
               onClick={() => onMobileTab(tab)}
             >
-              {tab === 'code' ? 'Code' : tab === 'output' ? 'Output' : 'Problem'}
+              {label}
             </button>
           ))}
         </div>
         <div className="min-h-0 flex-1 overflow-hidden">
           {mobileTab === 'problem' && (
-            <div className="flex h-full min-h-0 flex-col gap-2 overflow-auto p-1">
-              {objectExplorer}
-              {questionPanel}
-            </div>
+            <div className="h-full overflow-auto p-1">{questionPanel}</div>
+          )}
+          {mobileTab === 'schema' && (
+            <div className="h-full overflow-auto p-1">{objectExplorer}</div>
           )}
           {mobileTab === 'code' && <div className="h-full overflow-hidden p-1">{editorPanel}</div>}
           {mobileTab === 'output' && <div className="h-full overflow-auto p-1">{bottomPanel}</div>}

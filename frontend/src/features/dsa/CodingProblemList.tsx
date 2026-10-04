@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 
-import { Badge } from '@/components/common/Badge'
 import { Card, CardHeader } from '@/components/common/Card'
+import { CatalogMetrics } from '@/components/practice/CatalogMetrics'
+import { humanLabel } from '@/lib/studentLabels'
 import type { CodingProblemListItem, ProblemProgressStatus } from '@/types/coding'
 
 const progressLabel: Record<ProblemProgressStatus, string> = {
@@ -10,16 +11,11 @@ const progressLabel: Record<ProblemProgressStatus, string> = {
   solved: 'Solved',
 }
 
-const progressVariant: Record<ProblemProgressStatus, 'default' | 'warning' | 'success'> = {
-  unsolved: 'default',
-  attempted: 'warning',
-  solved: 'success',
-}
-
 interface CodingProblemListProps {
   problems: CodingProblemListItem[]
   total: number
   isLoading: boolean
+  emptyMessage?: string
   problemLinkPrefix?: string
   progressMap?: Map<string, ProblemProgressStatus | null | undefined>
 }
@@ -28,6 +24,7 @@ export function CodingProblemList({
   problems,
   total,
   isLoading,
+  emptyMessage = 'No problems match your filters.',
   problemLinkPrefix = '/practice/dsa',
   progressMap,
 }: CodingProblemListProps) {
@@ -37,16 +34,14 @@ export function CodingProblemList({
       {isLoading ? (
         <p className="text-sm text-[var(--color-text-muted)]">Loading problems...</p>
       ) : problems.length === 0 ? (
-        <p className="text-sm text-[var(--color-text-muted)]">No problems match your filters.</p>
+        <p className="text-sm text-[var(--color-text-muted)]">{emptyMessage}</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="problem-table w-full text-left text-sm">
             <thead className="text-xs text-[var(--color-text-subtle)]">
               <tr>
-                <th className="pb-2 pr-3">Status</th>
-                <th className="pb-2 pr-3">Title</th>
-                <th className="pb-2 pr-3">Difficulty</th>
-                <th className="pb-2 pr-3">Topic</th>
+                <th className="pb-2 pr-3">Progress</th>
+                <th className="pb-2 pr-3">Problem</th>
                 <th className="pb-2 pr-3">Tags</th>
                 <th className="pb-2 pr-3">Attempts</th>
                 <th className="pb-2">Acceptance</th>
@@ -62,32 +57,28 @@ export function CodingProblemList({
                     key={problem.id}
                     className="border-t border-[var(--color-border)] hover:bg-[var(--color-surface-muted)]"
                   >
-                    <td className="py-3 pr-3">
-                      <Badge variant={progressVariant[safeStatus] ?? 'default'}>
-                        {progressLabel[safeStatus] ?? status}
-                      </Badge>
+                    <td className="py-3 pr-3 text-xs text-[var(--color-text-muted)]">
+                      {progressLabel[safeStatus] ?? humanLabel(status)}
                     </td>
                     <td className="py-3 pr-3">
                       <Link
                         to={`${problemLinkPrefix}/${problem.id}`}
-                        className="font-medium text-[var(--color-accent)] hover:underline"
+                        className="text-[15px] font-semibold text-[var(--color-text)] hover:underline"
                       >
                         {problem.title}
                       </Link>
+                      <p className="mt-0.5 text-xs text-[var(--color-text-muted)]">
+                        {humanLabel(problem.difficulty)}
+                        {problem.topic_name || problem.topic_slug
+                          ? ` · ${problem.topic_name ?? problem.topic_slug}`
+                          : ''}
+                      </p>
                     </td>
-                    <td className="py-3 pr-3 capitalize">{problem.difficulty}</td>
                     <td className="py-3 pr-3 text-xs text-[var(--color-text-muted)]">
-                      {problem.topic_name ?? problem.topic_slug ?? '—'}
-                    </td>
-                    <td className="py-3 pr-3">
-                      <div className="flex flex-wrap gap-1">
-                        {(problem.tags ?? []).slice(0, 3).map((tag) => (
-                          <Badge key={tag}>{tag}</Badge>
-                        ))}
-                      </div>
+                      {(problem.tags ?? []).slice(0, 3).join(', ') || '—'}
                     </td>
                     <td className="py-3 pr-3 text-[var(--color-text-muted)]">
-                      {problem.attempts ?? 0}
+                      {problem.attempts == null ? '—' : problem.attempts}
                     </td>
                     <td className="py-3 text-[var(--color-text-muted)]">
                       {problem.acceptance_rate != null
@@ -117,45 +108,17 @@ interface ProgressSummaryProps {
 }
 
 export function CodingProgressSummary({ progress }: ProgressSummaryProps) {
-  return (
-    <div className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card padding="md">
-          <p className="text-xs text-[var(--color-text-subtle)]">Total problems</p>
-          <p className="text-2xl font-semibold">{progress.total_problems}</p>
-        </Card>
-        <Card padding="md">
-          <p className="text-xs text-[var(--color-text-subtle)]">Solved</p>
-          <p className="text-2xl font-semibold text-[var(--color-success)]">
-            {progress.solved_count}
-          </p>
-        </Card>
-        <Card padding="md">
-          <p className="text-xs text-[var(--color-text-subtle)]">Attempted</p>
-          <p className="text-2xl font-semibold">{progress.attempted_count}</p>
-        </Card>
-      </div>
-      {(progress.easy || progress.medium || progress.hard) && (
-        <div className="grid gap-4 sm:grid-cols-3">
-          {(['easy', 'medium', 'hard'] as const).map((level) => {
-            const breakdown = progress[level]
-            if (!breakdown) return null
-            return (
-              <Card key={level} padding="md">
-                <p className="text-xs capitalize text-[var(--color-text-subtle)]">{level}</p>
-                <p className="text-lg font-semibold">
-                  {breakdown.solved}/{breakdown.total} solved
-                </p>
-                <p className="text-xs text-[var(--color-text-muted)]">
-                  {breakdown.attempted} attempted
-                </p>
-              </Card>
-            )
-          })}
-        </div>
-      )}
-    </div>
-  )
+  const metrics = [
+    { label: 'Problems', value: String(progress.total_problems) },
+    { label: 'Solved', value: String(progress.solved_count) },
+    { label: 'Attempted', value: String(progress.attempted_count) },
+  ]
+  for (const level of ['easy', 'medium', 'hard'] as const) {
+    const breakdown = progress[level]
+    if (!breakdown) continue
+    metrics.push({ label: humanLabel(level), value: `${breakdown.solved}/${breakdown.total}` })
+  }
+  return <CatalogMetrics metrics={metrics} />
 }
 
 interface ProblemFiltersProps {
@@ -204,7 +167,8 @@ export function ProblemFilters({
           <option value="hard">Hard</option>
         </select>
         <input
-          placeholder="Topic slug"
+          aria-label="Topic"
+          placeholder="Topic"
           value={topicSlug}
           onChange={(e) => onTopicSlugChange(e.target.value)}
           className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm"

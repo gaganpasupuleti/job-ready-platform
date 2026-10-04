@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { CatalogMetrics } from '@/components/practice/CatalogMetrics'
 import { fetchResults } from '@/services/practiceService'
 import { formatPercent } from '@/utils/cn'
 
@@ -33,30 +34,15 @@ export function PracticeResultsPage() {
         <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">Review your performance below.</p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Card padding="sm">
-          <p className="text-[11px] text-[var(--color-text-muted)]">Score</p>
-          <p className="text-xl font-semibold">
-            {data.session.correct_count} / {data.session.question_count}
-          </p>
-        </Card>
-        <Card padding="sm">
-          <p className="text-[11px] text-[var(--color-text-muted)]">Accuracy</p>
-          <p className="text-xl font-semibold">{formatPercent(data.accuracy)}</p>
-        </Card>
-        <Card padding="sm">
-          <p className="text-[11px] text-[var(--color-text-muted)]">Incorrect</p>
-          <p className="text-xl font-semibold">{data.session.incorrect_count}</p>
-        </Card>
-        <Card padding="sm">
-          <p className="text-[11px] text-[var(--color-text-muted)]">Unanswered</p>
-          <p className="text-xl font-semibold">{data.session.unanswered_count}</p>
-        </Card>
-        <Card padding="sm">
-          <p className="text-[11px] text-[var(--color-text-muted)]">Time Taken</p>
-          <p className="text-xl font-semibold">{formatDuration(data.time_taken_seconds)}</p>
-        </Card>
-      </div>
+      <CatalogMetrics
+        metrics={[
+          { label: 'Score', value: `${data.session.correct_count}/${data.session.question_count}` },
+          { label: 'Accuracy', value: formatPercent(data.accuracy) },
+          { label: 'Incorrect', value: String(data.session.incorrect_count) },
+          { label: 'Unanswered', value: String(data.session.unanswered_count) },
+          { label: 'Time', value: formatDuration(data.time_taken_seconds) },
+        ]}
+      />
 
       {data.topic_performance.length > 0 && (
         <Card>
@@ -94,27 +80,37 @@ export function PracticeResultsPage() {
                   {item.is_correct ? 'Correct' : 'Incorrect'}
                 </Badge>
               </div>
-              <p className="text-sm text-[var(--color-text)]">{item.question_text}</p>
-              <p className="mt-2 text-xs text-[var(--color-text-muted)]">
-                Your answer: {item.selected_option_texts.join(', ') || 'Not answered'}
-              </p>
-              <p className="text-xs text-[var(--color-text-muted)]">
-                Correct answer: {item.correct_option_texts.join(', ')}
-              </p>
-              {item.explanation && (
-                <p className="mt-2 text-xs text-[var(--color-text-subtle)]">{item.explanation}</p>
-              )}
+              <div className="reading-shell">
+                <p className="text-[var(--color-text)]">{item.question_text}</p>
+                <p className="mt-2 text-sm text-[var(--color-text-muted)]">
+                  Your answer: {item.selected_option_texts.join(', ') || 'Not answered'}
+                </p>
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  Correct answer: {item.correct_option_texts.join(', ')}
+                </p>
+                {item.explanation && (
+                  <p className="mt-3 text-[var(--color-text)]">{item.explanation}</p>
+                )}
+              </div>
             </div>
           ))}
         </div>
       </Card>
 
-      <p className="text-xs text-[var(--color-text-subtle)]">
-        Retry Incorrect is planned for a later practice build.
+      <p className="text-sm text-[var(--color-text-muted)]" role="status">
+        A new retry session is not available. This page is the saved result.
       </p>
-      <Link to="/">
-        <Button variant="secondary">Back to Dashboard</Button>
-      </Link>
+      <div className="flex flex-wrap gap-3 text-sm">
+        <Link to="/practice/mcq" className="text-[var(--color-accent)] hover:underline">
+          Back to Technical MCQs
+        </Link>
+        <Link to="/practice/aptitude" className="text-[var(--color-accent)] hover:underline">
+          Back to Aptitude
+        </Link>
+        <Link to="/mistakes">
+          <Button variant="secondary">Mistake book</Button>
+        </Link>
+      </div>
     </div>
   )
 }

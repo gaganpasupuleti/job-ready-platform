@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
+import { knownPercent } from '@/lib/studentLabels'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
 import { completePathItem, fetchPracticePath, startPath } from '@/services/learnService'
@@ -9,7 +10,7 @@ import { completePathItem, fetchPracticePath, startPath } from '@/services/learn
 export function PracticePathPage() {
   const { slug = '' } = useParams()
   const queryClient = useQueryClient()
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['practice-path', slug],
     queryFn: () => fetchPracticePath(slug),
     enabled: Boolean(slug),
@@ -28,9 +29,17 @@ export function PracticePathPage() {
     },
   })
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return <p className="text-sm text-[var(--color-text-muted)]">Loading path...</p>
   }
+  if (isError || !data) {
+    return (
+      <p className="text-sm text-[var(--color-danger)]" role="alert">
+        Could not load this path. Checklist progress was not treated as zero.
+      </p>
+    )
+  }
+  const checklistPercent = knownPercent(data.progress_percent)
 
   return (
     <div className="space-y-6">
@@ -47,7 +56,9 @@ export function PracticePathPage() {
             <Badge variant={data.availability === 'available' ? 'success' : 'warning'}>
               {data.availability === 'available' ? 'Available' : 'Coming Soon'}
             </Badge>
-            <Badge data-testid="path-progress">{data.progress_percent}% progress</Badge>
+            <Badge data-testid="path-progress">
+              {checklistPercent ? `${checklistPercent} self-check` : 'Self-check progress unavailable'}
+            </Badge>
           </div>
         </div>
         <Button variant="primary" onClick={() => start.mutate()} disabled={start.isPending}>
@@ -70,6 +81,9 @@ export function PracticePathPage() {
       {data.sections.map((section) => (
         <Card key={section.id}>
           <CardHeader title={section.title} />
+          <p className="mb-2 text-xs text-[var(--color-text-muted)]">
+            Mark done records a self-check. It is not lesson completion and it is not a graded result.
+          </p>
           <ul className="space-y-2">
             {section.items.map((item) => (
               <li
@@ -94,7 +108,7 @@ export function PracticePathPage() {
                     onClick={() => complete.mutate(item.id)}
                     disabled={complete.isPending || item.completed}
                   >
-                    {item.completed ? 'Completed' : 'Done'}
+                    {item.completed ? 'Marked done' : 'Mark done'}
                   </Button>
                 </div>
               </li>

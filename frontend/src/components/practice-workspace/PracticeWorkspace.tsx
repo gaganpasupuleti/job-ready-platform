@@ -115,11 +115,13 @@ export function PracticeHeader({
   backTo,
   backLabel,
   title,
+  size = 'compact',
   children,
 }: {
   backTo: string
   backLabel: string
   title: string
+  size?: 'compact' | 'page'
   children?: ReactNode
 }) {
   return (
@@ -128,7 +130,13 @@ export function PracticeHeader({
         <Link to={backTo} className="text-xs text-[var(--color-accent)] hover:underline">
           ← {backLabel}
         </Link>
-        <h1 className="mt-0.5 text-base font-semibold leading-tight text-[var(--color-text)] sm:text-lg">
+        <h1
+          className={
+            size === 'page'
+              ? 'mt-1 text-[1.75rem] font-semibold leading-tight tracking-tight text-[var(--color-text)]'
+              : 'mt-0.5 text-base font-semibold leading-tight text-[var(--color-text)] sm:text-lg'
+          }
+        >
           {title}
         </h1>
         {children}

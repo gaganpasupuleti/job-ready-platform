@@ -55,13 +55,19 @@ export async function attachApiProxy(context: BrowserContext) {
     const url = new URL(req.url())
     const proxied =
       url.origin === apiOrigin ? req.url() : `${apiURL}${url.pathname}${url.search}`
-    const response = await route.fetch({
-      url: proxied,
-      method: req.method(),
-      headers: req.headers(),
-      postData: req.postData(),
-    })
-    await route.fulfill({ response })
+    try {
+      const response = await route.fetch({
+        url: proxied,
+        method: req.method(),
+        headers: req.headers(),
+        postData: req.postData(),
+      })
+      await route.fulfill({ response })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      if (/disposed|has been closed|Test ended/i.test(message)) return
+      throw error
+    }
   })
 }
 

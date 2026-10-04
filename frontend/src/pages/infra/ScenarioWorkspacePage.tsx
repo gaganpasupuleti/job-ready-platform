@@ -99,7 +99,7 @@ export function ScenarioWorkspacePage() {
         <div className="mt-3 max-w-sm">
           <PracticeProgress
             percent={Math.round(((stepIndex + (confirmed[step?.id] ? 1 : 0)) / Math.max(data.steps.length, 1)) * 100)}
-            label={`Step ${stepIndex + 1} of ${data.steps.length}`}
+            label={`Question ${stepIndex + 1} of ${data.steps.length}`}
           />
         </div>
         <div className="mt-2 flex gap-1" aria-label="Step progress">
@@ -111,7 +111,7 @@ export function ScenarioWorkspacePage() {
 
       <Card>
         <CardHeader title="Context" />
-        <p className="whitespace-pre-wrap text-sm">{data.context_text}</p>
+        <p className="reading-shell whitespace-pre-wrap text-sm">{data.context_text}</p>
         <div className="mt-3">
           <EvidenceCards evidence={data.evidence_json || {}} />
         </div>
@@ -124,7 +124,7 @@ export function ScenarioWorkspacePage() {
           <p className="mb-3 text-sm">{step.prompt}</p>
           <div className="space-y-2">
             {step.options.map((option) => (
-              <label key={option.id} className="flex cursor-pointer items-start gap-2 text-sm">
+              <label key={option.id} className="flex min-h-11 cursor-pointer items-start gap-2 rounded-md border border-[var(--color-border)] p-3 text-sm">
                 <input
                   type="radio"
                   name={step.id}

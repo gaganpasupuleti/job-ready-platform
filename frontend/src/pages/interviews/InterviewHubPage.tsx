@@ -26,10 +26,10 @@ export function InterviewHubPage() {
 
   const reviewed = data.progress.questions_reviewed
   const needsReview = data.needs_review_count || data.progress.needs_review
-  const progressPercent =
-    reviewed + needsReview > 0
-      ? Math.round((reviewed / Math.max(reviewed + needsReview, 1)) * 100)
-      : 0
+  const hasQuestionActivity = reviewed + needsReview > 0
+  const progressPercent = hasQuestionActivity
+    ? Math.round((reviewed / Math.max(reviewed + needsReview, 1)) * 100)
+    : null
 
   return (
     <div className="space-y-6">
@@ -64,8 +64,11 @@ export function InterviewHubPage() {
             }
           />
           <p className="text-sm text-[var(--color-text-muted)]">
-            Question {data.continue_session.current_question_index} of{' '}
-            {data.continue_session.question_count} · {data.continue_session.mode.replace('_', ' ')}
+            {data.continue_session.question_count > 0
+              ? `Question ${data.continue_session.current_question_index} of ${data.continue_session.question_count}`
+              : 'This session has no questions yet'}
+            {' · '}
+            {data.continue_session.mode.replaceAll('_', ' ')}
           </p>
         </Card>
       )}
@@ -93,7 +96,11 @@ export function InterviewHubPage() {
             {data.progress.sessions_completed}
           </p>
           <div className="mt-3">
-            <PracticeProgress percent={progressPercent} label="Review coverage" />
+            {progressPercent == null ? (
+              <p className="text-sm text-[var(--color-text-muted)]">No questions reviewed yet.</p>
+            ) : (
+              <PracticeProgress percent={progressPercent} label={`${reviewed} of ${reviewed + needsReview} questions reviewed`} />
+            )}
           </div>
         </Card>
       </div>

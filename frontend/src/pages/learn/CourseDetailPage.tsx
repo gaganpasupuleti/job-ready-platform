@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
+import { knownPercent, lessonTypeLabel, statusLabelText } from '@/lib/studentLabels'
 import { fetchCourse } from '@/services/learnService'
 
 export function CourseDetailPage() {
@@ -36,7 +37,11 @@ export function CourseDetailPage() {
           <p>{data.summary}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             <Badge>{data.level}</Badge>
-            <Badge>{data.progress_percent}% complete</Badge>
+            <Badge>
+              {knownPercent(data.progress_percent)
+                ? `${knownPercent(data.progress_percent)} lesson progress`
+                : 'Lesson progress unavailable'}
+            </Badge>
             <Badge>{data.status}</Badge>
           </div>
         </div>
@@ -71,7 +76,7 @@ export function CourseDetailPage() {
                     <div>
                       <p className={locked ? 'is-muted' : ''}>{lesson.title}</p>
                       <span>
-                        {lesson.lesson_type} · {lesson.status}
+                        {lessonTypeLabel(lesson.lesson_type)} · {statusLabelText(lesson.status)}
                       </span>
                     </div>
                     {locked ? (
