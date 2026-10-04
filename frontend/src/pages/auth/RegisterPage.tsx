@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
-import { JOBS_ONBOARDING_KEY, JOBS_PREFERENCES } from '@/components/navigation/navConfig'
+import { JOBS_HOME, JOBS_ONBOARDING_KEY, JOBS_PREFERENCES } from '@/components/navigation/navConfig'
 import { useAuth } from '@/hooks/useAuth'
+import { googleDestination } from '@/lib/googleAuth'
 
 const FIELD_META = {
   email: { label: 'Email', type: 'email', required: true, autoComplete: 'email' },
@@ -14,7 +16,7 @@ const FIELD_META = {
 } as const
 
 export function RegisterPage() {
-  const { register } = useAuth()
+  const { register, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({
     email: '',
@@ -24,6 +26,25 @@ export function RegisterPage() {
   })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  const handleGoogle = useCallback(
+    async (credential: string) => {
+      setLoading(true)
+      setError(null)
+      try {
+        const response = await loginWithGoogle(credential)
+        if (response.is_new_user) sessionStorage.setItem(JOBS_ONBOARDING_KEY, '1')
+        navigate(googleDestination(Boolean(response.is_new_user), response.is_new_user ? JOBS_PREFERENCES : JOBS_HOME), {
+          replace: true,
+        })
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Google sign-in failed')
+      } finally {
+        setLoading(false)
+      }
+    },
+    [loginWithGoogle, navigate],
+  )
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -45,7 +66,10 @@ export function RegisterPage() {
       <Card className="w-full max-w-md" padding="lg">
         <h1 className="text-xl font-semibold text-[var(--color-text)]">Create account</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">Start your job preparation journey</p>
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <div className="mt-6">
+          <GoogleSignInButton disabled={loading} onCredential={handleGoogle} />
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
           {(Object.keys(FIELD_META) as Array<keyof typeof FIELD_META>).map((field) => {
             const meta = FIELD_META[field]
             const id = `register-${field}`

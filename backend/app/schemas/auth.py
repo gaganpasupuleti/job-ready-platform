@@ -35,10 +35,15 @@ class UserResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class GoogleLoginRequest(BaseModel):
+    credential: str = Field(min_length=1, max_length=8192)
+
+
 class AuthResponse(BaseModel):
     user: UserResponse
     access_token: str
     token_type: str = "bearer"
+    is_new_user: bool = False
 
 
 class MessageResponse(BaseModel):

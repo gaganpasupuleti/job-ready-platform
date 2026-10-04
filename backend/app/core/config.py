@@ -95,6 +95,9 @@ class Settings(BaseSettings):
     jwt_secret_key: str = _UNSAFE_JWT_DEFAULT
     jwt_access_token_expire_minutes: int = 60 * 24
 
+    # Google Identity Services ID-token audience. Not a client secret.
+    google_client_id: str = ""
+
     # Login abuse controls (Redis-backed; process-local fallback if Redis unavailable)
     login_max_failures: int = 10
     login_failure_window_seconds: int = 300

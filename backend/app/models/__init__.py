@@ -97,9 +97,11 @@ from app.models.readiness_enums import (
 from app.models.tagging import Company, JobRole, QuestionCompany, QuestionRole, QuestionSkill, Skill
 from app.models.taxonomy import Category, Domain, Subtopic, Topic
 from app.models.user import User
+from app.models.auth_identity import UserAuthIdentity
 
 __all__ = [
     "User",
+    "UserAuthIdentity",
     "UserRole",
     "Domain",
     "Category",

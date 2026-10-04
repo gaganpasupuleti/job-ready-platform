@@ -4,6 +4,7 @@ import { marked, type Token, type Tokens } from 'marked'
 
 import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
+import { googleDestination, resolveGoogleClientId } from '../src/lib/googleAuth.ts'
 import {
   continuationAction,
   materialKindLabel,
@@ -322,6 +323,20 @@ describe('review labels and progress figures', () => {
   it('hides global weak topics once a subject filter is active', () => {
     assert.equal(showGlobalWeakTopics('all'), true)
     assert.equal(showGlobalWeakTopics('mcq'), false)
+  })
+
+  it('keeps Google sign-in hidden until a client id is configured', () => {
+    assert.equal(resolveGoogleClientId(undefined, 'e2e-client', true), 'e2e-client')
+    assert.equal(resolveGoogleClientId('  real-client  ', 'e2e-client', true), 'real-client')
+    assert.equal(resolveGoogleClientId('', 'e2e-client', false), '')
+    assert.equal(resolveGoogleClientId(undefined, null, false), '')
+  })
+
+  it('sends a new Google student to preferences and an existing student to from', () => {
+    assert.equal(googleDestination(true, '/practice'), '/jobs/preferences')
+    assert.equal(googleDestination(false, '/practice'), '/practice')
+    assert.equal(googleDestination(false, null), '/jobs')
+    assert.equal(googleDestination(false, '//evil.example'), '/jobs')
   })
 
   it('does not turn a missing progress figure into zero', () => {

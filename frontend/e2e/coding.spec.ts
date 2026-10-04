@@ -1,6 +1,21 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 import { ensureCodingFixture, loadManifest, loginAs, type CodingFixture } from './helpers'
+
+async function showCodePane(page: Page) {
+  const codeTab = page
+    .getByRole('tablist', { name: /workspace/i })
+    .getByRole('button', { name: /^code$/i })
+  if (await codeTab.isVisible().catch(() => false)) {
+    await codeTab.click()
+    return
+  }
+  const appeared = await codeTab
+    .waitFor({ state: 'visible', timeout: 5_000 })
+    .then(() => true)
+    .catch(() => false)
+  if (appeared) await codeTab.click()
+}
 
 const fixtures = loadManifest()
 let coding: CodingFixture
@@ -26,8 +41,7 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
     ).toBeVisible()
     await expect(page.getByRole('button', { name: /^run$/i })).toBeDisabled()
     await expect(page.getByRole('button', { name: /^submit$/i })).toBeDisabled()
-    const codeTab = page.getByRole('button', { name: /^code$/i })
-    if (await codeTab.count()) await codeTab.click()
+    await showCodePane(page)
     await expect(page.locator('.monaco-editor:visible').first()).toBeVisible({ timeout: 30_000 })
   })
 
@@ -48,8 +62,7 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
       { problemId: coding.id, markerText: marker },
     )
     await page.reload()
-    const codeTab = page.getByRole('button', { name: /^code$/i })
-    if (await codeTab.count()) await codeTab.click()
+    await showCodePane(page)
     await expect(page.getByText(marker)).toBeVisible({ timeout: 15_000 })
   })
 
@@ -64,6 +77,7 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
     const submit = page.getByRole('button', { name: /^submit$/i })
     await expect(run).toBeDisabled()
     await expect(submit).toBeDisabled()
+    await showCodePane(page)
     await page.locator('.monaco-editor:visible').first().click()
     let executionCalls = 0
     page.on('request', (request) => {

@@ -1,7 +1,8 @@
 import { Navigate, useLocation } from 'react-router-dom'
 
-import { JOBS_HOME, JOBS_ONBOARDING_KEY, JOBS_PREFERENCES } from '@/components/navigation/navConfig'
+import { JOBS_ONBOARDING_KEY, JOBS_PREFERENCES } from '@/components/navigation/navConfig'
 import { useAuth } from '@/hooks/useAuth'
+import { googleDestination } from '@/lib/googleAuth'
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
@@ -35,11 +36,15 @@ export function AdminRoute({ children }: { children: React.ReactNode }) {
 
 export function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
+  const location = useLocation()
   if (isLoading) return null
   if (isAuthenticated) {
     const onboarding =
       typeof sessionStorage !== 'undefined' && sessionStorage.getItem(JOBS_ONBOARDING_KEY) === '1'
-    return <Navigate to={onboarding ? JOBS_PREFERENCES : JOBS_HOME} replace />
+    if (onboarding) return <Navigate to={JOBS_PREFERENCES} replace />
+    const fromState = (location.state as { from?: string } | null)?.from ?? null
+    const fromQuery = new URLSearchParams(location.search).get('from')
+    return <Navigate to={googleDestination(false, fromState ?? fromQuery)} replace />
   }
   return children
 }

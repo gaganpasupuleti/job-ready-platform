@@ -1,15 +1,17 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
+import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton'
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
 import { FieldLabel, Input } from '@/components/common/Field'
 import { useAuth } from '@/hooks/useAuth'
-import { JOBS_HOME } from '@/components/navigation/navConfig'
+import { JOBS_HOME, JOBS_ONBOARDING_KEY } from '@/components/navigation/navConfig'
+import { googleDestination } from '@/lib/googleAuth'
 import { DEV_AUTO_LOGIN } from '@/mocks/dev-auth'
 
 export function LoginPage() {
-  const { login } = useAuth()
+  const { login, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState(DEV_AUTO_LOGIN?.email ?? '')
@@ -22,6 +24,23 @@ export function LoginPage() {
     (location.state as { from?: string } | null)?.from ??
     (fromQuery && fromQuery.startsWith('/') ? fromQuery : null) ??
     JOBS_HOME
+
+  const handleGoogle = useCallback(
+    async (credential: string) => {
+      setLoading(true)
+      setError(null)
+      try {
+        const response = await loginWithGoogle(credential)
+        if (response.is_new_user) sessionStorage.setItem(JOBS_ONBOARDING_KEY, '1')
+        navigate(googleDestination(Boolean(response.is_new_user), from), { replace: true })
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Google sign-in failed')
+      } finally {
+        setLoading(false)
+      }
+    },
+    [from, loginWithGoogle, navigate],
+  )
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -57,7 +76,10 @@ export function LoginPage() {
               Dev mode: credentials pre-filled — click Sign in to auto-login.
             </p>
           )}
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <div className="mt-6">
+            <GoogleSignInButton disabled={loading} onCredential={handleGoogle} />
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <FieldLabel htmlFor="login-email">Email</FieldLabel>
               <Input

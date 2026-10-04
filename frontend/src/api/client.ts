@@ -22,7 +22,7 @@ apiClient.interceptors.response.use(
   (error) => {
     const status = error.response?.status
     const requestUrl = String(error.config?.url ?? '')
-    const isAuthEndpoint = /\/auth\/(login|register)\b/.test(requestUrl)
+    const isAuthEndpoint = /\/auth\/(login|register|google)\b/.test(requestUrl)
 
     if (status === 401 && !isAuthEndpoint) {
       const currentToken = localStorage.getItem(AUTH_TOKEN_KEY)
