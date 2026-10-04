@@ -55,6 +55,7 @@ import { InterviewProgressPage } from '@/pages/interviews/InterviewProgressPage'
 import { CompanyPrepPage } from '@/pages/interviews/CompanyPrepPage'
 import { CompanyPrepDetailPage } from '@/pages/interviews/CompanyPrepDetailPage'
 import { AdminInterviewPacksPage } from '@/pages/admin/AdminInterviewPacksPage'
+import { AdminJobActivityPage } from '@/pages/admin/AdminJobActivityPage'
 import { AdminJobsPage } from '@/pages/admin/AdminJobsPage'
 import { AdminReadinessPage } from '@/pages/admin/AdminReadinessPage'
 import { JobsApplicationsPage } from '@/pages/jobs/JobsApplicationsPage'
@@ -519,6 +520,14 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminInterviewPacksPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/job-activity"
+          element={
+            <AdminRoute>
+              <AdminJobActivityPage />
             </AdminRoute>
           }
         />

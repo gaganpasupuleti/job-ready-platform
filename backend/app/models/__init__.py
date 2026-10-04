@@ -23,6 +23,7 @@ from app.models.job import (
     ApplicationStatusHistory,
     Job,
     JobApplication,
+    JobEngagement,
     JobIngestionError,
     JobIngestionRun,
     JobListing,

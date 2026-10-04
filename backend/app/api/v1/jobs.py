@@ -10,6 +10,7 @@ from app.db.session import get_db
 from app.models.user import User
 from app.schemas.job import (
     ApplicationDetail,
+    JobEngagementUpdate,
     ApplicationStatusChange,
     ApplicationStatusHistoryItem,
     ApplicationSummary,
@@ -195,6 +196,16 @@ async def job_detail(
     service: JobService = Depends(_svc),
 ) -> JobDetail:
     return await service.get_job(user, job_id)
+
+
+@router.post("/{job_id}/engagement", status_code=204)
+async def record_job_engagement(
+    job_id: str,
+    payload: JobEngagementUpdate,
+    user: User = Depends(get_current_user),
+    service: JobService = Depends(_svc),
+) -> None:
+    await service.record_job_engagement(user, job_id, opened=payload.opened, seconds=payload.seconds)
 
 
 @router.post("/{job_id}/save", status_code=204)
