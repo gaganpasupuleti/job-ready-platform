@@ -354,11 +354,10 @@ export async function registerUserInApp(
 ) {
   // Client-side navigation only — no page.goto / reload.
   const registerLink = page.getByRole('link', { name: /register|create account|sign up/i }).first()
-  if (await registerLink.count()) {
-    await registerLink.click()
-  } else {
-    await page.getByRole('button', { name: /register|sign up/i }).first().click()
-  }
+  await expect(registerLink, 'Register link must be available after sign-out').toBeVisible({
+    timeout: 15_000,
+  })
+  await registerLink.click()
   await expect(page).toHaveURL(/\/register/)
   await page.getByLabel('Full name').fill(user.fullName ?? 'E2E New Student')
   await page.getByLabel('Email').fill(user.email)

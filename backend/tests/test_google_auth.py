@@ -5,6 +5,7 @@ from sqlalchemy import func, select
 
 from app.core.config import settings
 from app.db.session import AsyncSessionLocal
+from app.models.auth_identity import UserAuthIdentity
 from app.models.enums import UserRole
 from app.models.user import User
 from app.services.google_identity import GoogleProfile, GoogleTokenError, verify_google_id_token
@@ -191,6 +192,56 @@ async def test_google_rejects_bad_tokens_and_cannot_grant_admin(client, google_r
 
     empty = await client.post("/api/v1/auth/google", json={"credential": ""})
     assert empty.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_google_does_not_link_or_login_non_student(client, google_ready):
+    for role in (UserRole.ADMIN, UserRole.TRAINER):
+        suffix = uuid.uuid4().hex[:8]
+        email = f"{role.value}_{suffix}@example.com"
+        registered = await client.post(
+            "/api/v1/auth/register",
+            json={
+                "email": email,
+                "username": f"{role.value}_{suffix}",
+                "password": "Password123!",
+            },
+        )
+        assert registered.status_code == 200, registered.text
+        async with AsyncSessionLocal() as db:
+            user = (await db.execute(select(User).where(User.email == email))).scalar_one()
+            user.role = role
+            await db.commit()
+            user_id = user.id
+
+        google_ready(
+            GoogleProfile(
+                subject=f"sub-{role.value}-{uuid.uuid4().hex}",
+                email=email,
+                name="Privileged",
+            )
+        )
+        rejected = await client.post("/api/v1/auth/google", json={"credential": "aaa.bbb.ccc"})
+        assert rejected.status_code == 403, rejected.text
+        assert "access_token" not in rejected.json()
+
+        async with AsyncSessionLocal() as db:
+            identity = (
+                await db.execute(
+                    select(UserAuthIdentity).where(UserAuthIdentity.user_id == user_id)
+                )
+            ).scalar_one_or_none()
+            assert identity is None
+            stored = (await db.execute(select(User).where(User.id == user_id))).scalar_one()
+            assert stored.role == role
+        assert await _user_count(email) == 1
+
+        password = await client.post(
+            "/api/v1/auth/login",
+            json={"email": email, "password": "Password123!"},
+        )
+        assert password.status_code == 200
+        assert password.json()["user"]["role"] == role.value
 
 
 @pytest.mark.asyncio

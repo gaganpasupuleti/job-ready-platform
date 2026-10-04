@@ -169,13 +169,17 @@ export function jobsRecommendationCopy(input: {
       showPreferencesLink: false,
     }
   }
-  if (input.configured) {
-    const extra =
-      !input.scored && input.hasItems
-        ? ' A scored match is not available for this list, so these openings are shown without a coverage score.'
-        : ''
+  if (input.configured && input.scored) {
     return {
-      summary: `Openings related to ${input.targetName}. Requirement coverage is not a hiring probability.${extra}`,
+      summary: `Openings related to ${input.targetName}. Requirement coverage is not a hiring probability.`,
+      showPreferencesLink: false,
+    }
+  }
+  if (input.configured) {
+    return {
+      summary: input.hasItems
+        ? 'A scored match is not available for your target role yet. These are recent openings from the catalog, not personalized recommendations.'
+        : 'A scored match is not available for your target role yet. No recent catalog listings are available.',
       showPreferencesLink: false,
     }
   }

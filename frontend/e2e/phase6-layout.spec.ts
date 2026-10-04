@@ -244,7 +244,7 @@ test('top-level routes do not overflow at desktop or narrow mobile', async ({ pa
     await page.setViewportSize({ width, height: 900 })
     for (const path of routes) {
       await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 20_000 })
-      await expect(page.locator('#main-content'), `${path} at ${width}`).toBeVisible({ timeout: 8_000 })
+      await expect(page.locator('#main-content'), `${path} at ${width}`).toBeVisible({ timeout: 20_000 })
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       )

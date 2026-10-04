@@ -173,15 +173,28 @@ describe('jobs, readiness, practice counts, and continuation', () => {
     })
     assert.match(unconfigured.summary, /not a personalized match/)
     assert.equal(unconfigured.showPreferencesLink, true)
-    const configured = jobsRecommendationCopy({
+    const fallback = jobsRecommendationCopy({
       preferencesError: false,
       configured: true,
       targetName: 'Data Engineer',
       scored: false,
       hasItems: true,
     })
-    assert.match(configured.summary, /Data Engineer/)
-    assert.equal(configured.showPreferencesLink, false)
+    assert.match(fallback.summary, /recent openings from the catalog/)
+    assert.match(fallback.summary, /not personalized recommendations/)
+    assert.doesNotMatch(fallback.summary, /Data Engineer/)
+    assert.doesNotMatch(fallback.summary, /related to/)
+    assert.equal(fallback.showPreferencesLink, false)
+    const scored = jobsRecommendationCopy({
+      preferencesError: false,
+      configured: true,
+      targetName: 'Data Engineer',
+      scored: true,
+      hasItems: true,
+    })
+    assert.match(scored.summary, /Openings related to Data Engineer/)
+    assert.match(scored.summary, /not a hiring probability/)
+    assert.equal(scored.showPreferencesLink, false)
   })
 
   it('does not turn an unconfigured readiness score or an unknown count into zero', () => {

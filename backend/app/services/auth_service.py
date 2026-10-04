@@ -92,14 +92,12 @@ class AuthService:
         identity = await self._identity_by_subject(profile.subject)
         if identity is not None:
             user = await self.users.get_by_id(identity.user_id)
-            if user is None or not user.is_active:
-                raise AppException("Account is inactive", status_code=403)
+            self._require_active_student(user)
             return self._auth_response(user, is_new_user=False)
 
         existing = await self.users.get_by_email(profile.email)
         if existing is not None:
-            if not existing.is_active:
-                raise AppException("Account is inactive", status_code=403)
+            self._require_active_student(existing)
             linked = await self._identity_for_user(existing.id)
             if linked is not None and linked.provider_subject != profile.subject:
                 raise AppException("Google sign-in failed", status_code=409)
@@ -123,6 +121,12 @@ class AuthService:
             access_token=token,
             is_new_user=is_new_user,
         )
+
+    def _require_active_student(self, user: User | None) -> None:
+        if user is None or not user.is_active:
+            raise AppException("Account is inactive", status_code=403)
+        if user.role != UserRole.STUDENT:
+            raise AppException("Google sign-in failed", status_code=403)
 
     async def _identity_by_subject(self, subject: str) -> UserAuthIdentity | None:
         result = await self.db.execute(
@@ -194,12 +198,10 @@ class AuthService:
             identity = await self._identity_by_subject(profile.subject)
             if identity is None:
                 existing = await self.users.get_by_email(profile.email)
-                if existing is None:
-                    raise AppException("Google sign-in failed", status_code=409) from None
+                self._require_active_student(existing)
                 return existing
             found = await self.users.get_by_id(identity.user_id)
-            if found is None:
-                raise AppException("Google sign-in failed", status_code=409) from None
+            self._require_active_student(found)
             return found
         await self.db.refresh(user)
         return user
