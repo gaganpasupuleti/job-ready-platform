@@ -1,3 +1,4 @@
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import logging
 import warnings
@@ -151,6 +152,21 @@ class Settings(BaseSettings):
         "http://localhost:5180",
         "http://127.0.0.1:5180",
     ]
+
+    @model_validator(mode="after")
+    def isolate_test_library_storage(self):
+        """APP_ENV=test ignores R2 values loaded from the developer .env.
+
+        Production and development keep those values. A test that needs R2
+        assigns the four settings itself after startup.
+        """
+        if self.app_env.strip().lower() != "test":
+            return self
+        self.library_r2_account_id = ""
+        self.library_r2_bucket = ""
+        self.library_r2_access_key_id = ""
+        self.library_r2_secret_access_key = ""
+        return self
 
     def validate_runtime_safety(self) -> None:
         """Fail on unsafe production configuration. Does not print secrets."""

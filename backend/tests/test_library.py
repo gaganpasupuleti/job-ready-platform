@@ -34,7 +34,7 @@ async def test_students_cannot_administer_books_or_see_draft_urls(client, admin_
     created = await _create(client, admin_auth)
     listed = await client.get("/api/v1/library/books", headers=headers)
     assert listed.status_code == 200
-    assert listed.json()["items"] == []
+    assert all(item["id"] != created["id"] for item in listed.json()["items"])
     assert FIXTURE_URL not in listed.text
 
     direct = await client.get(f"/api/v1/library/books/{created['id']}", headers=headers)

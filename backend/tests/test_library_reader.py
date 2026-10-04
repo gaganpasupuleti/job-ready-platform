@@ -68,7 +68,23 @@ def test_presign_builds_an_https_url_without_a_network_call():
 
 
 def test_placeholder_storage_settings_are_not_configured():
+    assert settings.app_env.lower() == "test"
     assert settings.library_storage_configured is False
+    assert settings.library_r2_account_id == ""
+    assert settings.library_r2_bucket == ""
+    assert settings.library_r2_access_key_id == ""
+    assert settings.library_r2_secret_access_key == ""
+
+
+def test_a_test_can_still_opt_into_r2_storage(monkeypatch):
+    from app.library.storage import R2Storage, library_storage
+
+    monkeypatch.setattr(settings, "library_r2_account_id", "test-account")
+    monkeypatch.setattr(settings, "library_r2_bucket", "test-bucket")
+    monkeypatch.setattr(settings, "library_r2_access_key_id", "test-access")
+    monkeypatch.setattr(settings, "library_r2_secret_access_key", "test-secret")
+    assert settings.library_storage_configured is True
+    assert isinstance(library_storage(), R2Storage)
 
 
 @pytest.mark.asyncio
