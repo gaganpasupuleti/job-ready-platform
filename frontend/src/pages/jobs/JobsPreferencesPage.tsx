@@ -41,17 +41,31 @@ export function JobsPreferencesPage() {
     },
   })
 
+  const catalogLoaded = Array.isArray(data?.roles)
+  const catalog = Array.isArray(data?.roles) ? data.roles : []
+  const savedSlug = data?.target_role_slug ?? ''
+  const savedName = data?.target_role_name || savedSlug
+
   const submit = (event: React.FormEvent) => {
     event.preventDefault()
+    if (!catalogLoaded) return
     const preferred = locations
       .split(',')
       .map((item) => item.trim())
       .filter(Boolean)
-    save.mutate({
-      target_role_slug: role || null,
+    const known = new Set(catalog.map((item) => item.slug))
+    if (savedSlug) known.add(savedSlug)
+    if (role && !known.has(role)) return
+    const payload: {
+      target_role_slug?: string | null
+      preferred_locations: string[]
+      remote_preference: WorkMode | null
+    } = {
       preferred_locations: preferred,
       remote_preference: (remote || null) as WorkMode | null,
-    })
+    }
+    if (catalog.length > 0) payload.target_role_slug = role || null
+    save.mutate(payload)
   }
 
   if (isLoading) return <LoadingState label="Loading job preferences" />
@@ -76,19 +90,31 @@ export function JobsPreferencesPage() {
             <label htmlFor="pref-role" className="text-xs text-[var(--color-text-muted)]">
               Role
             </label>
-            <select
-              id="pref-role"
-              className={inputClass}
-              value={role}
-              onChange={(event) => setRole(event.target.value)}
-            >
-              <option value="">No target role yet</option>
-              {data.roles.map((item) => (
-                <option key={item.slug} value={item.slug}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+            {catalog.length > 0 ? (
+              <select
+                id="pref-role"
+                className={inputClass}
+                value={role}
+                onChange={(event) => setRole(event.target.value)}
+              >
+                <option value="">No target role yet</option>
+                {catalog.map((item) => (
+                  <option key={item.slug} value={item.slug}>
+                    {item.name}
+                  </option>
+                ))}
+                {savedSlug && !catalog.some((item) => item.slug === savedSlug) ? (
+                  <option value={savedSlug}>{savedName}</option>
+                ) : null}
+              </select>
+            ) : (
+              <p id="pref-role" className="mt-1 text-sm text-[var(--color-text)]" role="status">
+                {catalogLoaded
+                  ? 'The role catalog is empty. Your saved role is unchanged.'
+                  : 'The role list did not load. Your saved role is unchanged.'}{' '}
+                {savedName ? `Saved role: ${savedName}.` : 'No target role is saved.'}
+              </p>
+            )}
           </div>
           <div>
             <label htmlFor="pref-locations" className="text-xs text-[var(--color-text-muted)]">
@@ -124,7 +150,7 @@ export function JobsPreferencesPage() {
             </p>
           )}
           <div className="flex flex-wrap gap-2">
-            <Button type="submit" variant="primary" disabled={save.isPending}>
+            <Button type="submit" variant="primary" disabled={save.isPending || !catalogLoaded}>
               {save.isPending ? 'Saving...' : 'Save and browse jobs'}
             </Button>
             <Button

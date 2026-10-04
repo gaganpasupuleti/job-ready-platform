@@ -1,0 +1,34 @@
+{
+  "base": "http://127.0.0.1:5195",
+  "label": "real local API via preview proxy 5195",
+  "apiHealth": {
+    "status": 200,
+    "body": {
+      "status": "degraded",
+      "service": "job-ready-platform-api",
+      "checks": {
+        "database": "ok",
+        "redis": "unavailable",
+        "sql_sandbox": "unavailable",
+        "judge0": "disabled"
+      }
+    }
+  },
+  "register": {
+    "a": 200,
+    "b": 200
+  },
+  "protectedRoute": true,
+  "signedInA": true,
+  "logout": {
+    "onLogin": true,
+    "tokenCleared": true
+  },
+  "staleRequest": "stale",
+  "accountSwitch": {
+    "tokenPresent": true,
+    "tokenIsNotA": true,
+    "meEmailIsB": true,
+    "stillAuthenticated": true
+  }
+}

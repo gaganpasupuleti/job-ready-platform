@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:mock": "node scripts/dev-mock.mjs",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "test:unit": "node --experimental-strip-types --test scripts/frontend-checks.test.ts",
     "preview": "vite preview",
     "test:overview": "node --experimental-strip-types --test tests/overviewModel.test.ts",
     "test:library": "node --experimental-strip-types --test tests/libraryCache.test.ts tests/readerModel.test.ts tests/uploadModel.test.ts",

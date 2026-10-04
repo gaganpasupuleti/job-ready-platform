@@ -11,7 +11,7 @@ import {
   PracticeHeader,
   PracticeTabs,
 } from '@/components/practice-workspace/PracticeWorkspace'
-import { ApplicationStatusBadge } from '@/features/jobs/ApplicationStatusBadge'
+import { ApplicationStatusBadge, applicationStatusLabel } from '@/features/jobs/ApplicationStatusBadge'
 import { useAuth } from '@/hooks/useAuth'
 import { fetchApplications } from '@/services/jobService'
 import type { ApplicationStatus, ApplicationSummary } from '@/types/job'
@@ -118,7 +118,7 @@ export function JobsApplicationsPage() {
               return (
                 <Card key={status} padding="sm">
                   <CardHeader
-                    title={status.replace(/_/g, ' ')}
+                    title={applicationStatusLabel(status)}
                     description={`${items.length} application${items.length !== 1 ? 's' : ''}`}
                   />
                   <div className="space-y-2">

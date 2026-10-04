@@ -16,7 +16,7 @@ const destinations: PracticeDestination[] = [
     to: '/practice/dsa',
     match: ['/practice/dsa', '/practice/coding'],
   },
-  { label: 'Quizzes', to: '/practice/mcq', match: ['/practice/mcq'] },
+  { label: 'Technical MCQs', to: '/practice/mcq', match: ['/practice/mcq'] },
   { label: 'Projects', to: '/practice/projects', match: ['/practice/projects'] },
 ]
 

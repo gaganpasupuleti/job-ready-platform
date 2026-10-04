@@ -5,6 +5,7 @@ import { Button } from '@/components/common/Button'
 import { SafeMarkdown } from '@/components/learn/SafeMarkdown'
 import { LearnSubnav } from '@/components/learn/LearnSubnav'
 import { apiClient } from '@/api/client'
+import { humanLabel, materialKindLabel } from '@/lib/studentLabels'
 import { fetchMaterial, markMaterialRead, materialDownloadUrl } from '@/services/studioService'
 
 export function MaterialDetailPage() {
@@ -34,14 +35,14 @@ export function MaterialDetailPage() {
     <div className="module-page learn-page">
       <LearnSubnav />
       {isLoading ? (
-        <p>Loading material...</p>
+        <p role="status">Loading material.</p>
       ) : isError || !data ? (
-        <p role="alert">Unable to load this material.</p>
+        <p role="alert">Could not load this material.</p>
       ) : (
         <>
           <header className="module-heading">
             <div>
-              <p className="eyebrow">{data.kind} · {data.level} · {data.minutes} min</p>
+              <p className="eyebrow">{materialKindLabel(data.kind)} · {humanLabel(data.level)} · {data.minutes} min</p>
               <h1>{data.title}</h1>
               <p>{data.summary}</p>
             </div>
@@ -55,8 +56,12 @@ export function MaterialDetailPage() {
             <h2 className="text-sm font-semibold">Objectives</h2>
             <ul className="list-disc pl-5 text-sm">{data.objectives.map((item) => <li key={item}>{item}</li>)}</ul>
           </section>
-          <div className="mt-4 min-w-0 rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <SafeMarkdown source={data.body_md} />
+          <div className="reading-shell mt-4 min-w-0 rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+            <SafeMarkdown
+              source={data.body_md}
+              pageTitle={data.title}
+              ownedHeadings={['Learning objectives', 'Objectives', 'Prerequisites']}
+            />
           </div>
           {data.examples.length > 0 && (
             <section className="mt-4">

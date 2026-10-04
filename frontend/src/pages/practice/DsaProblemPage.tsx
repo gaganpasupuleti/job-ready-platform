@@ -25,11 +25,12 @@ import {
   useLockExecutionShortcuts,
   useWorkspaceShortcuts,
 } from '@/components/practice-workspace/practiceWorkspaceUtils'
-import { getMonacoLanguage } from '@/constants/languages'
+import { getLanguageName, getMonacoLanguage } from '@/constants/languages'
 import { CodeEditor } from '@/features/dsa/CodeEditor'
 import { ExecutionResults } from '@/features/dsa/ExecutionResults'
 import { useAuth } from '@/hooks/useAuth'
 import { useCodingDraft } from '@/hooks/useCodingDraft'
+import { mergeLanguageChoices, resolveLanguageId, runControlState } from '@/lib/codingRuntime'
 import {
   fetchCodingNavigation,
   fetchCodingProblem,
@@ -61,7 +62,7 @@ export function DsaProblemPage() {
   const editorRootRef = useRef<HTMLDivElement>(null)
   const [leftTab, setLeftTab] = useState<LeftTab>('problem')
   const [bottomTab, setBottomTab] = useState<BottomTab>('output')
-  const [languageId, setLanguageId] = useState(62)
+  const [languageChoice, setLanguageChoice] = useState<number | null>(null)
   const [lastResult, setLastResult] = useState<ExecutionResponse | null>(null)
   const [revealedHints, setRevealedHints] = useState(0)
   const [mobileTab, setMobileTab] = useState<'problem' | 'code' | 'output'>('problem')
@@ -87,11 +88,30 @@ export function DsaProblemPage() {
     queryFn: fetchLanguages,
   })
 
-  const { data: executionStatus } = useQuery({
+  const { data: executionStatus, isPending: executionPending, isError: executionError } = useQuery({
     queryKey: ['coding-execution-status'],
     queryFn: fetchExecutionStatus,
     refetchInterval: 30000,
   })
+
+  const langOptions = useMemo(
+    () => mergeLanguageChoices(problem?.supported_languages, languages, executionStatus?.languages),
+    [executionStatus?.languages, languages, problem],
+  )
+  const resolvedLanguageId = resolveLanguageId(languageChoice, langOptions)
+  const languageId = resolvedLanguageId ?? 0
+  const selectedLanguage = langOptions.find((lang) => lang.id === resolvedLanguageId)
+  const runtime = runControlState({
+    statusPending: executionPending,
+    statusError: executionError,
+    executionAvailable: executionStatus?.available,
+    problemExecutionAvailable: problem?.execution_available,
+    languageAvailable: selectedLanguage?.available,
+  })
+  const executionAvailable = runtime.enabled
+  const otherLanguageRunnable = langOptions.some(
+    (lang) => lang.id !== resolvedLanguageId && lang.available !== false,
+  )
 
   const { data: submissions } = useQuery({
     queryKey: ['coding-submissions', problemId],
@@ -103,15 +123,15 @@ export function DsaProblemPage() {
     problem?.starter_code[String(languageId)] ??
     (problem ? Object.values(problem.starter_code)[0] ?? '' : '')
 
+  const draftEnabled = resolvedLanguageId != null
   const { sourceCode, setSourceCode, resetCode, initialized } = useCodingDraft(
     user?.id,
     problemId,
     languageId,
     starterForLang,
+    draftEnabled,
   )
 
-  const executionAvailable =
-    problem?.execution_available !== false && executionStatus?.available === true
   useLockExecutionShortcuts(!executionAvailable)
 
   const runMutation = useMutation({
@@ -154,13 +174,22 @@ export function DsaProblemPage() {
     rootRef: editorRootRef,
   })
 
-  if (isLoading || !initialized) return <LoadingState label="Loading coding problem" />
+  if (isLoading || (draftEnabled && !initialized)) return <LoadingState label="Loading coding problem" />
   if (error || !problem) return <ErrorState message={apiErrorMessage(error, 'Problem not found.')} />
 
-  const langOptions = (languages ?? problem.supported_languages).filter(
-    (lang) => lang.available !== false && lang.id !== 71,
-  )
-  const activeLang = langOptions.find((l) => l.id === languageId)
+  const selectedLanguageName = selectedLanguage?.name ?? (resolvedLanguageId != null ? getLanguageName(resolvedLanguageId) : 'No language listed')
+  const executionNotice =
+    runtime.reason === 'ready'
+      ? null
+      : runtime.reason === 'checking'
+        ? 'Checking whether code can run. Run and Submit stay off until that check finishes.'
+        : runtime.reason === 'error'
+          ? 'Could not check whether code can run. Run and Submit stay off until the check succeeds.'
+          : runtime.reason === 'language'
+            ? otherLanguageRunnable
+              ? `${selectedLanguageName} cannot run right now. Another listed language can. Run and Submit stay off for this language.`
+              : `${selectedLanguageName} cannot run right now. Run and Submit stay off.`
+            : `${CODE_EXECUTION_LOCKED_MESSAGE} ${selectedLanguageName} stays selected. Run and Submit stay off until execution is available.`
   const projectReturn = searchParams.get('fromProject')
 
   const left = (
@@ -175,7 +204,7 @@ export function DsaProblemPage() {
       />
       <Card className="min-h-0 flex-1 overflow-y-auto" padding="md">
         {leftTab === 'problem' && (
-          <div className="space-y-4 text-sm">
+          <div className="reading-shell space-y-4">
             <div className="whitespace-pre-wrap">{problem.description}</div>
             {problem.input_format && (
               <div>
@@ -300,11 +329,7 @@ export function DsaProblemPage() {
           ) : (
             <EmptyState
               title={executionAvailable ? 'No test results yet' : 'Execution unavailable'}
-              description={
-                executionAvailable
-                  ? 'Run sample tests or submit when ready.'
-                  : CODE_EXECUTION_LOCKED_MESSAGE
-              }
+              description={executionAvailable ? 'Run sample tests or submit when ready.' : executionNotice ?? CODE_EXECUTION_LOCKED_MESSAGE}
             />
           ))}
         {bottomTab === 'hints' && (
@@ -349,11 +374,7 @@ export function DsaProblemPage() {
           ) : (
             <EmptyState
               title={executionAvailable ? 'No output yet' : 'Execution unavailable'}
-              description={
-                executionAvailable
-                  ? 'Run or submit to see execution output.'
-                  : CODE_EXECUTION_LOCKED_MESSAGE
-              }
+              description={executionAvailable ? 'Run or submit to see execution output.' : executionNotice ?? CODE_EXECUTION_LOCKED_MESSAGE}
             />
           ))}
       </div>
@@ -362,9 +383,9 @@ export function DsaProblemPage() {
 
   return (
     <div
-      className={`studio-main dsa-workbench flex flex-col gap-2 overflow-hidden px-3 py-2 sm:px-4 ${fullscreen ? 'fixed inset-0 z-40 bg-[var(--color-surface)] p-3' : 'h-[calc(100vh-2.75rem)]'}`}
+      className={`studio-main dsa-workbench workspace-gutter flex flex-col gap-2 overflow-hidden ${fullscreen ? 'fixed inset-0 z-40 bg-[var(--color-surface)] p-3' : 'workspace-fill'}`}
     >
-      <div className="sticky top-0 z-10 -mx-3 flex flex-col gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 px-3 py-2 backdrop-blur sm:-mx-4 sm:px-4">
+      <div className="sticky top-0 z-10 flex flex-col gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 py-2">
         <PracticeHeader
           backTo={projectReturn ? `/projects/${projectReturn}` : '/practice/dsa'}
           backLabel="Back"
@@ -402,15 +423,19 @@ export function DsaProblemPage() {
           </Button>
           <Select
             aria-label="Language"
-            value={languageId}
-            onChange={(e) => setLanguageId(Number(e.target.value))}
+            value={resolvedLanguageId ?? ''}
+            onChange={(e) => setLanguageChoice(Number(e.target.value))}
             className="h-7 w-auto min-w-[7.5rem] max-w-[40vw]"
           >
-            {langOptions.map((lang) => (
-              <option key={lang.id} value={lang.id}>
-                {lang.name}
-              </option>
-            ))}
+            {langOptions.length === 0 ? (
+              <option value="">{selectedLanguageName || 'No language listed'}</option>
+            ) : (
+              langOptions.map((lang) => (
+                <option key={lang.id} value={lang.id}>
+                  {lang.name}
+                </option>
+              ))
+            )}
           </Select>
           <Button variant="ghost" size="sm" onClick={() => setWrap((v) => !v)}>
             {wrap ? 'Unwrap' : 'Wrap'}
@@ -451,12 +476,12 @@ export function DsaProblemPage() {
           </Button>
         </div>
       </div>
-      {!executionAvailable && (
+      {executionNotice && (
         <div
-          className="rounded-[var(--radius-control)] border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100"
+          className="rounded-[var(--radius-control)] border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-xs text-[var(--color-text)]"
           role="status"
         >
-          {CODE_EXECUTION_LOCKED_MESSAGE}
+          {executionNotice}
         </div>
       )}
       {actionError && bottomTab !== 'output' && <ErrorState message={actionError} />}
@@ -469,7 +494,7 @@ export function DsaProblemPage() {
               <CodeEditor
                 value={sourceCode}
                 language={getMonacoLanguage(languageId)}
-                languageLabel={activeLang?.name}
+                languageLabel={selectedLanguage?.name}
                 onChange={setSourceCode}
                 height="100%"
                 fontSize={fontSize}

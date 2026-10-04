@@ -25,8 +25,10 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      // Dev server only. Production builds do not use this proxy.
+      // Leave DEV_API_PROXY unset to keep the normal backend port.
       '/api': {
-        target: 'http://localhost:8000',
+        target: process.env.DEV_API_PROXY || 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
     },

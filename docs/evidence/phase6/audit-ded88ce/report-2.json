@@ -1,0 +1,45 @@
+[
+  {
+    "route": "/bookmarks",
+    "tab": "Coding Problems",
+    "state": "empty",
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "SQL Problems",
+    "state": "empty",
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "Prompt Challenges",
+    "state": "empty",
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "Coding Problems",
+    "state": "empty",
+    "width": 390,
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "Coding Problems",
+    "state": "error",
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "SQL Problems",
+    "state": "error",
+    "overflow": 0
+  },
+  {
+    "route": "/bookmarks",
+    "tab": "Prompt Challenges",
+    "state": "error",
+    "overflow": 0
+  }
+]

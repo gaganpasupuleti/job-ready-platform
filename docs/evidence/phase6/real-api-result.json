@@ -1,0 +1,61 @@
+{
+  "backend": "localhost uvicorn, main workspace",
+  "writes": "two new users only",
+  "checks": [
+    {
+      "name": "health",
+      "ok": true,
+      "detail": "judge0=disabled sql_sandbox=unavailable database=ok"
+    },
+    {
+      "name": "register a",
+      "ok": true,
+      "detail": "token issued"
+    },
+    {
+      "name": "register b",
+      "ok": true,
+      "detail": "token issued"
+    },
+    {
+      "name": "judge0 stays disabled",
+      "ok": true,
+      "detail": "status 200 available=false"
+    },
+    {
+      "name": "sql sandbox unavailable",
+      "ok": true,
+      "detail": "status 200 available=false"
+    },
+    {
+      "name": "mcq start",
+      "ok": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "mcq question",
+      "ok": false,
+      "detail": "status 200; first script looked for options at the wrong path. A follow-up call found question.options."
+    },
+    {
+      "name": "mcq answer restore",
+      "ok": true,
+      "detail": "start 200, question 200, save 200, selected option restored"
+    },
+    {
+      "name": "submit and duplicate",
+      "ok": true,
+      "detail": "complete 200 duplicate 200 results 200"
+    },
+    {
+      "name": "preference persistence and isolation",
+      "ok": true,
+      "detail": "save 204 role=ai-agent-engineer other=none"
+    },
+    {
+      "name": "logout",
+      "ok": false,
+      "detail": "logout 200 me 200"
+    }
+  ]
+}

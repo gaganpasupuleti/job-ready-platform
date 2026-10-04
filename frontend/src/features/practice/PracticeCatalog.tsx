@@ -18,6 +18,7 @@ interface PracticeCatalogProps {
   categorySlug?: string
   topicSlugs?: string[]
   formatLabel?: string
+  showIntro?: boolean
 }
 
 export function PracticeCatalog({
@@ -27,9 +28,10 @@ export function PracticeCatalog({
   categorySlug,
   topicSlugs,
   formatLabel,
+  showIntro = true,
 }: PracticeCatalogProps) {
   const navigate = useNavigate()
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['practice-catalog'],
     queryFn: fetchCatalog,
   })
@@ -74,11 +76,24 @@ export function PracticeCatalog({
     return <p className="text-sm text-[var(--color-text-muted)]">Loading catalog...</p>
   }
 
-  if (error || !domain) {
+  if (isError) {
     return (
       <Card>
-        <p className="text-sm text-[var(--color-danger)]">
-          Unable to load practice catalog. Ensure you are logged in and the API is running.
+        <p className="text-sm text-[var(--color-danger)]" role="alert">
+          Could not load this catalog. Nothing was started.
+        </p>
+      </Card>
+    )
+  }
+
+  if (!domain || (categories?.length ?? 0) === 0) {
+    return (
+      <Card>
+        {showIntro ? (
+          <h1 className="text-[1.75rem] font-semibold leading-tight text-[var(--color-text)]">{title}</h1>
+        ) : null}
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]" role="status">
+          This subject is not available yet. No session was created.
         </p>
       </Card>
     )
@@ -86,13 +101,17 @@ export function PracticeCatalog({
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-base font-semibold text-[var(--color-text)] sm:text-lg">{title}</h1>
-        <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">{description}</p>
-        {formatLabel ? (
-          <p className="mt-1 text-xs text-[var(--color-text-subtle)]">Question format: {formatLabel}</p>
-        ) : null}
-      </div>
+      {showIntro ? (
+        <div>
+          <h1 className="text-[1.75rem] font-semibold leading-tight text-[var(--color-text)]">{title}</h1>
+          <p className="mt-1 text-sm text-[var(--color-text-muted)]">{description}</p>
+          {formatLabel ? (
+            <p className="mt-1 text-xs text-[var(--color-text-subtle)]">Question format: {formatLabel}</p>
+          ) : null}
+        </div>
+      ) : formatLabel ? (
+        <p className="text-xs text-[var(--color-text-subtle)]">Question format: {formatLabel}</p>
+      ) : null}
 
       {(categories?.length ?? 0) > 1 ? (
         <div>
@@ -196,14 +215,14 @@ export function PracticeCatalog({
                         : 'border-[var(--color-border)] text-[var(--color-text-muted)]'
                     }`}
                   >
-                    {item}
+                    {item === 'exam' ? 'Timed exam' : 'Practice'}
                   </button>
                 ))}
               </div>
               {mode === 'exam' && (
                 <p className="mt-1.5 text-xs text-[var(--color-text-subtle)]">
-                  Timed exam: answers stay hidden until submit. Resume unfinished exams from Recent
-                  Practice. Autosave keeps selections if you leave and return.
+                  Answers stay hidden until you submit. An unfinished exam can be resumed from this
+                  subject&apos;s history. Selections already saved on the session are restored.
                 </p>
               )}
             </div>
@@ -229,7 +248,7 @@ export function PracticeCatalog({
         <Link to="/mistakes">Mistake review</Link>
       </nav>
 
-      <PracticeHistory />
+      <PracticeHistory categoryNames={categories?.map((category) => category.name) ?? []} />
     </div>
   )
 }
