@@ -1,8 +1,20 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 import { ensureCodingFixture, loadManifest, loginAs, type CodingFixture } from './helpers'
 
 const fixtures = loadManifest()
+
+async function openVisibleCodePane(page: Page) {
+  const tabs = page.getByRole('button', { name: /^code$/i })
+  const count = await tabs.count()
+  for (let index = count - 1; index >= 0; index -= 1) {
+    const tab = tabs.nth(index)
+    if (await tab.isVisible()) {
+      await tab.click()
+      return
+    }
+  }
+}
 let coding: CodingFixture
 
 test.describe('Coding / DSA with Judge0 disabled', () => {
@@ -48,8 +60,12 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
       { problemId: coding.id, markerText: marker },
     )
     await page.reload()
-    const codeTab = page.getByRole('button', { name: /^code$/i })
-    if (await codeTab.count()) await codeTab.click()
+    await expect(
+      page.getByRole('status').filter({
+        hasText: 'Code execution is coming soon. You can write code and save drafts.',
+      }),
+    ).toBeVisible()
+    await openVisibleCodePane(page)
     await expect(page.getByText(marker)).toBeVisible({ timeout: 15_000 })
   })
 
@@ -64,6 +80,7 @@ test.describe('Coding / DSA with Judge0 disabled', () => {
     const submit = page.getByRole('button', { name: /^submit$/i })
     await expect(run).toBeDisabled()
     await expect(submit).toBeDisabled()
+    await openVisibleCodePane(page)
     await page.locator('.monaco-editor:visible').first().click()
     let executionCalls = 0
     page.on('request', (request) => {

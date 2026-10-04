@@ -39,8 +39,6 @@ export function ProjectsPage() {
         </p>
       </div>
 
-      <ManualAssignmentSection />
-
       <div className="filter-chip-row is-wrapped" role="group" aria-label="Project category">
         <button
           type="button"
@@ -107,6 +105,8 @@ export function ProjectsPage() {
           })}
         </div>
       )}
+
+      <ManualAssignmentSection />
     </div>
   )
 }
