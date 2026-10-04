@@ -329,3 +329,26 @@ class IngestionErrorPublic(BaseModel):
     external_id: str | None = None
     error_type: str
     message: str
+
+
+class JobEngagementUpdate(BaseModel):
+    opened: bool = False
+    seconds: int = Field(default=0, ge=0, le=60)
+
+
+class JobEngagementStudent(BaseModel):
+    email: str
+    full_name: str | None
+    jobs_opened: int
+    opens: int
+    duration_seconds: int
+    last_opened_at: datetime | None
+
+
+class JobEngagementJob(BaseModel):
+    email: str
+    full_name: str | None
+    job_title: str
+    opens: int
+    duration_seconds: int
+    last_opened_at: datetime

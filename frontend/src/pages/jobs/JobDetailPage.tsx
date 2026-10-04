@@ -13,6 +13,7 @@ import {
   SuccessState,
 } from '@/components/practice-workspace/PracticeWorkspace'
 import { ApplicationStatusBadge } from '@/features/jobs/ApplicationStatusBadge'
+import { useJobEngagement } from '@/features/jobs/useJobEngagement'
 import {
   fetchJob,
   markJobApplied,
@@ -46,6 +47,7 @@ export function JobDetailPage() {
     queryFn: () => fetchJob(jobId!),
     enabled: Boolean(jobId),
   })
+  useJobEngagement(data?.id)
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['job', jobId] })

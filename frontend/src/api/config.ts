@@ -79,6 +79,8 @@ export const apiEndpoints = {
     interviewPack: (id: string) => `/api/v1/admin/interviews/packs/${id}`,
     jobs: {
       list: '/api/v1/admin/jobs',
+      engagement: '/api/v1/admin/jobs/engagement',
+      engagementJobs: '/api/v1/admin/jobs/engagement/jobs',
       detail: (id: string) => `/api/v1/admin/jobs/${id}`,
       archive: (id: string) => `/api/v1/admin/jobs/${id}/archive`,
       sources: '/api/v1/admin/jobs/sources',
@@ -224,6 +226,7 @@ export const apiEndpoints = {
     saved: '/api/v1/jobs/saved',
     recommended: '/api/v1/jobs/recommended',
     detail: (idOrSlug: string) => `/api/v1/jobs/${idOrSlug}`,
+    engagement: (idOrSlug: string) => `/api/v1/jobs/${idOrSlug}/engagement`,
     save: (id: string) => `/api/v1/jobs/${id}/save`,
     apply: (id: string) => `/api/v1/jobs/${id}/apply`,
     prepare: (id: string) => `/api/v1/jobs/${id}/prepare`,
