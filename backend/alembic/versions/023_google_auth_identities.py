@@ -1,7 +1,7 @@
 """Optional passwords and Google sign-in identities.
 
 Revision ID: 023_google_auth_identities
-Revises: 022_python_runtime_backfill
+Revises: 023_job_engagement
 """
 
 from typing import Sequence, Union
@@ -11,7 +11,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision: str = "023_google_auth_identities"
-down_revision: Union[str, None] = "022_python_runtime_backfill"
+down_revision: Union[str, None] = "023_job_engagement"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
