@@ -19,7 +19,10 @@ from app.schemas.job import (
     IngestionRunPublic,
     JobCard,
     JobSourcePublic,
+    PublicationDecisionPublic,
+    PublicationDecisionWrite,
 )
+from app.services.jobs_source_sync import list_publication_decisions, record_publication_decision
 from app.services.admin_job_service import AdminJobService
 
 router = APIRouter(prefix="/admin/jobs")
@@ -106,6 +109,35 @@ async def admin_validate_import(
         raise AppException("File exceeds 10 MB limit", status_code=400)
     content = raw.decode("utf-8-sig", errors="replace")
     return await service.validate_csv(content, file.filename or "upload.csv")
+
+
+@router.get("/publication-decisions", response_model=list[PublicationDecisionPublic])
+async def admin_list_publication_decisions(
+    _admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+) -> list[PublicationDecisionPublic]:
+    rows = await list_publication_decisions(db)
+    return [
+        PublicationDecisionPublic(source=row.source, source_job_id=row.source_job_id, decision=row.decision)
+        for row in rows
+    ]
+
+
+@router.post("/publication-decisions", response_model=PublicationDecisionPublic)
+async def admin_record_publication_decision(
+    payload: PublicationDecisionWrite,
+    _admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+) -> PublicationDecisionPublic:
+    source = payload.source.strip().lower()
+    job_id = payload.source_job_id.strip()
+    if not source or not job_id or any(ch.isspace() for ch in source) or any(ch.isspace() for ch in job_id):
+        raise AppException("Source and job id cannot contain spaces.", status_code=400)
+    try:
+        await record_publication_decision(db, source=source, job_id=job_id, decision=payload.decision)
+    except ValueError as exc:
+        raise AppException(str(exc), status_code=400) from exc
+    return PublicationDecisionPublic(source=source, source_job_id=job_id, decision=payload.decision)
 
 
 @router.post("/imports/confirm", response_model=ImportConfirmResponse)

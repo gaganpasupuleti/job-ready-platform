@@ -4,6 +4,8 @@ import { ChevronDown, LogOut, Menu, Moon, Sun, X } from 'lucide-react'
 
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
+import { NotificationBell } from '@/features/notifications/NotificationBell'
+import { FeedbackPanel } from '@/features/support/FeedbackPanel'
 import {
   isPrimaryNavActive,
   moreMenuGroups,
@@ -29,6 +31,7 @@ export function Masthead({ compact = false }: MastheadProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
   const moreRef = useRef<HTMLDivElement>(null)
   const accountRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
@@ -71,6 +74,15 @@ export function Masthead({ compact = false }: MastheadProps) {
       document.removeEventListener('keydown', onKey)
     }
   }, [accountOpen, moreOpen])
+
+  useEffect(() => {
+    if (!feedbackOpen) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setFeedbackOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [feedbackOpen])
 
   return (
     <>
@@ -120,6 +132,19 @@ export function Masthead({ compact = false }: MastheadProps) {
             </button>
             {moreOpen ? (
               <div className="more-nav-panel" aria-label="More destinations">
+                {user ? (
+                  <button
+                    type="button"
+                    className="more-menu-item feedback-entry-menu"
+                    onClick={() => {
+                      setFeedbackOpen(true)
+                      closeMore()
+                      closeMobile()
+                    }}
+                  >
+                    Feedback
+                  </button>
+                ) : null}
                 {moreMenuGroups.map((group) => (
                   <section key={group.title} className="more-menu-section">
                     <p className="menu-section-title">{group.title}</p>
@@ -159,6 +184,26 @@ export function Masthead({ compact = false }: MastheadProps) {
                     >
                       Admin
                     </Link>
+                    <Link
+                      to="/admin/library"
+                      className={cn('more-menu-item more-menu-admin', location.pathname.startsWith('/admin/library') && 'active')}
+                      onClick={() => {
+                        closeMore()
+                        closeMobile()
+                      }}
+                    >
+                      Library
+                    </Link>
+                    <Link
+                      to="/admin/feedback"
+                      className={cn('more-menu-item more-menu-admin', location.pathname.startsWith('/admin/feedback') && 'active')}
+                      onClick={() => {
+                        closeMore()
+                        closeMobile()
+                      }}
+                    >
+                      Student Feedback
+                    </Link>
                   </>
                 ) : null}
               </div>
@@ -167,6 +212,18 @@ export function Masthead({ compact = false }: MastheadProps) {
         </nav>
 
         <div className="masthead-tools">
+          {user ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="feedback-entry"
+              aria-expanded={feedbackOpen}
+              onClick={() => setFeedbackOpen((open) => !open)}
+            >
+              Feedback
+            </Button>
+          ) : null}
+          {user ? <NotificationBell /> : null}
           <Button
             variant="ghost"
             size="sm"
@@ -252,6 +309,7 @@ export function Masthead({ compact = false }: MastheadProps) {
           onClick={closeMobile}
         />
       ) : null}
+      <FeedbackPanel open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </>
   )
 }

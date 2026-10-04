@@ -21,6 +21,7 @@ import type {
   JobListResponse,
   JobPreferencePublic,
   JobPreferenceUpdate,
+  PublicationDecision,
   JobSourcePublic,
   JobsSummary,
   SavedJobItem,
@@ -182,6 +183,19 @@ export async function validateJobImport(file: File) {
     apiEndpoints.admin.jobs.importValidate,
     form,
     { headers: { 'Content-Type': undefined } },
+  )
+  return data
+}
+
+export async function fetchPublicationDecisions() {
+  const { data } = await apiClient.get<PublicationDecision[]>(apiEndpoints.admin.jobs.publicationDecisions)
+  return data
+}
+
+export async function recordPublicationDecision(payload: PublicationDecision) {
+  const { data } = await apiClient.post<PublicationDecision>(
+    apiEndpoints.admin.jobs.publicationDecisions,
+    payload,
   )
   return data
 }

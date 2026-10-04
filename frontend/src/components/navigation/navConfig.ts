@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import {
   Award,
+  BookOpen,
   Bookmark,
   Bot,
   Brain,
@@ -70,6 +71,8 @@ export const navigationConfig: NavSection[] = [
   {
     title: 'More',
     items: [
+      { label: 'Library', path: '/library', icon: 'BookOpen' },
+      { label: 'My requests', path: '/support/requests', icon: 'MessageSquare' },
       { label: 'Job Readiness', path: '/readiness', icon: 'Target' },
       { label: 'AI Home', path: '/ai', icon: 'Sparkles' },
       { label: 'Prompt Engineering', path: '/ai/prompt-engineering', icon: 'MessageSquare' },
@@ -100,6 +103,8 @@ export const moreMenuGroups: { title: string; items: { label: string; path: stri
   {
     title: 'Career',
     items: [
+      { label: 'Library', path: '/library' },
+      { label: 'My requests', path: '/support/requests' },
       { label: 'Projects', path: '/practice/projects' },
       { label: 'Job Readiness', path: '/readiness' },
       { label: 'Interview Prep', path: '/interviews' },
@@ -143,6 +148,7 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Trophy,
   Briefcase,
   Target,
+  BookOpen,
   Bookmark,
   Award,
   Flame,

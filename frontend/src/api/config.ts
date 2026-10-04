@@ -33,6 +33,7 @@ export const apiEndpoints = {
       `/api/v1/practice/sessions/${sessionId}/questions/${number}/autosave`,
     complete: (sessionId: string) => `/api/v1/practice/sessions/${sessionId}/complete`,
     results: (sessionId: string) => `/api/v1/practice/sessions/${sessionId}/results`,
+    tracker: '/api/v1/practice/tracker',
   },
   admin: {
     questions: '/api/v1/admin/questions',
@@ -85,7 +86,13 @@ export const apiEndpoints = {
       importErrors: (runId: string) => `/api/v1/admin/jobs/imports/${runId}/errors`,
       importValidate: '/api/v1/admin/jobs/imports/validate',
       importConfirm: '/api/v1/admin/jobs/imports/confirm',
+      publicationDecisions: '/api/v1/admin/jobs/publication-decisions',
     },
+    assignments: '/api/v1/admin/assignments',
+    assignment: (id: string) => `/api/v1/admin/assignments/${id}`,
+    supportTickets: '/api/v1/admin/support/tickets',
+    supportTicket: (id: string) => `/api/v1/admin/support/tickets/${id}`,
+    supportReplies: (id: string) => `/api/v1/admin/support/tickets/${id}/replies`,
     readiness: {
       roles: '/api/v1/admin/readiness/roles',
     },
@@ -229,6 +236,22 @@ export const apiEndpoints = {
     preferences: '/api/v1/jobs/preferences',
     match: (id: string) => `/api/v1/jobs/${id}/match`,
   },
+  assignments: {
+    list: '/api/v1/assignments',
+  },
+  support: {
+    tickets: '/api/v1/support/tickets',
+    ticket: (id: string) => `/api/v1/support/tickets/${id}`,
+    replies: (id: string) => `/api/v1/support/tickets/${id}/replies`,
+  },
+  notifications: {
+    list: '/api/v1/notifications',
+    unread: '/api/v1/notifications/unread-count',
+    readAll: '/api/v1/notifications/read-all',
+    read: (id: string) => `/api/v1/notifications/${id}/read`,
+    emailPreferences: '/api/v1/notifications/email-preferences',
+    emailUnsubscribe: '/api/v1/notifications/email-unsubscribe',
+  },
   applications: {
     list: '/api/v1/applications',
     detail: (id: string) => `/api/v1/applications/${id}`,
@@ -249,6 +272,18 @@ export const apiEndpoints = {
     detail: (id: string) => `/api/v1/mistakes/${id}`,
     review: (id: string) => `/api/v1/mistakes/${id}/review`,
     retrySession: '/api/v1/mistakes/retry-session',
+  },
+  library: {
+    books: '/api/v1/library/books',
+    saved: '/api/v1/library/saved',
+    book: (id: string) => `/api/v1/library/books/${id}`,
+    bookmark: (id: string) => `/api/v1/library/books/${id}/bookmark`,
+    readingStatus: (id: string) => `/api/v1/library/books/${id}/reading-status`,
+    progress: (id: string) => `/api/v1/library/books/${id}/progress`,
+    readLink: (id: string) => `/api/v1/library/books/${id}/read-link`,
+    adminBooks: '/api/v1/admin/library/books',
+    adminBook: (id: string) => `/api/v1/admin/library/books/${id}`,
+    adminFile: (id: string) => `/api/v1/admin/library/books/${id}/file`,
   },
 } as const
 

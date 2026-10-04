@@ -1,6 +1,25 @@
 # Manual review queue — open these 10
 
-Checked 2026-09-13. No further automated page requests. These are not approvals. Record `publish` or `withhold` in the application after you look; do not update the Jobs server.
+Checked 2026-09-13. Rechecked source fields 2026-09-14. No page fetches. These are not approvals and not a launch batch. Record `publish` or `withhold` in the application after a page is confirmed; do not update the Jobs server.
+
+## Source recheck 2026-09-14 — not launch approvals
+
+Catalog fields only. Pages were not opened. Local publish records for `CQJ-20260909-0303` and `CQJ-20260909-0071` stay unverified and are not copied to production.
+
+| job_id | source link_status | outcome |
+|---|---|---|
+| CQJ-20260909-0097 | expired | Keep withhold. Availability still not independently confirmed. Not published. |
+| CQJ-20260909-0303 | active | Content checks would pass an explicit publish decision. Page still unverified. Not eligible. |
+| CQJ-20260909-0071 | active | Content checks would pass an explicit publish decision. Page still unverified. Not eligible. |
+| CQJ-20260906-0057 | expired | Not eligible. Not treated as closed or verified. |
+| CQJ-20260831-0092 | active | Content checks would pass an explicit publish decision. Page still unverified. Not eligible. |
+| CQJ-20260709-0143 | active | Content checks would pass an explicit publish decision. Page still unverified. Not eligible. |
+| CQJ-20260903-0068 | expired | Not eligible. Not treated as closed or verified. |
+| CQJ-20260822-0090 | active | Content checks would pass an explicit publish decision. Page still unverified. Not eligible. |
+| CQJ-20260822-0093 | active | Content checks would pass an explicit publish decision. Page still unverified. Not eligible. |
+| CQJ-20260909-0073 | expired | Not eligible. Not treated as closed or verified. |
+
+Eligible launch IDs: none. Dry-run against the live catalog with the current empty production decision table: seen 6798, eligible 0, inserts 0, updates 0, archive 0.
 
 Open `docs/JOBS_REVIEW_QUEUE.html` in a normal browser. `indeed / CQJ-20260909-0097` is local `withhold` and not verified. `CQJ-20260909-0303` and `CQJ-20260909-0071` are local `publish` evidence and still unverified, not a launch batch. The other seven IDs stay undecided.
 
