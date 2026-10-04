@@ -11,6 +11,8 @@ from app.db.session import get_db
 from app.models.user import User
 from app.schemas.job import (
     AdminJobCreate,
+    JobEngagementJob,
+    JobEngagementStudent,
     AdminJobUpdate,
     ImportConfirmRequest,
     ImportConfirmResponse,
@@ -21,6 +23,7 @@ from app.schemas.job import (
     JobSourcePublic,
 )
 from app.services.admin_job_service import AdminJobService
+from app.services.job_service import JobService
 
 router = APIRouter(prefix="/admin/jobs")
 
@@ -29,6 +32,22 @@ MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 
 def _svc(db: AsyncSession = Depends(get_db)) -> AdminJobService:
     return AdminJobService(db)
+
+
+@router.get("/engagement", response_model=list[JobEngagementStudent])
+async def admin_job_engagement(
+    _admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+) -> list[JobEngagementStudent]:
+    return await JobService(db).engagement_summary()
+
+
+@router.get("/engagement/jobs", response_model=list[JobEngagementJob])
+async def admin_job_engagement_jobs(
+    _admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+) -> list[JobEngagementJob]:
+    return await JobService(db).engagement_jobs()
 
 
 @router.get("", response_model=dict)

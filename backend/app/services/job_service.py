@@ -15,6 +15,7 @@ from app.models.job import (
     ApplicationStatusHistory,
     Job,
     JobApplication,
+    JobEngagement,
     JobRoleMap,
     JobSkill,
     SavedJob,
@@ -31,6 +32,8 @@ from app.schemas.job import (
     ApplicationUpdate,
     JobCard,
     JobDetail,
+    JobEngagementJob,
+    JobEngagementStudent,
     JobFamilyCount,
     JobFamilyCounts,
     JobFilterOptions,
@@ -390,6 +393,107 @@ class JobService:
         saved = await self._saved_ids(user.id, [j.id for j in jobs])
         items = [await self._to_card(j, user.id, saved) for j in jobs]
         return JobListResponse(items=items, total=total, page=page, limit=limit)
+
+    async def _job_by_id_or_slug(self, id_or_slug: str) -> Job:
+        job = None
+        try:
+            job = await self.db.get(Job, UUID(id_or_slug))
+        except ValueError:
+            job = (
+                await self.db.execute(select(Job).where(Job.slug == id_or_slug))
+            ).scalar_one_or_none()
+        if job is None:
+            raise AppException("Job not found", status_code=404)
+        return job
+
+    async def record_job_engagement(self, user: User, id_or_slug: str, *, opened: bool, seconds: int) -> None:
+        job = await self._job_by_id_or_slug(id_or_slug)
+        added = min(max(int(seconds), 0), 60)
+        if not opened and added == 0:
+            return
+        now = datetime.now(UTC)
+        row = (
+            await self.db.execute(
+                select(JobEngagement).where(
+                    JobEngagement.user_id == user.id,
+                    JobEngagement.job_id == job.id,
+                )
+            )
+        ).scalar_one_or_none()
+        if row is None:
+            self.db.add(
+                JobEngagement(
+                    id=uuid4(),
+                    user_id=user.id,
+                    job_id=job.id,
+                    open_count=1 if opened else 0,
+                    duration_seconds=added,
+                    first_opened_at=now,
+                    last_opened_at=now,
+                )
+            )
+        else:
+            if opened:
+                row.open_count += 1
+            row.duration_seconds += added
+            row.last_opened_at = now
+        await self.db.commit()
+
+    async def engagement_summary(self) -> list[JobEngagementStudent]:
+        rows = (
+            await self.db.execute(
+                select(
+                    User.email,
+                    User.full_name,
+                    func.count(JobEngagement.job_id),
+                    func.coalesce(func.sum(JobEngagement.open_count), 0),
+                    func.coalesce(func.sum(JobEngagement.duration_seconds), 0),
+                    func.max(JobEngagement.last_opened_at),
+                )
+                .join(JobEngagement, JobEngagement.user_id == User.id)
+                .group_by(User.id)
+                .order_by(func.coalesce(func.sum(JobEngagement.duration_seconds), 0).desc(), User.email)
+            )
+        ).all()
+        return [
+            JobEngagementStudent(
+                email=email,
+                full_name=full_name,
+                jobs_opened=int(jobs),
+                opens=int(opens),
+                duration_seconds=int(seconds),
+                last_opened_at=last_opened,
+            )
+            for email, full_name, jobs, opens, seconds, last_opened in rows
+        ]
+
+    async def engagement_jobs(self) -> list[JobEngagementJob]:
+        rows = (
+            await self.db.execute(
+                select(
+                    User.email,
+                    User.full_name,
+                    Job.title,
+                    JobEngagement.open_count,
+                    JobEngagement.duration_seconds,
+                    JobEngagement.last_opened_at,
+                )
+                .join(JobEngagement, JobEngagement.user_id == User.id)
+                .join(Job, Job.id == JobEngagement.job_id)
+                .order_by(JobEngagement.last_opened_at.desc())
+            )
+        ).all()
+        return [
+            JobEngagementJob(
+                email=email,
+                full_name=full_name,
+                job_title=title,
+                opens=int(opens),
+                duration_seconds=int(seconds),
+                last_opened_at=last_opened,
+            )
+            for email, full_name, title, opens, seconds, last_opened in rows
+        ]
 
     async def get_job(self, user: User, id_or_slug: str) -> JobDetail:
         job = None

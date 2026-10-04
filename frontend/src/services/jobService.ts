@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import { apiEndpoints } from '@/api/config'
+import { apiConfig, apiEndpoints, AUTH_TOKEN_KEY } from '@/api/config'
 import type {
   AdminJobCreate,
   AdminJobListResponse,
@@ -63,6 +63,25 @@ export async function fetchRecommendedJobs(limit = 20) {
     params: { limit },
   })
   return data
+}
+
+export async function recordJobEngagement(
+  jobIdOrSlug: string,
+  payload: { opened: boolean; seconds: number },
+  keepalive = false,
+) {
+  const token = localStorage.getItem(AUTH_TOKEN_KEY)
+  if (!token) return
+  const url = `${apiConfig.baseURL}${apiEndpoints.jobs.engagement(jobIdOrSlug)}`
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+    keepalive,
+  })
 }
 
 export async function fetchJob(jobIdOrSlug: string) {
