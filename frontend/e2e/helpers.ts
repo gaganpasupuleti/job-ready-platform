@@ -323,19 +323,21 @@ export async function registerUser(
 
 export async function logout(page: Page) {
   const logoutBtn = page.getByRole('button', { name: /^logout$/i })
-  if (!(await logoutBtn.isVisible().catch(() => false))) {
-    const profileLogout = page.getByRole('button', { name: /log out/i })
-    await expect(profileLogout, 'Logout control must be present for real sign-out').toBeVisible({
-      timeout: 8_000,
-    })
-    await profileLogout.click()
+  if (await logoutBtn.isVisible().catch(() => false)) {
+    await logoutBtn.click()
     await page.waitForURL(/\/login/, { timeout: 15_000 })
     return
   }
-  await expect(logoutBtn, 'Logout control must be present for real sign-out').toBeVisible({
+  const account = page.getByRole('button', { name: /account menu/i })
+  await expect(account, 'Account menu must be present for sign-out').toBeVisible({
     timeout: 8_000,
   })
-  await logoutBtn.click()
+  await account.click()
+  const signOut = page.getByRole('menuitem', { name: /sign out/i })
+  await expect(signOut, 'Sign out must be present for real sign-out').toBeVisible({
+    timeout: 8_000,
+  })
+  await signOut.click()
   await page.waitForURL(/\/login/, { timeout: 15_000 })
 }
 
@@ -352,11 +354,10 @@ export async function registerUserInApp(
 ) {
   // Client-side navigation only — no page.goto / reload.
   const registerLink = page.getByRole('link', { name: /register|create account|sign up/i }).first()
-  if (await registerLink.count()) {
-    await registerLink.click()
-  } else {
-    await page.getByRole('button', { name: /register|sign up/i }).first().click()
-  }
+  await expect(registerLink, 'Register link must be available after sign-out').toBeVisible({
+    timeout: 15_000,
+  })
+  await registerLink.click()
   await expect(page).toHaveURL(/\/register/)
   await page.getByLabel('Full name').fill(user.fullName ?? 'E2E New Student')
   await page.getByLabel('Email').fill(user.email)

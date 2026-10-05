@@ -4,6 +4,7 @@ import { marked, type Token, type Tokens } from 'marked'
 
 import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
+import { googleDestination, resolveGoogleClientId } from '../src/lib/googleAuth.ts'
 import {
   continuationAction,
   materialKindLabel,
@@ -172,15 +173,28 @@ describe('jobs, readiness, practice counts, and continuation', () => {
     })
     assert.match(unconfigured.summary, /not a personalized match/)
     assert.equal(unconfigured.showPreferencesLink, true)
-    const configured = jobsRecommendationCopy({
+    const fallback = jobsRecommendationCopy({
       preferencesError: false,
       configured: true,
       targetName: 'Data Engineer',
       scored: false,
       hasItems: true,
     })
-    assert.match(configured.summary, /Data Engineer/)
-    assert.equal(configured.showPreferencesLink, false)
+    assert.match(fallback.summary, /recent openings from the catalog/)
+    assert.match(fallback.summary, /not personalized recommendations/)
+    assert.doesNotMatch(fallback.summary, /Data Engineer/)
+    assert.doesNotMatch(fallback.summary, /related to/)
+    assert.equal(fallback.showPreferencesLink, false)
+    const scored = jobsRecommendationCopy({
+      preferencesError: false,
+      configured: true,
+      targetName: 'Data Engineer',
+      scored: true,
+      hasItems: true,
+    })
+    assert.match(scored.summary, /Openings related to Data Engineer/)
+    assert.match(scored.summary, /not a hiring probability/)
+    assert.equal(scored.showPreferencesLink, false)
   })
 
   it('does not turn an unconfigured readiness score or an unknown count into zero', () => {
@@ -322,6 +336,20 @@ describe('review labels and progress figures', () => {
   it('hides global weak topics once a subject filter is active', () => {
     assert.equal(showGlobalWeakTopics('all'), true)
     assert.equal(showGlobalWeakTopics('mcq'), false)
+  })
+
+  it('keeps Google sign-in hidden until a client id is configured', () => {
+    assert.equal(resolveGoogleClientId(undefined, 'e2e-client', true), 'e2e-client')
+    assert.equal(resolveGoogleClientId('  real-client  ', 'e2e-client', true), 'real-client')
+    assert.equal(resolveGoogleClientId('', 'e2e-client', false), '')
+    assert.equal(resolveGoogleClientId(undefined, null, false), '')
+  })
+
+  it('sends a new Google student to preferences and an existing student to from', () => {
+    assert.equal(googleDestination(true, '/practice'), '/jobs/preferences')
+    assert.equal(googleDestination(false, '/practice'), '/practice')
+    assert.equal(googleDestination(false, null), '/jobs')
+    assert.equal(googleDestination(false, '//evil.example'), '/jobs')
   })
 
   it('does not turn a missing progress figure into zero', () => {

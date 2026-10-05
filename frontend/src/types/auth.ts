@@ -12,6 +12,7 @@ export interface AuthResponse {
   user: User
   access_token: string
   token_type: string
+  is_new_user?: boolean
 }
 
 export interface LoginPayload {

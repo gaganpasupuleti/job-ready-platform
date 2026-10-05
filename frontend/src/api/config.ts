@@ -14,6 +14,7 @@ export const apiEndpoints = {
   auth: {
     register: '/api/v1/auth/register',
     login: '/api/v1/auth/login',
+    google: '/api/v1/auth/google',
     me: '/api/v1/auth/me',
     logout: '/api/v1/auth/logout',
   },
