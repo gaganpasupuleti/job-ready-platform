@@ -12,6 +12,7 @@ export const apiEndpoints = {
   health: '/api/v1/health',
   modules: '/api/v1/modules',
   auth: {
+    config: '/api/v1/auth/config',
     register: '/api/v1/auth/register',
     login: '/api/v1/auth/login',
     google: '/api/v1/auth/google',

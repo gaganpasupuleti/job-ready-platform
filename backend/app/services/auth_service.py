@@ -1,5 +1,3 @@
-import re
-
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,6 +16,7 @@ from app.schemas.auth import (
     RegisterRequest,
     UserResponse,
 )
+from app.services.auth_policy import GOOGLE_ACCESS_DENIED, password_login_permitted
 from app.services.auth_throttle import (
     assert_login_allowed,
     clear_login_failures,
@@ -25,19 +24,7 @@ from app.services.auth_throttle import (
 )
 from app.services.google_identity import GoogleProfile, GoogleTokenError, verify_google_id_token
 
-_USERNAME_BREAKS = re.compile(r"[^a-z0-9]+")
 _GOOGLE = "google"
-
-
-def username_base(email: str, full_name: str | None) -> str:
-    local = email.split("@", 1)[0].lower()
-    raw = _USERNAME_BREAKS.sub("", local)
-    if len(raw) < 3 and full_name:
-        raw = _USERNAME_BREAKS.sub("", full_name.lower())
-    raw = raw[:80]
-    if len(raw) < 3:
-        raw = (raw + "student")[:12]
-    return raw
 
 
 class AuthService:
@@ -74,6 +61,8 @@ class AuthService:
         if user is None or not password_ok:
             await record_failed_login(email)
             raise AppException("Invalid email or password", status_code=401)
+        if not password_login_permitted(user.email, user.role):
+            raise AppException("Invalid email or password", status_code=401)
         if not user.is_active:
             raise AppException("Account is inactive", status_code=403)
 
@@ -96,17 +85,15 @@ class AuthService:
             return self._auth_response(user, is_new_user=False)
 
         existing = await self.users.get_by_email(profile.email)
-        if existing is not None:
-            self._require_active_student(existing)
-            linked = await self._identity_for_user(existing.id)
-            if linked is not None and linked.provider_subject != profile.subject:
-                raise AppException("Google sign-in failed", status_code=409)
-            if linked is None:
-                await self._attach_identity(existing, profile)
-            return self._auth_response(existing, is_new_user=False)
-
-        user = await self._create_google_student(profile)
-        return self._auth_response(user, is_new_user=True)
+        if existing is None:
+            raise AppException(GOOGLE_ACCESS_DENIED, status_code=403)
+        self._require_active_student(existing)
+        linked = await self._identity_for_user(existing.id)
+        if linked is not None and linked.provider_subject != profile.subject:
+            raise AppException("Google sign-in failed", status_code=409)
+        if linked is None:
+            await self._attach_identity(existing, profile)
+        return self._auth_response(existing, is_new_user=False)
 
     async def me(self, user: User) -> UserResponse:
         return UserResponse.model_validate(user)
@@ -160,48 +147,3 @@ class AuthService:
             await self.db.rollback()
             raise AppException("Google sign-in failed", status_code=409) from None
 
-    async def _allocate_username(self, email: str, full_name: str | None) -> str:
-        base = username_base(email, full_name)
-        candidate = base
-        number = 2
-        while await self.users.get_by_username(candidate):
-            suffix = str(number)
-            candidate = f"{base[: 100 - len(suffix)]}{suffix}"
-            number += 1
-            if number > 1000:
-                raise AppException("Could not create an account", status_code=500)
-        return candidate
-
-    async def _create_google_student(self, profile: GoogleProfile) -> User:
-        username = await self._allocate_username(profile.email, profile.name)
-        user = User(
-            email=profile.email,
-            username=username,
-            full_name=profile.name,
-            password_hash=None,
-            role=UserRole.STUDENT,
-            is_active=True,
-        )
-        self.db.add(user)
-        await self.db.flush()
-        self.db.add(
-            UserAuthIdentity(
-                user_id=user.id,
-                provider=_GOOGLE,
-                provider_subject=profile.subject,
-            )
-        )
-        try:
-            await self.db.commit()
-        except IntegrityError:
-            await self.db.rollback()
-            identity = await self._identity_by_subject(profile.subject)
-            if identity is None:
-                existing = await self.users.get_by_email(profile.email)
-                self._require_active_student(existing)
-                return existing
-            found = await self.users.get_by_id(identity.user_id)
-            self._require_active_student(found)
-            return found
-        await self.db.refresh(user)
-        return user

@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \
-    && python -c "import email_validator, bcrypt; print('deps-ok', email_validator.__version__, bcrypt.__version__)"
+    && python -c "import email_validator, bcrypt; from google.auth.transport import requests as google_requests; print('deps-ok', email_validator.__version__, bcrypt.__version__, google_requests.__name__)"
 
 COPY . .
 

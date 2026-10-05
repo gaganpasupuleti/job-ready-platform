@@ -6,12 +6,14 @@ import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
 import { FieldLabel, Input } from '@/components/common/Field'
 import { useAuth } from '@/hooks/useAuth'
+import { useRegistrationOpen } from '@/hooks/useRegistrationOpen'
 import { JOBS_HOME, JOBS_ONBOARDING_KEY } from '@/components/navigation/navConfig'
 import { googleDestination } from '@/lib/googleAuth'
 import { DEV_AUTO_LOGIN } from '@/mocks/dev-auth'
 
 export function LoginPage() {
   const { login, loginWithGoogle } = useAuth()
+  const registration = useRegistrationOpen()
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState(DEV_AUTO_LOGIN?.email ?? '')
@@ -114,12 +116,14 @@ export function LoginPage() {
               {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
-          <p className="mt-5 text-center text-xs text-[var(--color-text-muted)]">
-            No account?{' '}
-            <Link to="/register" className="font-medium text-[var(--color-accent)] hover:underline">
-              Register
-            </Link>
-          </p>
+          {registration.open && (
+            <p className="mt-5 text-center text-xs text-[var(--color-text-muted)]">
+              No account?{' '}
+              <Link to="/register" className="font-medium text-[var(--color-accent)] hover:underline">
+                Register
+              </Link>
+            </p>
+          )}
         </section>
       </div>
     </div>

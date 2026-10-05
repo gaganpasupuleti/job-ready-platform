@@ -6,6 +6,7 @@ import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
 import { JOBS_HOME, JOBS_ONBOARDING_KEY, JOBS_PREFERENCES } from '@/components/navigation/navConfig'
 import { useAuth } from '@/hooks/useAuth'
+import { useRegistrationOpen } from '@/hooks/useRegistrationOpen'
 import { googleDestination } from '@/lib/googleAuth'
 
 const FIELD_META = {
@@ -17,6 +18,7 @@ const FIELD_META = {
 
 export function RegisterPage() {
   const { register, loginWithGoogle } = useAuth()
+  const registration = useRegistrationOpen()
   const navigate = useNavigate()
   const [form, setForm] = useState({
     email: '',
@@ -59,6 +61,26 @@ export function RegisterPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (registration.pending || !registration.open) {
+    return (
+      <div className="flex min-h-full items-center justify-center bg-[var(--color-surface-muted)] p-4">
+        <Card className="w-full max-w-md" padding="lg">
+          <h1 className="text-xl font-semibold text-[var(--color-text)]">
+            {registration.pending ? 'Checking registration' : 'Registration is closed'}
+          </h1>
+          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+            {registration.pending ? 'Loading...' : 'Account creation is unavailable. Contact your instructor.'}
+          </p>
+          <p className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
+            <Link to="/login" className="text-[var(--color-accent)] hover:underline">
+              Sign in
+            </Link>
+          </p>
+        </Card>
+      </div>
+    )
   }
 
   return (
