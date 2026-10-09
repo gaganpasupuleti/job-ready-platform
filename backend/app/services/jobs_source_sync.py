@@ -17,7 +17,7 @@ from typing import Any
 from urllib.parse import urlparse
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.job import Job, JobPublicationDecision, JobSource
@@ -431,6 +431,37 @@ def _join(values: list[str]) -> str | None:
     return "\n".join(values) if values else None
 
 
+def mark_withdrawn(job: Job) -> None:
+    """Archive one integration-owned job and hide it. Does not delete related rows."""
+    job.status = JobStatus.ARCHIVED
+    job.is_active = False
+
+
+def eligible_source_identities(
+    rows: list[SourceJob],
+    decisions: dict[str, str] | None = None,
+) -> set[str]:
+    """External ids that the current complete snapshot would keep visible."""
+    chosen = decisions or {}
+    return {
+        source_identity(row.job_id)
+        for row in rows
+        if not exclusion_reasons(row, chosen.get(decision_key(row.source, row.job_id)))
+    }
+
+
+ARCHIVED_ACTIVE_REPAIR_SQL = (
+    "UPDATE jobs SET is_active = false WHERE status = 'archived' AND is_active IS TRUE"
+)
+
+
+async def repair_archived_active_flags(db: AsyncSession) -> int:
+    """Clear is_active on archived rows only. Does not change status or republish."""
+    result = await db.execute(text(ARCHIVED_ACTIVE_REPAIR_SQL))
+    await db.commit()
+    return int(result.rowcount or 0)
+
+
 async def apply_plan(db: AsyncSession, plan: SyncPlan) -> ApplyResult:
     """Write a complete nonempty plan. An empty or failed fetch must not be applied.
 
@@ -455,8 +486,7 @@ async def apply_plan(db: AsyncSession, plan: SyncPlan) -> ApplyResult:
             if not integration_owned(job.external_id):
                 skipped_foreign += 1
                 continue
-            job.status = JobStatus.ARCHIVED
-            job.is_active = False
+            mark_withdrawn(job)
             archived += 1
     await db.commit()
     return ApplyResult(
