@@ -97,6 +97,11 @@ class Settings(BaseSettings):
 
     # Google Identity Services ID-token audience. Not a client secret.
     google_client_id: str = ""
+    # None follows app_env: closed in production, open in development and test.
+    public_registration_enabled: bool | None = None
+    # Comma-separated emails. Admin can always use a password. In production an
+    # empty list blocks every non-admin password login.
+    password_login_emails: str = ""
 
     # Login abuse controls (Redis-backed; process-local fallback if Redis unavailable)
     login_max_failures: int = 10

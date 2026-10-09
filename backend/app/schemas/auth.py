@@ -48,3 +48,7 @@ class AuthResponse(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+
+
+class AuthConfigResponse(BaseModel):
+    public_registration_enabled: bool

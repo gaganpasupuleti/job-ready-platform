@@ -4,6 +4,7 @@ import { marked, type Token, type Tokens } from 'marked'
 
 import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
+import { canOfferRegistration } from '../src/lib/authPolicy.ts'
 import { googleDestination, resolveGoogleClientId } from '../src/lib/googleAuth.ts'
 import {
   continuationAction,
@@ -336,6 +337,13 @@ describe('review labels and progress figures', () => {
   it('hides global weak topics once a subject filter is active', () => {
     assert.equal(showGlobalWeakTopics('all'), true)
     assert.equal(showGlobalWeakTopics('mcq'), false)
+  })
+
+  it('offers registration only when the API says it is open', () => {
+    assert.equal(canOfferRegistration(true), true)
+    assert.equal(canOfferRegistration(false), false)
+    assert.equal(canOfferRegistration(undefined), false)
+    assert.equal(canOfferRegistration(null), false)
   })
 
   it('keeps Google sign-in hidden until a client id is configured', () => {

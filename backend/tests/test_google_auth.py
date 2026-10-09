@@ -8,6 +8,7 @@ from app.db.session import AsyncSessionLocal
 from app.models.auth_identity import UserAuthIdentity
 from app.models.enums import UserRole
 from app.models.user import User
+from app.services.auth_policy import GOOGLE_ACCESS_DENIED, REGISTRATION_CLOSED
 from app.services.google_identity import GoogleProfile, GoogleTokenError, verify_google_id_token
 
 
@@ -32,6 +33,12 @@ def _decode_factory(claims=None, error: GoogleTokenError | None = None):
         return claims or _claims()
 
     return decode
+
+
+def test_google_token_transport_is_installed():
+    from google.auth.transport import requests as google_requests
+
+    assert google_requests.Request is not None
 
 
 @pytest.mark.asyncio
@@ -108,32 +115,28 @@ async def _user_count(email: str) -> int:
         return int(result.scalar_one())
 
 
+async def _identity_count(subject: str) -> int:
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(
+            select(func.count())
+            .select_from(UserAuthIdentity)
+            .where(UserAuthIdentity.provider_subject == subject)
+        )
+        return int(result.scalar_one())
+
+
 @pytest.mark.asyncio
-async def test_google_signup_creates_student_and_reuses_subject(client, google_ready):
+async def test_google_does_not_create_accounts(client, google_ready):
     email = f"google_{uuid.uuid4().hex[:8]}@example.com"
     subject = f"sub-new-{uuid.uuid4().hex}"
     google_ready(GoogleProfile(subject=subject, email=email, name="Ada Lovelace"))
 
-    created = await client.post("/api/v1/auth/google", json={"credential": "aaa.bbb.ccc"})
-    assert created.status_code == 200, created.text
-    body = created.json()
-    assert body["is_new_user"] is True
-    assert body["user"]["role"] == "student"
-    assert body["user"]["email"] == email
-    assert body["access_token"]
-    assert body["user"]["username"]
-
-    again = await client.post("/api/v1/auth/google", json={"credential": "aaa.bbb.ccc"})
-    assert again.status_code == 200
-    assert again.json()["is_new_user"] is False
-    assert again.json()["user"]["id"] == body["user"]["id"]
-    assert await _user_count(email) == 1
-
-    password = await client.post(
-        "/api/v1/auth/login",
-        json={"email": email, "password": "whatever-password"},
-    )
-    assert password.status_code == 401
+    rejected = await client.post("/api/v1/auth/google", json={"credential": "aaa.bbb.ccc"})
+    assert rejected.status_code == 403, rejected.text
+    assert rejected.json()["detail"] == GOOGLE_ACCESS_DENIED
+    assert "access_token" not in rejected.json()
+    assert await _user_count(email) == 0
+    assert await _identity_count(subject) == 0
 
 
 @pytest.mark.asyncio
@@ -152,15 +155,21 @@ async def test_google_links_existing_verified_email_without_duplicate(client, go
     assert registered.status_code == 200, registered.text
     user_id = registered.json()["user"]["id"]
 
-    google_ready(
-        GoogleProfile(subject=f"sub-link-{uuid.uuid4().hex}", email=email, name="Existing Student")
-    )
+    subject = f"sub-link-{uuid.uuid4().hex}"
+    google_ready(GoogleProfile(subject=subject, email=email, name="Existing Student"))
     linked = await client.post("/api/v1/auth/google", json={"credential": "aaa.bbb.ccc"})
     assert linked.status_code == 200, linked.text
     assert linked.json()["user"]["id"] == user_id
     assert linked.json()["is_new_user"] is False
     assert linked.json()["user"]["role"] == "student"
     assert await _user_count(email) == 1
+    assert await _identity_count(subject) == 1
+
+    again = await client.post("/api/v1/auth/google", json={"credential": "aaa.bbb.ccc"})
+    assert again.status_code == 200, again.text
+    assert again.json()["user"]["id"] == user_id
+    assert again.json()["is_new_user"] is False
+    assert await _identity_count(subject) == 1
 
     password = await client.post(
         "/api/v1/auth/login",
@@ -176,8 +185,9 @@ async def test_google_rejects_bad_tokens_and_cannot_grant_admin(client, google_r
         GoogleProfile(subject=f"sub-admin-{uuid.uuid4().hex}", email=email, name="Nope")
     )
     created = await client.post("/api/v1/auth/google", json={"credential": "aaa.bbb.ccc"})
-    assert created.status_code == 200
-    assert created.json()["user"]["role"] == UserRole.STUDENT.value
+    assert created.status_code == 403
+    assert "access_token" not in created.json()
+    assert await _user_count(email) == 0
 
     rejected_credentials = (
         "bad-signature",
@@ -246,12 +256,16 @@ async def test_google_does_not_link_or_login_non_student(client, google_ready):
 
 @pytest.mark.asyncio
 async def test_google_inactive_account_stays_blocked(client, google_ready):
-    email = f"inactive_{uuid.uuid4().hex[:8]}@example.com"
+    suffix = uuid.uuid4().hex[:8]
+    email = f"inactive_{suffix}@example.com"
+    registered = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "username": f"inactive_{suffix}", "password": "Password123!"},
+    )
+    assert registered.status_code == 200, registered.text
     google_ready(
         GoogleProfile(subject=f"sub-inactive-{uuid.uuid4().hex}", email=email, name="Inactive")
     )
-    created = await client.post("/api/v1/auth/google", json={"credential": "aaa.bbb.ccc"})
-    assert created.status_code == 200
     async with AsyncSessionLocal() as db:
         user = (await db.execute(select(User).where(User.email == email))).scalar_one()
         user.is_active = False
@@ -278,3 +292,70 @@ async def test_google_unconfigured_does_not_break_password_login(client, monkeyp
         json={"email": email, "password": "Password123!"},
     )
     assert login.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_public_registration_can_be_closed_and_reopened(client, monkeypatch):
+    suffix = uuid.uuid4().hex[:8]
+    payload = {
+        "email": f"closed_{suffix}@example.com",
+        "username": f"closed_{suffix}",
+        "password": "Password123!",
+    }
+    monkeypatch.setattr(settings, "public_registration_enabled", False)
+    closed = await client.post("/api/v1/auth/register", json=payload)
+    assert closed.status_code == 403, closed.text
+    assert closed.json()["detail"] == REGISTRATION_CLOSED
+    assert "access_token" not in closed.json()
+    assert await _user_count(payload["email"]) == 0
+    config = await client.get("/api/v1/auth/config")
+    assert config.status_code == 200
+    assert config.json()["public_registration_enabled"] is False
+
+    monkeypatch.setattr(settings, "public_registration_enabled", True)
+    opened = await client.post("/api/v1/auth/register", json=payload)
+    assert opened.status_code == 200, opened.text
+    assert opened.json()["user"]["role"] == "student"
+    assert await _user_count(payload["email"]) == 1
+
+
+@pytest.mark.asyncio
+async def test_password_login_is_limited_to_admin_and_approved_emails(client, monkeypatch):
+    suffix = uuid.uuid4().hex[:8]
+    ordinary = f"ordinary_{suffix}@example.com"
+    approved = f"approved_{suffix}@example.com"
+    admin_email = f"adminpw_{suffix}@example.com"
+    password = "Password123!"
+    for email, username in (
+        (ordinary, f"ordinary_{suffix}"),
+        (approved, f"approved_{suffix}"),
+        (admin_email, f"adminpw_{suffix}"),
+    ):
+        created = await client.post(
+            "/api/v1/auth/register",
+            json={"email": email, "username": username, "password": password},
+        )
+        assert created.status_code == 200, created.text
+
+    async with AsyncSessionLocal() as db:
+        admin = (await db.execute(select(User).where(User.email == admin_email))).scalar_one()
+        admin.role = UserRole.ADMIN
+        await db.commit()
+
+    monkeypatch.setattr(settings, "app_env", "production")
+    monkeypatch.setattr(settings, "password_login_emails", approved)
+
+    blocked = await client.post("/api/v1/auth/login", json={"email": ordinary, "password": password})
+    assert blocked.status_code == 401, blocked.text
+    assert "access_token" not in blocked.json()
+
+    allowed = await client.post("/api/v1/auth/login", json={"email": approved, "password": password})
+    assert allowed.status_code == 200, allowed.text
+    assert allowed.json()["user"]["role"] == "student"
+
+    admin_login = await client.post(
+        "/api/v1/auth/login",
+        json={"email": admin_email, "password": password},
+    )
+    assert admin_login.status_code == 200, admin_login.text
+    assert admin_login.json()["user"]["role"] == "admin"
