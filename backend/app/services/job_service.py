@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from uuid import UUID, uuid4
 
@@ -48,6 +48,7 @@ from app.schemas.job import (
     SavedJobItem,
 )
 from app.services.job_match_service import JobMatchService
+from app.services.job_portal_dates import added_window
 from app.services.job_normalization import validate_url
 from app.services.job_taxonomy import (
     EXPERIENCE_BUCKETS,
@@ -64,6 +65,17 @@ def _utcnow() -> datetime:
 def _not_expired():
     """Student browse hides listings whose recorded expiry is already past."""
     return or_(Job.expires_at.is_(None), Job.expires_at >= _utcnow())
+
+
+def _added_bounds(
+    added_within: str | None,
+    added_from: date | None,
+    added_to: date | None,
+) -> tuple[datetime | None, datetime | None]:
+    try:
+        return added_window(added_within, added_from, added_to)
+    except ValueError as exc:
+        raise AppException(str(exc), status_code=422) from exc
 
 
 class JobService:
@@ -157,6 +169,7 @@ class JobService:
             experience_min_years=job.experience_min_years,
             experience_max_years=job.experience_max_years,
             posted_at=job.posted_at,
+            first_seen_at=job.first_seen_at,
             status=job.status,
             is_remote=job.is_remote,
             top_skills=list(skills),
@@ -179,6 +192,8 @@ class JobService:
         employment_type: str | None = None,
         experience_min: int | None = None,
         posted_within_days: int | None = None,
+        added_start: datetime | None = None,
+        added_end: datetime | None = None,
         role_family: str | None = None,
         location: str | None = None,
         experience_bucket: str | None = None,
@@ -222,8 +237,16 @@ class JobService:
                 or_(Job.experience_min_years.is_(None), Job.experience_min_years <= experience_min)
             )
         if posted_within_days:
+            # Employer posting date. A null posted_at is excluded, not treated as old.
             cutoff = _utcnow() - timedelta(days=posted_within_days)
             stmt = stmt.where(Job.posted_at.is_not(None), Job.posted_at >= cutoff)
+        if added_start is not None or added_end is not None:
+            # Portal ingestion date. A null first_seen_at is excluded, not treated as old.
+            stmt = stmt.where(Job.first_seen_at.is_not(None))
+            if added_start is not None:
+                stmt = stmt.where(Job.first_seen_at >= added_start)
+            if added_end is not None:
+                stmt = stmt.where(Job.first_seen_at < added_end)
         location_name = catalog_text(location)
         if location_name:
             stmt = stmt.where(func.lower(func.trim(Job.location_text)) == location_name.lower())
@@ -249,9 +272,22 @@ class JobService:
             stmt = stmt.where(Job.id.in_(skill_ids))
         return stmt.distinct()
 
-    async def family_counts(self, **filters) -> JobFamilyCounts:
+    async def family_counts(
+        self,
+        *,
+        added_within: str | None = None,
+        added_from: date | None = None,
+        added_to: date | None = None,
+        **filters,
+    ) -> JobFamilyCounts:
         """Counts ignore the selected family so every pill stays comparable."""
-        ids = self._browse_ids(**filters, apply_family=False).subquery()
+        added_start, added_end = _added_bounds(added_within, added_from, added_to)
+        ids = self._browse_ids(
+            **filters,
+            added_start=added_start,
+            added_end=added_end,
+            apply_family=False,
+        ).subquery()
         total = int(await self.db.scalar(select(func.count()).select_from(ids)) or 0)
         grouped = (
             await self.db.execute(
@@ -350,6 +386,9 @@ class JobService:
         employment_type: str | None = None,
         experience_min: int | None = None,
         posted_within_days: int | None = None,
+        added_within: str | None = None,
+        added_from: date | None = None,
+        added_to: date | None = None,
         role_family: str | None = None,
         location: str | None = None,
         experience_bucket: str | None = None,
@@ -359,6 +398,7 @@ class JobService:
     ) -> JobListResponse:
         limit = min(max(limit, 1), 50)
         page = max(page, 1)
+        added_start, added_end = _added_bounds(added_within, added_from, added_to)
         ids = self._browse_ids(
             q=q,
             role=role,
@@ -372,6 +412,8 @@ class JobService:
             employment_type=employment_type,
             experience_min=experience_min,
             posted_within_days=posted_within_days,
+            added_start=added_start,
+            added_end=added_end,
             role_family=role_family,
             location=location,
             experience_bucket=experience_bucket,
@@ -571,6 +613,7 @@ class JobService:
             source_url=job.source_url,
             apply_url=job.apply_url,
             posted_at=job.posted_at,
+            first_seen_at=job.first_seen_at,
             expires_at=job.expires_at,
             last_seen_at=job.last_seen_at,
             status=job.status,

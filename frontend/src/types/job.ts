@@ -44,6 +44,7 @@ export interface JobCard {
   experience_min_years: number | null
   experience_max_years: number | null
   posted_at: string | null
+  first_seen_at?: string | null
   status: JobStatus
   is_remote: boolean | null
   top_skills: string[]
@@ -93,6 +94,7 @@ export interface JobDetail {
   source_url: string | null
   apply_url: string | null
   posted_at: string | null
+  first_seen_at?: string | null
   expires_at: string | null
   last_seen_at: string | null
   status: JobStatus
@@ -351,6 +353,9 @@ export interface JobListFilters {
   employment_type?: string
   experience_min?: number
   posted_within_days?: number
+  added_within?: string
+  added_from?: string
+  added_to?: string
   sort?: string
   page?: number
   limit?: number

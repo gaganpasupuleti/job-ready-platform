@@ -47,6 +47,7 @@ class JobCard(BaseModel):
     experience_min_years: int | None = None
     experience_max_years: int | None = None
     posted_at: datetime | None = None
+    first_seen_at: datetime | None = None
     status: JobStatus
     is_remote: bool | None = None
     top_skills: list[str] = []
@@ -114,6 +115,7 @@ class JobDetail(BaseModel):
     source_url: str | None = None
     apply_url: str | None = None
     posted_at: datetime | None = None
+    first_seen_at: datetime | None = None
     expires_at: datetime | None = None
     last_seen_at: datetime | None = None
     status: JobStatus

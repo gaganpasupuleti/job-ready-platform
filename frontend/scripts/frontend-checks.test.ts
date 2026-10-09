@@ -5,6 +5,7 @@ import { marked, type Token, type Tokens } from 'marked'
 import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
 import { canOfferRegistration } from '../src/lib/authPolicy.ts'
+import { addedToJobReadyLabel, employerPostedLabel, isPortalDate, portalAddedParams } from '../src/lib/jobPortalDates.ts'
 import { googleDestination, resolveGoogleClientId } from '../src/lib/googleAuth.ts'
 import {
   continuationAction,
@@ -365,5 +366,42 @@ describe('review labels and progress figures', () => {
     assert.equal(knownCount(0), '0')
     assert.equal(knownPercent(null), null)
     assert.equal(knownPercent(20), '20%')
+  })
+})
+
+describe('portal ingestion dates', () => {
+  it('keeps employer posting dates separate and does not invent a date', () => {
+    assert.equal(employerPostedLabel(null), 'Employer posting date unavailable')
+    assert.equal(employerPostedLabel(''), 'Employer posting date unavailable')
+    assert.equal(employerPostedLabel('not-a-date'), 'Employer posting date unavailable')
+    assert.match(employerPostedLabel('2026-10-09T07:20:00Z'), /^Employer posted /)
+    assert.equal(addedToJobReadyLabel(null), 'Added to JobReady date unavailable')
+    assert.equal(addedToJobReadyLabel(undefined), 'Added to JobReady date unavailable')
+    assert.match(addedToJobReadyLabel('2026-10-09T07:20:00Z'), /^Added to JobReady /)
+  })
+
+  it('sends a preset or a custom range, never both', () => {
+    assert.deepEqual(portalAddedParams('today', '2026-10-01', '2026-10-03'), {
+      added_within: 'today',
+      added_from: undefined,
+      added_to: undefined,
+    })
+    assert.deepEqual(portalAddedParams('custom', '2026-10-01', '2026-10-03'), {
+      added_within: undefined,
+      added_from: '2026-10-01',
+      added_to: '2026-10-03',
+    })
+    assert.deepEqual(portalAddedParams('custom', 'yesterday', '2026-10-03'), {
+      added_within: undefined,
+      added_from: undefined,
+      added_to: '2026-10-03',
+    })
+    assert.deepEqual(portalAddedParams('', '2026-10-01', '2026-10-03'), {
+      added_within: undefined,
+      added_from: undefined,
+      added_to: undefined,
+    })
+    assert.equal(isPortalDate('2026-10-09'), true)
+    assert.equal(isPortalDate('2026-10-09T00:00:00Z'), false)
   })
 })

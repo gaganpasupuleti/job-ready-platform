@@ -5,6 +5,7 @@ import { Bookmark } from 'lucide-react'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
+import { addedToJobReadyLabel, employerPostedLabel } from '@/lib/jobPortalDates'
 import { humanLabel } from '@/lib/studentLabels'
 import type { JobCard } from '@/types/job'
 
@@ -82,11 +83,8 @@ export function JobCardView({
         <p className="text-xs text-[var(--color-text-muted)]">Not enough mapped requirements</p>
       )}
 
-      {job.posted_at && (
-        <p className="text-xs text-[var(--color-text-muted)]">
-          Posted {new Date(job.posted_at).toLocaleDateString()}
-        </p>
-      )}
+      <p className="text-xs text-[var(--color-text-muted)]">{addedToJobReadyLabel(job.first_seen_at)}</p>
+      <p className="text-xs text-[var(--color-text-muted)]">{employerPostedLabel(job.posted_at)}</p>
       {job.top_skills.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {job.top_skills.slice(0, 5).map((skill) => (
