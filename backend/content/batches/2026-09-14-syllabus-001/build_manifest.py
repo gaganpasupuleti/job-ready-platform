@@ -35,6 +35,7 @@ def main() -> None:
             "Published lessons only. Coming-soon rows have no empty article pages.",
             "YouTube recommendations omitted; see VIDEO_GAPS.md.",
             "Mark-as-read remains reading progress only.",
+            "Version 2 updates the six published articles with reviewed same-origin diagrams. Content keys stay the same.",
         ],
         "items": items,
     }

@@ -1,6 +1,14 @@
 # Time complexity with big-O
 
+## Understand
+
 Big-O describes how the number of steps grows as the input size \(n\) grows. It is a statement about growth, not about the exact millisecond time on one machine.
+
+## Visualize
+
+![Grouped bars comparing a single pass of n steps with pair counts of 1, 6, and 28 at n = 2, 4, and 8](/learning-visuals/dsa/complexity-growth.svg "A single pass grows with n. Pair counting is n(n−1)/2: 1, 6, and 28 steps at n = 2, 4, and 8.")
+
+At n = 2 the pair count is still small. By n = 8 it is 28, while one pass over the input is 8.
 
 ## Learning objectives
 
@@ -8,7 +16,9 @@ Big-O describes how the number of steps grows as the input size \(n\) grows. It 
 - Distinguish constant, linear, and quadratic growth.
 - Use a trace table to justify a big-O claim without a coding provider.
 
-## Worked example
+## Walk through
+
+Worked example.
 
 ```text
 COUNT_PAIRS(A):
@@ -28,6 +38,8 @@ Outer loop runs about \(n\) times. Inner loop length shrinks, but the total pair
 | 8 | 28 | still ~n² |
 
 A single loop that visits each element once is \(O(n)\). Two independent nested loops over the full range are \(O(n^2)\).
+
+## Review
 
 ## Common mistakes
 

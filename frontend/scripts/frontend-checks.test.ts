@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import path from 'node:path'
 import { describe, it } from 'node:test'
 import { marked, type Token, type Tokens } from 'marked'
+
+import { approvedLearningImageSrc, learningSvgIsStatic } from '../src/lib/learningVisuals.ts'
 
 import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
@@ -403,5 +407,68 @@ describe('portal ingestion dates', () => {
     })
     assert.equal(isPortalDate('2026-10-09'), true)
     assert.equal(isPortalDate('2026-10-09T00:00:00Z'), false)
+  })
+})
+
+describe('learning visuals', () => {
+  it('accepts approved svg, png, and webp paths only', () => {
+    assert.equal(
+      approvedLearningImageSrc('/learning-visuals/dsa/binary-search.svg'),
+      '/learning-visuals/dsa/binary-search.svg',
+    )
+    assert.equal(
+      approvedLearningImageSrc('/learning-visuals/crt/format-check.png'),
+      '/learning-visuals/crt/format-check.png',
+    )
+    assert.equal(
+      approvedLearningImageSrc('/learning-visuals/mcq/format-check.webp'),
+      '/learning-visuals/mcq/format-check.webp',
+    )
+    assert.equal(approvedLearningImageSrc('/learning-visuals/interviews/intro.svg'), '/learning-visuals/interviews/intro.svg')
+    for (const blocked of [
+      'javascript:alert(1)',
+      'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+      '//cdn.example/diagram.svg',
+      'https://cdn.example/diagram.svg',
+      '/learning-visuals/../secret.svg',
+      '/learning-visuals/crt/%2e%2e/secret.svg',
+      '/learning-visuals/crt/percentages-quarter.svg/../../secret.svg',
+      '/learning-visuals/other/diagram.svg',
+      '/learning-visuals/crt/diagram.gif',
+      '/etc/passwd',
+      'file:///tmp/diagram.svg',
+      'blob:https://jobready.local/1',
+    ]) {
+      assert.equal(approvedLearningImageSrc(blocked), null, blocked)
+    }
+  })
+
+  it('reads a caption from an image token without enabling html', () => {
+    const tokens = marked.lexer(
+      '## Visualize\n\n![Quarter of a price](/learning-visuals/crt/percentages-quarter.svg "25% of 240 is 60")\n\n| Step | Result |\n| --- | --- |\n| Sale | 180 |\n\n```text\n240 - 60 = 180\n```\n\n<script>alert(1)</script>',
+      { gfm: true },
+    )
+    const image = tokens.flatMap((token) => (token.type === 'paragraph' ? token.tokens ?? [] : [])).find((token) => token.type === 'image') as Tokens.Image
+    assert.equal(image.text, 'Quarter of a price')
+    assert.equal(approvedLearningImageSrc(image.href), '/learning-visuals/crt/percentages-quarter.svg')
+    assert.equal(image.title, '25% of 240 is 60')
+    assert.equal(tokens.some((token) => token.type === 'table'), true)
+    assert.equal(tokens.some((token) => token.type === 'code'), true)
+    assert.equal(tokens.some((token) => token.type === 'html'), true)
+    assert.equal(tokens.some((token) => token.type === 'heading'), true)
+  })
+
+  it('rejects active content in shipped diagrams', () => {
+    const root = path.resolve('public/learning-visuals')
+    const files = fs.readdirSync(root, { recursive: true, encoding: 'utf8' }).filter((name) => String(name).endsWith('.svg'))
+    assert.equal(files.length, 6)
+    for (const file of files) {
+      const source = fs.readFileSync(path.join(root, String(file)), 'utf8')
+      assert.equal(learningSvgIsStatic(source), true, String(file))
+    }
+    assert.equal(learningSvgIsStatic('<svg><script>alert(1)</script></svg>'), false)
+    assert.equal(learningSvgIsStatic('<svg><foreignObject></foreignObject></svg>'), false)
+    assert.equal(learningSvgIsStatic('<svg onload="alert(1)"></svg>'), false)
+    assert.equal(learningSvgIsStatic('<svg xmlns="http://www.w3.org/2000/svg" href="https://evil.example/a.svg"></svg>'), false)
   })
 })

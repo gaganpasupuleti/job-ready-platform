@@ -24,7 +24,7 @@
       "summary": "Percent means per hundred. Multiply once, then add or subtract as the sentence asks.",
       "sources": [],
       "body_file": "articles/crt-quant-percentages.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "crt-logical-patterns",
@@ -50,7 +50,7 @@
       "summary": "Write the rule, check every step, then predict the next term.",
       "sources": [],
       "body_file": "articles/crt-logical-patterns.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "crt-verbal-meaning",
@@ -76,7 +76,7 @@
       "summary": "Preserve meaning. Do not import facts the sentence never stated.",
       "sources": [],
       "body_file": "articles/crt-verbal-meaning.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "crt-di-tables",
@@ -102,7 +102,7 @@
       "summary": "Confirm the unit of each column, sum, then divide.",
       "sources": [],
       "body_file": "articles/crt-di-tables.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "dsa-complexity",
@@ -128,7 +128,7 @@
       "summary": "Big-O describes growth with n, not one laptop's clock time.",
       "sources": [],
       "body_file": "articles/dsa-complexity.md",
-      "version": 1
+      "version": 2
     },
     {
       "key": "dsa-arrays-strings",
@@ -155,7 +155,7 @@
       "summary": "Walk the sequence once, keep an invariant, and fill a tiny trace table.",
       "sources": [],
       "body_file": "articles/dsa-arrays-strings.md",
-      "version": 1
+      "version": 2
     }
   ]
 }

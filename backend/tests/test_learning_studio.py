@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from app.content.studio_batch import load_batch, plan
+from app.content.studio_batch import apply_batch, load_batch, plan
 
 
 BATCH = Path(__file__).resolve().parents[1] / "content" / "batches" / "2026-09-19-saturday-001"
@@ -238,3 +238,114 @@ async def test_filed_brief_survives_live_assignment_and_milestone_edits(client, 
         task.title = review["title"]
         task.summary = review["summary"]
         await db.commit()
+
+
+SYLLABUS_BATCH = Path(__file__).resolve().parents[1] / "content" / "batches" / "2026-09-14-syllabus-001"
+VISUAL_KEYS = {
+    "crt-quant-percentages",
+    "crt-logical-patterns",
+    "crt-verbal-meaning",
+    "crt-di-tables",
+    "dsa-complexity",
+    "dsa-arrays-strings",
+}
+
+
+def test_visual_articles_keep_keys_and_require_a_version_bump():
+    batch = load_batch(SYLLABUS_BATCH)
+    assert batch["rejected"] == []
+    visual = [row for row in batch["materials"] if row["key"] in VISUAL_KEYS]
+    assert len(visual) == 6
+    for row in visual:
+        assert row["version"] == 2
+        assert "/learning-visuals/" in row["body_md"]
+        assert "javascript:" not in row["body_md"].lower()
+        assert "data:" not in row["body_md"].lower()
+    percentages = next(row for row in batch["syllabus"] if row["key"] == "syl-crt-quant-percentages")
+    arrays = next(row for row in batch["syllabus"] if row["key"] == "syl-dsa-arrays-strings")
+    assert percentages["material_key"] == "crt-quant-percentages"
+    assert percentages["question_keys"] == ["syl-crt-q01"]
+    assert percentages["version"] == 1
+    assert arrays["question_keys"] == ["syl-dsa-q02"]
+    first = plan(batch, {})
+
+    class _Stored:
+        def __init__(self, action):
+            self.content_hash = "previous-visual-hash"
+            self.version = 1 if action["key"] in VISUAL_KEYS else action["version"]
+
+    stored = {action["key"]: _Stored(action) for action in first["actions"]}
+    for action in first["actions"]:
+        if action["key"] not in VISUAL_KEYS:
+            stored[action["key"]].content_hash = action["hash"]
+    updated = plan(batch, stored)
+    assert updated["rejected"] == []
+    assert {row["key"] for row in updated["actions"] if row["action"] == "update"} == VISUAL_KEYS
+    for row in batch["materials"]:
+        if row["key"] in VISUAL_KEYS:
+            row["version"] = 1
+    rejected = plan(batch, stored)
+    assert any("crt-quant-percentages" in item for item in rejected["rejected"])
+
+
+@pytest.mark.asyncio
+async def test_visual_republish_keeps_material_identity_and_reading_history(client, student_auth):
+    from sqlalchemy import select
+
+    from app.db.session import AsyncSessionLocal
+    from app.models.studio import ContentBatchItem, LearningMaterial, LearningMaterialRead, LearningSyllabusEntry
+
+    async with AsyncSessionLocal() as db:
+        result = await apply_batch(db, SYLLABUS_BATCH)
+        assert not result.get("refused"), result
+        await db.commit()
+    headers = student_auth[0]
+    lesson = await client.get("/api/v1/studio/syllabus/syl-crt-quant-percentages", headers=headers)
+    assert lesson.status_code == 200, lesson.text
+    body = lesson.json()
+    assert body["material_key"] == "crt-quant-percentages"
+    assert "/learning-visuals/crt/percentages-quarter.svg" in body["material"]["body_md"]
+    assert body["practice"][0]["key"] == "syl-crt-q01"
+    marked = await client.post("/api/v1/studio/materials/crt-quant-percentages/read", headers=headers)
+    assert marked.status_code == 200, marked.text
+    async with AsyncSessionLocal() as db:
+        material = (await db.execute(select(LearningMaterial).where(LearningMaterial.content_key == "crt-quant-percentages"))).scalar_one()
+        material_id = material.id
+        item = (await db.execute(select(ContentBatchItem).where(ContentBatchItem.item_key == "crt-quant-percentages"))).scalar_one()
+        item.version = 1
+        item.content_hash = "previous-visual-hash"
+        material.version = 1
+        await db.commit()
+    async with AsyncSessionLocal() as db:
+        again = await apply_batch(db, SYLLABUS_BATCH)
+        assert not again.get("refused"), again
+        await db.commit()
+    async with AsyncSessionLocal() as db:
+        material = (await db.execute(select(LearningMaterial).where(LearningMaterial.content_key == "crt-quant-percentages"))).scalar_one()
+        entry = (
+            await db.execute(select(LearningSyllabusEntry).where(LearningSyllabusEntry.content_key == "syl-crt-quant-percentages"))
+        ).scalar_one()
+        from app.models.user import User
+
+        student = (await db.execute(select(User).where(User.email == student_auth[1]))).scalar_one()
+        read = (
+            await db.execute(
+                select(LearningMaterialRead).where(
+                    LearningMaterialRead.material_id == material.id,
+                    LearningMaterialRead.user_id == student.id,
+                )
+            )
+        ).scalar_one()
+        assert material.id == material_id
+        assert material.version == 2
+        assert entry.version == 1
+        assert entry.material_key == "crt-quant-percentages"
+        assert entry.question_keys == ["syl-crt-q01"]
+        assert read.material_id == material_id
+    detail = await client.get("/api/v1/studio/materials/crt-quant-percentages", headers=headers)
+    assert detail.status_code == 200, detail.text
+    assert detail.json()["read"] is True
+    arrays = await client.get("/api/v1/studio/syllabus/syl-dsa-arrays-strings", headers=headers)
+    assert arrays.status_code == 200, arrays.text
+    assert "/learning-visuals/dsa/array-reversal.svg" in arrays.json()["material"]["body_md"]
+    assert arrays.json()["practice"][0]["key"] == "syl-dsa-q02"

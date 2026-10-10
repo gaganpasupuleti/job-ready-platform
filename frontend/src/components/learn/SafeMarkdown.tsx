@@ -1,6 +1,8 @@
 import { marked, type Token, type Tokens } from 'marked'
 import { Fragment, type ReactNode } from 'react'
 
+import { VisualExplanation } from '@/components/learn/VisualExplanation'
+import { approvedLearningImageSrc } from '@/lib/learningVisuals'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, safeHref } from '@/lib/richText'
 import { cn } from '@/utils/cn'
 
@@ -32,8 +34,12 @@ function renderToken(token: Token, key: string): ReactNode {
         </Tag>
       )
     }
-    case 'paragraph':
-      return <p key={key}>{inline((token as Tokens.Paragraph).tokens, key)}</p>
+    case 'paragraph': {
+      const paragraph = token as Tokens.Paragraph
+      const visible = (paragraph.tokens ?? []).filter((item) => item.type !== 'text' || textOf(item.text).trim() !== '')
+      if (visible.length === 1 && visible[0].type === 'image') return renderToken(visible[0], key)
+      return <p key={key}>{inline(paragraph.tokens, key)}</p>
+    }
     case 'blockquote':
       return <blockquote key={key}>{inline((token as Tokens.Blockquote).tokens, key)}</blockquote>
     case 'list': {
@@ -113,8 +119,15 @@ function renderToken(token: Token, key: string): ReactNode {
         </a>
       )
     }
-    case 'image':
-      return <Fragment key={key}>{textOf((token as Tokens.Image).text)}</Fragment>
+    case 'image': {
+      const image = token as Tokens.Image
+      const alt = textOf(image.text)
+      const src = approvedLearningImageSrc(image.href)
+      if (!src) return <Fragment key={key}>{alt}</Fragment>
+      return (
+        <VisualExplanation key={key} src={src} alt={alt} caption={image.title ? textOf(image.title) : null} />
+      )
+    }
     default:
       return null
   }
