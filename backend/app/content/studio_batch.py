@@ -357,6 +357,52 @@ async def refresh_sql_problem(
     return problem
 
 
+async def _taxonomy_topic(db: AsyncSession, domain_slug: str, category_slug: str, topic_slug: str) -> Topic | None:
+    domain = (await db.execute(select(Domain).where(Domain.slug == domain_slug))).scalar_one_or_none()
+    if domain is None:
+        return None
+    category = (
+        await db.execute(select(Category).where(Category.domain_id == domain.id, Category.slug == category_slug))
+    ).scalar_one_or_none()
+    if category is None:
+        return None
+    return (
+        await db.execute(select(Topic).where(Topic.category_id == category.id, Topic.slug == topic_slug))
+    ).scalar_one_or_none()
+
+
+async def _question_for_batch_row(db: AsyncSession, row: dict) -> tuple[Question | None, str]:
+    current = (
+        await db.execute(select(Question).options(selectinload(Question.options)).where(Question.content_key == row["key"]))
+    ).scalar_one_or_none()
+    if current is not None:
+        return current, "updated"
+    matches = (
+        await db.execute(
+            select(Question)
+            .options(selectinload(Question.options))
+            .where(Question.question_text == row["stem"], Question.content_key.is_(None))
+        )
+    ).scalars().all()
+    if len(matches) > 1:
+        return None, "ambiguous"
+    if len(matches) == 1:
+        return matches[0], "adopted"
+    return None, "created"
+
+
+def _identity_record(key: str, how: str, question: Question | None, *, option_text_changed: bool = False) -> dict:
+    options = sorted(question.options, key=lambda item: item.sort_order) if question is not None else []
+    return {
+        "key": key,
+        "row": how,
+        "question_id": None if question is None else str(question.id),
+        "option_ids_changed": False,
+        "option_text_changed": option_text_changed,
+        "option_ids": [str(option.id) for option in options],
+    }
+
+
 async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = False) -> dict:
     database_url = ""
     bind = db.get_bind()
@@ -370,7 +416,37 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
     stored = {row.item_key: row for row in stored_rows}
     planned = plan(batch, stored)
     if planned["rejected"] or batch["rejected"]:
-        return {"refused": True, "rejected": planned["rejected"] or batch["rejected"], "counts": planned["counts"]}
+        return {"refused": True, "rejected": planned["rejected"] or batch["rejected"], "counts": planned["counts"], "identity": []}
+    questions_by_key = {item["key"]: item for item in batch["questions"]}
+    prepared: dict[str, dict] = {}
+    identity: list[dict] = []
+    problems: list[str] = []
+    for action in planned["actions"]:
+        if action["type"] != "question":
+            continue
+        row = questions_by_key[action["key"]]
+        current, how = await _question_for_batch_row(db, row)
+        if how == "ambiguous":
+            problems.append(f"{row['key']} matches more than one question with the same stem")
+            continue
+        target_topic = None
+        if row.get("domain_slug"):
+            target_topic = await _taxonomy_topic(db, row["domain_slug"], row["category_slug"], row["topic_slug"])
+            if target_topic is None:
+                problems.append(
+                    f"{row['key']} missing topic {row['domain_slug']}/{row['category_slug']}/{row['topic_slug']}"
+                )
+            elif current is not None and current.topic_id != target_topic.id:
+                problems.append(f"{row['key']} would move off its current topic")
+        if current is not None and len(current.options) != len(row["options"]):
+            problems.append(
+                f"{row['key']} option count {len(current.options)} to {len(row['options'])} would replace option ids"
+            )
+        if action["action"] == "unchanged" and current is not None:
+            identity.append(_identity_record(row["key"], "unchanged", current))
+        prepared[row["key"]] = {"how": how, "current": current, "topic": target_topic}
+    if problems:
+        return {"refused": True, "rejected": problems, "counts": planned["counts"], "identity": []}
     topic = await _topic(db, "studio-saturday-001", "Saturday batch 001")
     now = datetime.now(UTC)
     for action in planned["actions"]:
@@ -407,12 +483,13 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                 for field, value in payload.items():
                     setattr(current, field, value)
         elif kind == "question":
-            row = next(item for item in batch["questions"] if item["key"] == key)
-            current = (
-                await db.execute(select(Question).options(selectinload(Question.options)).where(Question.content_key == key))
-            ).scalar_one_or_none()
+            row = questions_by_key[key]
+            plan_row = prepared[key]
+            current = plan_row["current"]
+            target_topic = plan_row["topic"] or topic
             explanation = row["explanation"] + " " + " ".join(f"{opt['key']}: {opt['why']}" for opt in row["options"])
             if current is None:
+                category = await db.get(Category, target_topic.category_id)
                 current = Question(
                     content_key=key,
                     question_type=QuestionType.MULTIPLE_CHOICE if row["mode"] == "multi" else QuestionType.SINGLE_CHOICE,
@@ -420,23 +497,48 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                     question_text=row["stem"],
                     explanation=explanation,
                     difficulty=_difficulty(row["difficulty"]),
-                    domain_id=(await db.get(Category, topic.category_id)).domain_id,
-                    category_id=topic.category_id,
-                    topic_id=topic.id,
+                    domain_id=category.domain_id,
+                    category_id=target_topic.category_id,
+                    topic_id=target_topic.id,
                     is_active=True,
                 )
                 db.add(current)
                 await db.flush()
+                for index, opt in enumerate(row["options"]):
+                    db.add(
+                        QuestionOption(
+                            question_id=current.id,
+                            option_text=opt["text"],
+                            is_correct=bool(opt["correct"]),
+                            sort_order=index,
+                        )
+                    )
+                await db.flush()
+                await db.refresh(current, attribute_names=["options"])
+                current.marks = float(row.get("marks", current.marks))
+                current.negative_marks = float(row.get("negative_marks", current.negative_marks))
+                current.estimated_time_seconds = int(row.get("estimated_time_seconds", current.estimated_time_seconds))
+                identity.append(_identity_record(key, "created", current))
             else:
+                if current.content_key is None:
+                    current.content_key = key
                 current.question_text = row["stem"]
                 current.explanation = explanation
                 current.difficulty = _difficulty(row["difficulty"])
                 current.question_type = QuestionType.MULTIPLE_CHOICE if row["mode"] == "multi" else QuestionType.SINGLE_CHOICE
-                for option in list(current.options):
-                    await db.delete(option)
-                await db.flush()
-            for index, opt in enumerate(row["options"]):
-                db.add(QuestionOption(question_id=current.id, option_text=opt["text"], is_correct=bool(opt["correct"]), sort_order=index))
+                existing = sorted(current.options, key=lambda item: item.sort_order)
+                text_changed = False
+                for index, opt in enumerate(row["options"]):
+                    changed = (
+                        existing[index].option_text != opt["text"]
+                        or existing[index].is_correct != bool(opt["correct"])
+                        or existing[index].sort_order != index
+                    )
+                    text_changed = text_changed or changed
+                    existing[index].option_text = opt["text"]
+                    existing[index].is_correct = bool(opt["correct"])
+                    existing[index].sort_order = index
+                identity.append(_identity_record(key, plan_row["how"], current, option_text_changed=text_changed))
         elif kind == "assignment":
             row = next(item for item in batch["assignments"] if item["key"] == key)
             current = (await db.execute(select(Assignment).where(Assignment.content_key == key))).scalar_one_or_none()
@@ -639,4 +741,4 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
         record.applied_at = now
         db.add(record)
     await db.commit()
-    return {"refused": False, "counts": planned["counts"], "rejected": []}
+    return {"refused": False, "counts": planned["counts"], "rejected": [], "identity": identity}

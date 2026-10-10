@@ -1,0 +1,2875 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "key": "sprint1-pct-01",
+      "stem": "A laptop listed at ₹40,000 is offered at 15% off. What is the sale price?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "percentages",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "₹34,000",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "₹36,000",
+          "correct": false,
+          "why": "36,000 removes only 4,000, which is 10% of 40,000, not 15%."
+        },
+        {
+          "key": "C",
+          "text": "₹32,000",
+          "correct": false,
+          "why": "32,000 removes 8,000, which is 20% off, not 15%."
+        },
+        {
+          "key": "D",
+          "text": "₹35,000",
+          "correct": false,
+          "why": "35,000 removes 5,000, which is 12.5% off, not 15%."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: ₹34,000\n\nStep-by-step\n1. Write 15% as 15/100.\n2. 15/100 × 40,000 = 6,000.\n3. Subtract that discount once: 40,000 − 6,000 = 34,000.\n\nWhy other options are wrong\n- ₹36,000: 36,000 removes only 4,000, which is 10% of 40,000, not 15%.\n- ₹32,000: 32,000 removes 8,000, which is 20% off, not 15%.\n- ₹35,000: 35,000 removes 5,000, which is 12.5% off, not 15%.\n\nLearn the concept\nA percentage is a fraction of a whole, written per hundred. One discount is applied once.\n\nFormula or key principle\nDiscount = list price × percent / 100. Sale price = list price − discount.\n\nWorked example\n15% of 40,000 is 6,000. 40,000 − 6,000 = 34,000.\n\nRelated lesson\ncrt-quant-percentages — Percentages for placement aptitude. Practice other percentage questions in the placement aptitude catalog. The published syllabus check is syl-crt-q01.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=percentages; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-pct-02",
+      "stem": "Out of 250 applicants, 40% cleared a coding screen. How many cleared it?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "percentages",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "100",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "80",
+          "correct": false,
+          "why": "80 would be 32% of 250, not 40%."
+        },
+        {
+          "key": "C",
+          "text": "120",
+          "correct": false,
+          "why": "120 would be 48% of 250, not 40%."
+        },
+        {
+          "key": "D",
+          "text": "150",
+          "correct": false,
+          "why": "150 would be 60% of 250, not 40%."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 100\n\nStep-by-step\n1. 40% is 0.40.\n2. 0.40 × 250 = 100.\n3. 100 of the 250 applicants cleared the screen.\n\nWhy other options are wrong\n- 80: 80 would be 32% of 250, not 40%.\n- 120: 120 would be 48% of 250, not 40%.\n- 150: 150 would be 60% of 250, not 40%.\n\nLearn the concept\n“Percent of a group” means that fraction of the group, not a separate group.\n\nFormula or key principle\nPart = percent / 100 × whole.\n\nWorked example\n40/100 × 250 = 100.\n\nRelated lesson\ncrt-quant-percentages — Percentages for placement aptitude. Use the percentages lesson, then the other percentage questions in this reviewed set.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=percentages; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-pct-03",
+      "stem": "A score rises from 60 to 75. What is the percentage increase?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "percentages",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "25%",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "15%",
+          "correct": false,
+          "why": "15 is the point increase, not the percentage. 15/60 is 25%, not 15%."
+        },
+        {
+          "key": "C",
+          "text": "20%",
+          "correct": false,
+          "why": "20% of 60 is 12, which would land on 72, not 75."
+        },
+        {
+          "key": "D",
+          "text": "30%",
+          "correct": false,
+          "why": "30% of 60 is 18, which would land on 78, not 75."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 25%\n\nStep-by-step\n1. The increase is 75 − 60 = 15.\n2. The base is the original score, 60.\n3. 15/60 × 100 = 25%.\n\nWhy other options are wrong\n- 15%: 15 is the point increase, not the percentage. 15/60 is 25%, not 15%.\n- 20%: 20% of 60 is 12, which would land on 72, not 75.\n- 30%: 30% of 60 is 18, which would land on 78, not 75.\n\nLearn the concept\nPercentage increase compares the change with the original value, not with the new value.\n\nFormula or key principle\nPercentage increase = (new − original) / original × 100.\n\nWorked example\n(75 − 60) / 60 × 100 = 25.\n\nRelated lesson\ncrt-quant-percentages — Percentages for placement aptitude. The percentages lesson works the same one-change pattern. Related practice is the other percentage items in the catalog.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=percentages; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-pct-04",
+      "stem": "What is 12.5% of 640?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "percentages",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "80",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "64",
+          "correct": false,
+          "why": "64 is 10% of 640, not 12.5%."
+        },
+        {
+          "key": "C",
+          "text": "100",
+          "correct": false,
+          "why": "100 is 640/6.4, not one eighth of 640."
+        },
+        {
+          "key": "D",
+          "text": "72",
+          "correct": false,
+          "why": "72 is 11.25% of 640, not 12.5%."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 80\n\nStep-by-step\n1. 12.5/100 = 1/8.\n2. 640 × 1/8 = 80.\n\nWhy other options are wrong\n- 64: 64 is 10% of 640, not 12.5%.\n- 100: 100 is 640/6.4, not one eighth of 640.\n- 72: 72 is 11.25% of 640, not 12.5%.\n\nLearn the concept\n12.5% is one eighth of a whole because 12.5 × 8 = 100.\n\nFormula or key principle\n12.5% of a number = number / 8.\n\nWorked example\n640 / 8 = 80.\n\nRelated lesson\ncrt-quant-percentages — Percentages for placement aptitude. Check this against the published percentages lesson, then the other items in this set.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=percentages; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-pl-01",
+      "stem": "Cost price is ₹800 and selling price is ₹920. Profit percentage?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "profit-and-loss",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "15%",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "12%",
+          "correct": false,
+          "why": "12% of 800 is 96, so the selling price would be 896, not 920."
+        },
+        {
+          "key": "C",
+          "text": "20%",
+          "correct": false,
+          "why": "20% of 800 is 160, so the selling price would be 960, not 920."
+        },
+        {
+          "key": "D",
+          "text": "10%",
+          "correct": false,
+          "why": "10% of 800 is 80, so the selling price would be 880, not 920."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 15%\n\nStep-by-step\n1. Profit is 920 − 800 = 120.\n2. Divide by the cost, 800.\n3. 120/800 × 100 = 15%.\n\nWhy other options are wrong\n- 12%: 12% of 800 is 96, so the selling price would be 896, not 920.\n- 20%: 20% of 800 is 160, so the selling price would be 960, not 920.\n- 10%: 10% of 800 is 80, so the selling price would be 880, not 920.\n\nLearn the concept\nProfit percentage uses cost price as the base. Selling price is not the base.\n\nFormula or key principle\nProfit % = (selling price − cost price) / cost price × 100.\n\nWorked example\n920 − 800 = 120. 120/800 × 100 = 15.\n\nRelated lesson\ncrt-sprint-profit-loss — Profit and loss on cost price. Lesson: Profit and loss on cost price. Practice the other two profit questions in this lesson.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=profit-and-loss; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-pl-02",
+      "stem": "An item bought for ₹450 is sold at a loss of ₹45. Loss percentage?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "profit-and-loss",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "10%",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "5%",
+          "correct": false,
+          "why": "5% of 450 is 22.50, not a loss of 45."
+        },
+        {
+          "key": "C",
+          "text": "15%",
+          "correct": false,
+          "why": "15% of 450 is 67.50, not a loss of 45."
+        },
+        {
+          "key": "D",
+          "text": "12%",
+          "correct": false,
+          "why": "12% of 450 is 54, not a loss of 45."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 10%\n\nStep-by-step\n1. The loss is given as 45 on a cost of 450.\n2. 45/450 = 0.10.\n3. 0.10 × 100 = 10%.\n\nWhy other options are wrong\n- 5%: 5% of 450 is 22.50, not a loss of 45.\n- 15%: 15% of 450 is 67.50, not a loss of 45.\n- 12%: 12% of 450 is 54, not a loss of 45.\n\nLearn the concept\nLoss percentage also uses cost price as the base.\n\nFormula or key principle\nLoss % = loss / cost price × 100.\n\nWorked example\n45/450 × 100 = 10.\n\nRelated lesson\ncrt-sprint-profit-loss — Profit and loss on cost price. Same profit-and-loss lesson. Compare this with the zero-profit case in the same lesson.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=profit-and-loss; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-pl-03",
+      "stem": "If cost price equals selling price, the profit/loss is:",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "profit-and-loss",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Neither profit nor loss",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "10% profit",
+          "correct": false,
+          "why": "A 10% profit would require the selling price to be higher than the cost price."
+        },
+        {
+          "key": "C",
+          "text": "5% loss",
+          "correct": false,
+          "why": "A loss would require the selling price to be lower than the cost price."
+        },
+        {
+          "key": "D",
+          "text": "Depends on GST",
+          "correct": false,
+          "why": "The question gives no tax. GST does not create profit when the two prices are equal."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Neither profit nor loss\n\nStep-by-step\n1. Profit = selling price − cost price.\n2. The two prices are equal, so the difference is 0.\n3. Zero is neither a profit nor a loss.\n\nWhy other options are wrong\n- 10% profit: A 10% profit would require the selling price to be higher than the cost price.\n- 5% loss: A loss would require the selling price to be lower than the cost price.\n- Depends on GST: The question gives no tax. GST does not create profit when the two prices are equal.\n\nLearn the concept\nProfit and loss are measured from the gap between cost and selling price. Equal prices leave no gap.\n\nFormula or key principle\nIf cost price = selling price, profit = 0 and loss = 0.\n\nWorked example\nA pen bought and sold at ₹20 has profit 0 and loss 0.\n\nRelated lesson\ncrt-sprint-profit-loss — Profit and loss on cost price. Stay on the profit-and-loss lesson. GST is a tax question and is not stated here.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=profit-and-loss; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-tw-01",
+      "stem": "A can finish a task in 10 days. How much of the work does A do in 1 day?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "time-and-work",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "1/10",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "1/5",
+          "correct": false,
+          "why": "1/5 would be the daily rate of a 5-day worker, not a 10-day worker."
+        },
+        {
+          "key": "C",
+          "text": "10",
+          "correct": false,
+          "why": "10 is the number of days, not the fraction of work done in one day."
+        },
+        {
+          "key": "D",
+          "text": "1/12",
+          "correct": false,
+          "why": "1/12 would belong to a 12-day worker."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 1/10\n\nStep-by-step\n1. The whole job is 1.\n2. A finishes it in 10 days.\n3. Each day is 1/10 of the job.\n\nWhy other options are wrong\n- 1/5: 1/5 would be the daily rate of a 5-day worker, not a 10-day worker.\n- 10: 10 is the number of days, not the fraction of work done in one day.\n- 1/12: 1/12 would belong to a 12-day worker.\n\nLearn the concept\nWork rate is the fraction of the job finished in one day.\n\nFormula or key principle\nIf one person finishes in D days, one day of work is 1/D.\n\nWorked example\n10 days for the whole job means 1/10 of the job per day.\n\nRelated lesson\ncrt-sprint-time-work — Time and work rates. Lesson: Time and work rates. The next question in this lesson uses the same rate on a 15-day job.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=time-and-work; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-tw-02",
+      "stem": "B alone can complete a job in 15 days. In 5 days, what fraction is done?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "time-and-work",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "1/3",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "1/5",
+          "correct": false,
+          "why": "1/5 would be correct only if B finished the whole job in 5 days."
+        },
+        {
+          "key": "C",
+          "text": "1/2",
+          "correct": false,
+          "why": "Half the job would take 7.5 days at this rate, not 5."
+        },
+        {
+          "key": "D",
+          "text": "2/5",
+          "correct": false,
+          "why": "2/5 is 6/15, which would be 6 days of work, not 5."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 1/3\n\nStep-by-step\n1. B's daily rate is 1/15.\n2. Five days contribute 5/15.\n3. 5/15 simplifies to 1/3.\n\nWhy other options are wrong\n- 1/5: 1/5 would be correct only if B finished the whole job in 5 days.\n- 1/2: Half the job would take 7.5 days at this rate, not 5.\n- 2/5: 2/5 is 6/15, which would be 6 days of work, not 5.\n\nLearn the concept\nWork done is rate multiplied by time, when the rate stays constant.\n\nFormula or key principle\nWork = days worked × (1 / days needed alone).\n\nWorked example\n5 × 1/15 = 5/15 = 1/3.\n\nRelated lesson\ncrt-sprint-time-work — Time and work rates. Use the time-and-work lesson, then the one-day rate question beside this one.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=time-and-work; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-pr-01",
+      "stem": "A fair coin is tossed once. Probability of heads?",
+      "skill": "quantitative",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "probability",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "1/2",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "1/3",
+          "correct": false,
+          "why": "A coin does not have three equally likely outcomes."
+        },
+        {
+          "key": "C",
+          "text": "1",
+          "correct": false,
+          "why": "1 would mean heads is certain. Tails is also possible."
+        },
+        {
+          "key": "D",
+          "text": "1/4",
+          "correct": false,
+          "why": "1/4 would be one face of a four-outcome experiment, not one coin toss."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 1/2\n\nStep-by-step\n1. The sample space has 2 outcomes.\n2. Exactly one is heads.\n3. 1/2 is the probability.\n\nWhy other options are wrong\n- 1/3: A coin does not have three equally likely outcomes.\n- 1: 1 would mean heads is certain. Tails is also possible.\n- 1/4: 1/4 would be one face of a four-outcome experiment, not one coin toss.\n\nLearn the concept\nA fair coin has two equally likely outcomes. Probability is favorable outcomes over total outcomes.\n\nFormula or key principle\nP(heads) = 1/2.\n\nWorked example\nOutcomes {heads, tails}. One of the two is heads.\n\nRelated lesson\ncrt-sprint-probability — Equally likely outcomes. Lesson: Equally likely outcomes. This is the only probability item in the sprint lesson.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=probability; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ser-01",
+      "stem": "Find the next number: 2, 4, 8, 16, ?",
+      "skill": "logical-reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "series",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "32",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "24",
+          "correct": false,
+          "why": "24 would add 8, but every earlier step multiplied by 2."
+        },
+        {
+          "key": "C",
+          "text": "30",
+          "correct": false,
+          "why": "30 is 16+14. The earlier gaps are not +14."
+        },
+        {
+          "key": "D",
+          "text": "18",
+          "correct": false,
+          "why": "18 is 16+2. The series is not increasing by 2."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 32\n\nStep-by-step\n1. 2×2=4, 4×2=8, and 8×2=16.\n2. The same rule gives 16×2=32.\n3. 24, 30, and 18 do not continue the doubling.\n\nWhy other options are wrong\n- 24: 24 would add 8, but every earlier step multiplied by 2.\n- 30: 30 is 16+14. The earlier gaps are not +14.\n- 18: 18 is 16+2. The series is not increasing by 2.\n\nLearn the concept\nA multiplicative pattern must fit every step, not only the first gap.\n\nFormula or key principle\nEach term is the previous term × 2.\n\nWorked example\n16 × 2 = 32.\n\nRelated lesson\ncrt-logical-patterns — Number patterns in logical reasoning. Published lesson: Number patterns. The published check syl-crt-q02 uses the different rule ×2+1.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=series; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ser-02",
+      "stem": "Find the missing term: 5, 10, 15, __, 25",
+      "skill": "logical-reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "series",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "20",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "18",
+          "correct": false,
+          "why": "18 leaves a gap of 3, then a gap of 7 before 25. The gaps are not constant."
+        },
+        {
+          "key": "C",
+          "text": "22",
+          "correct": false,
+          "why": "22 leaves a gap of 7, then only 3 before 25."
+        },
+        {
+          "key": "D",
+          "text": "21",
+          "correct": false,
+          "why": "21 leaves gaps of 6 and 4. The series uses a gap of 5."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 20\n\nStep-by-step\n1. The known gaps are 10−5=5 and 15−10=5.\n2. The next term is 15+5=20.\n3. 20+5=25, so the given last term agrees.\n\nWhy other options are wrong\n- 18: 18 leaves a gap of 3, then a gap of 7 before 25. The gaps are not constant.\n- 22: 22 leaves a gap of 7, then only 3 before 25.\n- 21: 21 leaves gaps of 6 and 4. The series uses a gap of 5.\n\nLearn the concept\nAn arithmetic progression adds the same difference at every step.\n\nFormula or key principle\nMissing term = previous term + common difference.\n\nWorked example\n15 + 5 = 20, and 20 + 5 = 25.\n\nRelated lesson\ncrt-logical-patterns — Number patterns in logical reasoning. Check the rule on the published number-patterns lesson, then the square-number item in this set.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=series; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ser-03",
+      "stem": "Complete: 1, 4, 9, 16, ?",
+      "skill": "logical-reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "series",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "25",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "20",
+          "correct": false,
+          "why": "20 is not a perfect square, and it is not 4²+4."
+        },
+        {
+          "key": "C",
+          "text": "24",
+          "correct": false,
+          "why": "24 continues neither the squares nor a constant gap."
+        },
+        {
+          "key": "D",
+          "text": "36",
+          "correct": false,
+          "why": "36 is 6², which skips 5²."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 25\n\nStep-by-step\n1. 1, 4, 9, and 16 are 1², 2², 3², and 4².\n2. The next integer is 5.\n3. 5² = 25.\n\nWhy other options are wrong\n- 20: 20 is not a perfect square, and it is not 4²+4.\n- 24: 24 continues neither the squares nor a constant gap.\n- 36: 36 is 6², which skips 5².\n\nLearn the concept\nSquare numbers are 1², 2², 3², and so on. The next square uses the next integer.\n\nFormula or key principle\nn² for n = 1, 2, 3, 4, 5.\n\nWorked example\n5² = 25.\n\nRelated lesson\ncrt-logical-patterns — Number patterns in logical reasoning. The number-patterns lesson asks you to test one rule on every term. These are the first five squares.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=series; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ser-04",
+      "stem": "Odd one out by pattern: 3, 6, 12, 24, 36, 48",
+      "skill": "logical-reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "series",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "36",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "48",
+          "correct": false,
+          "why": "48 is 24×2, so it belongs to the doubling chain."
+        },
+        {
+          "key": "C",
+          "text": "12",
+          "correct": false,
+          "why": "12 is 6×2, so it belongs."
+        },
+        {
+          "key": "D",
+          "text": "6",
+          "correct": false,
+          "why": "6 is 3×2, so it belongs."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 36\n\nStep-by-step\n1. 3×2=6, 6×2=12, 12×2=24, and 24×2=48.\n2. 36 is not produced by that rule.\n3. 36 is the term that does not belong.\n\nWhy other options are wrong\n- 48: 48 is 24×2, so it belongs to the doubling chain.\n- 12: 12 is 6×2, so it belongs.\n- 6: 6 is 3×2, so it belongs.\n\nLearn the concept\nAn odd-one-out item is the term that breaks the rule the others share.\n\nFormula or key principle\nA doubling chain is previous × 2.\n\nWorked example\n3, 6, 12, 24, 48 doubles each time. 36 does not.\n\nRelated lesson\ncrt-logical-patterns — Number patterns in logical reasoning. Use the published pattern lesson. Reject a term that only looks close.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=series; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ser-05",
+      "stem": "Find next: 7, 10, 16, 28, ?",
+      "skill": "logical-reasoning",
+      "difficulty": "hard",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "series",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "52",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "40",
+          "correct": false,
+          "why": "40 adds 12 again. The differences are doubling, not staying at 12."
+        },
+        {
+          "key": "C",
+          "text": "46",
+          "correct": false,
+          "why": "46 adds 18. 18 is not the next doubled difference."
+        },
+        {
+          "key": "D",
+          "text": "48",
+          "correct": false,
+          "why": "48 adds 20. 20 is not 24."
+        }
+      ],
+      "explanation": "Difficulty: hard\nCorrect answer: 52\n\nStep-by-step\n1. 10−7=3, 16−10=6, and 28−16=12.\n2. Those differences double, so the next difference is 24.\n3. 28+24=52.\n\nWhy other options are wrong\n- 40: 40 adds 12 again. The differences are doubling, not staying at 12.\n- 46: 46 adds 18. 18 is not the next doubled difference.\n- 48: 48 adds 20. 20 is not 24.\n\nLearn the concept\nWhen the differences themselves double, the next difference follows that doubling.\n\nFormula or key principle\nNext term = last term + next doubled difference.\n\nWorked example\nDifferences 3, 6, 12. Next difference 24. 28+24=52.\n\nRelated lesson\ncrt-logical-patterns — Number patterns in logical reasoning. This is the same difference-doubling idea as the published 2, 5, 11, 23 example, with different numbers.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=series; difficulty=hard; type=single-choice"
+    },
+    {
+      "key": "sprint1-syl-01",
+      "stem": "All cats are mammals. Some mammals are pets. Which conclusion is NOT forced?",
+      "skill": "logical-reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "syllogisms",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Some cats are pets",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "All cats are mammals",
+          "correct": false,
+          "why": "This repeats the first statement, so it is given, not an extra conclusion."
+        },
+        {
+          "key": "C",
+          "text": "Some mammals are pets",
+          "correct": false,
+          "why": "This repeats the second statement."
+        },
+        {
+          "key": "D",
+          "text": "Cats belong to the mammal class",
+          "correct": false,
+          "why": "This restates the first statement."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Some cats are pets\n\nStep-by-step\n1. The first statement puts every cat inside mammals.\n2. The second statement only says that some mammals are pets.\n3. Those pets need not be cats, so “some cats are pets” is not forced.\n\nWhy other options are wrong\n- All cats are mammals: This repeats the first statement, so it is given, not an extra conclusion.\n- Some mammals are pets: This repeats the second statement.\n- Cats belong to the mammal class: This restates the first statement.\n\nLearn the concept\nA conclusion is forced only when every arrangement of the statements includes it.\n\nFormula or key principle\nAll A are B and some B are C does not force some A are C.\n\nWorked example\nCats can sit entirely outside the pet circle while every cat is still a mammal.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Lesson: Syllogisms. Practice the other four items on that lesson.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-syl-02",
+      "stem": "All engineers are graduates. Ravi is an engineer. Conclusion?",
+      "skill": "logical-reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "syllogisms",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Ravi is a graduate",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Ravi is not a graduate",
+          "correct": false,
+          "why": "That contradicts “all engineers are graduates”."
+        },
+        {
+          "key": "C",
+          "text": "Some graduates are not engineers",
+          "correct": false,
+          "why": "The statements do not say whether every graduate is an engineer."
+        },
+        {
+          "key": "D",
+          "text": "No graduate is an engineer",
+          "correct": false,
+          "why": "That contradicts the premise that engineers are graduates."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Ravi is a graduate\n\nStep-by-step\n1. Ravi is inside the engineer group.\n2. The engineer group is inside the graduate group.\n3. Ravi is therefore a graduate.\n\nWhy other options are wrong\n- Ravi is not a graduate: That contradicts “all engineers are graduates”.\n- Some graduates are not engineers: The statements do not say whether every graduate is an engineer.\n- No graduate is an engineer: That contradicts the premise that engineers are graduates.\n\nLearn the concept\nA universal affirmative transfers to a named member of the first group.\n\nFormula or key principle\nAll engineers are graduates. Ravi is an engineer. Therefore Ravi is a graduate.\n\nWorked example\nIf every engineer is a graduate and Ravi is an engineer, Ravi is a graduate.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Syllogisms lesson. Do not reverse the statement into “all graduates are engineers”.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-syl-03",
+      "stem": "No phone is a laptop. All laptops are gadgets. Which follows?",
+      "skill": "logical-reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "syllogisms",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Some gadgets are not phones",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "No gadget is a phone",
+          "correct": false,
+          "why": "Phones could still be gadgets that are not laptops."
+        },
+        {
+          "key": "C",
+          "text": "All gadgets are laptops",
+          "correct": false,
+          "why": "The statements never say that every gadget is a laptop."
+        },
+        {
+          "key": "D",
+          "text": "All phones are laptops",
+          "correct": false,
+          "why": "That contradicts “no phone is a laptop”."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Some gadgets are not phones\n\nStep-by-step\n1. All laptops are gadgets.\n2. No phone is a laptop, so those laptops are not phones.\n3. Therefore some gadgets are not phones.\n\nWhy other options are wrong\n- No gadget is a phone: Phones could still be gadgets that are not laptops.\n- All gadgets are laptops: The statements never say that every gadget is a laptop.\n- All phones are laptops: That contradicts “no phone is a laptop”.\n\nLearn the concept\n“No A is B” plus “all B are C” forces some C (the B's) to lie outside A, when the B group exists.\n\nFormula or key principle\nSome gadgets are not phones.\n\nWorked example\nEvery laptop is a gadget and no laptop is a phone, so those gadgets are not phones.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Stay on the syllogisms lesson. Do not widen “some” into “no” or “all”.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-syl-04",
+      "stem": "Some books are novels. All novels are fiction. Valid conclusion?",
+      "skill": "logical-reasoning",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "syllogisms",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Some books are fiction",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "All books are fiction",
+          "correct": false,
+          "why": "Only some books were said to be novels. Other books may not be fiction."
+        },
+        {
+          "key": "C",
+          "text": "No book is fiction",
+          "correct": false,
+          "why": "This contradicts the books that are novels."
+        },
+        {
+          "key": "D",
+          "text": "All fiction is novels",
+          "correct": false,
+          "why": "Fiction could be wider than novels."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Some books are fiction\n\nStep-by-step\n1. At least one book is a novel.\n2. Every novel is fiction.\n3. That book is fiction, so some books are fiction.\n\nWhy other options are wrong\n- All books are fiction: Only some books were said to be novels. Other books may not be fiction.\n- No book is fiction: This contradicts the books that are novels.\n- All fiction is novels: Fiction could be wider than novels.\n\nLearn the concept\n“Some” means at least one. It does not mean all.\n\nFormula or key principle\nSome books are novels, and all novels are fiction, so those books are fiction.\n\nWorked example\nA book that is a novel must be fiction. At least one book is a novel.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Syllogisms lesson. Compare this with the cat item, where the overlap is not forced.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-syl-05",
+      "stem": "All A are B. Some B are C. Which is definitely false?",
+      "skill": "logical-reasoning",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "syllogisms",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "No B is A",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Some A may be C",
+          "correct": false,
+          "why": "This is possible. “Some B are C” can include A's. It is not definitely false."
+        },
+        {
+          "key": "C",
+          "text": "All A are B",
+          "correct": false,
+          "why": "This is the first premise, so it is not false."
+        },
+        {
+          "key": "D",
+          "text": "Some B are C",
+          "correct": false,
+          "why": "This is the second premise, so it is not false."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: No B is A\n\nStep-by-step\n1. All A are B puts every A inside B.\n2. Those members are B's that are also A's.\n3. “No B is A” denies that, so it is false.\n\nWhy other options are wrong\n- Some A may be C: This is possible. “Some B are C” can include A's. It is not definitely false.\n- All A are B: This is the first premise, so it is not false.\n- Some B are C: This is the second premise, so it is not false.\n\nLearn the concept\nA statement that contradicts a premise is definitely false. A possible overlap is not definitely false.\n\nFormula or key principle\nAll A are B means it is false that no B is A, taking the groups as non-empty in the usual placement reading.\n\nWorked example\nIf every A is a B, then those members are both A and B. “No B is A” cannot stand.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Syllogisms lesson. Placement items treat these groups as having members.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-gr-01",
+      "stem": "Choose the correct sentence.",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "grammar",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "The team is ready for the demo.",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "The team are ready for the demo.",
+          "correct": false,
+          "why": "“Are” treats the members separately. The sentence gives no member-by-member reading."
+        },
+        {
+          "key": "C",
+          "text": "The team were ready for the demo yesterday morning only if plural.",
+          "correct": false,
+          "why": "That string is not a finished grammatical sentence."
+        },
+        {
+          "key": "D",
+          "text": "The team be ready for the demo.",
+          "correct": false,
+          "why": "“Be” is not the finite verb this sentence needs."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: The team is ready for the demo.\n\nStep-by-step\n1. The subject is “the team” as one unit.\n2. A singular unit takes “is”.\n3. “The team is ready for the demo.” is the grammatical sentence.\n\nWhy other options are wrong\n- The team are ready for the demo.: “Are” treats the members separately. The sentence gives no member-by-member reading.\n- The team were ready for the demo yesterday morning only if plural.: That string is not a finished grammatical sentence.\n- The team be ready for the demo.: “Be” is not the finite verb this sentence needs.\n\nLearn the concept\nWhen a group acts as one unit, placement tests use a singular verb.\n\nFormula or key principle\nThe team is ready.\n\nWorked example\nOne team, one unit: “is”.\n\nRelated lesson\ncrt-sprint-grammar — Error spotting in short sentences. Lesson: Error spotting. British English sometimes uses “are” for team members. This item follows the unit reading the sentence asks for.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=grammar; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-gr-02",
+      "stem": "Select the properly punctuated sentence.",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "grammar",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "I finished the report, and I sent it to my manager.",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "I finished the report and, I sent it to my manager.",
+          "correct": false,
+          "why": "The comma is after “and”, which splits the conjunction from the clause it joins."
+        },
+        {
+          "key": "C",
+          "text": "I finished, the report and I sent it to my manager.",
+          "correct": false,
+          "why": "The comma splits “finished” from its object."
+        },
+        {
+          "key": "D",
+          "text": "I finished the report and I, sent it to my manager.",
+          "correct": false,
+          "why": "The comma splits the subject “I” from its verb."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: I finished the report, and I sent it to my manager.\n\nStep-by-step\n1. Find the two clauses.\n2. Join them with a comma and “and”.\n3. The correct sentence is “I finished the report, and I sent it to my manager.”\n\nWhy other options are wrong\n- I finished the report and, I sent it to my manager.: The comma is after “and”, which splits the conjunction from the clause it joins.\n- I finished, the report and I sent it to my manager.: The comma splits “finished” from its object.\n- I finished the report and I, sent it to my manager.: The comma splits the subject “I” from its verb.\n\nLearn the concept\nTwo independent clauses joined by “and” take a comma before the conjunction.\n\nFormula or key principle\nClause, and clause.\n\nWorked example\n“I finished the report” and “I sent it to my manager” are both independent.\n\nRelated lesson\ncrt-sprint-grammar — Error spotting in short sentences. Error-spotting lesson. The comma belongs before “and”, not after it and not inside a phrase.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=grammar; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-gr-03",
+      "stem": "Which uses the past tense correctly?",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "grammar",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "She went to the interview yesterday.",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "She go to the interview yesterday.",
+          "correct": false,
+          "why": "“Go” is present. It does not match “yesterday”."
+        },
+        {
+          "key": "C",
+          "text": "She gone to the interview yesterday.",
+          "correct": false,
+          "why": "“Gone” needs an auxiliary such as “has”. Alone it is not a finite past."
+        },
+        {
+          "key": "D",
+          "text": "She going to the interview yesterday.",
+          "correct": false,
+          "why": "“Going” needs an auxiliary. It is not simple past."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: She went to the interview yesterday.\n\nStep-by-step\n1. The time word is “yesterday”.\n2. The simple past of “go” is “went”.\n3. “She went to the interview yesterday.”\n\nWhy other options are wrong\n- She go to the interview yesterday.: “Go” is present. It does not match “yesterday”.\n- She gone to the interview yesterday.: “Gone” needs an auxiliary such as “has”. Alone it is not a finite past.\n- She going to the interview yesterday.: “Going” needs an auxiliary. It is not simple past.\n\nLearn the concept\nA finished past action uses the simple past form, not the base, the past participle, or the -ing form alone.\n\nFormula or key principle\ngo → went.\n\nWorked example\nShe went to the interview yesterday.\n\nRelated lesson\ncrt-sprint-grammar — Error spotting in short sentences. Error-spotting lesson. “Yesterday” marks a completed past action.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=grammar; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-gr-04",
+      "stem": "Pick the sentence with correct article usage.",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "grammar",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "She waited for an hour.",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "She waited for a hour.",
+          "correct": false,
+          "why": "“A” is for a consonant sound. “Hour” does not start with one."
+        },
+        {
+          "key": "C",
+          "text": "She waited for the hour indefinite.",
+          "correct": false,
+          "why": "That is not a grammatical article pattern."
+        },
+        {
+          "key": "D",
+          "text": "She waited for hour.",
+          "correct": false,
+          "why": "A singular countable noun needs an article here."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: She waited for an hour.\n\nStep-by-step\n1. Say the word “hour”.\n2. The first sound is a vowel.\n3. Use “an”: “She waited for an hour.”\n\nWhy other options are wrong\n- She waited for a hour.: “A” is for a consonant sound. “Hour” does not start with one.\n- She waited for the hour indefinite.: That is not a grammatical article pattern.\n- She waited for hour.: A singular countable noun needs an article here.\n\nLearn the concept\nChoose “a” or “an” from the sound, not from the spelling. “Hour” starts with a vowel sound.\n\nFormula or key principle\nan + vowel sound. a + consonant sound.\n\nWorked example\n“Hour” sounds like “our”, so “an hour”.\n\nRelated lesson\ncrt-sprint-grammar — Error spotting in short sentences. Error-spotting lesson. Silent h does not make a consonant sound.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=grammar; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-gr-05",
+      "stem": "Identify the sentence with correct subject–verb agreement.",
+      "skill": "verbal",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "grammar",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Neither the intern nor the managers are available.",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Neither the intern nor the managers is available.",
+          "correct": false,
+          "why": "“Is” agrees with “intern”, which is not the nearer subject."
+        },
+        {
+          "key": "C",
+          "text": "Neither the intern nor the managers am available.",
+          "correct": false,
+          "why": "“Am” agrees with “I”, and there is no “I” here."
+        },
+        {
+          "key": "D",
+          "text": "Neither the intern nor the managers be available.",
+          "correct": false,
+          "why": "“Be” is not the finite present verb."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: Neither the intern nor the managers are available.\n\nStep-by-step\n1. Find the two subjects: intern and managers.\n2. The nearer subject is managers.\n3. Plural “managers” takes “are”.\n\nWhy other options are wrong\n- Neither the intern nor the managers is available.: “Is” agrees with “intern”, which is not the nearer subject.\n- Neither the intern nor the managers am available.: “Am” agrees with “I”, and there is no “I” here.\n- Neither the intern nor the managers be available.: “Be” is not the finite present verb.\n\nLearn the concept\nWith “neither…nor”, the verb agrees with the subject closer to it.\n\nFormula or key principle\nNeither X nor Y + verb agreeing with Y.\n\nWorked example\nThe nearer subject is “managers”, which is plural, so “are”.\n\nRelated lesson\ncrt-sprint-grammar — Error spotting in short sentences. Error-spotting lesson. Do not agree the verb with “intern” when “managers” is nearer.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=grammar; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-voc-01",
+      "stem": "Choose the word closest in meaning to 'brief'.",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "vocabulary",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Short",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Lengthy",
+          "correct": false,
+          "why": "Lengthy means long, which is the opposite of brief."
+        },
+        {
+          "key": "C",
+          "text": "Complex",
+          "correct": false,
+          "why": "Complex means made of many parts, not short."
+        },
+        {
+          "key": "D",
+          "text": "Loud",
+          "correct": false,
+          "why": "Loud is about sound, not length."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Short\n\nStep-by-step\n1. Read “brief” as duration or length of speech.\n2. The close meaning is short.\n3. Lengthy is the opposite direction.\n\nWhy other options are wrong\n- Lengthy: Lengthy means long, which is the opposite of brief.\n- Complex: Complex means made of many parts, not short.\n- Loud: Loud is about sound, not length.\n\nLearn the concept\nA synonym is a word with nearly the same meaning in the given use.\n\nFormula or key principle\nbrief ≈ short or concise.\n\nWorked example\nA brief answer is a short answer.\n\nRelated lesson\ncrt-sprint-vocabulary — Synonyms and antonyms in context. Vocabulary lesson in this batch. The published verbal lesson is about sentence meaning, not this synonym pair.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=vocabulary; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-voc-02",
+      "stem": "Antonym of 'scarce' is closest to:",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "vocabulary",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Abundant",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Rare",
+          "correct": false,
+          "why": "Rare is close to scarce, not opposite to it."
+        },
+        {
+          "key": "C",
+          "text": "Tiny",
+          "correct": false,
+          "why": "Tiny is about size. Scarce is about supply."
+        },
+        {
+          "key": "D",
+          "text": "Hidden",
+          "correct": false,
+          "why": "Hidden is about visibility, not supply."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Abundant\n\nStep-by-step\n1. Scarce means there is not enough.\n2. The opposite is plentiful.\n3. Abundant means plentiful.\n\nWhy other options are wrong\n- Rare: Rare is close to scarce, not opposite to it.\n- Tiny: Tiny is about size. Scarce is about supply.\n- Hidden: Hidden is about visibility, not supply.\n\nLearn the concept\nAn antonym is a word of opposite meaning.\n\nFormula or key principle\nscarce ↔ abundant.\n\nWorked example\nScarce water is the opposite of abundant water.\n\nRelated lesson\ncrt-sprint-vocabulary — Synonyms and antonyms in context. Vocabulary lesson. Rare is a near synonym of scarce, so it cannot be the antonym.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=vocabulary; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-voc-03",
+      "stem": "In 'She gave a candid answer', candid most nearly means:",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "vocabulary",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Honest",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Angry",
+          "correct": false,
+          "why": "Angry describes temper. Candid does not."
+        },
+        {
+          "key": "C",
+          "text": "Confused",
+          "correct": false,
+          "why": "Confused describes uncertainty. Candid does not."
+        },
+        {
+          "key": "D",
+          "text": "Delayed",
+          "correct": false,
+          "why": "Delayed describes timing. Candid does not."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Honest\n\nStep-by-step\n1. The word modifies “answer”.\n2. A candid answer is an honest one.\n3. Angry, confused, and delayed describe other states.\n\nWhy other options are wrong\n- Angry: Angry describes temper. Candid does not.\n- Confused: Confused describes uncertainty. Candid does not.\n- Delayed: Delayed describes timing. Candid does not.\n\nLearn the concept\nUse the meaning that fits the sentence. Here candid describes the answer.\n\nFormula or key principle\ncandid = frank or honest.\n\nWorked example\nA candid answer says what the person actually thinks.\n\nRelated lesson\ncrt-sprint-vocabulary — Synonyms and antonyms in context. Vocabulary lesson. Do not import a different sense that the sentence does not support.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=vocabulary; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-voc-04",
+      "stem": "Synonym of 'purchase'?",
+      "skill": "verbal",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "vocabulary",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Buy",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Sell",
+          "correct": false,
+          "why": "Sell is the other side of the transaction."
+        },
+        {
+          "key": "C",
+          "text": "Borrow",
+          "correct": false,
+          "why": "Borrow is temporary and is not the same as purchase."
+        },
+        {
+          "key": "D",
+          "text": "Repair",
+          "correct": false,
+          "why": "Repair changes an object's condition. It is not a purchase."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Buy\n\nStep-by-step\n1. Identify the action: obtaining something by paying.\n2. Buy names that action.\n3. The other verbs do not.\n\nWhy other options are wrong\n- Sell: Sell is the other side of the transaction.\n- Borrow: Borrow is temporary and is not the same as purchase.\n- Repair: Repair changes an object's condition. It is not a purchase.\n\nLearn the concept\nA synonym can be a plain verb. Purchase and buy name the same action.\n\nFormula or key principle\npurchase = buy.\n\nWorked example\nTo purchase a book is to buy a book.\n\nRelated lesson\ncrt-sprint-vocabulary — Synonyms and antonyms in context. Vocabulary lesson. Sell, borrow, and repair are different transactions.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=vocabulary; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-voc-05",
+      "stem": "'Mitigate' in a risk discussion most nearly means:",
+      "skill": "verbal",
+      "difficulty": "hard",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "vocabulary",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Reduce the severity",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Ignore completely",
+          "correct": false,
+          "why": "Ignoring a risk leaves the severity unchanged."
+        },
+        {
+          "key": "C",
+          "text": "Celebrate",
+          "correct": false,
+          "why": "Celebrate does not reduce a risk."
+        },
+        {
+          "key": "D",
+          "text": "Document only",
+          "correct": false,
+          "why": "A document records the risk. It does not by itself reduce the severity."
+        }
+      ],
+      "explanation": "Difficulty: hard\nCorrect answer: Reduce the severity\n\nStep-by-step\n1. The context is risk.\n2. Mitigate means lessen.\n3. The closest choice is “Reduce the severity”.\n\nWhy other options are wrong\n- Ignore completely: Ignoring a risk leaves the severity unchanged.\n- Celebrate: Celebrate does not reduce a risk.\n- Document only: A document records the risk. It does not by itself reduce the severity.\n\nLearn the concept\nIn a risk sentence, mitigate means to make the harm smaller, not to ignore it.\n\nFormula or key principle\nmitigate = reduce the severity.\n\nWorked example\nA team mitigates a risk by lowering its impact or chance.\n\nRelated lesson\ncrt-sprint-vocabulary — Synonyms and antonyms in context. Vocabulary lesson. Documenting a risk is not the same as reducing it.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=vocabulary; difficulty=hard; type=single-choice"
+    },
+    {
+      "key": "sprint1-tab-01",
+      "stem": "Table — Monthly sales (units): Jan 120, Feb 150, Mar 130. What were February sales?",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "tables",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "150",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "120",
+          "correct": false,
+          "why": "120 is January."
+        },
+        {
+          "key": "C",
+          "text": "130",
+          "correct": false,
+          "why": "130 is March."
+        },
+        {
+          "key": "D",
+          "text": "400",
+          "correct": false,
+          "why": "400 is 120+150+130. The question asks for February only."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 150\n\nStep-by-step\n1. Find the February column or row.\n2. Read 150.\n3. 120 and 130 are other months. 400 is the three-month total, which was not asked.\n\nWhy other options are wrong\n- 120: 120 is January.\n- 130: 130 is March.\n- 400: 400 is 120+150+130. The question asks for February only.\n\nLearn the concept\nA table cell is read from its row and column. Do not add cells the question did not ask for.\n\nFormula or key principle\nFebruary sales are the Feb cell.\n\nWorked example\nFeb = 150.\n\nRelated lesson\ncrt-di-tables — Reading a simple data table. Published lesson: Reading a simple data table. Related practice is syl-crt-q04 and the other table items here.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=tables; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-tab-02",
+      "stem": "Table — Students: Class A 40, Class B 35, Class C 25. Total students?",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "tables",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "100",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "90",
+          "correct": false,
+          "why": "90 drops 10 students. 40+35+25 is 100."
+        },
+        {
+          "key": "C",
+          "text": "110",
+          "correct": false,
+          "why": "110 adds 10 students who are not in the table."
+        },
+        {
+          "key": "D",
+          "text": "75",
+          "correct": false,
+          "why": "75 is only class A plus class B. Class C is missing."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 100\n\nStep-by-step\n1. Add class A and class B: 75.\n2. Add class C: 100.\n3. Every class is included once.\n\nWhy other options are wrong\n- 90: 90 drops 10 students. 40+35+25 is 100.\n- 110: 110 adds 10 students who are not in the table.\n- 75: 75 is only class A plus class B. Class C is missing.\n\nLearn the concept\nA total is the sum of every group in the table, once.\n\nFormula or key principle\nTotal = 40 + 35 + 25.\n\nWorked example\n40 + 35 = 75, and 75 + 25 = 100.\n\nRelated lesson\ncrt-di-tables — Reading a simple data table. Use the published table lesson. Do not stop after two classes.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=tables; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-tab-03",
+      "stem": "Table — Marks: Math 80, Science 70, English 90. Average marks?",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "tables",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "80",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "70",
+          "correct": false,
+          "why": "70 is the Science mark, not the average."
+        },
+        {
+          "key": "C",
+          "text": "90",
+          "correct": false,
+          "why": "90 is the English mark, not the average."
+        },
+        {
+          "key": "D",
+          "text": "85",
+          "correct": false,
+          "why": "85 is (80+90)/2 and leaves Science out."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 80\n\nStep-by-step\n1. Add 80 + 70 + 90 = 240.\n2. There are 3 subjects.\n3. 240 / 3 = 80.\n\nWhy other options are wrong\n- 70: 70 is the Science mark, not the average.\n- 90: 90 is the English mark, not the average.\n- 85: 85 is (80+90)/2 and leaves Science out.\n\nLearn the concept\nThe average is the sum divided by the number of values.\n\nFormula or key principle\nAverage = (80 + 70 + 90) / 3.\n\nWorked example\n240 / 3 = 80.\n\nRelated lesson\ncrt-di-tables — Reading a simple data table. Table lesson. 80 is both the Math cell and the average. The average is the result of the division, not a guess that the middle subject is the answer.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=tables; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-tab-04",
+      "stem": "Table — Inventory: Red 12, Blue 18, Green 10. Which color has the most units?",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "tables",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Blue",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Red",
+          "correct": false,
+          "why": "12 is less than 18."
+        },
+        {
+          "key": "C",
+          "text": "Green",
+          "correct": false,
+          "why": "10 is less than 18."
+        },
+        {
+          "key": "D",
+          "text": "All equal",
+          "correct": false,
+          "why": "12, 18, and 10 are not equal."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Blue\n\nStep-by-step\n1. Read Red 12, Blue 18, Green 10.\n2. 18 is the largest.\n3. The color is Blue.\n\nWhy other options are wrong\n- Red: 12 is less than 18.\n- Green: 10 is less than 18.\n- All equal: 12, 18, and 10 are not equal.\n\nLearn the concept\nThe maximum is the largest cell, not the first cell.\n\nFormula or key principle\nCompare 12, 18, and 10.\n\nWorked example\n18 is larger than 12 and 10, so Blue.\n\nRelated lesson\ncrt-di-tables — Reading a simple data table. Table lesson. “All equal” would need the three cells to match.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=tables; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-tab-05",
+      "stem": "Table — City rainfall (mm): P 40, Q 55, R 35, S 70. Difference between highest and lowest?",
+      "skill": "data-interpretation",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "tables",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "35 mm",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "30 mm",
+          "correct": false,
+          "why": "30 is 70−40, which uses P instead of the lowest city R."
+        },
+        {
+          "key": "C",
+          "text": "40 mm",
+          "correct": false,
+          "why": "40 is city P's rainfall, not the range."
+        },
+        {
+          "key": "D",
+          "text": "15 mm",
+          "correct": false,
+          "why": "15 is 55−40, which ignores both the highest and the lowest."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: 35 mm\n\nStep-by-step\n1. The cells are 40, 55, 35, and 70.\n2. The highest is 70 and the lowest is 35.\n3. 70 − 35 = 35 mm.\n\nWhy other options are wrong\n- 30 mm: 30 is 70−40, which uses P instead of the lowest city R.\n- 40 mm: 40 is city P's rainfall, not the range.\n- 15 mm: 15 is 55−40, which ignores both the highest and the lowest.\n\nLearn the concept\nA range in a table is the highest cell minus the lowest cell.\n\nFormula or key principle\nDifference = maximum − minimum.\n\nWorked example\n70 − 35 = 35.\n\nRelated lesson\ncrt-di-tables — Reading a simple data table. Table lesson. Name the cities only to find the cells. The question asks for the difference.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=tables; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-ch-01",
+      "stem": "A bar chart shows app downloads: Android 500, iOS 300. How many more Android than iOS?",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "charts",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "200",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "800",
+          "correct": false,
+          "why": "800 is the sum 500+300. The question asks how many more, which is a difference."
+        },
+        {
+          "key": "C",
+          "text": "300",
+          "correct": false,
+          "why": "300 is the iOS bar, not the gap."
+        },
+        {
+          "key": "D",
+          "text": "100",
+          "correct": false,
+          "why": "100 is not 500−300."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 200\n\nStep-by-step\n1. Read Android 500 and iOS 300.\n2. Subtract.\n3. The difference is 200.\n\nWhy other options are wrong\n- 800: 800 is the sum 500+300. The question asks how many more, which is a difference.\n- 300: 300 is the iOS bar, not the gap.\n- 100: 100 is not 500−300.\n\nLearn the concept\nA bar difference is the taller bar minus the shorter bar.\n\nFormula or key principle\nAndroid − iOS = 500 − 300.\n\nWorked example\n500 − 300 = 200.\n\nRelated lesson\ncrt-sprint-charts — Bar charts and pie shares. Charts lesson. Adding the bars answers a different question.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=charts; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ch-02",
+      "stem": "A pie chart of budget: Food 25%, Rent 40%, Other 35%. Largest slice?",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "charts",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Rent",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Food",
+          "correct": false,
+          "why": "Food is 25%, which is smaller than Rent."
+        },
+        {
+          "key": "C",
+          "text": "Other",
+          "correct": false,
+          "why": "Other is 35%, which is smaller than Rent."
+        },
+        {
+          "key": "D",
+          "text": "All equal",
+          "correct": false,
+          "why": "25, 40, and 35 are not equal."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Rent\n\nStep-by-step\n1. List the shares.\n2. 40 is the largest number.\n3. That share is Rent.\n\nWhy other options are wrong\n- Food: Food is 25%, which is smaller than Rent.\n- Other: Other is 35%, which is smaller than Rent.\n- All equal: 25, 40, and 35 are not equal.\n\nLearn the concept\nThe largest pie slice is the greatest share. The shares must be compared, not assumed equal.\n\nFormula or key principle\nCompare 25%, 40%, and 35%.\n\nWorked example\n40% is larger than 35% and 25%, so Rent.\n\nRelated lesson\ncrt-sprint-charts — Bar charts and pie shares. Charts lesson. 25+40+35=100, so the pie is complete and the slices are not equal.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=charts; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ch-03",
+      "stem": "Bar heights for Q1–Q4 revenue (₹k): 40, 50, 45, 65. Which quarter is highest?",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "charts",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Q4",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Q2",
+          "correct": false,
+          "why": "Q2 is 50, which is less than 65."
+        },
+        {
+          "key": "C",
+          "text": "Q1",
+          "correct": false,
+          "why": "Q1 is 40, the smallest bar."
+        },
+        {
+          "key": "D",
+          "text": "Q3",
+          "correct": false,
+          "why": "Q3 is 45, which is less than 65."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Q4\n\nStep-by-step\n1. Read Q1 40, Q2 50, Q3 45, Q4 65.\n2. 65 is the maximum.\n3. Q4 is the quarter.\n\nWhy other options are wrong\n- Q2: Q2 is 50, which is less than 65.\n- Q1: Q1 is 40, the smallest bar.\n- Q3: Q3 is 45, which is less than 65.\n\nLearn the concept\nThe highest bar is the greatest value, regardless of its position.\n\nFormula or key principle\nCompare 40, 50, 45, and 65.\n\nWorked example\n65 is the largest, and it is Q4.\n\nRelated lesson\ncrt-sprint-charts — Bar charts and pie shares. Charts lesson. Q2 is second. It is not the highest.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=charts; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ch-04",
+      "stem": "Pie of 360° representing 180 employees. Angle for a team of 45 people?",
+      "skill": "data-interpretation",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "charts",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "90°",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "45°",
+          "correct": false,
+          "why": "45 is the number of people, not the angle."
+        },
+        {
+          "key": "C",
+          "text": "180°",
+          "correct": false,
+          "why": "180° would be half the company, 90 people, not 45."
+        },
+        {
+          "key": "D",
+          "text": "60°",
+          "correct": false,
+          "why": "60° would be 1/6 of the circle, which is 30 people, not 45."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 90°\n\nStep-by-step\n1. The team is 45 out of 180.\n2. 45/180 = 1/4.\n3. 1/4 of 360° is 90°.\n\nWhy other options are wrong\n- 45°: 45 is the number of people, not the angle.\n- 180°: 180° would be half the company, 90 people, not 45.\n- 60°: 60° would be 1/6 of the circle, which is 30 people, not 45.\n\nLearn the concept\nA pie angle is the group's fraction of the circle, and a full circle is 360°.\n\nFormula or key principle\nAngle = people / total people × 360.\n\nWorked example\n45/180 × 360 = 90.\n\nRelated lesson\ncrt-sprint-charts — Bar charts and pie shares. Charts lesson. Do not treat the headcount as a degree measure.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=charts; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-ch-05",
+      "stem": "Bar chart of defects: Module A 12, B 8, C 16, D 4. What % of defects are in C?",
+      "skill": "data-interpretation",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "placement",
+      "category_slug": "aptitude",
+      "topic_slug": "charts",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "40%",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "16%",
+          "correct": false,
+          "why": "16 is the count. The percentage is 16 out of 40, which is 40%."
+        },
+        {
+          "key": "C",
+          "text": "50%",
+          "correct": false,
+          "why": "50% of 40 would be 20 defects. C has 16."
+        },
+        {
+          "key": "D",
+          "text": "30%",
+          "correct": false,
+          "why": "30% of 40 would be 12 defects, which is module A."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: 40%\n\nStep-by-step\n1. Add 12+8+16+4 = 40 defects.\n2. Module C has 16 of them.\n3. 16/40 = 0.40 = 40%.\n\nWhy other options are wrong\n- 16%: 16 is the count. The percentage is 16 out of 40, which is 40%.\n- 50%: 50% of 40 would be 20 defects. C has 16.\n- 30%: 30% of 40 would be 12 defects, which is module A.\n\nLearn the concept\nA bar's percentage is that bar divided by the sum of the bars.\n\nFormula or key principle\nPercent = part / total × 100.\n\nWorked example\n12+8+16+4=40. 16/40 × 100 = 40%.\n\nRelated lesson\ncrt-sprint-charts — Bar charts and pie shares. Charts lesson. 16% copies the defect count and skips the total.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=charts; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-01",
+      "stem": "In a 0-indexed array of length n, valid indices are?",
+      "skill": "arrays",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "0 to n-1",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "1 to n",
+          "correct": false,
+          "why": "That skips index 0 and then uses index n, which is outside the array."
+        },
+        {
+          "key": "C",
+          "text": "0 to n",
+          "correct": false,
+          "why": "Index n is one past the last element."
+        },
+        {
+          "key": "D",
+          "text": "-1 to n",
+          "correct": false,
+          "why": "Both −1 and n are outside a 0-indexed array of length n."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 0 to n-1\n\nStep-by-step\n1. The first slot is index 0.\n2. The last slot is one less than the length.\n3. The valid range is 0 to n−1.\n\nWhy other options are wrong\n- 1 to n: That skips index 0 and then uses index n, which is outside the array.\n- 0 to n: Index n is one past the last element.\n- -1 to n: Both −1 and n are outside a 0-indexed array of length n.\n\nLearn the concept\nA 0-indexed array of length n uses the integers 0, 1, …, n−1. Index n is past the last slot.\n\nFormula or key principle\nValid indices: 0 ≤ i ≤ n−1.\n\nWorked example\nLength 4 uses indices 0, 1, 2, and 3.\n\nWorked algorithm\nRead the length. The last legal index is length − 1. Dry run: [a,b,c,d] has indices 0,1,2,3. Time O(1) to compute the bounds. Space O(1). Edge case: n = 0 has no valid index.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Published arrays lesson, then the array questions in the practice catalog. Coding practice: max-element.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-02",
+      "stem": "Inserting at the front of a plain dynamic array is typically?",
+      "skill": "arrays",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(1)",
+          "correct": false,
+          "why": "O(1) would be true for a structure with a free head pointer, not for shifting a contiguous array."
+        },
+        {
+          "key": "C",
+          "text": "O(log n)",
+          "correct": false,
+          "why": "Nothing is being halved. The work is a shift of n items."
+        },
+        {
+          "key": "D",
+          "text": "O(n²) always",
+          "correct": false,
+          "why": "One front insert shifts n items once. It is not a nested n×n shift."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: O(n)\n\nStep-by-step\n1. The new item needs index 0.\n2. Every old item moves one index higher.\n3. That shift touches n items, so the cost is O(n).\n\nWhy other options are wrong\n- O(1): O(1) would be true for a structure with a free head pointer, not for shifting a contiguous array.\n- O(log n): Nothing is being halved. The work is a shift of n items.\n- O(n²) always: One front insert shifts n items once. It is not a nested n×n shift.\n\nLearn the concept\nInserting at the front of a contiguous array moves every current element one slot to the right.\n\nFormula or key principle\nFront insert on a dynamic array is O(n) element moves.\n\nWorked example\nInserting x at the front of [a,b,c] writes [x,a,b,c] after shifting three items.\n\nWorked algorithm\nShift from the last index down to 0, then write the new value at 0. Dry run: [a,b,c] → [a,b,c,_] → [a,b,c,c] → [a,b,b,c] → [a,a,b,c] → [x,a,b,c]. Time O(n). Extra space O(1). Edge case: an empty array inserts in O(1).\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. A linked list can insert at the head in O(1). This question is about a plain array.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-03",
+      "stem": "Finding the maximum in an unsorted array of n elements requires in the worst case?",
+      "skill": "arrays",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Θ(n) comparisons",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Θ(1)",
+          "correct": false,
+          "why": "A constant check cannot look at a later, larger value."
+        },
+        {
+          "key": "C",
+          "text": "Θ(log n)",
+          "correct": false,
+          "why": "Halving needs a sorted order. The array is unsorted."
+        },
+        {
+          "key": "D",
+          "text": "Θ(n²) minimum always",
+          "correct": false,
+          "why": "One comparison per extra element is enough. Quadratic work is not required."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Θ(n) comparisons\n\nStep-by-step\n1. Start with the first value as the candidate.\n2. Compare every remaining value.\n3. n elements require a linear number of comparisons.\n\nWhy other options are wrong\n- Θ(1): A constant check cannot look at a later, larger value.\n- Θ(log n): Halving needs a sorted order. The array is unsorted.\n- Θ(n²) minimum always: One comparison per extra element is enough. Quadratic work is not required.\n\nLearn the concept\nAn unsorted array has no order you can use to skip elements. The maximum can be anywhere.\n\nFormula or key principle\nWorst-case comparisons to find the maximum: Θ(n).\n\nWorked example\nIn [3,1,4], the scan sees 3, then 1, then 4, and keeps 4.\n\nWorked algorithm\ncandidate ← A[1]; for each later value, replace candidate if the value is larger. Dry run [3,1,4]: 3, then 3, then 4. Time Θ(n). Space O(1). Edge case: one element returns that element with no extra comparison.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Coding practice in the DSA list: max-element.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-04",
+      "stem": "Two arrays of equal length; element-wise sum loop is?",
+      "skill": "arrays",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(1)",
+          "correct": false,
+          "why": "The work grows when n grows. It is not constant."
+        },
+        {
+          "key": "C",
+          "text": "O(n²)",
+          "correct": false,
+          "why": "There is no nested loop over the pairs of indices."
+        },
+        {
+          "key": "D",
+          "text": "O(2ⁿ)",
+          "correct": false,
+          "why": "Nothing branches into two recursive calls per element."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: O(n)\n\nStep-by-step\n1. Each index does one addition.\n2. There are n indices.\n3. The loop is O(n).\n\nWhy other options are wrong\n- O(1): The work grows when n grows. It is not constant.\n- O(n²): There is no nested loop over the pairs of indices.\n- O(2ⁿ): Nothing branches into two recursive calls per element.\n\nLearn the concept\nAdding two equal-length arrays element by element visits each index once.\n\nFormula or key principle\nOne loop from 0 to n−1 is O(n).\n\nWorked example\n[1,2] + [3,4] = [4,6] after two additions.\n\nWorked algorithm\nFor i from 0 to n−1, C[i] ← A[i] + B[i]. Dry run n=2: index 0 writes 4, index 1 writes 6. Time O(n). Output space O(n). Extra working space O(1). Edge case: n = 0 writes an empty result.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Do not square the cost because there are two arrays.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-05",
+      "stem": "Kadane-style max subarray sum (classic contiguous) runs in?",
+      "skill": "arrays",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n²) required always",
+          "correct": false,
+          "why": "A linear scan exists, so quadratic time is not required."
+        },
+        {
+          "key": "C",
+          "text": "O(log n)",
+          "correct": false,
+          "why": "The algorithm does not discard half of an unsorted array."
+        },
+        {
+          "key": "D",
+          "text": "O(n!)",
+          "correct": false,
+          "why": "There is no permutation of the array."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(n)\n\nStep-by-step\n1. At each index, extend the previous ending sum or start over.\n2. Also keep the best sum so far.\n3. Each index is visited once.\n\nWhy other options are wrong\n- O(n²) required always: A linear scan exists, so quadratic time is not required.\n- O(log n): The algorithm does not discard half of an unsorted array.\n- O(n!): There is no permutation of the array.\n\nLearn the concept\nKadane's scan keeps the best sum that ends at the current index and the best sum seen anywhere.\n\nFormula or key principle\nClassic non-empty maximum subarray: O(n) time and O(1) extra space.\n\nWorked example\nOn [−2,1,−3,4,−1,2,1], the best ending sums reach 4, 3, 5, 6. The answer is 6, from [4,−1,2,1].\n\nWorked algorithm\nending ← A[0]; best ← A[0]; for each next x: ending ← max(x, ending+x); best ← max(best, ending). Dry run [1,−2,3]: ending 1, then 1, then 3; best 3. Time O(n). Space O(1). Edge case: all negative values return the largest single value for the non-empty version.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. The quadratic double loop also works, but it is not required.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-06",
+      "stem": "Two-sum with a hash map on an unsorted array is typically?",
+      "skill": "arrays",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n) average time",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n²) unavoidable",
+          "correct": false,
+          "why": "The nested-pair scan is O(n²). The hash scan avoids that on average."
+        },
+        {
+          "key": "C",
+          "text": "O(1) time always",
+          "correct": false,
+          "why": "Every element may need to be read. The time is not constant."
+        },
+        {
+          "key": "D",
+          "text": "O(n log n) space minimum",
+          "correct": false,
+          "why": "The map stores up to n entries. It does not need n log n space."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(n) average time\n\nStep-by-step\n1. For each value, look up target − value.\n2. If it is missing, store the current value.\n3. Each of the n steps does expected O(1) work.\n\nWhy other options are wrong\n- O(n²) unavoidable: The nested-pair scan is O(n²). The hash scan avoids that on average.\n- O(1) time always: Every element may need to be read. The time is not constant.\n- O(n log n) space minimum: The map stores up to n entries. It does not need n log n space.\n\nLearn the concept\nA hash map stores a value's index so the complement can be checked in expected constant time.\n\nFormula or key principle\nOne pass two-sum: average O(n) time and O(n) extra space.\n\nWorked example\nTarget 9 on [2,7,11]: see 2, store it; see 7, find 9−7=2. The pair is the stored index and the current index.\n\nWorked algorithm\nmap starts empty. For i, x in the array: if target−x is in the map, return both indices; else map[x] ← i. Dry run [2,7] target 9: store 2, then find it from 7. Time O(n) average. Space O(n). Edge case: no pair returns an empty result. Duplicate values need the index, not just a set of values.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Coding practice: two-sum. The average bound assumes a good hash and no pathological collisions.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-07",
+      "stem": "Reversing an array in place swaps from ends toward center. Extra space?",
+      "skill": "arrays",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(1) auxiliary",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n) auxiliary required",
+          "correct": false,
+          "why": "A second array would use O(n). The in-place swap does not."
+        },
+        {
+          "key": "C",
+          "text": "O(n²) auxiliary",
+          "correct": false,
+          "why": "The swaps do not allocate a quadratic table."
+        },
+        {
+          "key": "D",
+          "text": "O(log n) auxiliary required",
+          "correct": false,
+          "why": "The iterative swap does not build a recursion stack of depth log n."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(1) auxiliary\n\nStep-by-step\n1. Set left at the first index and right at the last.\n2. Swap, then move inward.\n3. Only a few index variables are extra.\n\nWhy other options are wrong\n- O(n) auxiliary required: A second array would use O(n). The in-place swap does not.\n- O(n²) auxiliary: The swaps do not allocate a quadratic table.\n- O(log n) auxiliary required: The iterative swap does not build a recursion stack of depth log n.\n\nLearn the concept\nIn-place reverse swaps the ends and walks inward. The extra memory does not grow with n.\n\nFormula or key principle\nAuxiliary space O(1). Time O(n).\n\nWorked example\n[a,b,c,d] swaps to [d,b,c,a], then [d,c,b,a].\n\nWorked algorithm\nwhile left < right: swap A[left], A[right]; left ← left+1; right ← right−1. Dry run [a,b,c,d] → [d,b,c,a] → [d,c,b,a]. Time O(n). Space O(1). Edge cases: empty and one-element arrays do nothing.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. The published arrays lesson traces this swap. Coding practice: reverse-string uses the same two-end idea on characters.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-08",
+      "stem": "Moving all zeros to the end while preserving other order can be done in?",
+      "skill": "arrays",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n) time and O(1) extra space",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Only O(n²) time",
+          "correct": false,
+          "why": "One pass is enough. Nested shifting is not required."
+        },
+        {
+          "key": "C",
+          "text": "Only with O(n) extra always",
+          "correct": false,
+          "why": "Writing into the same array avoids a second array."
+        },
+        {
+          "key": "D",
+          "text": "O(log n) time",
+          "correct": false,
+          "why": "Every element may be a zero that still has to be seen."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(n) time and O(1) extra space\n\nStep-by-step\n1. Walk once and write each non-zero to the next output slot.\n2. Fill the remaining slots with zero.\n3. The walk is linear and uses only the write index as extra memory.\n\nWhy other options are wrong\n- Only O(n²) time: One pass is enough. Nested shifting is not required.\n- Only with O(n) extra always: Writing into the same array avoids a second array.\n- O(log n) time: Every element may be a zero that still has to be seen.\n\nLearn the concept\nA write index can copy the non-zero values forward, then fill the tail with zeros.\n\nFormula or key principle\nO(n) time and O(1) extra space, preserving the order of non-zeros.\n\nWorked example\n[0,1,0,3] becomes [1,3,0,0].\n\nWorked algorithm\nwrite ← 0. For each x: if x ≠ 0, A[write] ← x and write ← write+1. Then fill from write to the end with 0. Dry run [0,1,0,3] → [1,1,0,3] → [1,3,0,3] → [1,3,0,0]. Time O(n). Space O(1). Edge case: all zeros stays all zeros.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. The stable order is the order the non-zero values already had.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-09",
+      "stem": "Prefix-sum array helps answer range-sum queries in?",
+      "skill": "arrays",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(1) per query after O(n) preprocess",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n) per query always with no benefit",
+          "correct": false,
+          "why": "That is the cost without a prefix array. With one, the query is a subtraction."
+        },
+        {
+          "key": "C",
+          "text": "O(n²) preprocess mandatory",
+          "correct": false,
+          "why": "Each prefix cell adds one value. The build is linear."
+        },
+        {
+          "key": "D",
+          "text": "O(log n) preprocess only",
+          "correct": false,
+          "why": "Every element must be added once. The build is not logarithmic."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(1) per query after O(n) preprocess\n\nStep-by-step\n1. P[0] = A[0].\n2. P[i] = P[i−1] + A[i].\n3. Sum from L to R is P[R] − P[L−1], using 0 when L is 0.\n\nWhy other options are wrong\n- O(n) per query always with no benefit: That is the cost without a prefix array. With one, the query is a subtraction.\n- O(n²) preprocess mandatory: Each prefix cell adds one value. The build is linear.\n- O(log n) preprocess only: Every element must be added once. The build is not logarithmic.\n\nLearn the concept\nA prefix sum stores the sum of the array from the start through each index.\n\nFormula or key principle\nBuild in O(n). A range sum is then O(1).\n\nWorked example\nA = [2,4,6]. Prefix = [2,6,12]. Sum from index 1 through 2 is 12−2 = 10.\n\nWorked algorithm\nBuild P, then answer sum(L,R) by one subtraction. Dry run [2,4,6], query 1..2: 12−2=10. Build time O(n). Query time O(1). Extra space O(n). Edge case: L = 0 uses P[R] with no subtraction.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. The preprocess cost is paid once, then each query is a subtraction.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-arr-10",
+      "stem": "Dutch National Flag (3-way partition) for an array of 0/1/2 values runs in?",
+      "skill": "arrays",
+      "difficulty": "hard",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "arrays",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n) time, O(1) space",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n log n) time required",
+          "correct": false,
+          "why": "Comparison sorting is enough but not required for three known keys."
+        },
+        {
+          "key": "C",
+          "text": "O(n²) time",
+          "correct": false,
+          "why": "The pointers only move inward. They do not nest."
+        },
+        {
+          "key": "D",
+          "text": "O(n) space required",
+          "correct": false,
+          "why": "The swaps happen inside the same array."
+        }
+      ],
+      "explanation": "Difficulty: hard\nCorrect answer: O(n) time, O(1) space\n\nStep-by-step\n1. low marks the end of the 0s. mid scans. high marks the start of the 2s.\n2. Swap 0s toward low and 2s toward high.\n3. Each element is moved a constant number of times.\n\nWhy other options are wrong\n- O(n log n) time required: Comparison sorting is enough but not required for three known keys.\n- O(n²) time: The pointers only move inward. They do not nest.\n- O(n) space required: The swaps happen inside the same array.\n\nLearn the concept\nThe Dutch national flag partition groups 0, then 1, then 2 with three pointers in one pass.\n\nFormula or key principle\nO(n) time and O(1) extra space.\n\nWorked example\n[2,0,1] becomes [0,1,2].\n\nWorked algorithm\nlow ← 0; mid ← 0; high ← n−1. While mid ≤ high: 0 swaps with low and both advance; 1 advances mid; 2 swaps with high and high retreats. Dry run [2,0,1] → [1,0,2] → [0,1,2]. Time O(n). Space O(1). Edge case: an array of only one value never needs a nested pass.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Sorting would also group them, but the three-way partition does not need O(n log n).\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=hard; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-01",
+      "stem": "What is the reverse of the string \"ab\"?",
+      "skill": "strings",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "ba",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "ab",
+          "correct": false,
+          "why": "ab is the original string. Reverse exchanges the ends."
+        },
+        {
+          "key": "C",
+          "text": "a",
+          "correct": false,
+          "why": "a drops the second character."
+        },
+        {
+          "key": "D",
+          "text": "b",
+          "correct": false,
+          "why": "b drops the first character."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: ba\n\nStep-by-step\n1. The characters are index 0 = a and index 1 = b.\n2. Swap the two ends.\n3. The result is ba.\n\nWhy other options are wrong\n- ab: ab is the original string. Reverse exchanges the ends.\n- a: a drops the second character.\n- b: b drops the first character.\n\nLearn the concept\nReversing a string rewrites its characters from the last index back to the first.\n\nFormula or key principle\nResult[i] = source[n−1−i].\n\nWorked example\n\"ab\" → \"ba\".\n\nWorked algorithm\nTwo pointers at the ends swap until they meet. Dry run \"ab\": swap once to \"ba\". Time O(n). A new string uses O(n) space; an in-place character buffer uses O(1) extra space. Edge cases: empty stays empty, and one character stays unchanged.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Coding practice in the DSA list: reverse-string.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-02",
+      "stem": "What is the reverse of an empty string?",
+      "skill": "strings",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "The empty string",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "A single space",
+          "correct": false,
+          "why": "A space is a character. The input has no characters."
+        },
+        {
+          "key": "C",
+          "text": "null as the word \"null\"",
+          "correct": false,
+          "why": "Empty is a string of length 0. It is not the four letters n-u-l-l."
+        },
+        {
+          "key": "D",
+          "text": "The letter e",
+          "correct": false,
+          "why": "The letter e is not in the input."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: The empty string\n\nStep-by-step\n1. Count the characters: 0.\n2. There is no end character to move.\n3. The reverse is still empty.\n\nWhy other options are wrong\n- A single space: A space is a character. The input has no characters.\n- null as the word \"null\": Empty is a string of length 0. It is not the four letters n-u-l-l.\n- The letter e: The letter e is not in the input.\n\nLearn the concept\nThe empty string is a real string with length 0.\n\nFormula or key principle\nReverse of length 0 is length 0.\n\nWorked example\n\"\" reversed is \"\".\n\nWorked algorithm\nIf left starts at 0 and right starts at −1, the loop does not run. Dry run of \"\": no swap. Time O(1). Space O(1). Do not invent a space or a null word.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. This is the empty edge case of reverse-string.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-03",
+      "stem": "How many vowels are in \"team\"? Count a, e, i, o, and u only.",
+      "skill": "strings",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "2",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "1",
+          "correct": false,
+          "why": "That count keeps only e or only a, not both."
+        },
+        {
+          "key": "C",
+          "text": "3",
+          "correct": false,
+          "why": "There are only four letters, and t and m are not vowels."
+        },
+        {
+          "key": "D",
+          "text": "4",
+          "correct": false,
+          "why": "4 would count every letter, including t and m."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 2\n\nStep-by-step\n1. Letters: t, e, a, m.\n2. e and a are vowels.\n3. The count is 2.\n\nWhy other options are wrong\n- 1: That count keeps only e or only a, not both.\n- 3: There are only four letters, and t and m are not vowels.\n- 4: 4 would count every letter, including t and m.\n\nLearn the concept\nA vowel count is a single scan that adds one when the character is in the vowel set.\n\nFormula or key principle\nCount = number of characters in {a, e, i, o, u}. This item does not treat y as a vowel.\n\nWorked example\n\"team\" → e and a → 2.\n\nWorked algorithm\ntotal ← 0; for each character, add 1 if it is a vowel. Dry run \"team\": t no, e yes, a yes, m no. Time O(n). Space O(1). Edge case: an empty string counts 0. Case must be decided; this item is lowercase.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Coding practice: count-vowels.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-04",
+      "stem": "Is \"level\" a palindrome?",
+      "skill": "strings",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Yes, it reads the same forwards and backwards",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "No, because it has five letters",
+          "correct": false,
+          "why": "An odd length can still be a palindrome. The middle letter matches itself."
+        },
+        {
+          "key": "C",
+          "text": "No, because it starts with l",
+          "correct": false,
+          "why": "The test is whether the ends match, and both ends are l."
+        },
+        {
+          "key": "D",
+          "text": "Only if the middle letter is removed",
+          "correct": false,
+          "why": "Removing v would make \"leel\", but the original already matches."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: Yes, it reads the same forwards and backwards\n\nStep-by-step\n1. Compare index 0 with index 4: l and l.\n2. Compare index 1 with index 3: e and e.\n3. The middle v stands alone. The string is a palindrome.\n\nWhy other options are wrong\n- No, because it has five letters: An odd length can still be a palindrome. The middle letter matches itself.\n- No, because it starts with l: The test is whether the ends match, and both ends are l.\n- Only if the middle letter is removed: Removing v would make \"leel\", but the original already matches.\n\nLearn the concept\nA palindrome matches at every pair of positions equally far from the two ends.\n\nFormula or key principle\nS[i] = S[n−1−i] for every i.\n\nWorked example\nlevel ↔ level.\n\nWorked algorithm\nleft ← 0; right ← 4. Both pairs match, so accept. Time O(n). Space O(1). Edge cases: empty and one-character strings are palindromes. This check is case-sensitive; \"Level\" would fail if L and l differ.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. The same two pointers used for reverse can stop at the first mismatch.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-05",
+      "stem": "What is the first character that occurs once in \"aabbc\"?",
+      "skill": "strings",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "c",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "a",
+          "correct": false,
+          "why": "a occurs at the first two positions, so it is not unique."
+        },
+        {
+          "key": "C",
+          "text": "b",
+          "correct": false,
+          "why": "b occurs twice, after the a's."
+        },
+        {
+          "key": "D",
+          "text": "There is no such character",
+          "correct": false,
+          "why": "c occurs once, at the end."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: c\n\nStep-by-step\n1. Count a:2, b:2, c:1.\n2. Walk again in original order.\n3. The first count of 1 is c.\n\nWhy other options are wrong\n- a: a occurs at the first two positions, so it is not unique.\n- b: b occurs twice, after the a's.\n- There is no such character: c occurs once, at the end.\n\nLearn the concept\nFirst unique character means the earliest character whose total frequency is one.\n\nFormula or key principle\nTwo scans: count frequencies, then return the first character with count 1.\n\nWorked example\n\"aabbc\" → c.\n\nWorked algorithm\nCount, then scan. Dry run: a is skipped because its count is 2, b is skipped, c is returned. Time O(n). Space O(1) for a fixed alphabet, otherwise O(k) for k distinct characters. Edge case: \"aabb\" has no unique character.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. A frequency map is the same idea as the vowel counter, with one bucket per character.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-06",
+      "stem": "Are \"listen\" and \"silent\" anagrams?",
+      "skill": "strings",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Yes, they use the same letters the same number of times",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "No, because the first letters differ",
+          "correct": false,
+          "why": "Anagrams do not need the same first letter."
+        },
+        {
+          "key": "C",
+          "text": "No, because one is a reverse of the other",
+          "correct": false,
+          "why": "silent is not listen reversed. listen reversed is netsil."
+        },
+        {
+          "key": "D",
+          "text": "Only if both are sorted in the output",
+          "correct": false,
+          "why": "Sorting is a method you may use. The words are anagrams before you print them."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: Yes, they use the same letters the same number of times\n\nStep-by-step\n1. Both have length 6.\n2. Sorted, both become eilnst.\n3. The letter counts match, so they are anagrams.\n\nWhy other options are wrong\n- No, because the first letters differ: Anagrams do not need the same first letter.\n- No, because one is a reverse of the other: silent is not listen reversed. listen reversed is netsil.\n- Only if both are sorted in the output: Sorting is a method you may use. The words are anagrams before you print them.\n\nLearn the concept\nAnagrams are equal frequency maps. Order does not matter.\n\nFormula or key principle\nSort both and compare, or compare two count maps.\n\nWorked example\nlisten and silent both sort to eilnst.\n\nWorked algorithm\nCount each letter in the first word and decrement with the second. Dry run: l,i,s,t,e,n then s,i,l,e,n,t all return to zero. Time O(n). Space O(1) for a fixed alphabet. Edge case: different lengths cannot be anagrams. Spaces and case are not present in this pair.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Sorting is O(n log n). Counting is O(n) for a fixed alphabet.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-07",
+      "stem": "In the 0-indexed string \"code\", which character is at index 0?",
+      "skill": "strings",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "c",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "o",
+          "correct": false,
+          "why": "o is index 1."
+        },
+        {
+          "key": "C",
+          "text": "d",
+          "correct": false,
+          "why": "d is index 2."
+        },
+        {
+          "key": "D",
+          "text": "e",
+          "correct": false,
+          "why": "e is index 3."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: c\n\nStep-by-step\n1. Indexing starts at 0.\n2. The first character is c.\n3. c is the character at index 0.\n\nWhy other options are wrong\n- o: o is index 1.\n- d: d is index 2.\n- e: e is index 3.\n\nLearn the concept\nA string index picks one character. Index 0 is the first character.\n\nFormula or key principle\nS[0] is the first character in a 0-indexed string.\n\nWorked example\n\"code\"[0] = c.\n\nWorked algorithm\nRead S[0]. Dry run \"code\": positions 0:c, 1:o, 2:d, 3:e. Time O(1). Space O(1). Edge case: the empty string has no index 0.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson and the published arrays-and-strings lesson both use the start of the sequence.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-08",
+      "stem": "What is the length of \"ab\" concatenated with \"c\"?",
+      "skill": "strings",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "3",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "2",
+          "correct": false,
+          "why": "2 is only the length of \"ab\"."
+        },
+        {
+          "key": "C",
+          "text": "1",
+          "correct": false,
+          "why": "1 is only the length of \"c\"."
+        },
+        {
+          "key": "D",
+          "text": "5",
+          "correct": false,
+          "why": "5 is not 2+1."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 3\n\nStep-by-step\n1. Length of \"ab\" is 2.\n2. Length of \"c\" is 1.\n3. 2+1=3, and the string is \"abc\".\n\nWhy other options are wrong\n- 2: 2 is only the length of \"ab\".\n- 1: 1 is only the length of \"c\".\n- 5: 5 is not 2+1.\n\nLearn the concept\nConcatenation copies both strings in order. The length is the sum of the lengths.\n\nFormula or key principle\nlength(X+Y) = length(X) + length(Y).\n\nWorked example\n\"ab\" + \"c\" = \"abc\", length 3.\n\nWorked algorithm\nCopy ab, then copy c. Dry run writes a, b, c. Time O(n+m). Space O(n+m) for the new string. Edge case: concatenating an empty string does not change the other length.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Building a new string costs time proportional to the characters copied.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-09",
+      "stem": "A two-pointer palindrome check that stops at the first mismatch uses how much extra memory?",
+      "skill": "strings",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(1) extra memory",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n) extra memory required",
+          "correct": false,
+          "why": "A reversed copy would use O(n). The two pointers do not build that copy."
+        },
+        {
+          "key": "C",
+          "text": "O(n²) extra memory",
+          "correct": false,
+          "why": "The check does not allocate a table of pairs."
+        },
+        {
+          "key": "D",
+          "text": "O(2ⁿ) extra memory",
+          "correct": false,
+          "why": "The check does not branch on every character."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(1) extra memory\n\nStep-by-step\n1. Store two indices.\n2. Move them toward the center.\n3. The extra memory stays constant.\n\nWhy other options are wrong\n- O(n) extra memory required: A reversed copy would use O(n). The two pointers do not build that copy.\n- O(n²) extra memory: The check does not allocate a table of pairs.\n- O(2ⁿ) extra memory: The check does not branch on every character.\n\nLearn the concept\nIndices are scalar variables. They do not grow with the string.\n\nFormula or key principle\nExtra space O(1). Time O(n) in the worst case, when the string is a palindrome.\n\nWorked example\n\"abba\" checks a/a, then b/b, and accepts.\n\nWorked algorithm\nleft and right move inward. Dry run \"abba\": both pairs match. Time O(n). Space O(1). Edge case: a mismatch returns false without reading the rest, so the best case can be O(1) time.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Compare this with building a reversed copy, which uses linear extra memory.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-str-10",
+      "stem": "If strings cannot be edited in place, how much extra memory does building the reverse of an n-character string take?",
+      "skill": "strings",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "strings",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n) extra memory",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(1) extra memory",
+          "correct": false,
+          "why": "O(1) fits an in-place buffer. A new string must hold n characters."
+        },
+        {
+          "key": "C",
+          "text": "O(log n) extra memory",
+          "correct": false,
+          "why": "The new string is not a balanced tree of log n cells in this model."
+        },
+        {
+          "key": "D",
+          "text": "O(n²) extra memory",
+          "correct": false,
+          "why": "Each character is stored once in the result, not n times."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(n) extra memory\n\nStep-by-step\n1. The result needs one slot per input character.\n2. Those n slots are new.\n3. The extra memory is O(n).\n\nWhy other options are wrong\n- O(1) extra memory: O(1) fits an in-place buffer. A new string must hold n characters.\n- O(log n) extra memory: The new string is not a balanced tree of log n cells in this model.\n- O(n²) extra memory: Each character is stored once in the result, not n times.\n\nLearn the concept\nAn immutable string operation allocates the result. The reverse result has n characters.\n\nFormula or key principle\nExtra space Θ(n) for the new string. Time Θ(n) to copy.\n\nWorked example\nReversing \"code\" allocates a new 4-character string \"edoc\".\n\nWorked algorithm\nAllocate n cells and fill them from the end of the source. Dry run \"ab\" allocates \"ba\". Time O(n). Space O(n). Edge case: n = 0 allocates an empty result.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. The coding problem reverse-string prints a new line; the extra output is proportional to n.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-cx-01",
+      "stem": "Two nested loops each run from 1 to n, and the inner body is constant work. What is the time complexity?",
+      "skill": "complexity",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "basics",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n²)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n)",
+          "correct": false,
+          "why": "One loop over n is linear. The inner loop multiplies that by another n."
+        },
+        {
+          "key": "C",
+          "text": "O(log n)",
+          "correct": false,
+          "why": "Neither loop halves n."
+        },
+        {
+          "key": "D",
+          "text": "O(1)",
+          "correct": false,
+          "why": "The number of body runs grows with n."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: O(n²)\n\nStep-by-step\n1. The outer loop runs n times.\n2. For each outer step the inner loop runs n times.\n3. n × n = n².\n\nWhy other options are wrong\n- O(n): One loop over n is linear. The inner loop multiplies that by another n.\n- O(log n): Neither loop halves n.\n- O(1): The number of body runs grows with n.\n\nLearn the concept\nNested full loops multiply. Big-O keeps the dominant term.\n\nFormula or key principle\nn × n constant steps is O(n²).\n\nWorked example\nn = 3 runs the body 9 times.\n\nWorked algorithm\nfor i in 1..n: for j in 1..n: do constant work. Dry run n=3: 9 body runs. Time O(n²). Extra space O(1) if the body allocates nothing. Edge case: n = 0 runs the body 0 times, which is still inside O(n²).\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. This lesson checks the count. The published lesson dsa-complexity traces the pair-counting loop, which is also quadratic.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-cx-02",
+      "stem": "A loop sets x = n and repeatedly replaces x with floor(x/2) until x is 0. How many iterations grow with n?",
+      "skill": "complexity",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "basics",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(log n)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n)",
+          "correct": false,
+          "why": "The loop does not subtract 1. It discards half of x each time."
+        },
+        {
+          "key": "C",
+          "text": "O(n²)",
+          "correct": false,
+          "why": "There is only one loop, and it shrinks x."
+        },
+        {
+          "key": "D",
+          "text": "O(1) for every n > 1",
+          "correct": false,
+          "why": "Larger n needs more halvings. n = 8 takes more steps than n = 2."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: O(log n)\n\nStep-by-step\n1. Each iteration halves x.\n2. The number of halvings until 1 is about log2(n).\n3. That growth is O(log n).\n\nWhy other options are wrong\n- O(n): The loop does not subtract 1. It discards half of x each time.\n- O(n²): There is only one loop, and it shrinks x.\n- O(1) for every n > 1: Larger n needs more halvings. n = 8 takes more steps than n = 2.\n\nLearn the concept\nHalving reaches a constant after a logarithmic number of steps.\n\nFormula or key principle\nIterations are floor(log2 n) + 1 while x stays positive.\n\nWorked example\nn = 8: 8, 4, 2, 1, then the next step reaches 0. Four halvings from 8.\n\nWorked algorithm\nwhile x > 0: x ← floor(x/2). Dry run 8 → 4 → 2 → 1 → 0. Time O(log n). Space O(1). Edge case: n = 1 finishes in one halving to 0.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Binary search uses this same halving count.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-cx-03",
+      "stem": "Which big-O class matches 3n² + 2n + 7?",
+      "skill": "complexity",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "basics",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n²)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(n)",
+          "correct": false,
+          "why": "The n² term grows faster than the linear term, so the whole expression is not linear."
+        },
+        {
+          "key": "C",
+          "text": "O(n³)",
+          "correct": false,
+          "why": "There is no n³ term. A looser cubic bound is not the tight class asked here."
+        },
+        {
+          "key": "D",
+          "text": "O(1)",
+          "correct": false,
+          "why": "The cost grows with n."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(n²)\n\nStep-by-step\n1. 3n² dominates 2n and 7 as n grows.\n2. Drop the lower terms and the constant 3.\n3. The class is O(n²).\n\nWhy other options are wrong\n- O(n): The n² term grows faster than the linear term, so the whole expression is not linear.\n- O(n³): There is no n³ term. A looser cubic bound is not the tight class asked here.\n- O(1): The cost grows with n.\n\nLearn the concept\nBig-O of a polynomial is the highest power, with its coefficient dropped.\n\nFormula or key principle\n3n² + 2n + 7 is O(n²).\n\nWorked example\nAt n = 10, 3×100 = 300, while 2×10+7 = 27. The square term already dominates.\n\nWorked algorithm\nIdentify the highest power. Dry run of term sizes at n=10: 300, 20, and 7. Time class O(n²). This is a classification, so extra space is not introduced. Edge case: the classification is about growth, not the value at one small n.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson and the published dsa-complexity recap both say to drop lower-order terms.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-cx-04",
+      "stem": "A function does 20 steps of setup and then one loop of n additions. What is the time complexity?",
+      "skill": "complexity",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "basics",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "O(n)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "O(1)",
+          "correct": false,
+          "why": "The loop still grows with n. The 20 setup steps do not cancel it."
+        },
+        {
+          "key": "C",
+          "text": "O(n + 20) as a different class from O(n)",
+          "correct": false,
+          "why": "O(n + 20) is the same class as O(n). Adding a constant does not create a new class."
+        },
+        {
+          "key": "D",
+          "text": "O(20ⁿ)",
+          "correct": false,
+          "why": "20ⁿ would be exponential. The 20 here is a fixed setup, not the base of an exponent."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: O(n)\n\nStep-by-step\n1. Setup is constant.\n2. The loop is linear.\n3. Constant plus linear is linear.\n\nWhy other options are wrong\n- O(1): The loop still grows with n. The 20 setup steps do not cancel it.\n- O(n + 20) as a different class from O(n): O(n + 20) is the same class as O(n). Adding a constant does not create a new class.\n- O(20ⁿ): 20ⁿ would be exponential. The 20 here is a fixed setup, not the base of an exponent.\n\nLearn the concept\nO(1) + O(n) = O(n).\n\nFormula or key principle\n20 + n steps.\n\nWorked example\nn = 5 does 25 additions-and-setup steps. n = 50 does 70. The growth follows n.\n\nWorked algorithm\nCount setup, then count the loop. Dry run n=4: 20 setup steps plus 4 loop steps. Time O(n). Space O(1) if each addition reuses one variable. Edge case: n = 0 leaves only the setup, which is allowed inside O(n).\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Constants are dropped in the class even though they matter on a real machine.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-cx-05",
+      "stem": "You need the sum 1 + 2 + … + n. Which statement is accurate?",
+      "skill": "complexity",
+      "difficulty": "hard",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "basics",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "The formula n(n+1)/2 is O(1); adding the integers one by one is O(n)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Both methods are O(1)",
+          "correct": false,
+          "why": "Walking from 1 to n does work that grows with n."
+        },
+        {
+          "key": "C",
+          "text": "Both methods are O(n²)",
+          "correct": false,
+          "why": "The loop adds once per integer. It is not a nested pair of loops. The formula is constant."
+        },
+        {
+          "key": "D",
+          "text": "The formula is O(n!)",
+          "correct": false,
+          "why": "The formula uses a fixed number of arithmetic operations, not a factorial."
+        }
+      ],
+      "explanation": "Difficulty: hard\nCorrect answer: The formula n(n+1)/2 is O(1); adding the integers one by one is O(n)\n\nStep-by-step\n1. The closed form multiplies n by n+1 and divides by 2.\n2. That is a fixed amount of arithmetic.\n3. The loop performs n additions.\n\nWhy other options are wrong\n- Both methods are O(1): Walking from 1 to n does work that grows with n.\n- Both methods are O(n²): The loop adds once per integer. It is not a nested pair of loops. The formula is constant.\n- The formula is O(n!): The formula uses a fixed number of arithmetic operations, not a factorial.\n\nLearn the concept\nThe same result can have two algorithms with different costs.\n\nFormula or key principle\nSum = n(n+1)/2.\n\nWorked example\nn = 4. Formula: 4×5/2 = 10. Loop: 1+2+3+4 = 10.\n\nWorked algorithm\nFormula: three arithmetic operations. Loop: for i from 1 to n, add i. Dry run n=4 gives 10 either way. Formula time O(1), loop time O(n). Space O(1) for both if you store only the total. Edge case: n = 0 sums to 0.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Choose the method the question names before you name the class.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=hard; type=single-choice"
+    },
+    {
+      "key": "sprint1-sea-01",
+      "stem": "Linear search looks for 9 in [4, 1, 9, 7]. How many comparisons does it make until it finds 9?",
+      "skill": "searching",
+      "difficulty": "easy",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "searching",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "3",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "1",
+          "correct": false,
+          "why": "The first cell is 4, not 9."
+        },
+        {
+          "key": "C",
+          "text": "2",
+          "correct": false,
+          "why": "The second cell is 1, not 9. The search has not found it yet."
+        },
+        {
+          "key": "D",
+          "text": "4",
+          "correct": false,
+          "why": "4 would continue after the match. It can stop when 9 is found."
+        }
+      ],
+      "explanation": "Difficulty: easy\nCorrect answer: 3\n\nStep-by-step\n1. Compare 4: no.\n2. Compare 1: no.\n3. Compare 9: yes. That is the third comparison.\n\nWhy other options are wrong\n- 1: The first cell is 4, not 9.\n- 2: The second cell is 1, not 9. The search has not found it yet.\n- 4: 4 would continue after the match. It can stop when 9 is found.\n\nLearn the concept\nLinear search checks elements in order until it hits the target or finishes the array.\n\nFormula or key principle\nWorst case, when the target is missing or last, is n comparisons. Here the target is third.\n\nWorked example\n[4, 1, 9, 7] finds 9 on comparison 3.\n\nWorked algorithm\nfor each index, compare. Dry run: 4 no, 1 no, 9 yes, return index 2. Time O(k) until the match, O(n) worst case. Space O(1). Edge case: a missing target scans all n cells and reports not found.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-searching — Linear and binary search. Searching lesson. Coding practice: linear-search.\n\nTopic metadata\ndomain=technical; category=dsa; topic=searching; difficulty=easy; type=single-choice"
+    },
+    {
+      "key": "sprint1-sea-02",
+      "stem": "Binary search looks for 6 in the sorted array [2, 4, 6, 8, 10]. Which index does it return?",
+      "skill": "searching",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "searching",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "2",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "0",
+          "correct": false,
+          "why": "Index 0 holds 2. The first middle is not the answer."
+        },
+        {
+          "key": "C",
+          "text": "1",
+          "correct": false,
+          "why": "Index 1 holds 4. The search moves right after seeing 4 only if the middle is 4; in this array the first middle is 6."
+        },
+        {
+          "key": "D",
+          "text": "4",
+          "correct": false,
+          "why": "Index 4 holds 10, which is past the target."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: 2\n\nStep-by-step\n1. low = 0 and high = 4. mid = 2.\n2. The value at mid is 6, which is the target.\n3. Return index 2.\n\nWhy other options are wrong\n- 0: Index 0 holds 2. The first middle is not the answer.\n- 1: Index 1 holds 4. The search moves right after seeing 4 only if the middle is 4; in this array the first middle is 6.\n- 4: Index 4 holds 10, which is past the target.\n\nLearn the concept\nBinary search is valid on a sorted array. It compares the middle and discards half.\n\nFormula or key principle\nmid = low + floor((high−low)/2), using a form that stays inside the index range.\n\nWorked example\n[2,4,6,8,10], target 6, first mid index 2, value 6.\n\nWorked algorithm\nlow 0, high 4, mid 2, A[2]=6, return 2. Dry run stops after one comparison. Time O(log n) worst case, O(1) in this lucky first hit. Space O(1) for the iterative form. Edge case: an even length uses the chosen mid formula consistently.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-searching — Linear and binary search. Searching lesson. Coding practice: binary-search. The published complexity lesson explains the log n count, not this index trace.\n\nTopic metadata\ndomain=technical; category=dsa; topic=searching; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-sea-03",
+      "stem": "What is the worst-case time of linear search when the target is absent?",
+      "skill": "searching",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "searching",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "Θ(n)",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "Θ(1)",
+          "correct": false,
+          "why": "A constant check cannot prove that a later cell is also a miss."
+        },
+        {
+          "key": "C",
+          "text": "Θ(log n)",
+          "correct": false,
+          "why": "Linear search does not discard half of the array."
+        },
+        {
+          "key": "D",
+          "text": "Θ(n²)",
+          "correct": false,
+          "why": "Each element is compared once, not once per pair."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: Θ(n)\n\nStep-by-step\n1. Every cell might have held the target.\n2. The search reads all n cells.\n3. The worst-case cost is linear.\n\nWhy other options are wrong\n- Θ(1): A constant check cannot prove that a later cell is also a miss.\n- Θ(log n): Linear search does not discard half of the array.\n- Θ(n²): Each element is compared once, not once per pair.\n\nLearn the concept\nAbsence is a worst case for linear search because no early match occurs.\n\nFormula or key principle\nWorst-case comparisons = n.\n\nWorked example\nSearching for 5 in [1,2,3,4] compares all four cells.\n\nWorked algorithm\nScan every index and then report absent. Dry run [1,2,3] target 9: three misses. Time Θ(n). Space O(1). Edge case: an empty array returns absent in Θ(1), which is inside the linear bound for n = 0.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-searching — Linear and binary search. Searching lesson. Best case is still Θ(1) when the first cell matches. Do not call the best case the big-O worst case.\n\nTopic metadata\ndomain=technical; category=dsa; topic=searching; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-sea-04",
+      "stem": "Binary search is run on the unsorted array [5, 1, 4]. Which statement is right?",
+      "skill": "searching",
+      "difficulty": "medium",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "searching",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "The halving rule can discard the half that actually holds the target",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "It is reliable because every array supports halving",
+          "correct": false,
+          "why": "Halving is reliable only when every value on the left is ≤ the middle and every value on the right is ≥ it."
+        },
+        {
+          "key": "C",
+          "text": "It always returns index 0",
+          "correct": false,
+          "why": "The return depends on the comparisons. It is not fixed at index 0."
+        },
+        {
+          "key": "D",
+          "text": "It sorts the array before the first comparison",
+          "correct": false,
+          "why": "Standard binary search does not sort. Sorting would be a separate O(n log n) step."
+        }
+      ],
+      "explanation": "Difficulty: medium\nCorrect answer: The halving rule can discard the half that actually holds the target\n\nStep-by-step\n1. Binary search assumes sorted order.\n2. [5,1,4] is not sorted.\n3. A decision to discard the left or the right can throw away the target.\n\nWhy other options are wrong\n- It is reliable because every array supports halving: Halving is reliable only when every value on the left is ≤ the middle and every value on the right is ≥ it.\n- It always returns index 0: The return depends on the comparisons. It is not fixed at index 0.\n- It sorts the array before the first comparison: Standard binary search does not sort. Sorting would be a separate O(n log n) step.\n\nLearn the concept\nSorted order is a precondition, not a result, of binary search.\n\nFormula or key principle\nIf A[mid] is not the target, search only the side where a sorted array would still hold it.\n\nWorked example\nLooking for 1 with mid index 1 finds 1 by luck. Looking for 5 can move right if a comparison treats 1 as too small, and then 5 is never seen.\n\nWorked algorithm\nDo not call binary search on unsorted data. Dry run target 5, low 0, high 2, mid 1, value 1. Moving right because 1 < 5 leaves [4] and loses 5. Time of the unsafe search is still O(log n), but the answer can be wrong. Edge case: a one-element array does not need order beyond that single cell.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-searching — Linear and binary search. Searching lesson. Sort first only if the question allows that extra cost.\n\nTopic metadata\ndomain=technical; category=dsa; topic=searching; difficulty=medium; type=single-choice"
+    },
+    {
+      "key": "sprint1-sea-05",
+      "stem": "Binary search looks for 7 in the sorted array [1, 3, 5, 7, 9, 11]. Which sequence of middle values does the usual lower-mid formula produce before it returns?",
+      "skill": "searching",
+      "difficulty": "hard",
+      "mode": "single",
+      "version": 1,
+      "domain_slug": "technical",
+      "category_slug": "dsa",
+      "topic_slug": "searching",
+      "marks": 1,
+      "negative_marks": 0.25,
+      "estimated_time_seconds": 90,
+      "options": [
+        {
+          "key": "A",
+          "text": "5, then 9, then 7",
+          "correct": true,
+          "why": "This matches the checked result."
+        },
+        {
+          "key": "B",
+          "text": "7 on the first comparison",
+          "correct": false,
+          "why": "The first middle of six items is index 2, whose value is 5, not 7."
+        },
+        {
+          "key": "C",
+          "text": "1, then 3, then 7",
+          "correct": false,
+          "why": "The search does not start at the left end."
+        },
+        {
+          "key": "D",
+          "text": "11, then 9, then 7",
+          "correct": false,
+          "why": "The search does not start at the right end."
+        }
+      ],
+      "explanation": "Difficulty: hard\nCorrect answer: 5, then 9, then 7\n\nStep-by-step\n1. low 0, high 5, mid 2, value 5. 7 is larger, so low becomes 3.\n2. low 3, high 5, mid 4, value 9. 7 is smaller, so high becomes 3.\n3. low 3, high 3, mid 3, value 7. Return index 3.\n\nWhy other options are wrong\n- 7 on the first comparison: The first middle of six items is index 2, whose value is 5, not 7.\n- 1, then 3, then 7: The search does not start at the left end.\n- 11, then 9, then 7: The search does not start at the right end.\n\nLearn the concept\nUse one mid formula and follow it. This trace uses mid = low + floor((high−low)/2).\n\nFormula or key principle\nEach step discards the side that cannot hold the target in a sorted array.\n\nWorked example\nMiddles: index 2 → 5, index 4 → 9, index 3 → 7.\n\nWorked algorithm\nIterative binary search. Dry run middles 5, 9, 7. Time O(log n). Space O(1). Edge case: if the loop uses mid = (low+high)//2 on huge indexes, the sum can overflow in fixed-width integers; the low + (high−low)//2 form avoids that sum. An absent target ends when low passes high.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-searching — Linear and binary search. Searching lesson. Coding practice: binary-search. Count the comparisons instead of assuming the target is the first middle.\n\nTopic metadata\ndomain=technical; category=dsa; topic=searching; difficulty=hard; type=single-choice"
+    }
+  ]
+}

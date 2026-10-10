@@ -1,0 +1,62 @@
+{
+  "batch_id": "2026-10-10-crt-dsa-sprint-001",
+  "title": "CRT and DSA content sprint 1",
+  "items": [
+    {
+      "path": "materials.json",
+      "sha256": "b92de5fdede8e6315c6c6012d4b1b31fdb679135414830ee1d39977962a596a8"
+    },
+    {
+      "path": "questions.json",
+      "sha256": "6cab95dbd9bcff6e977e2d0f69eeb16788b88668829d0e2092b6b4c105bac3fa"
+    },
+    {
+      "path": "syllabus.json",
+      "sha256": "56caf439914dc9d9822da18169fab95adf97dc5cbb89d4b6324d7b0d533ec48f"
+    },
+    {
+      "path": "packs.json",
+      "sha256": "0d226a3a807a0bd160ffe648ae3360cd59e8a71e2836731e8471ab516b8f2d20"
+    },
+    {
+      "path": "articles/crt-sprint-charts.md",
+      "sha256": "37d67dfec5854f6215aa4ff9dc50c4f131ac335a4289909fc5c7812a5d62cba8"
+    },
+    {
+      "path": "articles/crt-sprint-grammar.md",
+      "sha256": "37ddf59db330687e344814b6bad45f68248444686a56132d18209b475cf23da1"
+    },
+    {
+      "path": "articles/crt-sprint-probability.md",
+      "sha256": "a01a44a7a9bc18ed69900d9bb9280e4a5440c4258868f3c29b4bf9de9f01965d"
+    },
+    {
+      "path": "articles/crt-sprint-profit-loss.md",
+      "sha256": "df1bebcdb8d53053edd01f83bbc19daff60d5dd9bc4c8fc4cdaa6e518e460608"
+    },
+    {
+      "path": "articles/crt-sprint-syllogisms.md",
+      "sha256": "77e085015cc897b13876428f1a8dbd55b222085b93a307e0e22fa105429273eb"
+    },
+    {
+      "path": "articles/crt-sprint-time-work.md",
+      "sha256": "c714852418a86ad04e4bb451aaa134014e2c01f3d89757b4af853ceb8b3acfa9"
+    },
+    {
+      "path": "articles/crt-sprint-vocabulary.md",
+      "sha256": "682f70af3eee7842c14fbd11ff4d32df40c6a51d3b8fa86c0cbadc32c75d2340"
+    },
+    {
+      "path": "articles/dsa-sprint-complexity.md",
+      "sha256": "c6ab56d56290010d0ec7dff851b6e4c5aef9c6c044c2c12e232be16d9c76bb6b"
+    },
+    {
+      "path": "articles/dsa-sprint-searching.md",
+      "sha256": "6d5e2e0d649b3805cdcdc05d1ff99f9c231f3ecffca475211288926a2c1e6afe"
+    },
+    {
+      "path": "articles/dsa-sprint-strings.md",
+      "sha256": "3a7874c4aafa5ceb5867e01aa4ef22152f82010358616bff36e946785b65af16"
+    }
+  ]
+}
