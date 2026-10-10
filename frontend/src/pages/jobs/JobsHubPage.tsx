@@ -11,6 +11,7 @@ import {
 import { CatalogSelect } from '@/features/jobs/CatalogSelect'
 import { JobCardView } from '@/features/jobs/JobCard'
 import { useAuth } from '@/hooks/useAuth'
+import { isPortalDate, portalAddedParams } from '@/lib/jobPortalDates'
 import { fetchJobFamilyCounts, fetchJobFilterOptions, fetchJobs, fetchJobsSummary } from '@/services/jobService'
 
 const inputClass =
@@ -30,6 +31,7 @@ export function JobsHubPage() {
   const [locationQuery, setLocationQuery] = useState('')
   const [companyQuery, setCompanyQuery] = useState('')
   const [showAllFamilies, setShowAllFamilies] = useState(false)
+  const [customDates, setCustomDates] = useState(false)
 
   const page = Number(searchParams.get('page') ?? '1') || 1
   const sort = searchParams.get('sort') ?? 'newest'
@@ -38,6 +40,12 @@ export function JobsHubPage() {
   const company = param(searchParams, 'company')
   const experience = param(searchParams, 'experience_bucket')
   const role = param(searchParams, 'role')
+  const addedWithin = param(searchParams, 'added_within')
+  const addedFrom = param(searchParams, 'added_from')
+  const addedTo = param(searchParams, 'added_to')
+  const postedWithin = param(searchParams, 'posted_within_days')
+  const showCustomRange = customDates || Boolean(addedFrom || addedTo)
+  const addedSelection = showCustomRange ? 'custom' : (addedWithin ?? '')
 
   useEffect(() => {
     setQ(searchParams.get('q') ?? '')
@@ -52,6 +60,10 @@ export function JobsHubPage() {
     role_family: family,
     experience_bucket: experience,
     role,
+    added_within: addedSelection === 'custom' ? undefined : addedWithin,
+    added_from: isPortalDate(addedFrom) ? addedFrom : undefined,
+    added_to: isPortalDate(addedTo) ? addedTo : undefined,
+    posted_within_days: postedWithin ? Number(postedWithin) : undefined,
     sort,
     page,
     limit: 20,
@@ -63,6 +75,10 @@ export function JobsHubPage() {
     location,
     experience_bucket: experience,
     role,
+    added_within: applied.added_within,
+    added_from: applied.added_from,
+    added_to: applied.added_to,
+    posted_within_days: applied.posted_within_days,
   }
 
   const { data: summary } = useQuery({
@@ -124,6 +140,7 @@ export function JobsHubPage() {
     setSkill('')
     setLocationQuery('')
     setCompanyQuery('')
+    setCustomDates(false)
     const next = new URLSearchParams()
     if (sort !== 'newest') next.set('sort', sort)
     next.set('page', '1')
@@ -285,6 +302,53 @@ export function JobsHubPage() {
               {bucket}
             </option>
           ))}
+        </select>
+        <select
+          className={inputClass}
+          value={addedSelection}
+          aria-label="Added to JobReady"
+          onChange={(event) => {
+            const value = event.target.value
+            setCustomDates(value === 'custom')
+            writeParams(portalAddedParams(value, addedFrom, addedTo))
+          }}
+        >
+          <option value="">Added to JobReady: any time</option>
+          <option value="today">Added to JobReady: today</option>
+          <option value="3d">Added to JobReady: last 3 days</option>
+          <option value="7d">Added to JobReady: last 7 days</option>
+          <option value="30d">Added to JobReady: last 30 days</option>
+          <option value="custom">Added to JobReady: custom range</option>
+        </select>
+        {showCustomRange && (
+          <>
+            <input
+              className={inputClass}
+              type="date"
+              aria-label="Added to JobReady from"
+              value={addedFrom ?? ''}
+              onChange={(event) => writeParams(portalAddedParams('custom', event.target.value, addedTo))}
+            />
+            <input
+              className={inputClass}
+              type="date"
+              aria-label="Added to JobReady through"
+              value={addedTo ?? ''}
+              onChange={(event) => writeParams(portalAddedParams('custom', addedFrom, event.target.value))}
+            />
+          </>
+        )}
+        <select
+          className={inputClass}
+          value={postedWithin ?? ''}
+          aria-label="Employer posted"
+          onChange={(event) => writeParams({ posted_within_days: event.target.value || undefined })}
+        >
+          <option value="">Employer posted: any date</option>
+          <option value="1">Employer posted: last 1 day</option>
+          <option value="3">Employer posted: last 3 days</option>
+          <option value="7">Employer posted: last 7 days</option>
+          <option value="30">Employer posted: last 30 days</option>
         </select>
         <select
           className={inputClass}

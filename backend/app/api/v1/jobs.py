@@ -1,5 +1,6 @@
 """Student jobs API."""
 
+from datetime import date
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
@@ -48,6 +49,9 @@ async def list_jobs(
     employment_type: str | None = None,
     experience_min: int | None = None,
     posted_within_days: int | None = None,
+    added_within: str | None = Query(default=None, pattern="^(today|3d|7d|30d)$"),
+    added_from: date | None = None,
+    added_to: date | None = None,
     role_family: str | None = None,
     location: str | None = None,
     experience_bucket: str | None = None,
@@ -70,6 +74,9 @@ async def list_jobs(
         employment_type=employment_type,
         experience_min=experience_min,
         posted_within_days=posted_within_days,
+        added_within=added_within,
+        added_from=added_from,
+        added_to=added_to,
         role_family=role_family,
         location=location,
         experience_bucket=experience_bucket,
@@ -94,6 +101,9 @@ async def job_family_counts(
     employment_type: str | None = None,
     experience_min: int | None = None,
     posted_within_days: int | None = None,
+    added_within: str | None = Query(default=None, pattern="^(today|3d|7d|30d)$"),
+    added_from: date | None = None,
+    added_to: date | None = None,
     location: str | None = None,
     experience_bucket: str | None = None,
     service: JobService = Depends(_svc),
@@ -112,6 +122,9 @@ async def job_family_counts(
         employment_type=employment_type,
         experience_min=experience_min,
         posted_within_days=posted_within_days,
+        added_within=added_within,
+        added_from=added_from,
+        added_to=added_to,
         location=location,
         experience_bucket=experience_bucket,
     )

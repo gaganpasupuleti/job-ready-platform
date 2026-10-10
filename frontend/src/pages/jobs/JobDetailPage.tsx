@@ -5,6 +5,7 @@ import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
 import { SafeMarkdown } from '@/components/learn/SafeMarkdown'
+import { addedToJobReadyLabel, employerPostedLabel } from '@/lib/jobPortalDates'
 import { prepareRichText } from '@/lib/richText'
 import {
   ErrorState,
@@ -88,7 +89,8 @@ export function JobDetailPage() {
   const applyUrl = data.apply_url || data.source_url
   const freshness = [
     data.source_name ? `Source: ${data.source_name}` : null,
-    data.posted_at ? `Posted ${formatWhen(data.posted_at)}` : null,
+    addedToJobReadyLabel(data.first_seen_at),
+    employerPostedLabel(data.posted_at),
     data.last_seen_at ? `Last seen ${formatWhen(data.last_seen_at)}` : null,
     data.expires_at ? `Expires ${formatWhen(data.expires_at)}` : null,
   ].filter(Boolean)
