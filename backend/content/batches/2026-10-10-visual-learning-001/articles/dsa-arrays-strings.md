@@ -1,6 +1,14 @@
 # Arrays and strings
 
+## Understand
+
 An array stores values in contiguous indexed slots. A string is a sequence of characters that you can scan from left to right. Many interview warm-ups are “walk the sequence once and keep a running answer”.
+
+## Visualize
+
+![Array a, b, c, d with left on index 1 and right on index 4, then the reversed array d, c, b, a](/learning-visuals/dsa/array-reversal.svg "Swap the ends, then move both pointers inward. [a, b, c, d] becomes [d, c, b, a].")
+
+Left starts at the first slot and right starts at the last. After each swap, left moves right by one and right moves left by one.
 
 ## Learning objectives
 
@@ -8,7 +16,9 @@ An array stores values in contiguous indexed slots. A string is a sequence of ch
 - Scan a string once while tracking a frequency or a previous character.
 - Use a trace table instead of a coding provider to verify the idea.
 
-## Worked example: reverse in place idea
+## Walk through
+
+Worked example: reverse in place idea.
 
 ```text
 REVERSE(A):
@@ -41,6 +51,8 @@ FIRST_REPEAT(S):
 ```
 
 For `S = "abca"`, the answer is `a` after the fourth character. The scan is \(O(n)\) time with an auxiliary set.
+
+## Review
 
 ## Common mistakes
 

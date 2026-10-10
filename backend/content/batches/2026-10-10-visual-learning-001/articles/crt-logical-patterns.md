@@ -1,6 +1,14 @@
 # Number patterns in logical reasoning
 
+## Understand
+
 Placement logical reasoning often asks for the next term in a sequence. The safe method is to write the difference or ratio between consecutive terms and check that one rule fits every step.
+
+## Visualize
+
+![Sequence 2, 5, 11, 23, 47 with each arrow labeled times 2 plus 1](/learning-visuals/crt/number-pattern.svg "Each term is the previous term times 2, plus 1. After 23, the next term is 47.")
+
+The same rule has to fit every arrow. A rule that only fits the first jump is not enough.
 
 ## Learning objectives
 
@@ -8,7 +16,9 @@ Placement logical reasoning often asks for the next term in a sequence. The safe
 - Test a candidate rule against every consecutive pair.
 - Reject a guess that only fits the first two terms.
 
-## Worked example
+## Walk through
+
+Worked example.
 
 Sequence: 2, 5, 11, 23, ?
 
@@ -23,6 +33,8 @@ Another way to see the same rule: each term is “previous × 2 + 1”.
 | 3 | 5×2+1 | 11 |
 | 4 | 11×2+1 | 23 |
 | 5 | 23×2+1 | 47 |
+
+## Review
 
 ## Common mistakes
 

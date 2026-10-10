@@ -2,7 +2,7 @@ import { marked, type Token, type Tokens } from 'marked'
 import { Fragment, type ReactNode } from 'react'
 
 import { VisualExplanation } from '@/components/learn/VisualExplanation'
-import { approvedLearningImageSrc } from '@/lib/learningVisuals'
+import { approvedLearningImageSrc, splitLessonParagraph } from '@/lib/learningVisuals'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, safeHref } from '@/lib/richText'
 import { cn } from '@/utils/cn'
 
@@ -16,12 +16,12 @@ function textOf(value: string): string {
     .replace(/&amp;/g, '&')
 }
 
-function inline(tokens: Token[] | undefined, key: string): ReactNode {
+function inline(tokens: Token[] | undefined, key: string, placement: 'flow' | 'phrasing' = 'phrasing'): ReactNode {
   if (!tokens?.length) return null
-  return tokens.map((token, index) => renderToken(token, `${key}.${index}`))
+  return tokens.map((token, index) => renderToken(token, `${key}.${index}`, placement))
 }
 
-function renderToken(token: Token, key: string): ReactNode {
+function renderToken(token: Token, key: string, placement: 'flow' | 'phrasing' = 'flow'): ReactNode {
   if (isDroppedMarkdownToken(token.type)) return null
   switch (token.type) {
     case 'heading': {
@@ -36,19 +36,25 @@ function renderToken(token: Token, key: string): ReactNode {
     }
     case 'paragraph': {
       const paragraph = token as Tokens.Paragraph
-      const visible = (paragraph.tokens ?? []).filter((item) => item.type !== 'text' || textOf(item.text).trim() !== '')
-      if (visible.length === 1 && visible[0].type === 'image') return renderToken(visible[0], key)
-      return <p key={key}>{inline(paragraph.tokens, key)}</p>
+      const segments = splitLessonParagraph(paragraph.tokens ?? [])
+      const blocks = segments.map((segment, index) => {
+        if (segment.kind === 'diagram') return renderToken(segment.token as Token, `${key}.d.${index}`, 'flow')
+        return (
+          <p key={`${key}.p.${index}`}>{inline(segment.tokens, `${key}.p.${index}`)}</p>
+        )
+      })
+      if (segments.length === 1 && segments[0].kind === 'inline') return blocks[0]
+      return <Fragment key={key}>{blocks}</Fragment>
     }
     case 'blockquote':
-      return <blockquote key={key}>{inline((token as Tokens.Blockquote).tokens, key)}</blockquote>
+      return <blockquote key={key}>{inline((token as Tokens.Blockquote).tokens, key, 'flow')}</blockquote>
     case 'list': {
       const list = token as Tokens.List
       const Tag = list.ordered ? 'ol' : 'ul'
       return (
         <Tag key={key} start={list.ordered && list.start !== '' ? list.start : undefined}>
           {list.items.map((item, index) => (
-            <li key={`${key}.${index}`}>{inline(item.tokens, `${key}.${index}`)}</li>
+            <li key={`${key}.${index}`}>{inline(item.tokens, `${key}.${index}`, 'flow')}</li>
           ))}
         </Tag>
       )
@@ -72,7 +78,7 @@ function renderToken(token: Token, key: string): ReactNode {
               <tr>
                 {table.header.map((cell, index) => (
                   <th key={`${key}.h.${index}`} style={cell.align ? { textAlign: cell.align } : undefined}>
-                    {inline(cell.tokens, `${key}.h.${index}`)}
+                    {inline(cell.tokens, `${key}.h.${index}`, 'flow')}
                   </th>
                 ))}
               </tr>
@@ -82,7 +88,7 @@ function renderToken(token: Token, key: string): ReactNode {
                 <tr key={`${key}.r.${rowIndex}`}>
                   {row.map((cell, cellIndex) => (
                     <td key={`${key}.r.${rowIndex}.${cellIndex}`} style={cell.align ? { textAlign: cell.align } : undefined}>
-                      {inline(cell.tokens, `${key}.r.${rowIndex}.${cellIndex}`)}
+                      {inline(cell.tokens, `${key}.r.${rowIndex}.${cellIndex}`, 'flow')}
                     </td>
                   ))}
                 </tr>
@@ -123,10 +129,8 @@ function renderToken(token: Token, key: string): ReactNode {
       const image = token as Tokens.Image
       const alt = textOf(image.text)
       const src = approvedLearningImageSrc(image.href)
-      if (!src) return <Fragment key={key}>{alt}</Fragment>
-      return (
-        <VisualExplanation key={key} src={src} alt={alt} caption={image.title ? textOf(image.title) : null} />
-      )
+      if (!src || placement === 'phrasing') return <Fragment key={key}>{alt}</Fragment>
+      return <VisualExplanation key={key} src={src} alt={alt} caption={image.title ? textOf(image.title) : null} />
     }
     default:
       return null

@@ -4,7 +4,7 @@ import path from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
 
 const shotDir = path.resolve('e2e-artifacts/learning-visuals')
-const articles = path.resolve('../backend/content/batches/2026-09-14-syllabus-001/articles')
+const articles = path.resolve('../backend/content/batches/2026-10-10-visual-learning-001/articles')
 
 function article(name: string) {
   return fs.readFileSync(path.join(articles, name), 'utf8')
@@ -141,7 +141,7 @@ async function openAsStudent(page: Page) {
             '',
             '## Visualize',
             '',
-            '![Format check png](/learning-visuals/crt/format-check.png "PNG caption")',
+            'See the picture ![Format check png](/learning-visuals/crt/format-check.png "PNG caption") after the picture.',
             '',
             '![Format check webp](/learning-visuals/crt/format-check.webp "WebP caption")',
             '',
@@ -193,6 +193,12 @@ test.describe('Learning visuals', () => {
     await expect(page.getByRole('dialog')).toBeVisible()
     await page.getByRole('button', { name: 'Close' }).click()
     await expect(page.getByRole('dialog')).toBeHidden()
+    await page.getByRole('button', { name: 'View larger' }).focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Close' })).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog')).toBeHidden()
 
     await page.getByRole('radio').check()
     await page.getByRole('button', { name: /check answer/i }).click()
@@ -210,6 +216,9 @@ test.describe('Learning visuals', () => {
     const png = page.getByRole('img', { name: 'Format check png' })
     const webp = page.getByRole('img', { name: 'Format check webp' })
     await expect(png).toBeVisible({ timeout: 20_000 })
+    await expect(page.getByText('See the picture')).toBeVisible()
+    await expect(page.getByText('after the picture.')).toBeVisible()
+    await expect(png.locator('xpath=ancestor::p')).toHaveCount(0)
     await expect(webp).toBeVisible()
     await expect.poll(async () => png.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0)
     await expect.poll(async () => webp.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0)

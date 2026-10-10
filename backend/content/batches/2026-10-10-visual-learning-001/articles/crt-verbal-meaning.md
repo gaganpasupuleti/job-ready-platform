@@ -1,6 +1,14 @@
 # Reading for meaning in verbal ability
 
+## Understand
+
 Verbal questions in placement papers usually test whether you can keep the meaning of a sentence without changing the facts. Start from the claim, then check each option against that claim.
+
+## Visualize
+
+![Flow from the sentence to a claim, then a keep box for postponed and incomplete and a reject box for cancelled and deleted](/learning-visuals/crt/verbal-claim.svg "The claim is that the demo was postponed because the dataset was incomplete. Cancelled and deleted are not stated.")
+
+Keep a restatement only when it preserves both the event and the stated reason.
 
 ## Learning objectives
 
@@ -8,7 +16,9 @@ Verbal questions in placement papers usually test whether you can keep the meani
 - Spot options that add facts the text never states.
 - Prefer the option that preserves meaning with the fewest extra assumptions.
 
-## Worked example
+## Walk through
+
+Worked example.
 
 Sentence: “The team postponed the demo because the dataset was incomplete.”
 
@@ -20,6 +30,8 @@ Which restatement is closest?
 - Wrong idea: the team finished early.
 
 The word “postponed” keeps the event on the calendar. “Cancelled” removes it. “Incomplete” is not the same as “deleted”.
+
+## Review
 
 ## Common mistakes
 

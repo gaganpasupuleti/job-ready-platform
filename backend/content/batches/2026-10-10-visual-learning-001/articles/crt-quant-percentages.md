@@ -1,6 +1,14 @@
 # Percentages for placement aptitude
 
+## Understand
+
 Percent means “per hundred”. A 25% discount on a listed price of 240 means you remove one quarter of 240, not that the sale price becomes 25.
+
+## Visualize
+
+![Four equal parts with one part shaded, then 240 reduced by a discount of 60 to a sale price of 180](/learning-visuals/crt/percentages-quarter.svg "25% of 240 is one quarter, which is 60. The sale price is 240 − 60 = 180.")
+
+The shaded quarter is the discount. The sale price is the part that remains.
 
 ## Learning objectives
 
@@ -8,9 +16,9 @@ Percent means “per hundred”. A 25% discount on a listed price of 240 means y
 - Compute a single discount or increase without inventing a second step.
 - Spot the common trap of treating the discount amount as the final price.
 
-## Worked example
+## Walk through
 
-A book costs 240. A 25% discount is applied once.
+Worked example. A book costs 240. A 25% discount is applied once.
 
 1. Find 25% of 240: \(240 \times 0.25 = 60\).
 2. Subtract once: \(240 - 60 = 180\).
@@ -21,6 +29,8 @@ The sale price is 180. The value 60 is the discount, not the price you pay.
 | --- | --- | --- |
 | Percent of price | 240 × 0.25 | 60 |
 | Sale price | 240 − 60 | 180 |
+
+## Review
 
 ## Common mistakes
 
