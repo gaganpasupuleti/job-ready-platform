@@ -7,6 +7,7 @@ import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHre
 import { canOfferRegistration } from '../src/lib/authPolicy.ts'
 import { addedToJobReadyLabel, employerPostedLabel, isPortalDate, portalAddedParams } from '../src/lib/jobPortalDates.ts'
 import { googleDestination, resolveGoogleClientId } from '../src/lib/googleAuth.ts'
+import { splitExplanation } from '../src/lib/structuredExplanation.ts'
 import {
   continuationAction,
   materialKindLabel,
@@ -403,5 +404,27 @@ describe('portal ingestion dates', () => {
     })
     assert.equal(isPortalDate('2026-10-09'), true)
     assert.equal(isPortalDate('2026-10-09T00:00:00Z'), false)
+  })
+})
+
+describe('structured explanations', () => {
+  it('keeps a one-line explanation as a single paragraph', () => {
+    assert.deepEqual(splitExplanation('Sale price is 34000.'), [
+      { heading: null, body: 'Sale price is 34000.' },
+    ])
+  })
+
+  it('splits known headings without treating the body as markup', () => {
+    const sections = splitExplanation(
+      'Difficulty: easy\nCorrect answer: 34000\n\nStep-by-step\n1. Take 15%.\n\nWhy other options are wrong\n- 36000: skipped the discount.\n\nRelated lesson\nsyl-sprint — Percentages.\n\n<script>alert(1)</script>',
+    )
+    assert.deepEqual(
+      sections.map((section) => section.heading),
+      [null, 'Step-by-step', 'Why other options are wrong', 'Related lesson'],
+    )
+    assert.equal(sections[0].body.includes('Correct answer: 34000'), true)
+    assert.equal(sections[1].body, '1. Take 15%.')
+    assert.equal(sections[2].body, '- 36000: skipped the discount.')
+    assert.equal(sections.at(-1)?.body.includes('<script>'), true)
   })
 })

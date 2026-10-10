@@ -14,6 +14,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -55,6 +56,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -96,6 +98,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -137,6 +140,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -178,6 +182,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -219,6 +224,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -260,6 +266,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -301,6 +308,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -342,6 +350,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -383,6 +392,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -424,6 +434,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -465,6 +476,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -506,6 +518,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -547,6 +560,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -588,6 +602,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -629,6 +644,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -670,6 +686,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -711,6 +728,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -752,6 +770,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -782,7 +801,7 @@
     },
     {
       "key": "sprint1-syl-05",
-      "stem": "All A are B. Some B are C. Which is definitely false?",
+      "stem": "Statements: All servers are machines. Some machines are virtual. Conclusions: (I) Some servers are virtual (II) All virtual are servers. Which holds?",
       "skill": "logical-reasoning",
       "difficulty": "medium",
       "mode": "single",
@@ -793,39 +812,40 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
-          "text": "No B is A",
+          "text": "Neither I nor II",
           "correct": true,
           "why": "This matches the checked result."
         },
         {
           "key": "B",
-          "text": "Some A may be C",
+          "text": "Only I",
           "correct": false,
-          "why": "This is possible. “Some B are C” can include A's. It is not definitely false."
+          "why": "Some servers may be virtual, but the statements do not require any server to be virtual."
         },
         {
           "key": "C",
-          "text": "All A are B",
+          "text": "Only II",
           "correct": false,
-          "why": "This is the first premise, so it is not false."
+          "why": "All virtual machines are servers reverses the groups. The statements do not say that."
         },
         {
           "key": "D",
-          "text": "Some B are C",
+          "text": "Both I and II",
           "correct": false,
-          "why": "This is the second premise, so it is not false."
+          "why": "Each conclusion fails on its own, so both cannot be required."
         }
       ],
-      "explanation": "Difficulty: medium\nCorrect answer: No B is A\n\nStep-by-step\n1. All A are B puts every A inside B.\n2. Those members are B's that are also A's.\n3. “No B is A” denies that, so it is false.\n\nWhy other options are wrong\n- Some A may be C: This is possible. “Some B are C” can include A's. It is not definitely false.\n- All A are B: This is the first premise, so it is not false.\n- Some B are C: This is the second premise, so it is not false.\n\nLearn the concept\nA statement that contradicts a premise is definitely false. A possible overlap is not definitely false.\n\nFormula or key principle\nAll A are B means it is false that no B is A, taking the groups as non-empty in the usual placement reading.\n\nWorked example\nIf every A is a B, then those members are both A and B. “No B is A” cannot stand.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Syllogisms lesson. Placement items treat these groups as having members.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=medium; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: Neither I nor II\n\nStep-by-step\n1. Servers are a subset of machines.\n2. The virtual machines can sit outside that subset.\n3. Neither “some servers are virtual” nor “all virtual machines are servers” is forced.\n\nWhy other options are wrong\n- Only I: Some servers may be virtual, but the statements do not require any server to be virtual.\n- Only II: All virtual machines are servers reverses the groups. The statements do not say that.\n- Both I and II: Each conclusion fails on its own, so both cannot be required.\n\nLearn the concept\nA particular statement about the wider group does not have to touch the inner group.\n\nFormula or key principle\nNeither conclusion is forced unless every allowed diagram includes it.\n\nWorked example\nServers can be machines that are not virtual, and a virtual machine need not be a server.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Syllogisms lesson. A claim about the wider group need not reach the inner group.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=medium; type=single-choice"
     },
     {
       "key": "sprint1-gr-01",
-      "stem": "Choose the correct sentence.",
+      "stem": "Select the correctly formed comparative.",
       "skill": "verbal",
-      "difficulty": "easy",
+      "difficulty": "medium",
       "mode": "single",
       "version": 1,
       "domain_slug": "placement",
@@ -834,33 +854,34 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
-          "text": "The team is ready for the demo.",
+          "text": "This algorithm is faster than the previous one.",
           "correct": true,
           "why": "This matches the checked result."
         },
         {
           "key": "B",
-          "text": "The team are ready for the demo.",
+          "text": "This algorithm is more faster than the previous one.",
           "correct": false,
-          "why": "“Are” treats the members separately. The sentence gives no member-by-member reading."
+          "why": "More and -er together are a double comparative."
         },
         {
           "key": "C",
-          "text": "The team were ready for the demo yesterday morning only if plural.",
+          "text": "This algorithm is most faster than the previous one.",
           "correct": false,
-          "why": "That string is not a finished grammatical sentence."
+          "why": "Most does not combine with -er for a comparison of two."
         },
         {
           "key": "D",
-          "text": "The team be ready for the demo.",
+          "text": "This algorithm is fast than the previous one.",
           "correct": false,
-          "why": "“Be” is not the finite verb this sentence needs."
+          "why": "Than needs the comparative form faster."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: The team is ready for the demo.\n\nStep-by-step\n1. The subject is “the team” as one unit.\n2. A singular unit takes “is”.\n3. “The team is ready for the demo.” is the grammatical sentence.\n\nWhy other options are wrong\n- The team are ready for the demo.: “Are” treats the members separately. The sentence gives no member-by-member reading.\n- The team were ready for the demo yesterday morning only if plural.: That string is not a finished grammatical sentence.\n- The team be ready for the demo.: “Be” is not the finite verb this sentence needs.\n\nLearn the concept\nWhen a group acts as one unit, placement tests use a singular verb.\n\nFormula or key principle\nThe team is ready.\n\nWorked example\nOne team, one unit: “is”.\n\nRelated lesson\ncrt-sprint-grammar — Error spotting in short sentences. Lesson: Error spotting. British English sometimes uses “are” for team members. This item follows the unit reading the sentence asks for.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=grammar; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: This algorithm is faster than the previous one.\n\nStep-by-step\n1. The adjective is fast.\n2. The comparison uses than.\n3. The sentence is “This algorithm is faster than the previous one.”\n\nWhy other options are wrong\n- This algorithm is more faster than the previous one.: More and -er together are a double comparative.\n- This algorithm is most faster than the previous one.: Most does not combine with -er for a comparison of two.\n- This algorithm is fast than the previous one.: Than needs the comparative form faster.\n\nLearn the concept\nA short adjective forms its comparative with -er. Do not add more in front of that form.\n\nFormula or key principle\nfast → faster. Not more faster.\n\nWorked example\nThis algorithm is faster than the previous one.\n\nRelated lesson\ncrt-sprint-grammar — Error spotting in short sentences. Error-spotting lesson. This comparison is between two algorithms, so the comparative is the form that fits.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=grammar; difficulty=medium; type=single-choice"
     },
     {
       "key": "sprint1-gr-02",
@@ -875,6 +896,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -916,6 +938,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -957,6 +980,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -998,6 +1022,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1039,6 +1064,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1080,6 +1106,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1121,6 +1148,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1162,6 +1190,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1203,6 +1232,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1244,6 +1274,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1285,6 +1316,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1326,6 +1358,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1367,6 +1400,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1408,6 +1442,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1449,6 +1484,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1490,6 +1526,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1531,6 +1568,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1572,6 +1610,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1613,6 +1652,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1654,6 +1694,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1695,6 +1736,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1736,6 +1778,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1777,6 +1820,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1818,6 +1862,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1859,6 +1904,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1900,6 +1946,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1941,6 +1988,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -1982,6 +2030,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -2023,6 +2072,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "required",
       "options": [
         {
           "key": "A",
@@ -2064,6 +2114,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2105,6 +2156,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2146,6 +2198,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2187,6 +2240,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2228,6 +2282,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2269,6 +2324,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2310,6 +2366,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2351,6 +2408,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2392,6 +2450,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2433,6 +2492,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2474,6 +2534,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2504,7 +2565,7 @@
     },
     {
       "key": "sprint1-cx-02",
-      "stem": "A loop sets x = n and repeatedly replaces x with floor(x/2) until x is 0. How many iterations grow with n?",
+      "stem": "A loop sets x = n and replaces x with floor(x/2) until x is 0. What is the time complexity?",
       "skill": "complexity",
       "difficulty": "easy",
       "mode": "single",
@@ -2515,6 +2576,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2545,7 +2607,7 @@
     },
     {
       "key": "sprint1-cx-03",
-      "stem": "Which big-O class matches 3n² + 2n + 7?",
+      "stem": "What is the tightest big-O bound for 3n² + 2n + 7?",
       "skill": "complexity",
       "difficulty": "medium",
       "mode": "single",
@@ -2556,6 +2618,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2573,7 +2636,7 @@
           "key": "C",
           "text": "O(n³)",
           "correct": false,
-          "why": "There is no n³ term. A looser cubic bound is not the tight class asked here."
+          "why": "O(n³) is a looser upper bound. It is not the tightest bound among these choices."
         },
         {
           "key": "D",
@@ -2582,7 +2645,7 @@
           "why": "The cost grows with n."
         }
       ],
-      "explanation": "Difficulty: medium\nCorrect answer: O(n²)\n\nStep-by-step\n1. 3n² dominates 2n and 7 as n grows.\n2. Drop the lower terms and the constant 3.\n3. The class is O(n²).\n\nWhy other options are wrong\n- O(n): The n² term grows faster than the linear term, so the whole expression is not linear.\n- O(n³): There is no n³ term. A looser cubic bound is not the tight class asked here.\n- O(1): The cost grows with n.\n\nLearn the concept\nBig-O of a polynomial is the highest power, with its coefficient dropped.\n\nFormula or key principle\n3n² + 2n + 7 is O(n²).\n\nWorked example\nAt n = 10, 3×100 = 300, while 2×10+7 = 27. The square term already dominates.\n\nWorked algorithm\nIdentify the highest power. Dry run of term sizes at n=10: 300, 20, and 7. Time class O(n²). This is a classification, so extra space is not introduced. Edge case: the classification is about growth, not the value at one small n.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson and the published dsa-complexity recap both say to drop lower-order terms.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=medium; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: O(n²)\n\nStep-by-step\n1. 3n² dominates 2n and 7 as n grows.\n2. Drop the lower terms and the constant 3.\n3. The class is O(n²).\n\nWhy other options are wrong\n- O(n): The n² term grows faster than the linear term, so the whole expression is not linear.\n- O(n³): O(n³) is a looser upper bound. It is not the tightest bound among these choices.\n- O(1): The cost grows with n.\n\nLearn the concept\nBig-O of a polynomial is the highest power, with its coefficient dropped.\n\nFormula or key principle\n3n² + 2n + 7 is O(n²).\n\nWorked example\nAt n = 10, 3×100 = 300, while 2×10+7 = 27. The square term already dominates.\n\nWorked algorithm\nIdentify the highest power. Dry run of term sizes at n=10: 300, 20, and 7. Time class O(n²). This is a classification, so extra space is not introduced. Edge case: the classification is about growth, not the value at one small n.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson and the published dsa-complexity recap both say to drop lower-order terms.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=medium; type=single-choice"
     },
     {
       "key": "sprint1-cx-04",
@@ -2597,6 +2660,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2638,6 +2702,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2679,6 +2744,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2720,6 +2786,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2761,6 +2828,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2802,6 +2870,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",
@@ -2843,6 +2912,7 @@
       "marks": 1,
       "negative_marks": 0.25,
       "estimated_time_seconds": 90,
+      "adoption": "create",
       "options": [
         {
           "key": "A",

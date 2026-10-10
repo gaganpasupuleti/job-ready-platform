@@ -303,29 +303,29 @@ NOTES = [
         },
     ),
     _note(
-        "A statement that contradicts a premise is definitely false. A possible overlap is not definitely false.",
-        "All A are B means it is false that no B is A, taking the groups as non-empty in the usual placement reading.",
-        "If every A is a B, then those members are both A and B. “No B is A” cannot stand.",
+        "A particular statement about the wider group does not have to touch the inner group.",
+        "Neither conclusion is forced unless every allowed diagram includes it.",
+        "Servers can be machines that are not virtual, and a virtual machine need not be a server.",
         "crt-sprint-syllogisms",
-        "Syllogisms lesson. Placement items treat these groups as having members.",
-        ["All A are B puts every A inside B.", "Those members are B's that are also A's.", "“No B is A” denies that, so it is false."],
+        "Syllogisms lesson. A claim about the wider group need not reach the inner group.",
+        ["Servers are a subset of machines.", "The virtual machines can sit outside that subset.", "Neither “some servers are virtual” nor “all virtual machines are servers” is forced."],
         {
-            "Some A may be C": "This is possible. “Some B are C” can include A's. It is not definitely false.",
-            "All A are B": "This is the first premise, so it is not false.",
-            "Some B are C": "This is the second premise, so it is not false.",
+            "Only I": "Some servers may be virtual, but the statements do not require any server to be virtual.",
+            "Only II": "All virtual machines are servers reverses the groups. The statements do not say that.",
+            "Both I and II": "Each conclusion fails on its own, so both cannot be required.",
         },
     ),
     _note(
-        "When a group acts as one unit, placement tests use a singular verb.",
-        "The team is ready.",
-        "One team, one unit: “is”.",
+        "A short adjective forms its comparative with -er. Do not add more in front of that form.",
+        "fast → faster. Not more faster.",
+        "This algorithm is faster than the previous one.",
         "crt-sprint-grammar",
-        "Lesson: Error spotting. British English sometimes uses “are” for team members. This item follows the unit reading the sentence asks for.",
-        ["The subject is “the team” as one unit.", "A singular unit takes “is”.", "“The team is ready for the demo.” is the grammatical sentence."],
+        "Error-spotting lesson. This comparison is between two algorithms, so the comparative is the form that fits.",
+        ["The adjective is fast.", "The comparison uses than.", "The sentence is “This algorithm is faster than the previous one.”"],
         {
-            "The team are ready for the demo.": "“Are” treats the members separately. The sentence gives no member-by-member reading.",
-            "The team were ready for the demo yesterday morning only if plural.": "That string is not a finished grammatical sentence.",
-            "The team be ready for the demo.": "“Be” is not the finite verb this sentence needs.",
+            "This algorithm is more faster than the previous one.": "More and -er together are a double comparative.",
+            "This algorithm is most faster than the previous one.": "Most does not combine with -er for a comparison of two.",
+            "This algorithm is fast than the previous one.": "Than needs the comparative form faster.",
         },
     ),
     _note(
@@ -722,7 +722,7 @@ ARRAY_NOTES = [
 ]
 
 
-def _q(key, skill, difficulty, stem, correct, wrongs, explanation, why, domain, category, topic):
+def _q(key, skill, difficulty, stem, correct, wrongs, explanation, why, domain, category, topic, adoption):
     options = [{"key": "A", "text": correct, "correct": True, "why": "This matches the checked result."}]
     for letter, text in zip("BCD", wrongs, strict=True):
         options.append({"key": letter, "text": text, "correct": False, "why": why[text]})
@@ -739,6 +739,7 @@ def _q(key, skill, difficulty, stem, correct, wrongs, explanation, why, domain, 
         "marks": 1,
         "negative_marks": 0.25,
         "estimated_time_seconds": 90,
+        "adoption": adoption,
         "options": options,
         "explanation": explanation,
     }
@@ -786,6 +787,13 @@ LESSON_TITLES = {
 }
 
 
+def _pick(rows: list, topic: str, indexes: list[int]) -> list:
+    found = [row for row in rows if row[2] == topic]
+    if max(indexes) >= len(found):
+        raise SystemExit(f"{topic} missing index {max(indexes)}")
+    return [found[index] for index in indexes]
+
+
 def _selected_questions() -> list[dict]:
     aptitude = _load("phase11_aptitude_mcq.py", "APTITUDE_MCQS")
     technical = _load("phase11_technical_mcq.py", "TECHNICAL_MCQS")
@@ -795,8 +803,8 @@ def _selected_questions() -> list[dict]:
         + [("quantitative", "time-and-work", row) for row in _take(aptitude, "time-and-work", 2)]
         + [("quantitative", "probability", row) for row in _take(aptitude, "probability", 1)]
         + [("logical-reasoning", "series", row) for row in _take(aptitude, "series", 5)]
-        + [("logical-reasoning", "syllogisms", row) for row in _take(aptitude, "syllogisms", 5)]
-        + [("verbal", "grammar", row) for row in _take(aptitude, "grammar", 5)]
+        + [("logical-reasoning", "syllogisms", row) for row in _pick(aptitude, "syllogisms", [0, 1, 2, 3, 5])]
+        + [("verbal", "grammar", row) for row in _pick(aptitude, "grammar", [7, 1, 2, 3, 4])]
         + [("verbal", "vocabulary", row) for row in _take(aptitude, "vocabulary", 5)]
         + [("data-interpretation", "tables", row) for row in _take(aptitude, "tables", 5)]
         + [("data-interpretation", "charts", row) for row in _take(aptitude, "charts", 5)]
@@ -835,6 +843,7 @@ def _selected_questions() -> list[dict]:
                 domain,
                 category,
                 topic_slug,
+                "required",
             )
         )
     for index, (row, note) in enumerate(zip(_take(technical, "arrays", 10), ARRAY_NOTES, strict=True), start=1):
@@ -854,6 +863,7 @@ def _selected_questions() -> list[dict]:
                 domain,
                 category,
                 topic_slug,
+                "required",
             )
         )
     return questions
@@ -875,6 +885,7 @@ def _original(key, skill, difficulty, stem, correct, wrongs, why, steps, concept
         domain,
         category,
         topic,
+        "create",
     )
 
 
@@ -1066,7 +1077,7 @@ def _original_questions() -> list[dict]:
         ),
         _original(
             "sprint1-cx-02", "complexity", "easy",
-            "A loop sets x = n and repeatedly replaces x with floor(x/2) until x is 0. How many iterations grow with n?",
+            "A loop sets x = n and replaces x with floor(x/2) until x is 0. What is the time complexity?",
             "O(log n)", ["O(n)", "O(n²)", "O(1) for every n > 1"],
             {
                 "O(n)": "The loop does not subtract 1. It discards half of x each time.",
@@ -1084,11 +1095,11 @@ def _original_questions() -> list[dict]:
         ),
         _original(
             "sprint1-cx-03", "complexity", "medium",
-            "Which big-O class matches 3n² + 2n + 7?",
+            "What is the tightest big-O bound for 3n² + 2n + 7?",
             "O(n²)", ["O(n)", "O(n³)", "O(1)"],
             {
                 "O(n)": "The n² term grows faster than the linear term, so the whole expression is not linear.",
-                "O(n³)": "There is no n³ term. A looser cubic bound is not the tight class asked here.",
+                "O(n³)": "O(n³) is a looser upper bound. It is not the tightest bound among these choices.",
                 "O(1)": "The cost grows with n.",
             },
             ["3n² dominates 2n and 7 as n grows.", "Drop the lower terms and the constant 3.", "The class is O(n²)."],

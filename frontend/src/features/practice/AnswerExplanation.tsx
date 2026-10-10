@@ -1,5 +1,6 @@
 import { Badge } from '@/components/common/Badge'
 import type { AnswerFeedback } from '@/types/practice'
+import { StructuredExplanation } from '@/features/practice/StructuredExplanation'
 
 interface AnswerExplanationProps {
   feedback: AnswerFeedback
@@ -15,9 +16,7 @@ export function AnswerExplanation({ feedback }: AnswerExplanationProps) {
         <Badge>{feedback.marks_awarded} marks</Badge>
         {feedback.topic_name && <Badge>{feedback.topic_name}</Badge>}
       </div>
-      {feedback.explanation && (
-        <p className="text-sm text-[var(--color-text-muted)]">{feedback.explanation}</p>
-      )}
+      {feedback.explanation && <StructuredExplanation text={feedback.explanation} />}
       {feedback.skills.length > 0 && (
         <p className="text-xs text-[var(--color-text-subtle)]">
           Skills: {feedback.skills.join(', ')}

@@ -371,24 +371,42 @@ async def _taxonomy_topic(db: AsyncSession, domain_slug: str, category_slug: str
     ).scalar_one_or_none()
 
 
-async def _question_for_batch_row(db: AsyncSession, row: dict) -> tuple[Question | None, str]:
-    current = (
-        await db.execute(select(Question).options(selectinload(Question.options)).where(Question.content_key == row["key"]))
+SPRINT_BATCH_ID = "2026-10-10-crt-dsa-sprint-001"
+
+
+def _options_match(question: Question, row: dict) -> bool:
+    existing = sorted(question.options, key=lambda item: item.sort_order)
+    specs = row["options"]
+    if len(existing) != len(specs):
+        return False
+    for option, spec in zip(existing, specs, strict=True):
+        if option.option_text != spec["text"] or bool(option.is_correct) != bool(spec["correct"]):
+            return False
+    return True
+
+
+async def _question_by_key(db: AsyncSession, key: str) -> Question | None:
+    return (
+        await db.execute(select(Question).options(selectinload(Question.options)).where(Question.content_key == key))
     ).scalar_one_or_none()
-    if current is not None:
-        return current, "updated"
-    matches = (
-        await db.execute(
-            select(Question)
-            .options(selectinload(Question.options))
-            .where(Question.question_text == row["stem"], Question.content_key.is_(None))
-        )
-    ).scalars().all()
-    if len(matches) > 1:
-        return None, "ambiguous"
-    if len(matches) == 1:
-        return matches[0], "adopted"
-    return None, "created"
+
+
+async def _questions_by_stem(db: AsyncSession, stem: str) -> list[Question]:
+    return list(
+        (
+            await db.execute(
+                select(Question).options(selectinload(Question.options)).where(Question.question_text == stem)
+            )
+        ).scalars().all()
+    )
+
+
+async def _same_taxonomy(db: AsyncSession, question: Question, topic: Topic) -> bool:
+    if question.topic_id != topic.id or question.category_id != topic.category_id:
+        return False
+    category = await db.get(Category, question.category_id)
+    target = await db.get(Category, topic.category_id)
+    return category is not None and target is not None and category.domain_id == question.domain_id and category.domain_id == target.domain_id
 
 
 def _identity_record(key: str, how: str, question: Question | None, *, option_text_changed: bool = False) -> dict:
@@ -421,30 +439,79 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
     prepared: dict[str, dict] = {}
     identity: list[dict] = []
     problems: list[str] = []
+    sprint = batch["batch_id"] == SPRINT_BATCH_ID
     for action in planned["actions"]:
         if action["type"] != "question":
             continue
         row = questions_by_key[action["key"]]
-        current, how = await _question_for_batch_row(db, row)
-        if how == "ambiguous":
-            problems.append(f"{row['key']} matches more than one question with the same stem")
-            continue
+        current = await _question_by_key(db, row["key"])
+        how = "updated" if current is not None else "created"
         target_topic = None
-        if row.get("domain_slug"):
+        if sprint or row.get("domain_slug"):
             target_topic = await _taxonomy_topic(db, row["domain_slug"], row["category_slug"], row["topic_slug"])
             if target_topic is None:
                 problems.append(
                     f"{row['key']} missing topic {row['domain_slug']}/{row['category_slug']}/{row['topic_slug']}"
                 )
-            elif current is not None and current.topic_id != target_topic.id:
+        if sprint:
+            adoption = row.get("adoption")
+            if adoption not in {"required", "create"}:
+                problems.append(f"{row['key']} missing adoption mode")
+            elif target_topic is not None and adoption == "required":
+                matches = await _questions_by_stem(db, row["stem"])
+                if current is None:
+                    if len(matches) != 1 or matches[0].content_key is not None:
+                        problems.append(f"{row['key']} expected exactly one existing stem, found {len(matches)}")
+                    else:
+                        current = matches[0]
+                        how = "adopted"
+                else:
+                    others = [item for item in matches if item.id != current.id]
+                    if others or current.question_text != row["stem"]:
+                        problems.append(f"{row['key']} stem does not match exactly one existing row")
+                    how = "updated"
+                if current is not None and target_topic is not None:
+                    if not await _same_taxonomy(db, current, target_topic):
+                        problems.append(f"{row['key']} would move off its current topic")
+                    if not _options_match(current, row):
+                        problems.append(f"{row['key']} option text or correctness does not match the reviewed sequence")
+                    if current.difficulty != _difficulty(row["difficulty"]):
+                        problems.append(f"{row['key']} difficulty does not match")
+                    if current.question_type != (
+                        QuestionType.MULTIPLE_CHOICE if row["mode"] == "multi" else QuestionType.SINGLE_CHOICE
+                    ):
+                        problems.append(f"{row['key']} question type does not match")
+            elif target_topic is not None and adoption == "create":
+                matches = await _questions_by_stem(db, row["stem"])
+                if current is None:
+                    if matches:
+                        problems.append(f"{row['key']} stem already exists and cannot be created")
+                    how = "created"
+                else:
+                    others = [item for item in matches if item.id != current.id]
+                    if others or current.question_text != row["stem"]:
+                        problems.append(f"{row['key']} stem does not match exactly one existing row")
+                    if not await _same_taxonomy(db, current, target_topic):
+                        problems.append(f"{row['key']} would move off its current topic")
+                    if not _options_match(current, row):
+                        problems.append(f"{row['key']} option text or correctness does not match the reviewed sequence")
+                    if current.difficulty != _difficulty(row["difficulty"]):
+                        problems.append(f"{row['key']} difficulty does not match")
+                    if current.question_type != (
+                        QuestionType.MULTIPLE_CHOICE if row["mode"] == "multi" else QuestionType.SINGLE_CHOICE
+                    ):
+                        problems.append(f"{row['key']} question type does not match")
+                    how = "updated"
+        else:
+            if current is not None and target_topic is not None and current.topic_id != target_topic.id:
                 problems.append(f"{row['key']} would move off its current topic")
-        if current is not None and len(current.options) != len(row["options"]):
-            problems.append(
-                f"{row['key']} option count {len(current.options)} to {len(row['options'])} would replace option ids"
-            )
+            if current is not None and len(current.options) != len(row["options"]):
+                problems.append(
+                    f"{row['key']} option count {len(current.options)} to {len(row['options'])} would replace option ids"
+                )
         if action["action"] == "unchanged" and current is not None:
             identity.append(_identity_record(row["key"], "unchanged", current))
-        prepared[row["key"]] = {"how": how, "current": current, "topic": target_topic}
+        prepared[row["key"]] = {"how": how, "current": current, "topic": target_topic, "sprint": sprint}
     if problems:
         return {"refused": True, "rejected": problems, "counts": planned["counts"], "identity": []}
     topic = await _topic(db, "studio-saturday-001", "Saturday batch 001")
@@ -487,7 +554,8 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
             plan_row = prepared[key]
             current = plan_row["current"]
             target_topic = plan_row["topic"] or topic
-            explanation = row["explanation"] + " " + " ".join(f"{opt['key']}: {opt['why']}" for opt in row["options"])
+            suffix = " " + " ".join(f"{opt['key']}: {opt['why']}" for opt in row["options"])
+            explanation = row["explanation"] if plan_row["sprint"] else row["explanation"] + suffix
             if current is None:
                 category = await db.get(Category, target_topic.category_id)
                 current = Question(
@@ -519,6 +587,11 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                 current.negative_marks = float(row.get("negative_marks", current.negative_marks))
                 current.estimated_time_seconds = int(row.get("estimated_time_seconds", current.estimated_time_seconds))
                 identity.append(_identity_record(key, "created", current))
+            elif plan_row["sprint"]:
+                if current.content_key is None:
+                    current.content_key = key
+                current.explanation = explanation
+                identity.append(_identity_record(key, plan_row["how"], current))
             else:
                 if current.content_key is None:
                     current.content_key = key
