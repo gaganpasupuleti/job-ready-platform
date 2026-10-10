@@ -24,6 +24,7 @@ from app.services.jobs_source_sync import (
     assert_named_plan_unchanged,
     database_identity,
     decision_key,
+    eligible_source_identities,
     exclusion_reasons,
     format_target_identity,
     load_publication_decisions,
@@ -32,6 +33,7 @@ from app.services.jobs_source_sync import (
     plan_named_batch,
     plan_sync,
     record_publication_decision,
+    repair_archived_active_flags,
     source_identity,
 )
 
@@ -122,11 +124,19 @@ def test_posted_date_is_not_the_sync_date():
 
 
 def test_incomplete_or_empty_fetch_does_not_archive():
-    existing = {"jobs-server:old": uuid4()}
-    incomplete = plan_sync([_row(approved_status="PENDING")], existing, complete=False)
-    empty = plan_sync([], existing, complete=True)
+    existing = {f"jobs-server:old-{index}": uuid4() for index in range(3)}
+    published = _row(job_id="CQJ-STILL-THERE")
+    undecided = _row(job_id="CQJ-NO-DECISION", approved_status="NEEDS_REVIEW", manual_review_needed=True)
+    decisions = {decision_key("naukri", published.job_id): "publish"}
+    incomplete = plan_sync([published], existing, complete=False, decisions=decisions)
+    failed = plan_sync([], existing, complete=False, decisions=decisions)
+    empty = plan_sync([], existing, complete=True, decisions=decisions)
     assert incomplete.archive_ids == []
+    assert failed.archive_ids == []
     assert empty.archive_ids == []
+    assert eligible_source_identities([published, undecided], decisions) == {
+        source_identity(published.job_id)
+    }
     with pytest.raises(RuntimeError, match="incomplete"):
         import asyncio
 
@@ -191,7 +201,9 @@ async def test_zero_eligible_snapshot_unpublishes_only_owned_jobs():
         stored_owned = await db.get(Job, owned_id)
         stored_foreign = await db.get(Job, foreign_id)
         assert stored_owned is not None and stored_owned.status == JobStatus.ARCHIVED
+        assert stored_owned.is_active is False
         assert stored_foreign is not None and stored_foreign.status == JobStatus.ACTIVE
+        assert stored_foreign.is_active is True
         await db.delete(stored_foreign)
         await db.commit()
 
@@ -279,6 +291,7 @@ async def test_second_sync_updates_same_job_and_keeps_application(client, studen
         stored = await db.get(Job, job_id)
         assert stored is not None
         assert stored.status == JobStatus.ARCHIVED
+        assert stored.is_active is False
         app_row = await db.get(JobApplication, application_id)
         assert app_row is not None
         assert app_row.job_id == job_id
@@ -693,3 +706,181 @@ def test_cli_does_not_print_target_credentials(tmp_path):
         assert "appuser" not in blob
     assert "does not match" in confirmed.stdout
     assert "must not be passed as an argument" in leaked.stdout
+
+
+@pytest.mark.asyncio
+async def test_missing_source_job_is_archived_inactive_and_hidden(client, student_auth):
+    headers, _ = student_auth
+    keep_key = f"CQJ-KEEP-{uuid4().hex[:8]}"
+    gone_key = f"CQJ-GONE-{uuid4().hex[:8]}"
+    keep = _row(job_id=keep_key, title=f"Keep {keep_key}")
+    gone = _row(job_id=gone_key, title=f"Gone {gone_key}")
+    decisions = {
+        decision_key("naukri", keep_key): "publish",
+        decision_key("naukri", gone_key): "publish",
+    }
+    async with AsyncSessionLocal() as db:
+        await record_publication_decision(db, source="naukri", job_id=keep_key, decision="publish")
+        await record_publication_decision(db, source="naukri", job_id=gone_key, decision="publish")
+        created = plan_sync([keep, gone], {}, complete=True, decisions=decisions)
+        await apply_plan(db, created)
+        stored = (
+            await db.execute(
+                select(Job).where(
+                    Job.external_id.in_([source_identity(keep_key), source_identity(gone_key)])
+                )
+            )
+        ).scalars().all()
+        by_external = {row.external_id: row for row in stored}
+        keep_id = by_external[source_identity(keep_key)].id
+        gone_id = by_external[source_identity(gone_key)].id
+
+    assert (await client.post(f"/api/v1/jobs/{gone_id}/save", headers=headers)).status_code == 204
+    applied = await client.post(f"/api/v1/jobs/{gone_id}/apply", headers=headers)
+    assert applied.status_code == 200, applied.text
+    application_id = applied.json()["id"]
+
+    existing = {source_identity(keep_key): keep_id, source_identity(gone_key): gone_id}
+    partial = plan_sync([keep], existing, complete=False, decisions=decisions)
+    assert partial.archive_ids == []
+    with pytest.raises(RuntimeError, match="incomplete"):
+        async with AsyncSessionLocal() as db:
+            await apply_plan(db, partial)
+
+    async with AsyncSessionLocal() as db:
+        withdrawn = plan_sync([keep], existing, complete=True, decisions=decisions)
+        assert gone_id in withdrawn.archive_ids
+        assert keep_id not in withdrawn.archive_ids
+        result = await apply_plan(db, withdrawn)
+        assert result.archived == 1
+        assert result.inserted == 0
+        stored_gone = await db.get(Job, gone_id)
+        stored_keep = await db.get(Job, keep_id)
+        assert stored_gone is not None and stored_keep is not None
+        assert stored_gone.status == JobStatus.ARCHIVED
+        assert stored_gone.is_active is False
+        assert stored_gone.title == f"Gone {gone_key}"
+        assert stored_keep.status == JobStatus.ACTIVE
+        assert stored_keep.is_active is True
+        keep_count = await db.scalar(
+            select(func.count()).select_from(Job).where(Job.external_id == source_identity(keep_key))
+        )
+        assert keep_count == 1
+        repeated = plan_sync([keep], existing, complete=True, decisions=decisions)
+        await apply_plan(db, repeated)
+        keep_count = await db.scalar(
+            select(func.count()).select_from(Job).where(Job.external_id == source_identity(keep_key))
+        )
+        gone_count = await db.scalar(
+            select(func.count()).select_from(Job).where(Job.external_id == source_identity(gone_key))
+        )
+        assert keep_count == 1
+        assert gone_count == 1
+        stored_gone = await db.get(Job, gone_id)
+        assert stored_gone is not None
+        assert stored_gone.status == JobStatus.ARCHIVED
+        assert stored_gone.is_active is False
+        application = await db.get(JobApplication, application_id)
+        saved = (
+            await db.execute(select(SavedJob).where(SavedJob.job_id == gone_id))
+        ).scalar_one()
+        assert application is not None and application.job_id == gone_id
+        assert saved.job_id == gone_id
+        decision_rows = (
+            await db.execute(
+                select(JobPublicationDecision).where(
+                    JobPublicationDecision.source_job_id.in_([keep_key, gone_key])
+                )
+            )
+        ).scalars().all()
+        assert {row.source_job_id: row.decision for row in decision_rows} == {
+            keep_key: "publish",
+            gone_key: "publish",
+        }
+        visible = set(
+            (
+                await db.execute(
+                    select(Job.external_id).where(
+                        Job.status == JobStatus.ACTIVE,
+                        Job.is_active.is_(True),
+                        Job.external_id.in_([source_identity(keep_key), source_identity(gone_key)]),
+                    )
+                )
+            ).scalars().all()
+        )
+        assert visible == eligible_source_identities([keep], decisions)
+
+    hidden = await client.get("/api/v1/jobs", headers=headers, params={"q": gone_key})
+    assert hidden.status_code == 200
+    assert all(item["id"] != str(gone_id) for item in hidden.json()["items"])
+    listed = await client.get("/api/v1/jobs", headers=headers, params={"q": keep_key})
+    assert listed.status_code == 200
+    assert any(item["id"] == str(keep_id) for item in listed.json()["items"])
+
+
+@pytest.mark.asyncio
+async def test_archived_active_repair_only_clears_the_active_flag():
+    legacy_id = uuid4()
+    already_id = uuid4()
+    visible_id = uuid4()
+    now = datetime.now(UTC)
+    async with AsyncSessionLocal() as db:
+        legacy = Job(
+            id=legacy_id,
+            slug=f"legacy-archived-{legacy_id.hex[:8]}",
+            external_id=f"jobs-server:legacy-{legacy_id.hex[:8]}",
+            title="Legacy withdrawn listing",
+            normalized_title="legacy withdrawn listing",
+            description="Archived earlier without clearing is_active.",
+            status=JobStatus.ARCHIVED,
+            is_active=True,
+            content_hash=uuid4().hex,
+            first_seen_at=now,
+            last_seen_at=now,
+        )
+        already = Job(
+            id=already_id,
+            slug=f"already-inactive-{already_id.hex[:8]}",
+            external_id=f"jobs-server:already-{already_id.hex[:8]}",
+            title="Already inactive listing",
+            normalized_title="already inactive listing",
+            description="Leave this archived row untouched.",
+            status=JobStatus.ARCHIVED,
+            is_active=False,
+            content_hash=uuid4().hex,
+            first_seen_at=now,
+            last_seen_at=now,
+        )
+        visible = Job(
+            id=visible_id,
+            slug=f"still-visible-{visible_id.hex[:8]}",
+            external_id=f"manual:visible-{visible_id.hex[:8]}",
+            title="Still visible listing",
+            normalized_title="still visible listing",
+            description="An active listing must stay published.",
+            status=JobStatus.ACTIVE,
+            is_active=True,
+            content_hash=uuid4().hex,
+            first_seen_at=now,
+            last_seen_at=now,
+        )
+        db.add_all([legacy, already, visible])
+        await db.commit()
+        await db.refresh(legacy)
+        legacy_updated_at = legacy.updated_at
+        changed = await repair_archived_active_flags(db)
+        assert changed >= 1
+        await db.refresh(legacy)
+        await db.refresh(already)
+        await db.refresh(visible)
+        assert legacy.status == JobStatus.ARCHIVED
+        assert legacy.is_active is False
+        assert legacy.title == "Legacy withdrawn listing"
+        assert legacy.description == "Archived earlier without clearing is_active."
+        assert legacy.updated_at == legacy_updated_at
+        assert already.status == JobStatus.ARCHIVED
+        assert already.is_active is False
+        assert already.title == "Already inactive listing"
+        assert visible.status == JobStatus.ACTIVE
+        assert visible.is_active is True
+        assert visible.title == "Still visible listing"
