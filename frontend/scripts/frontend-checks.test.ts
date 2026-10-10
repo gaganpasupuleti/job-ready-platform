@@ -7,7 +7,7 @@ import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHre
 import { canOfferRegistration } from '../src/lib/authPolicy.ts'
 import { addedToJobReadyLabel, employerPostedLabel, isPortalDate, portalAddedParams } from '../src/lib/jobPortalDates.ts'
 import { googleDestination, resolveGoogleClientId } from '../src/lib/googleAuth.ts'
-import { splitExplanation } from '../src/lib/structuredExplanation.ts'
+import { relatedLessonLink, splitExplanation } from '../src/lib/structuredExplanation.ts'
 import {
   continuationAction,
   materialKindLabel,
@@ -420,11 +420,29 @@ describe('structured explanations', () => {
     )
     assert.deepEqual(
       sections.map((section) => section.heading),
-      [null, 'Step-by-step', 'Why other options are wrong', 'Related lesson'],
+      [null, 'Correct answer', 'Step-by-step', 'Why other options are wrong', 'Related lesson'],
     )
-    assert.equal(sections[0].body.includes('Correct answer: 34000'), true)
-    assert.equal(sections[1].body, '1. Take 15%.')
-    assert.equal(sections[2].body, '- 36000: skipped the discount.')
+    assert.equal(sections[0].body, 'Difficulty: easy')
+    assert.equal(sections[1].body, '34000')
+    assert.equal(sections[2].body, '1. Take 15%.')
+    assert.equal(sections[3].body, '- 36000: skipped the discount.')
     assert.equal(sections.at(-1)?.body.includes('<script>'), true)
+    assert.equal(relatedLessonLink(sections.at(-1)?.body ?? ''), null)
+  })
+
+  it('links only a known published lesson and ignores embedded urls', () => {
+    assert.deepEqual(
+      relatedLessonLink(
+        'crt-sprint-grammar — Error spotting in short sentences. See https://evil.example and javascript:alert(1).',
+      ),
+      {
+        href: '/learn/syllabus/syl-crt-verbal-grammar',
+        title: 'Error spotting in short sentences',
+        note: 'See https://evil.example and javascript:alert(1).',
+      },
+    )
+    assert.equal(relatedLessonLink('syl-dsa-graphs — Graphs. Coming soon.'), null)
+    assert.equal(relatedLessonLink('javascript:alert(1) — Click.'), null)
+    assert.equal(relatedLessonLink('https://example.com — Outside.'), null)
   })
 })
