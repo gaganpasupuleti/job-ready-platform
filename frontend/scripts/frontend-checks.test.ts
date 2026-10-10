@@ -5,6 +5,7 @@ import { describe, it } from 'node:test'
 import { marked, type Token, type Tokens } from 'marked'
 
 import { approvedLearningImageSrc, learningSvgIsStatic, splitLessonParagraph } from '../src/lib/learningVisuals.ts'
+import { PHASE1_ASSETS, localAssetFailures } from './check-learning-visual-assets.ts'
 
 import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
@@ -498,5 +499,10 @@ describe('learning visuals', () => {
     assert.equal(learningSvgIsStatic('<svg xmlns="http://www.w3.org/2000/svg"><rect fill="url(#paint)"/></svg>'), false)
     assert.equal(learningSvgIsStatic('<svg xmlns="http://www.w3.org/2000/svg"><animate attributeName="x"/></svg>'), false)
     assert.equal(learningSvgIsStatic('<svg xmlns="http://www.w3.org/2000/svg" href="https://evil.example/a.svg"></svg>'), false)
+  })
+
+  it('lists the six release asset URLs', () => {
+    assert.deepEqual(localAssetFailures(), [])
+    assert.equal(PHASE1_ASSETS.length, 6)
   })
 })
