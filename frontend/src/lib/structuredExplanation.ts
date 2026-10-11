@@ -18,6 +18,9 @@ export interface ExplanationSection {
 
 const HEADINGS = new Set<string>(EXPLANATION_HEADINGS)
 
+/** Authoring metadata stays in the stored explanation but is not shown to students. */
+const AUTHOR_ONLY_HEADINGS = new Set<string>(['Topic metadata'])
+
 /** Material or syllabus keys that already have a published lesson page. */
 const PUBLISHED_LESSON_HREFS: Record<string, string> = {
   'crt-quant-percentages': '/learn/syllabus/syl-crt-quant-percentages',
@@ -81,5 +84,6 @@ export function splitExplanation(text: string): ExplanationSection[] {
     lines.push(line)
   }
   flush()
-  return sections.length > 0 ? sections : [{ heading: null, body: text }]
+  if (sections.length === 0) return [{ heading: null, body: text }]
+  return sections.filter((section) => section.heading === null || !AUTHOR_ONLY_HEADINGS.has(section.heading))
 }

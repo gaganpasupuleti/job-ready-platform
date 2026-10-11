@@ -430,6 +430,18 @@ describe('structured explanations', () => {
     assert.equal(relatedLessonLink(sections.at(-1)?.body ?? ''), null)
   })
 
+  it('never shows authoring metadata to students', () => {
+    const sections = splitExplanation(
+      'Correct answer: 34000\n\nRelated lesson\ncrt-sprint-grammar — Error spotting.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=percentages',
+    )
+    assert.deepEqual(
+      sections.map((section) => section.heading),
+      ['Correct answer', 'Related lesson'],
+    )
+    assert.equal(sections[1].body, 'crt-sprint-grammar — Error spotting.')
+    assert.equal(sections.some((section) => section.body.includes('domain=')), false)
+  })
+
   it('links only a known published lesson and ignores embedded urls', () => {
     assert.deepEqual(
       relatedLessonLink(
