@@ -1,0 +1,205 @@
+metric,value
+methodology_counts.master.1_definitions_in_source.batch_mcq_rows,106
+methodology_counts.master.1_definitions_in_source.mcq_rows,750
+methodology_counts.master.1_definitions_in_source.seed_mcq_rows,644
+methodology_counts.master.2_unique_authored_keys.distinct_batch_question_keys,106
+methodology_counts.master.2_unique_authored_keys.distinct_mcq_stem_fingerprints,748
+methodology_counts.master.3_adoption_references,0
+methodology_counts.master.4_new_batch_questions,106
+methodology_counts.master.5_published_source_declarations.batch_materials_published_on_apply,18
+methodology_counts.master.5_published_source_declarations.batch_packs_published_on_apply,8
+methodology_counts.master.5_published_source_declarations.published_syllabus_entries,6
+methodology_counts.master.6_actual_published_database_rows,Production verification pending.
+methodology_counts.master.7_unscored_syllabus_reading_checks,6
+methodology_counts.master.8_dsa_coding_definitions,21
+methodology_counts.master.9_executable_coding_problems.definitions_with_tests_and_starter_code,21
+methodology_counts.master.9_executable_coding_problems.runtime_execution,Production verification pending.
+methodology_counts.master+pr-17.1_definitions_in_source.batch_mcq_rows,106
+methodology_counts.master+pr-17.1_definitions_in_source.mcq_rows,750
+methodology_counts.master+pr-17.1_definitions_in_source.seed_mcq_rows,644
+methodology_counts.master+pr-17.2_unique_authored_keys.distinct_batch_question_keys,106
+methodology_counts.master+pr-17.2_unique_authored_keys.distinct_mcq_stem_fingerprints,748
+methodology_counts.master+pr-17.3_adoption_references,0
+methodology_counts.master+pr-17.4_new_batch_questions,106
+methodology_counts.master+pr-17.5_published_source_declarations.batch_materials_published_on_apply,24
+methodology_counts.master+pr-17.5_published_source_declarations.batch_packs_published_on_apply,8
+methodology_counts.master+pr-17.5_published_source_declarations.published_syllabus_entries,6
+methodology_counts.master+pr-17.6_actual_published_database_rows,Production verification pending.
+methodology_counts.master+pr-17.7_unscored_syllabus_reading_checks,6
+methodology_counts.master+pr-17.8_dsa_coding_definitions,21
+methodology_counts.master+pr-17.9_executable_coding_problems.definitions_with_tests_and_starter_code,21
+methodology_counts.master+pr-17.9_executable_coding_problems.runtime_execution,Production verification pending.
+methodology_counts.master+pr-18.1_definitions_in_source.batch_mcq_rows,176
+methodology_counts.master+pr-18.1_definitions_in_source.mcq_rows,820
+methodology_counts.master+pr-18.1_definitions_in_source.seed_mcq_rows,644
+methodology_counts.master+pr-18.2_unique_authored_keys.distinct_batch_question_keys,176
+methodology_counts.master+pr-18.2_unique_authored_keys.distinct_mcq_stem_fingerprints,768
+methodology_counts.master+pr-18.3_adoption_references,50
+methodology_counts.master+pr-18.4_new_batch_questions,126
+methodology_counts.master+pr-18.5_published_source_declarations.batch_materials_published_on_apply,28
+methodology_counts.master+pr-18.5_published_source_declarations.batch_packs_published_on_apply,9
+methodology_counts.master+pr-18.5_published_source_declarations.published_syllabus_entries,16
+methodology_counts.master+pr-18.6_actual_published_database_rows,Production verification pending.
+methodology_counts.master+pr-18.7_unscored_syllabus_reading_checks,52
+methodology_counts.master+pr-18.8_dsa_coding_definitions,21
+methodology_counts.master+pr-18.9_executable_coding_problems.definitions_with_tests_and_starter_code,21
+methodology_counts.master+pr-18.9_executable_coding_problems.runtime_execution,Production verification pending.
+methodology_counts.master+quality-gate.1_definitions_in_source.batch_mcq_rows,176
+methodology_counts.master+quality-gate.1_definitions_in_source.mcq_rows,820
+methodology_counts.master+quality-gate.1_definitions_in_source.seed_mcq_rows,644
+methodology_counts.master+quality-gate.2_unique_authored_keys.distinct_batch_question_keys,176
+methodology_counts.master+quality-gate.2_unique_authored_keys.distinct_mcq_stem_fingerprints,774
+methodology_counts.master+quality-gate.3_adoption_references,50
+methodology_counts.master+quality-gate.4_new_batch_questions,126
+methodology_counts.master+quality-gate.5_published_source_declarations.batch_materials_published_on_apply,28
+methodology_counts.master+quality-gate.5_published_source_declarations.batch_packs_published_on_apply,9
+methodology_counts.master+quality-gate.5_published_source_declarations.published_syllabus_entries,16
+methodology_counts.master+quality-gate.6_actual_published_database_rows,Production verification pending.
+methodology_counts.master+quality-gate.7_unscored_syllabus_reading_checks,52
+methodology_counts.master+quality-gate.8_dsa_coding_definitions,21
+methodology_counts.master+quality-gate.9_executable_coding_problems.definitions_with_tests_and_starter_code,21
+methodology_counts.master+quality-gate.9_executable_coding_problems.runtime_execution,Production verification pending.
+sprint1_accounting.pr-18.adopt,50
+sprint1_accounting.pr-18.adopt_linked_to_phase11,50
+sprint1_accounting.pr-18.adopt_stem_unchanged,50
+sprint1_accounting.pr-18.create,20
+sprint1_accounting.pr-18.rows,70
+sprint1_accounting.pr-18.versions.1,70
+sprint1_accounting.pr-18.with_revises,0
+sprint1_accounting.quality-gate.adopt,50
+sprint1_accounting.quality-gate.adopt_linked_to_phase11,50
+sprint1_accounting.quality-gate.adopt_stem_unchanged,44
+sprint1_accounting.quality-gate.create,20
+sprint1_accounting.quality-gate.rows,70
+sprint1_accounting.quality-gate.versions.1,53
+sprint1_accounting.quality-gate.versions.2,17
+sprint1_accounting.quality-gate.with_revises,11
+version_comparisons.master -> pr-17.changed_with_version_bump,6
+version_comparisons.master -> pr-17.only_in_head,0
+version_comparisons.master -> quality-gate.changed_with_version_bump,3
+version_comparisons.master -> quality-gate.only_in_head,88
+version_comparisons.pr-18 -> quality-gate.changed_with_version_bump,17
+version_comparisons.pr-18 -> quality-gate.only_in_head,0
+version_comparisons.pr-18 -> quality-gate.unchanged,74
+count_only_sources.project_spec,79
+count_only_sources.prompt_challenge,25
+count_only_sources.scenario,30
+count_only_sources.sql_problem,30
+exact_duplicate_groups.master.exact-duplicate,2
+exact_duplicate_groups.master+pr-17.exact-duplicate,2
+exact_duplicate_groups.master+pr-18.exact-duplicate,2
+exact_duplicate_groups.master+pr-18.expected-adoption-overlap,50
+exact_duplicate_groups.master+quality-gate.exact-duplicate,2
+exact_duplicate_groups.master+quality-gate.expected-adoption-overlap,44
+manifest_checks.master/2026-09-14-syllabus-001: match (eol crlf),10
+manifest_checks.master/2026-09-14-weekly-001: match (eol unspecified),13
+manifest_checks.master/2026-09-19-saturday-001: match (eol crlf),12
+manifest_checks.pr-17/2026-10-10-visual-learning-001: match (eol crlf),8
+manifest_checks.pr-18/2026-10-10-crt-dsa-sprint-001: match (eol crlf),14
+manifest_checks.quality-gate/2026-10-10-crt-dsa-sprint-001: match (eol crlf),14
+flags.path-has-no-topic,13
+flags.placeholder-explanation,17
+flags.placeholder-options,17
+flags.runner-topic-already-filled,1
+flags.topic-not-in-taxonomy,4
+semantic_duplicate_candidates,52
+production_status,Production verification pending.
+by_source.master.2026-09-14-syllabus-001.learning_material,6
+by_source.master.2026-09-14-syllabus-001.mcq,6
+by_source.master.2026-09-14-syllabus-001.syllabus_entry,19
+by_source.master.2026-09-14-weekly-001.learning_material,6
+by_source.master.2026-09-14-weekly-001.mcq,50
+by_source.master.2026-09-14-weekly-001.practice_pack,4
+by_source.master.2026-09-19-saturday-001.learning_material,6
+by_source.master.2026-09-19-saturday-001.mcq,50
+by_source.master.2026-09-19-saturday-001.practice_pack,4
+by_source.master.ALGORITHM_PATHS.learning_path,10
+by_source.master.BEGINNER_DSA_PATHS.learning_path,7
+by_source.master.DATA_STRUCTURE_PATHS.learning_path,10
+by_source.master.NEW_ALGO_PATHS.learning_path,2
+by_source.master.NEW_DS_PATHS.learning_path,3
+by_source.master.PROBLEM_BANK.coding_problem,21
+by_source.master.build6-ai.mcq,110
+by_source.master.build7-cloud.mcq,103
+by_source.master.build7-cybersecurity.mcq,77
+by_source.master.build7-devops.mcq,97
+by_source.master.build8-PACKS.interview_pack,12
+by_source.master.build8-QUESTIONS.interview_question,15
+by_source.master.generated-interview_genai.interview_question,1
+by_source.master.generated-interview_python.interview_question,1
+by_source.master.generated-interview_sql.interview_question,2
+by_source.master.phase11-aptitude.mcq,110
+by_source.master.phase11-technical.mcq,110
+by_source.master.python-course/control-flow.course_lesson,4
+by_source.master.python-course/core-syntax.course_lesson,4
+by_source.master.python-course/functions-collections.course_lesson,4
+by_source.master.python-course/getting-started.course_lesson,3
+by_source.master.runner-samples.mcq,20
+by_source.master.runner-templates.mcq,17
+by_source.pr-17.2026-10-10-visual-learning-001.learning_material,6
+by_source.pr-18.2026-10-10-crt-dsa-sprint-001.learning_material,10
+by_source.pr-18.2026-10-10-crt-dsa-sprint-001.mcq,70
+by_source.pr-18.2026-10-10-crt-dsa-sprint-001.practice_pack,1
+by_source.pr-18.2026-10-10-crt-dsa-sprint-001.syllabus_entry,10
+by_source.quality-gate.2026-10-10-crt-dsa-sprint-001.learning_material,10
+by_source.quality-gate.2026-10-10-crt-dsa-sprint-001.mcq,70
+by_source.quality-gate.2026-10-10-crt-dsa-sprint-001.practice_pack,1
+by_source.quality-gate.2026-10-10-crt-dsa-sprint-001.syllabus_entry,10
+by_category.master.-.-.-,62
+by_category.master.-.-.Data Interpretation,11
+by_category.master.-.-.Logical Reasoning,11
+by_category.master.-.-.Quantitative Aptitude,11
+by_category.master.-.-.Verbal Ability,11
+by_category.master.ai.ai-agents.-,19
+by_category.master.ai.generative-ai.-,86
+by_category.master.ai.prompt-engineering.-,13
+by_category.master.cloud.aws.-,33
+by_category.master.cloud.azure.-,23
+by_category.master.cloud.cloud-architecture.-,12
+by_category.master.cloud.cloud-fundamentals.-,18
+by_category.master.cloud.cloud-security.-,5
+by_category.master.cloud.gcp.-,16
+by_category.master.cybersecurity.api-security.-,7
+by_category.master.cybersecurity.cyber-cloud-security.-,3
+by_category.master.cybersecurity.iam.-,9
+by_category.master.cybersecurity.incident-response.-,7
+by_category.master.cybersecurity.network-security.-,10
+by_category.master.cybersecurity.secure-coding.-,7
+by_category.master.cybersecurity.security-fundamentals.-,12
+by_category.master.cybersecurity.soc-siem.-,8
+by_category.master.cybersecurity.vulnerability-management.-,5
+by_category.master.cybersecurity.web-security.-,12
+by_category.master.devops.cicd.-,12
+by_category.master.devops.devops-core.-,2
+by_category.master.devops.docker.-,14
+by_category.master.devops.git.-,12
+by_category.master.devops.kubernetes.-,17
+by_category.master.devops.linux.-,14
+by_category.master.devops.observability.-,9
+by_category.master.devops.sre.-,7
+by_category.master.devops.terraform.-,11
+by_category.master.placement.aptitude.Data Interpretation,22
+by_category.master.placement.aptitude.Logical Reasoning,25
+by_category.master.placement.aptitude.Quantitative Aptitude,50
+by_category.master.placement.aptitude.Verbal Ability,23
+by_category.master.technical.computer-networks.-,12
+by_category.master.technical.data-analytics.-,1
+by_category.master.technical.dbms.-,12
+by_category.master.technical.dsa.DSA Foundations,22
+by_category.master.technical.git.-,1
+by_category.master.technical.linux.-,1
+by_category.master.technical.machine-learning.-,1
+by_category.master.technical.oop.-,12
+by_category.master.technical.operating-systems.-,12
+by_category.master.technical.python.-,13
+by_category.master.technical.sql.-,34
+by_category.pr-18.placement.aptitude.Data Interpretation,10
+by_category.pr-18.placement.aptitude.Logical Reasoning,10
+by_category.pr-18.placement.aptitude.Quantitative Aptitude,10
+by_category.pr-18.placement.aptitude.Verbal Ability,10
+by_category.pr-18.technical.dsa.DSA Foundations,30
+by_category.quality-gate.placement.aptitude.Data Interpretation,10
+by_category.quality-gate.placement.aptitude.Logical Reasoning,10
+by_category.quality-gate.placement.aptitude.Quantitative Aptitude,10
+by_category.quality-gate.placement.aptitude.Verbal Ability,10
+by_category.quality-gate.technical.dsa.DSA Foundations,30

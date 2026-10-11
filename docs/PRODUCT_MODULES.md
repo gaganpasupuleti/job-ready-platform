@@ -4,6 +4,8 @@ Status as of MVP hardening (Build 10 + release audit).
 
 Legend: **Live** = student-usable · **Partial** = usable with known limits · **Future** = placeholder / not shipped
 
+Status describes the route, not content depth. A Live module can still have topics with no questions. Per-topic counts and gaps from source definitions (2026-10-11): `docs/audits/2026-10-11-content-inventory/`. Production content counts: Production verification pending.
+
 ## Practice
 
 | Module | Route | Status |

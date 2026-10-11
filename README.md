@@ -36,7 +36,7 @@ python -m venv .venv
 # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 alembic upgrade head
-python -m app.seed.runner
+python -m app.seed
 python -m app.readiness.backfill
 
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
@@ -57,8 +57,8 @@ Dev admin (local/seed only): `admin@jobready.dev` — never use default password
 ## Migrations & seed
 
 ```bash
-alembic upgrade head          # 001 … 013_build10
-python -m app.seed.runner     # idempotent content seed
+alembic upgrade head          # all migrations
+python -m app.seed            # content seed; Phase 11 banks need app.seed.phase11_activate
 python -m app.readiness.backfill
 ```
 

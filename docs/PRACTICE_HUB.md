@@ -65,7 +65,7 @@ Build 6 adds `path_type=ai` paths (Generative AI, RAG, Prompt Engineering, Agent
 
 ```bash
 cd backend
-python -m app.seed.runner
+python -m app.seed
 # or
 python -c "import asyncio; from app.seed.learn_data import seed_learn_content; asyncio.run(seed_learn_content())"
 ```

@@ -19,9 +19,16 @@ Scoped with the jobs-first candidate (do not treat coding lock as production-rea
 
 ## Ops / environment
 
-9. **Railway production not yet on Build 10** — last successful backend deploy ~2026-08-29; readiness/mistakes APIs absent until redeploy.
+9. **Production deployment state** — Historical: `docs/MVP_RELEASE_AUDIT.md` (2026-09-04) found production on the 2026-08-29 image without Build 10. `docs/PRODUCTION_CONTENT_ACTIVATION.md` (2026-09-05) later recorded production migration `013_build10`. Current production deployment: Production verification pending.
 10. **Local Docker Desktop** may be off — SQL sandbox E2E skips locally if sandbox unreachable; CI provides the release proof.
 11. **`pg_dump` not always on PATH** — full dump/restore drill documented; logical schema snapshot drill completed locally.
+
+## Content
+
+12. **Content counts** — Source-level counts, topic coverage, and duplicates are in `docs/audits/2026-10-11-content-inventory/`. Production content counts: Production verification pending.
+13. **Phase 11 banks are not seeded by `python -m app.seed`** — the 220 aptitude and technical definitions need `python -m app.seed.phase11_activate`.
+14. **Re-seeding opens coming-soon DSA paths** — a second `python -m app.seed` marks every existing DSA path available, including the 15 declared coming soon. Shown on a disposable local database on 2026-10-11; see the audit `README.md`.
+15. **Four runner sample rows never seed** — `cloud-fundamentals/architecture` and `aws`, `azure`, `gcp` `/compute` are not taxonomy topics, so the rows are skipped.
 
 ## Fixed during hardening (do not reopen without regression)
 

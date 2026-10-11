@@ -57,7 +57,7 @@ python -c "import asyncio; from app.seed.learn_data import seed_learn_content; a
 python -c "import asyncio; from app.seed.build6_seed import seed_build6_content; asyncio.run(seed_build6_content())"
 ```
 
-`python -m app.seed` runs taxonomy/MCQ, coding, SQL, learn content, and Build 6 AI practice (idempotent).
+`python -m app.seed` runs taxonomy and sample MCQs, the content factory catalog, coding, SQL, learn content (including Build 5.1 paths), and the Build 6 to Build 10 seeds. It does not insert the Phase 11 aptitude and technical banks; run `python -m app.seed.phase11_activate` for those. Rows are not duplicated on a re-run, but a second run marks existing DSA paths available, including paths declared coming soon.
 
 Start SQL sandbox (required for live SQL run/submit):
 
@@ -72,7 +72,7 @@ Sandbox defaults: host port **5433**, user `jobready_sql_runner`, DB `jobready_s
 | Email | `admin@jobready.dev` |
 | Password | `Admin123!` |
 
-Seed includes taxonomy across Placement, Technical, AI, Cloud, DevOps, and Cybersecurity domains, sample MCQs (including Build 7 cloud/devops/cyber banks), coding/SQL, Practice Hub, prompt challenges, and scenario challenges. Re-run `python -m app.seed.runner` after `alembic upgrade head` (migration `009_build7`).
+Seed includes taxonomy across Placement, Technical, AI, Cloud, DevOps, and Cybersecurity domains, sample MCQs (including Build 7 cloud/devops/cyber banks), coding/SQL, Practice Hub, prompt challenges, and scenario challenges. Re-run `python -m app.seed` after `alembic upgrade head`. `python -m app.seed.runner` has no entry point and seeds nothing.
 
 ## Running Locally
 

@@ -5,6 +5,8 @@
 **Production migration:** `013_build10`  
 **Report date:** 2026-09-05  
 
+> **Historical measurement.** The production counts below were measured on 2026-09-05 and have not been re-verified. Source-level counts as of 2026-10-11 are in `docs/audits/2026-10-11-content-inventory/`. Current production counts: Production verification pending.
+
 This is **not** Build 11. No new product domains, no LLMs, no LinkedIn scraping, no readiness formula changes.
 
 ## Tools added

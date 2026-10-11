@@ -1,0 +1,1127 @@
+{
+  "by_category": [
+    {
+      "category": "-",
+      "curriculum_area": "-",
+      "domain": "-",
+      "mcq_rows": 62,
+      "source_label": "master"
+    },
+    {
+      "category": "-",
+      "curriculum_area": "Data Interpretation",
+      "domain": "-",
+      "mcq_rows": 11,
+      "source_label": "master"
+    },
+    {
+      "category": "-",
+      "curriculum_area": "Logical Reasoning",
+      "domain": "-",
+      "mcq_rows": 11,
+      "source_label": "master"
+    },
+    {
+      "category": "-",
+      "curriculum_area": "Quantitative Aptitude",
+      "domain": "-",
+      "mcq_rows": 11,
+      "source_label": "master"
+    },
+    {
+      "category": "-",
+      "curriculum_area": "Verbal Ability",
+      "domain": "-",
+      "mcq_rows": 11,
+      "source_label": "master"
+    },
+    {
+      "category": "ai-agents",
+      "curriculum_area": "-",
+      "domain": "ai",
+      "mcq_rows": 19,
+      "source_label": "master"
+    },
+    {
+      "category": "generative-ai",
+      "curriculum_area": "-",
+      "domain": "ai",
+      "mcq_rows": 86,
+      "source_label": "master"
+    },
+    {
+      "category": "prompt-engineering",
+      "curriculum_area": "-",
+      "domain": "ai",
+      "mcq_rows": 13,
+      "source_label": "master"
+    },
+    {
+      "category": "aws",
+      "curriculum_area": "-",
+      "domain": "cloud",
+      "mcq_rows": 33,
+      "source_label": "master"
+    },
+    {
+      "category": "azure",
+      "curriculum_area": "-",
+      "domain": "cloud",
+      "mcq_rows": 23,
+      "source_label": "master"
+    },
+    {
+      "category": "cloud-architecture",
+      "curriculum_area": "-",
+      "domain": "cloud",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "cloud-fundamentals",
+      "curriculum_area": "-",
+      "domain": "cloud",
+      "mcq_rows": 18,
+      "source_label": "master"
+    },
+    {
+      "category": "cloud-security",
+      "curriculum_area": "-",
+      "domain": "cloud",
+      "mcq_rows": 5,
+      "source_label": "master"
+    },
+    {
+      "category": "gcp",
+      "curriculum_area": "-",
+      "domain": "cloud",
+      "mcq_rows": 16,
+      "source_label": "master"
+    },
+    {
+      "category": "api-security",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 7,
+      "source_label": "master"
+    },
+    {
+      "category": "cyber-cloud-security",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 3,
+      "source_label": "master"
+    },
+    {
+      "category": "iam",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 9,
+      "source_label": "master"
+    },
+    {
+      "category": "incident-response",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 7,
+      "source_label": "master"
+    },
+    {
+      "category": "network-security",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 10,
+      "source_label": "master"
+    },
+    {
+      "category": "secure-coding",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 7,
+      "source_label": "master"
+    },
+    {
+      "category": "security-fundamentals",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "soc-siem",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 8,
+      "source_label": "master"
+    },
+    {
+      "category": "vulnerability-management",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 5,
+      "source_label": "master"
+    },
+    {
+      "category": "web-security",
+      "curriculum_area": "-",
+      "domain": "cybersecurity",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "cicd",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "devops-core",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 2,
+      "source_label": "master"
+    },
+    {
+      "category": "docker",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 14,
+      "source_label": "master"
+    },
+    {
+      "category": "git",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "kubernetes",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 17,
+      "source_label": "master"
+    },
+    {
+      "category": "linux",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 14,
+      "source_label": "master"
+    },
+    {
+      "category": "observability",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 9,
+      "source_label": "master"
+    },
+    {
+      "category": "sre",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 7,
+      "source_label": "master"
+    },
+    {
+      "category": "terraform",
+      "curriculum_area": "-",
+      "domain": "devops",
+      "mcq_rows": 11,
+      "source_label": "master"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Data Interpretation",
+      "domain": "placement",
+      "mcq_rows": 22,
+      "source_label": "master"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Logical Reasoning",
+      "domain": "placement",
+      "mcq_rows": 25,
+      "source_label": "master"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Quantitative Aptitude",
+      "domain": "placement",
+      "mcq_rows": 50,
+      "source_label": "master"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Verbal Ability",
+      "domain": "placement",
+      "mcq_rows": 23,
+      "source_label": "master"
+    },
+    {
+      "category": "computer-networks",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "data-analytics",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 1,
+      "source_label": "master"
+    },
+    {
+      "category": "dbms",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "dsa",
+      "curriculum_area": "DSA Foundations",
+      "domain": "technical",
+      "mcq_rows": 22,
+      "source_label": "master"
+    },
+    {
+      "category": "git",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 1,
+      "source_label": "master"
+    },
+    {
+      "category": "linux",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 1,
+      "source_label": "master"
+    },
+    {
+      "category": "machine-learning",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 1,
+      "source_label": "master"
+    },
+    {
+      "category": "oop",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "operating-systems",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 12,
+      "source_label": "master"
+    },
+    {
+      "category": "python",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 13,
+      "source_label": "master"
+    },
+    {
+      "category": "sql",
+      "curriculum_area": "-",
+      "domain": "technical",
+      "mcq_rows": 34,
+      "source_label": "master"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Data Interpretation",
+      "domain": "placement",
+      "mcq_rows": 10,
+      "source_label": "pr-18"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Logical Reasoning",
+      "domain": "placement",
+      "mcq_rows": 10,
+      "source_label": "pr-18"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Quantitative Aptitude",
+      "domain": "placement",
+      "mcq_rows": 10,
+      "source_label": "pr-18"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Verbal Ability",
+      "domain": "placement",
+      "mcq_rows": 10,
+      "source_label": "pr-18"
+    },
+    {
+      "category": "dsa",
+      "curriculum_area": "DSA Foundations",
+      "domain": "technical",
+      "mcq_rows": 30,
+      "source_label": "pr-18"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Data Interpretation",
+      "domain": "placement",
+      "mcq_rows": 10,
+      "source_label": "quality-gate"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Logical Reasoning",
+      "domain": "placement",
+      "mcq_rows": 10,
+      "source_label": "quality-gate"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Quantitative Aptitude",
+      "domain": "placement",
+      "mcq_rows": 10,
+      "source_label": "quality-gate"
+    },
+    {
+      "category": "aptitude",
+      "curriculum_area": "Verbal Ability",
+      "domain": "placement",
+      "mcq_rows": 10,
+      "source_label": "quality-gate"
+    },
+    {
+      "category": "dsa",
+      "curriculum_area": "DSA Foundations",
+      "domain": "technical",
+      "mcq_rows": 30,
+      "source_label": "quality-gate"
+    }
+  ],
+  "by_source": [
+    {
+      "collection": "2026-09-14-syllabus-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "learning_material",
+      "rows": 6,
+      "source_file": "backend/content/batches/2026-09-14-syllabus-001/materials.json",
+      "source_label": "master",
+      "versions": {
+        "1": 6
+      }
+    },
+    {
+      "collection": "2026-09-14-syllabus-001",
+      "distinct_stem_fingerprints": 6,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 6,
+      "source_file": "backend/content/batches/2026-09-14-syllabus-001/questions.json",
+      "source_label": "master",
+      "versions": {
+        "1": 6
+      }
+    },
+    {
+      "collection": "2026-09-14-syllabus-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "syllabus_entry",
+      "rows": 19,
+      "source_file": "backend/content/batches/2026-09-14-syllabus-001/syllabus.json",
+      "source_label": "master",
+      "versions": {
+        "1": 19
+      }
+    },
+    {
+      "collection": "2026-09-14-weekly-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "learning_material",
+      "rows": 6,
+      "source_file": "backend/content/batches/2026-09-14-weekly-001/materials.json",
+      "source_label": "master",
+      "versions": {
+        "2": 4,
+        "3": 2
+      }
+    },
+    {
+      "collection": "2026-09-14-weekly-001",
+      "distinct_stem_fingerprints": 50,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 50,
+      "source_file": "backend/content/batches/2026-09-14-weekly-001/questions.json",
+      "source_label": "master",
+      "versions": {
+        "1": 44,
+        "2": 6
+      }
+    },
+    {
+      "collection": "2026-09-14-weekly-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "practice_pack",
+      "rows": 4,
+      "source_file": "backend/content/batches/2026-09-14-weekly-001/packs.json",
+      "source_label": "master",
+      "versions": {
+        "1": 4
+      }
+    },
+    {
+      "collection": "2026-09-19-saturday-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "learning_material",
+      "rows": 6,
+      "source_file": "backend/content/batches/2026-09-19-saturday-001/materials.json",
+      "source_label": "master",
+      "versions": {
+        "1": 6
+      }
+    },
+    {
+      "collection": "2026-09-19-saturday-001",
+      "distinct_stem_fingerprints": 50,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 50,
+      "source_file": "backend/content/batches/2026-09-19-saturday-001/questions.json",
+      "source_label": "master",
+      "versions": {
+        "1": 49,
+        "2": 1
+      }
+    },
+    {
+      "collection": "2026-09-19-saturday-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "practice_pack",
+      "rows": 4,
+      "source_file": "backend/content/batches/2026-09-19-saturday-001/packs.json",
+      "source_label": "master",
+      "versions": {
+        "1": 4
+      }
+    },
+    {
+      "collection": "ALGORITHM_PATHS",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 4,
+      "kind": "learning_path",
+      "rows": 10,
+      "source_file": "backend/app/seed/learn_data.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "BEGINNER_DSA_PATHS",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "learning_path",
+      "rows": 7,
+      "source_file": "backend/app/seed/learn_data.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "DATA_STRUCTURE_PATHS",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 4,
+      "kind": "learning_path",
+      "rows": 10,
+      "source_file": "backend/app/seed/learn_data.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "NEW_ALGO_PATHS",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 2,
+      "kind": "learning_path",
+      "rows": 2,
+      "source_file": "backend/app/seed/build51_catalog.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "NEW_DS_PATHS",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 3,
+      "kind": "learning_path",
+      "rows": 3,
+      "source_file": "backend/app/seed/build51_catalog.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "PROBLEM_BANK",
+      "distinct_stem_fingerprints": 21,
+      "flagged_rows": 0,
+      "kind": "coding_problem",
+      "rows": 21,
+      "source_file": "backend/app/seed/problems_bank.py",
+      "source_label": "master",
+      "versions": {
+        "1": 21
+      }
+    },
+    {
+      "collection": "build6-ai",
+      "distinct_stem_fingerprints": 110,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 110,
+      "source_file": "backend/app/seed/build6_mcq.py",
+      "source_label": "master",
+      "versions": {
+        "1": 110
+      }
+    },
+    {
+      "collection": "build7-cloud",
+      "distinct_stem_fingerprints": 103,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 103,
+      "source_file": "backend/app/seed/build7_mcq.py",
+      "source_label": "master",
+      "versions": {
+        "1": 103
+      }
+    },
+    {
+      "collection": "build7-cybersecurity",
+      "distinct_stem_fingerprints": 77,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 77,
+      "source_file": "backend/app/seed/build7_mcq.py",
+      "source_label": "master",
+      "versions": {
+        "1": 77
+      }
+    },
+    {
+      "collection": "build7-devops",
+      "distinct_stem_fingerprints": 97,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 97,
+      "source_file": "backend/app/seed/build7_mcq.py",
+      "source_label": "master",
+      "versions": {
+        "1": 97
+      }
+    },
+    {
+      "collection": "build8-PACKS",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "interview_pack",
+      "rows": 12,
+      "source_file": "backend/app/seed/build8_seed.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "build8-QUESTIONS",
+      "distinct_stem_fingerprints": 15,
+      "flagged_rows": 0,
+      "kind": "interview_question",
+      "rows": 15,
+      "source_file": "backend/app/seed/build8_seed.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "generated-interview_genai",
+      "distinct_stem_fingerprints": 1,
+      "flagged_rows": 0,
+      "kind": "interview_question",
+      "rows": 1,
+      "source_file": "backend/content/generated/2026-08-30/interview_genai.json",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "generated-interview_python",
+      "distinct_stem_fingerprints": 1,
+      "flagged_rows": 0,
+      "kind": "interview_question",
+      "rows": 1,
+      "source_file": "backend/content/generated/2026-08-30/interview_python.json",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "generated-interview_sql",
+      "distinct_stem_fingerprints": 2,
+      "flagged_rows": 0,
+      "kind": "interview_question",
+      "rows": 2,
+      "source_file": "backend/content/generated/2026-08-30/interview_sql.json",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "phase11-aptitude",
+      "distinct_stem_fingerprints": 110,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 110,
+      "source_file": "backend/app/seed/phase11_aptitude_mcq.py",
+      "source_label": "master",
+      "versions": {
+        "1": 110
+      }
+    },
+    {
+      "collection": "phase11-technical",
+      "distinct_stem_fingerprints": 110,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 110,
+      "source_file": "backend/app/seed/phase11_technical_mcq.py",
+      "source_label": "master",
+      "versions": {
+        "1": 110
+      }
+    },
+    {
+      "collection": "python-course/control-flow",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "course_lesson",
+      "rows": 4,
+      "source_file": "backend/app/seed/learn_data.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "python-course/core-syntax",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "course_lesson",
+      "rows": 4,
+      "source_file": "backend/app/seed/learn_data.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "python-course/functions-collections",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "course_lesson",
+      "rows": 4,
+      "source_file": "backend/app/seed/learn_data.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "python-course/getting-started",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "course_lesson",
+      "rows": 3,
+      "source_file": "backend/app/seed/learn_data.py",
+      "source_label": "master",
+      "versions": {}
+    },
+    {
+      "collection": "runner-samples",
+      "distinct_stem_fingerprints": 20,
+      "flagged_rows": 1,
+      "kind": "mcq",
+      "rows": 20,
+      "source_file": "backend/app/seed/runner.py",
+      "source_label": "master",
+      "versions": {
+        "1": 20
+      }
+    },
+    {
+      "collection": "runner-templates",
+      "distinct_stem_fingerprints": 17,
+      "flagged_rows": 17,
+      "kind": "mcq",
+      "rows": 17,
+      "source_file": "backend/app/seed/runner.py",
+      "source_label": "master",
+      "versions": {
+        "1": 17
+      }
+    },
+    {
+      "collection": "2026-10-10-visual-learning-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "learning_material",
+      "rows": 6,
+      "source_file": "backend/content/batches/2026-10-10-visual-learning-001/materials.json",
+      "source_label": "pr-17",
+      "versions": {
+        "2": 6
+      }
+    },
+    {
+      "collection": "2026-10-10-crt-dsa-sprint-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "learning_material",
+      "rows": 10,
+      "source_file": "backend/content/batches/2026-10-10-crt-dsa-sprint-001/materials.json",
+      "source_label": "pr-18",
+      "versions": {
+        "1": 10
+      }
+    },
+    {
+      "collection": "2026-10-10-crt-dsa-sprint-001",
+      "distinct_stem_fingerprints": 70,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 70,
+      "source_file": "backend/content/batches/2026-10-10-crt-dsa-sprint-001/questions.json",
+      "source_label": "pr-18",
+      "versions": {
+        "1": 70
+      }
+    },
+    {
+      "collection": "2026-10-10-crt-dsa-sprint-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "practice_pack",
+      "rows": 1,
+      "source_file": "backend/content/batches/2026-10-10-crt-dsa-sprint-001/packs.json",
+      "source_label": "pr-18",
+      "versions": {
+        "1": 1
+      }
+    },
+    {
+      "collection": "2026-10-10-crt-dsa-sprint-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "syllabus_entry",
+      "rows": 10,
+      "source_file": "backend/content/batches/2026-10-10-crt-dsa-sprint-001/syllabus.json",
+      "source_label": "pr-18",
+      "versions": {
+        "1": 7,
+        "2": 3
+      }
+    },
+    {
+      "collection": "2026-10-10-crt-dsa-sprint-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "learning_material",
+      "rows": 10,
+      "source_file": "backend/content/batches/2026-10-10-crt-dsa-sprint-001/materials.json",
+      "source_label": "quality-gate",
+      "versions": {
+        "1": 10
+      }
+    },
+    {
+      "collection": "2026-10-10-crt-dsa-sprint-001",
+      "distinct_stem_fingerprints": 70,
+      "flagged_rows": 0,
+      "kind": "mcq",
+      "rows": 70,
+      "source_file": "backend/content/batches/2026-10-10-crt-dsa-sprint-001/questions.json",
+      "source_label": "quality-gate",
+      "versions": {
+        "1": 53,
+        "2": 17
+      }
+    },
+    {
+      "collection": "2026-10-10-crt-dsa-sprint-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "practice_pack",
+      "rows": 1,
+      "source_file": "backend/content/batches/2026-10-10-crt-dsa-sprint-001/packs.json",
+      "source_label": "quality-gate",
+      "versions": {
+        "1": 1
+      }
+    },
+    {
+      "collection": "2026-10-10-crt-dsa-sprint-001",
+      "distinct_stem_fingerprints": 0,
+      "flagged_rows": 0,
+      "kind": "syllabus_entry",
+      "rows": 10,
+      "source_file": "backend/content/batches/2026-10-10-crt-dsa-sprint-001/syllabus.json",
+      "source_label": "quality-gate",
+      "versions": {
+        "1": 7,
+        "2": 3
+      }
+    }
+  ],
+  "count_only_sources": {
+    "project_spec": 79,
+    "prompt_challenge": 25,
+    "scenario": 30,
+    "sql_problem": 30
+  },
+  "curriculum_target": {
+    "mcqs": 1260,
+    "status": "target, not an existing completion count"
+  },
+  "duplicate_keys_within_scope": 0,
+  "exact_duplicate_groups": {
+    "master": {
+      "exact-duplicate": 2
+    },
+    "master+pr-17": {
+      "exact-duplicate": 2
+    },
+    "master+pr-18": {
+      "exact-duplicate": 2,
+      "expected-adoption-overlap": 50
+    },
+    "master+quality-gate": {
+      "exact-duplicate": 2,
+      "expected-adoption-overlap": 44
+    }
+  },
+  "flags": {
+    "path-has-no-topic": 13,
+    "placeholder-explanation": 17,
+    "placeholder-options": 17,
+    "runner-topic-already-filled": 1,
+    "topic-not-in-taxonomy": 4
+  },
+  "generation_command": "python -m app.content.inventory --out ../docs/audits/2026-10-11-content-inventory",
+  "historical_measurements": [
+    {
+      "active_mcqs": 642,
+      "active_mcqs_by_domain": {
+        "ai": 117,
+        "cloud": 107,
+        "cybersecurity": 80,
+        "devops": 98,
+        "placement": 119,
+        "technical": 121
+      },
+      "measured_on": "2026-09-05",
+      "phase11_rows_inserted": 219,
+      "phase11_rows_skipped_as_duplicate": 1,
+      "source": "docs/PRODUCTION_CONTENT_ACTIVATION.md",
+      "status": "historical measurement; not re-verified by this audit"
+    }
+  ],
+  "inputs": [
+    {
+      "branch": "master",
+      "label": "master",
+      "paths": [
+        "backend/app/seed",
+        "backend/content",
+        "backend/app/content/studio_batch.py"
+      ],
+      "sha": "bc4e80b8ade331d592b95d885369c19c0f6d0af5",
+      "status": "merged baseline"
+    },
+    {
+      "branch": "feature/visual-learning-phase1",
+      "label": "pr-17",
+      "paths": [
+        "backend/content/batches/2026-10-10-visual-learning-001"
+      ],
+      "sha": "df02a59eda4e0fe08fe46e070383d78168950e04",
+      "status": "open pull request #17, unmerged"
+    },
+    {
+      "branch": "feature/crt-dsa-content-sprint-1",
+      "label": "pr-18",
+      "paths": [
+        "backend/content/batches/2026-10-10-crt-dsa-sprint-001"
+      ],
+      "sha": "4d129fed88383e32777765c3eb446a3ceeab54ce",
+      "status": "open pull request #18, unmerged"
+    },
+    {
+      "branch": "content/sprint1-quality-gate",
+      "label": "quality-gate",
+      "paths": [
+        "backend/content/batches/2026-10-10-crt-dsa-sprint-001"
+      ],
+      "sha": "666941b5bb44ebd5da3747d5ff217bebb412f6c8",
+      "status": "candidate branch, no pull request, awaiting human content approval"
+    }
+  ],
+  "manifest_checks": {
+    "master/2026-09-14-syllabus-001: match (eol crlf)": 10,
+    "master/2026-09-14-weekly-001: match (eol unspecified)": 13,
+    "master/2026-09-19-saturday-001: match (eol crlf)": 12,
+    "pr-17/2026-10-10-visual-learning-001: match (eol crlf)": 8,
+    "pr-18/2026-10-10-crt-dsa-sprint-001: match (eol crlf)": 14,
+    "quality-gate/2026-10-10-crt-dsa-sprint-001: match (eol crlf)": 14
+  },
+  "methodology_counts": {
+    "master": {
+      "1_definitions_in_source": {
+        "batch_mcq_rows": 106,
+        "mcq_rows": 750,
+        "seed_mcq_rows": 644
+      },
+      "2_unique_authored_keys": {
+        "distinct_batch_question_keys": 106,
+        "distinct_mcq_stem_fingerprints": 748
+      },
+      "3_adoption_references": 0,
+      "4_new_batch_questions": 106,
+      "5_published_source_declarations": {
+        "batch_materials_published_on_apply": 18,
+        "batch_packs_published_on_apply": 8,
+        "published_syllabus_entries": 6
+      },
+      "6_actual_published_database_rows": "Production verification pending.",
+      "7_unscored_syllabus_reading_checks": 6,
+      "8_dsa_coding_definitions": 21,
+      "9_executable_coding_problems": {
+        "definitions_with_tests_and_starter_code": 21,
+        "runtime_execution": "Production verification pending."
+      }
+    },
+    "master+pr-17": {
+      "1_definitions_in_source": {
+        "batch_mcq_rows": 106,
+        "mcq_rows": 750,
+        "seed_mcq_rows": 644
+      },
+      "2_unique_authored_keys": {
+        "distinct_batch_question_keys": 106,
+        "distinct_mcq_stem_fingerprints": 748
+      },
+      "3_adoption_references": 0,
+      "4_new_batch_questions": 106,
+      "5_published_source_declarations": {
+        "batch_materials_published_on_apply": 24,
+        "batch_packs_published_on_apply": 8,
+        "published_syllabus_entries": 6
+      },
+      "6_actual_published_database_rows": "Production verification pending.",
+      "7_unscored_syllabus_reading_checks": 6,
+      "8_dsa_coding_definitions": 21,
+      "9_executable_coding_problems": {
+        "definitions_with_tests_and_starter_code": 21,
+        "runtime_execution": "Production verification pending."
+      }
+    },
+    "master+pr-18": {
+      "1_definitions_in_source": {
+        "batch_mcq_rows": 176,
+        "mcq_rows": 820,
+        "seed_mcq_rows": 644
+      },
+      "2_unique_authored_keys": {
+        "distinct_batch_question_keys": 176,
+        "distinct_mcq_stem_fingerprints": 768
+      },
+      "3_adoption_references": 50,
+      "4_new_batch_questions": 126,
+      "5_published_source_declarations": {
+        "batch_materials_published_on_apply": 28,
+        "batch_packs_published_on_apply": 9,
+        "published_syllabus_entries": 16
+      },
+      "6_actual_published_database_rows": "Production verification pending.",
+      "7_unscored_syllabus_reading_checks": 52,
+      "8_dsa_coding_definitions": 21,
+      "9_executable_coding_problems": {
+        "definitions_with_tests_and_starter_code": 21,
+        "runtime_execution": "Production verification pending."
+      }
+    },
+    "master+quality-gate": {
+      "1_definitions_in_source": {
+        "batch_mcq_rows": 176,
+        "mcq_rows": 820,
+        "seed_mcq_rows": 644
+      },
+      "2_unique_authored_keys": {
+        "distinct_batch_question_keys": 176,
+        "distinct_mcq_stem_fingerprints": 774
+      },
+      "3_adoption_references": 50,
+      "4_new_batch_questions": 126,
+      "5_published_source_declarations": {
+        "batch_materials_published_on_apply": 28,
+        "batch_packs_published_on_apply": 9,
+        "published_syllabus_entries": 16
+      },
+      "6_actual_published_database_rows": "Production verification pending.",
+      "7_unscored_syllabus_reading_checks": 52,
+      "8_dsa_coding_definitions": 21,
+      "9_executable_coding_problems": {
+        "definitions_with_tests_and_starter_code": 21,
+        "runtime_execution": "Production verification pending."
+      }
+    }
+  },
+  "production_status": "Production verification pending.",
+  "semantic_duplicate_candidates": 52,
+  "sprint1_accounting": {
+    "pr-18": {
+      "adopt": 50,
+      "adopt_linked_to_phase11": 50,
+      "adopt_stem_unchanged": 50,
+      "create": 20,
+      "rows": 70,
+      "versions": {
+        "1": 70
+      },
+      "with_revises": 0
+    },
+    "quality-gate": {
+      "adopt": 50,
+      "adopt_linked_to_phase11": 50,
+      "adopt_stem_unchanged": 44,
+      "create": 20,
+      "rows": 70,
+      "versions": {
+        "1": 53,
+        "2": 17
+      },
+      "with_revises": 11
+    }
+  },
+  "version_comparisons": {
+    "master -> pr-17": {
+      "changed_with_version_bump": 6,
+      "only_in_head": 0
+    },
+    "master -> quality-gate": {
+      "changed_with_version_bump": 3,
+      "only_in_head": 88
+    },
+    "pr-18 -> quality-gate": {
+      "changed_with_version_bump": 17,
+      "only_in_head": 0,
+      "unchanged": 74
+    }
+  }
+}
