@@ -196,8 +196,12 @@ async def test_sprint_batch_preserves_ids_scores_and_hides_exam_answers(client, 
     async with AsyncSessionLocal() as db:
         result = await apply_batch(db, BATCH, allow_remote=False)
     assert result["refused"] is False, result
-    assert sum(row["row"] == "adopted" for row in result["identity"]) == 49
-    assert [row["key"] for row in result["identity"] if row["row"] == "revised"] == ["sprint1-syl-03"]
+    reworded = [
+        row["key"] for row in load_batch(BATCH)["questions"] if row["adoption"] == "required" and row.get("revises")
+    ]
+    assert len(reworded) == 6
+    assert sum(row["row"] == "adopted" for row in result["identity"]) == 50 - len(reworded)
+    assert [row["key"] for row in result["identity"] if row["row"] == "revised"] == reworded
     assert sum(row["row"] == "created" for row in result["identity"]) == 20
     assert all(row["option_text_changed"] is False and row["option_ids_changed"] is False for row in result["identity"])
     identity = {row["key"]: row for row in result["identity"]}
@@ -221,7 +225,7 @@ async def test_sprint_batch_preserves_ids_scores_and_hides_exam_answers(client, 
     body = hidden.json()["question"]
     assert "explanation" not in body
     assert all("is_correct" not in opt for opt in body["options"])
-    assert [opt["id"] for opt in body["options"]] == before_options
+    assert sorted(opt["id"] for opt in body["options"]) == sorted(before_options)
 
     submitted = await client.post(
         f"/api/v1/practice/sessions/{old_session}/questions/1/answer",

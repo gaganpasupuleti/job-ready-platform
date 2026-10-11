@@ -103,7 +103,7 @@ NOTES = [
         ["12.5/100 = 1/8.", "640 × 1/8 = 80."],
         {
             "64": "64 is 10% of 640, not 12.5%.",
-            "100": "100 is 640/6.4, not one eighth of 640.",
+            "100": "100 is 15.625% of 640, not 12.5%.",
             "72": "72 is 11.25% of 640, not 12.5%.",
         },
     ),
@@ -212,14 +212,18 @@ NOTES = [
         },
     ),
     _note(
-        "Square numbers are 1², 2², 3², and so on. The next square uses the next integer.",
-        "n² for n = 1, 2, 3, 4, 5.",
-        "5² = 25.",
+        "This item uses the consecutive-squares pattern 1², 2², 3², 4². A finite list can be continued by other rules, so name the rule and check it on every term.",
+        "Term k = k², so the fifth term is 5² = 25. The gaps 3, 5, 7 are consecutive odd numbers, and the next gap is 9.",
+        "16 + 9 = 25 = 5².",
         "crt-logical-patterns",
         "The number-patterns lesson asks you to test one rule on every term. These are the first five squares.",
-        ["1, 4, 9, and 16 are 1², 2², 3², and 4².", "The next integer is 5.", "5² = 25."],
+        [
+            "1, 4, 9, and 16 are 1², 2², 3², and 4².",
+            "The intended pattern is consecutive perfect squares, so the next term is the square of 5.",
+            "5² = 25. The gaps 3, 5, 7, 9 confirm the same pattern.",
+        ],
         {
-            "20": "20 is not a perfect square, and it is not 4²+4.",
+            "20": "20 adds only 4 to 16. The gaps so far are 3, 5, and 7, and 20 is not a perfect square, so it breaks the squares pattern.",
             "24": "24 continues neither the squares nor a constant gap.",
             "36": "36 is 6², which skips 5².",
         },
@@ -524,7 +528,7 @@ NOTES = [
         {
             "800": "800 is the sum 500+300. The question asks how many more, which is a difference.",
             "300": "300 is the iOS bar, not the gap.",
-            "100": "100 is not 500−300.",
+            "100": "100 is only half the gap. 500 − 300 = 200.",
         },
     ),
     _note(
@@ -599,15 +603,15 @@ ARRAY_NOTES = [
     ),
     _note(
         "Inserting at the front of a contiguous array moves every current element one slot to the right.",
-        "Front insert on a dynamic array is O(n) element moves.",
+        "Front insert on a dynamic array moves all n elements, so it is Θ(n) and the tightest bound is O(n).",
         "Inserting x at the front of [a,b,c] writes [x,a,b,c] after shifting three items.",
         "dsa-arrays-strings",
         "Arrays lesson. A linked list can insert at the head in O(1). This question is about a plain array.",
-        ["The new item needs index 0.", "Every old item moves one index higher.", "That shift touches n items, so the cost is O(n)."],
+        ["The new item needs index 0.", "Every old item moves one index higher.", "That shift touches n items, so the tightest bound is O(n)."],
         {
             "O(1)": "O(1) would be true for a structure with a free head pointer, not for shifting a contiguous array.",
             "O(log n)": "Nothing is being halved. The work is a shift of n items.",
-            "O(n²) always": "One front insert shifts n items once. It is not a nested n×n shift.",
+            "O(n²) always": "A valid upper bound, because n ≤ n², but not the tightest. One front insert shifts n items once. It is not a nested n×n shift.",
         },
         algorithm="Shift from the last index down to 0, then write the new value at 0. Dry run: [a,b,c] → [a,b,c,_] → [a,b,c,c] → [a,b,b,c] → [a,a,b,c] → [x,a,b,c]. Time O(n). Extra space O(1). Edge case: an empty array inserts in O(1).",
     ),
@@ -623,7 +627,7 @@ ARRAY_NOTES = [
             "Θ(log n)": "Halving needs a sorted order. The array is unsorted.",
             "Θ(n²) minimum always": "One comparison per extra element is enough. Quadratic work is not required.",
         },
-        algorithm="candidate ← A[1]; for each later value, replace candidate if the value is larger. Dry run [3,1,4]: 3, then 3, then 4. Time Θ(n). Space O(1). Edge case: one element returns that element with no extra comparison.",
+        algorithm="candidate ← A[0]; for each later value A[1] to A[n−1], replace candidate if the value is larger. Dry run [3,1,4]: 3, then 3, then 4. Time Θ(n), exactly n−1 comparisons. Space O(1). Edge case: one element returns that element with no extra comparison.",
     ),
     _note(
         "Adding two equal-length arrays element by element visits each index once.",
@@ -631,27 +635,27 @@ ARRAY_NOTES = [
         "[1,2] + [3,4] = [4,6] after two additions.",
         "dsa-arrays-strings",
         "Arrays lesson. Do not square the cost because there are two arrays.",
-        ["Each index does one addition.", "There are n indices.", "The loop is O(n)."],
+        ["Each index does one addition.", "There are n indices.", "The loop is Θ(n), so the tightest bound is O(n)."],
         {
             "O(1)": "The work grows when n grows. It is not constant.",
-            "O(n²)": "There is no nested loop over the pairs of indices.",
-            "O(2ⁿ)": "Nothing branches into two recursive calls per element.",
+            "O(n²)": "A valid upper bound, because n ≤ n², but not the tightest. There is no nested loop over the pairs of indices.",
+            "O(2ⁿ)": "Also a valid upper bound, but far looser. Nothing branches into two recursive calls per element.",
         },
         algorithm="For i from 0 to n−1, C[i] ← A[i] + B[i]. Dry run n=2: index 0 writes 4, index 1 writes 6. Time O(n). Output space O(n). Extra working space O(1). Edge case: n = 0 writes an empty result.",
     ),
     _note(
         "Kadane's scan keeps the best sum that ends at the current index and the best sum seen anywhere.",
         "Classic non-empty maximum subarray: O(n) time and O(1) extra space.",
-        "On [−2,1,−3,4,−1,2,1], the best ending sums reach 4, 3, 5, 6. The answer is 6, from [4,−1,2,1].",
+        "On [−2,1,−3,4,−1,2,1], the ending sums are −2, 1, −2, 4, 3, 5, 6. The best is 6, from [4,−1,2,1].",
         "dsa-arrays-strings",
         "Arrays lesson. The quadratic double loop also works, but it is not required.",
-        ["At each index, extend the previous ending sum or start over.", "Also keep the best sum so far.", "Each index is visited once."],
+        ["At each index, extend the previous ending sum or start over.", "Also keep the best sum so far.", "Each index is visited once, so the tightest bound is O(n)."],
         {
             "O(n²) required always": "A linear scan exists, so quadratic time is not required.",
             "O(log n)": "The algorithm does not discard half of an unsorted array.",
-            "O(n!)": "There is no permutation of the array.",
+            "O(n!)": "A valid upper bound, because n ≤ n!, but far from tight. The scan visits each index once and never permutes the array.",
         },
-        algorithm="ending ← A[0]; best ← A[0]; for each next x: ending ← max(x, ending+x); best ← max(best, ending). Dry run [1,−2,3]: ending 1, then 1, then 3; best 3. Time O(n). Space O(1). Edge case: all negative values return the largest single value for the non-empty version.",
+        algorithm="ending ← A[0]; best ← A[0]; for each next x: ending ← max(x, ending+x); best ← max(best, ending). Dry run [1,−2,3]: ending 1, then −1, then 3; best 1, then 1, then 3. The answer is 3. Time O(n). Space O(1). Edge case: all negative values return the largest single value for the non-empty version.",
     ),
     _note(
         "A hash map stores a value's index so the complement can be checked in expected constant time.",
@@ -676,7 +680,7 @@ ARRAY_NOTES = [
         ["Set left at the first index and right at the last.", "Swap, then move inward.", "Only a few index variables are extra."],
         {
             "O(n) auxiliary required": "A second array would use O(n). The in-place swap does not.",
-            "O(n²) auxiliary": "The swaps do not allocate a quadratic table.",
+            "O(n²) auxiliary": "A valid upper bound, because 1 ≤ n², but not the tightest. The swaps do not allocate a quadratic table.",
             "O(log n) auxiliary required": "The iterative swap does not build a recursion stack of depth log n.",
         },
         algorithm="while left < right: swap A[left], A[right]; left ← left+1; right ← right−1. Dry run [a,b,c,d] → [d,b,c,a] → [d,c,b,a]. Time O(n). Space O(1). Edge cases: empty and one-element arrays do nothing.",
@@ -718,7 +722,7 @@ ARRAY_NOTES = [
         ["low marks the end of the 0s. mid scans. high marks the start of the 2s.", "Swap 0s toward low and 2s toward high.", "Each element is moved a constant number of times."],
         {
             "O(n log n) time required": "Comparison sorting is enough but not required for three known keys.",
-            "O(n²) time": "The pointers only move inward. They do not nest.",
+            "O(n²) time": "A valid upper bound on the time, but not the tightest. The pointers only move inward and never nest, so the time is O(n).",
             "O(n) space required": "The swaps happen inside the same array.",
         },
         algorithm="low ← 0; mid ← 0; high ← n−1. While mid ≤ high: 0 swaps with low and both advance; 1 advances mid; 2 swaps with high and high retreats. Dry run [2,0,1] → [1,0,2] → [0,1,2]. Time O(n). Space O(1). Edge case: an array of only one value never needs a nested pass.",
@@ -1013,7 +1017,7 @@ def _original_questions() -> list[dict]:
             "sprint1-str-08", "strings", "easy",
             "What is the length of \"ab\" concatenated with \"c\"?",
             "3", ["2", "1", "5"],
-            {"2": "2 is only the length of \"ab\".", "1": "1 is only the length of \"c\".", "5": "5 is not 2+1."},
+            {"2": "2 is only the length of \"ab\".", "1": "1 is only the length of \"c\".", "5": "5 is more characters than the result has. \"abc\" has 3."},
             ["Length of \"ab\" is 2.", "Length of \"c\" is 1.", "2+1=3, and the string is \"abc\"."],
             "Concatenation copies both strings in order. The length is the sum of the lengths.",
             "length(X+Y) = length(X) + length(Y).",
@@ -1029,10 +1033,10 @@ def _original_questions() -> list[dict]:
             "O(1) extra memory", ["O(n) extra memory required", "O(n²) extra memory", "O(2ⁿ) extra memory"],
             {
                 "O(n) extra memory required": "A reversed copy would use O(n). The two pointers do not build that copy.",
-                "O(n²) extra memory": "The check does not allocate a table of pairs.",
-                "O(2ⁿ) extra memory": "The check does not branch on every character.",
+                "O(n²) extra memory": "A valid upper bound, because 1 ≤ n², but not the tightest. The check does not allocate a table of pairs.",
+                "O(2ⁿ) extra memory": "Also a valid upper bound, but far looser. The check does not branch on every character.",
             },
-            ["Store two indices.", "Move them toward the center.", "The extra memory stays constant."],
+            ["Store two indices.", "Move them toward the center.", "The extra memory stays constant, so the tightest bound is O(1)."],
             "Indices are scalar variables. They do not grow with the string.",
             "Extra space O(1). Time O(n) in the worst case, when the string is a palindrome.",
             "\"abba\" checks a/a, then b/b, and accepts.",
@@ -1047,10 +1051,10 @@ def _original_questions() -> list[dict]:
             "O(n) extra memory", ["O(1) extra memory", "O(log n) extra memory", "O(n²) extra memory"],
             {
                 "O(1) extra memory": "O(1) fits an in-place buffer. A new string must hold n characters.",
-                "O(log n) extra memory": "The new string is not a balanced tree of log n cells in this model.",
-                "O(n²) extra memory": "Each character is stored once in the result, not n times.",
+                "O(log n) extra memory": "Not a valid bound. The result alone holds n characters, and n grows faster than log n.",
+                "O(n²) extra memory": "A valid upper bound, because n ≤ n², but not the tightest. Each character is stored once in the result, not n times.",
             },
-            ["The result needs one slot per input character.", "Those n slots are new.", "The extra memory is O(n)."],
+            ["The result needs one slot per input character.", "Those n slots are new.", "The extra memory is Θ(n), so the tightest bound is O(n)."],
             "An immutable string operation allocates the result. The reverse result has n characters.",
             "Extra space Θ(n) for the new string. Time Θ(n) to copy.",
             "Reversing \"code\" allocates a new 4-character string \"edoc\".",
@@ -1126,28 +1130,32 @@ def _original_questions() -> list[dict]:
             {
                 "O(1)": "The loop still grows with n. The 20 setup steps do not cancel it.",
                 "O(n + 20) as a different class from O(n)": "O(n + 20) is the same class as O(n). Adding a constant does not create a new class.",
-                "O(20ⁿ)": "20ⁿ would be exponential. The 20 here is a fixed setup, not the base of an exponent.",
+                "O(20ⁿ)": "A valid but extremely loose upper bound. 20ⁿ grows exponentially, while the work is 20 + n. The 20 here is a fixed setup, not the base of an exponent.",
             },
-            ["Setup is constant.", "The loop is linear.", "Constant plus linear is linear."],
+            ["Setup is constant.", "The loop is linear.", "Constant plus linear is Θ(n), so the tightest bound is O(n)."],
             "O(1) + O(n) = O(n).",
             "20 + n steps.",
-            "n = 5 does 25 additions-and-setup steps. n = 50 does 70. The growth follows n.",
+            "n = 5 does 20 setup steps and 5 additions, 25 steps in total. n = 50 does 70. The growth follows n.",
             "dsa-sprint-complexity",
             "Complexity lesson. Constants are dropped in the class even though they matter on a real machine.",
             "technical", "dsa", "basics",
-            "Count setup, then count the loop. Dry run n=4: 20 setup steps plus 4 loop steps. Time O(n). Space O(1) if each addition reuses one variable. Edge case: n = 0 leaves only the setup, which is allowed inside O(n).",
+            "Count setup, then count the loop. Dry run n=4: 20 setup steps plus 4 loop steps. Time O(n). Space O(1) if each addition reuses one variable. Edge case: n = 0 leaves only the 20 setup steps. Big-O describes growth as n increases, so that constant does not change the class.",
         ),
         _original(
             "sprint1-cx-05", "complexity", "hard",
             "You need the sum 1 + 2 + … + n. Which statement is accurate?",
             "The formula n(n+1)/2 is O(1); adding the integers one by one is O(n)", ["Both methods are O(1)", "Both methods are O(n²)", "The formula is O(n!)"],
             {
-                "Both methods are O(1)": "Walking from 1 to n does work that grows with n.",
-                "Both methods are O(n²)": "The loop adds once per integer. It is not a nested pair of loops. The formula is constant.",
-                "The formula is O(n!)": "The formula uses a fixed number of arithmetic operations, not a factorial.",
+                "Both methods are O(1)": "Not valid for the loop. Walking from 1 to n does n additions, which grows with n.",
+                "Both methods are O(n²)": "Valid upper bounds for both methods, but not the tightest. The formula is O(1), and the loop adds once per integer, so it is O(n). Neither is a nested pair of loops.",
+                "The formula is O(n!)": "A valid but very loose upper bound for the formula, and it says nothing about the loop. The formula uses a fixed number of arithmetic operations, so its tightest bound is O(1).",
             },
-            ["The closed form multiplies n by n+1 and divides by 2.", "That is a fixed amount of arithmetic.", "The loop performs n additions."],
-            "The same result can have two algorithms with different costs.",
+            [
+                "With each arithmetic operation counted as one step, the closed form is one addition, one multiplication, and one division.",
+                "That count does not depend on n, so the formula's tightest bound is O(1).",
+                "The loop performs n additions, so its tightest bound is O(n).",
+            ],
+            "The same result can have two algorithms with different costs. This question counts each arithmetic operation as one step. A model that charges for the number of digits would cost more for very large n.",
             "Sum = n(n+1)/2.",
             "n = 4. Formula: 4×5/2 = 10. Loop: 1+2+3+4 = 10.",
             "dsa-sprint-complexity",
@@ -1180,8 +1188,8 @@ def _original_questions() -> list[dict]:
             "Binary search looks for 6 in the sorted array [2, 4, 6, 8, 10]. Which index does it return?",
             "2", ["0", "1", "4"],
             {
-                "0": "Index 0 holds 2. The first middle is not the answer.",
-                "1": "Index 1 holds 4. The search moves right after seeing 4 only if the middle is 4; in this array the first middle is 6.",
+                "0": "Index 0 holds 2, not 6. Binary search returns the index where it finds 6.",
+                "1": "Index 1 holds 4, not 6. The first middle, index 2, already holds 6, so the search never reaches index 1.",
                 "4": "Index 4 holds 10, which is past the target.",
             },
             ["low = 0 and high = 4. mid = 2.", "The value at mid is 6, which is the target.", "Return index 2."],
@@ -1279,6 +1287,27 @@ def _check_math() -> None:
             iterations += 1
         assert iterations == n.bit_length()
     assert [(2).bit_length(), (3).bit_length(), (8).bit_length(), (1024).bit_length()] == [2, 2, 4, 11]
+    assert 100 / 640 * 100 == 15.625 and 500 - 300 == 2 * 100
+    assert [k * k for k in range(1, 6)] == [1, 4, 9, 16, 25] and [4 - 1, 9 - 4, 16 - 9, 25 - 16] == [3, 5, 7, 9]
+    assert 20 + 5 == 25 and 20 + 50 == 70
+    # Kadane, non-empty version: ending sums and running best
+    for values, endings, bests in (
+        ([1, -2, 3], [1, -1, 3], [1, 1, 3]),
+        ([-2, 1, -3, 4, -1, 2, 1], [-2, 1, -2, 4, 3, 5, 6], [-2, 1, 1, 4, 4, 5, 6]),
+    ):
+        ending = best = values[0]
+        seen_endings, seen_bests = [ending], [best]
+        for value in values[1:]:
+            ending = max(value, ending + value)
+            best = max(best, ending)
+            seen_endings.append(ending)
+            seen_bests.append(best)
+        assert (seen_endings, seen_bests) == (endings, bests)
+    # maximum scan keeps the candidate after each of the n−1 comparisons
+    candidates = [3]
+    for value in [1, 4]:
+        candidates.append(max(candidates[-1], value))
+    assert candidates == [3, 3, 4]
     # six-item binary search middles
     low, high = 0, 5
     mids = []
@@ -1720,11 +1749,27 @@ def _write_text(path: Path, text: str) -> None:
     path.write_bytes(text.replace("\n", "\r\n").encode("utf-8"))
 
 
-# Reworded after the version-1 approval. Each row keeps its key and option text, raises its
-# version, and records the stem it replaces so the importer can match the existing row.
-REVISIONS = {
+# Revised after the version-1 approval. Each row keeps its key, option text, and correct option,
+# and raises its version. A row with a new stem records the stem it replaces so the importer can
+# match the existing row. None keeps the stem and revises only the explanation.
+REVISIONS: dict[str, str | None] = {
     "sprint1-syl-03": "No phone is a laptop. At least one laptop exists. All laptops are gadgets. Which conclusion necessarily follows?",
     "sprint1-cx-02": "For a positive integer n ≥ 2, a loop sets x = n and repeatedly replaces x with floor(x/2) until x becomes 0. What is the tightest Big-O time bound?",
+    "sprint1-arr-02": "What is the tightest time bound for inserting at the front of a plain dynamic array that holds n elements?",
+    "sprint1-arr-04": "Two arrays each hold n elements. What is the tightest time bound for a loop that adds them element by element?",
+    "sprint1-arr-05": "Kadane's algorithm finds the maximum sum of a non-empty contiguous subarray of n numbers. What is its tightest time bound?",
+    "sprint1-arr-07": "Reversing an array of n elements in place swaps from the ends toward the center. What is the tightest bound on the extra space?",
+    "sprint1-arr-10": "The Dutch National Flag 3-way partition groups an array of n values that are each 0, 1, or 2. What are its tightest time and extra-space bounds?",
+    "sprint1-str-09": "A two-pointer palindrome check stops at the first mismatch. What is the tightest bound on its extra memory for an n-character string?",
+    "sprint1-str-10": "If strings cannot be edited in place, what is the tightest bound on the extra memory needed to build the reverse of an n-character string?",
+    "sprint1-cx-04": "A function does 20 steps of setup and then one loop of n additions. What is the tightest Big-O time bound?",
+    "sprint1-cx-05": "You need the sum 1 + 2 + … + n. Count each arithmetic operation as one step. Which statement gives the tightest time bounds for the formula n(n+1)/2 and for adding the integers one by one?",
+    "sprint1-pct-04": None,
+    "sprint1-ser-03": None,
+    "sprint1-ch-01": None,
+    "sprint1-arr-03": None,
+    "sprint1-str-08": None,
+    "sprint1-sea-02": None,
 }
 
 
@@ -1732,8 +1777,9 @@ def _apply_revisions(questions: list[dict]) -> None:
     by_key = {row["key"]: row for row in questions}
     for key, stem in REVISIONS.items():
         row = by_key[key]
-        row["revises"] = {"stem": row["stem"], "version": row["version"]}
-        row["stem"] = stem
+        if stem is not None:
+            row["revises"] = {"stem": row["stem"], "version": row["version"]}
+            row["stem"] = stem
         row["version"] += 1
 
 

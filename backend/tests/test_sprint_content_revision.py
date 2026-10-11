@@ -20,20 +20,125 @@ from app.models.studio import ContentBatchItem
 from app.models.user import User
 from app.seed.phase11_activate import seed_phase11_mcqs
 from app.seed.phase11_aptitude_mcq import APTITUDE_MCQS
+from app.seed.phase11_technical_mcq import TECHNICAL_MCQS
 from tests.test_crt_dsa_sprint import BATCH, SATURDAY, _seed_required
 
 SYL = "sprint1-syl-03"
 CX = "sprint1-cx-02"
+QUESTIONS = load_batch(BATCH)["questions"]
+ROWS = {row["key"]: row for row in QUESTIONS}
+REWORDED = [row["key"] for row in QUESTIONS if row.get("revises")]
+VERSIONED = [row["key"] for row in QUESTIONS if row["version"] > 1]
+EXPLANATION_ONLY = [key for key in VERSIONED if key not in REWORDED]
+ADOPTED_REWORDED = [key for key in REWORDED if ROWS[key]["adoption"] == "required"]
+REVISED_STEMS = [ROWS[key]["stem"] for key in REWORDED]
 
 
 def _row(key: str) -> dict:
-    return next(row for row in load_batch(BATCH)["questions"] if row["key"] == key)
+    return ROWS[key]
 
 
 SYL_ROW = _row(SYL)
 CX_ROW = _row(CX)
 SYL_PRIOR = SYL_ROW["revises"]["stem"]
 CX_PRIOR = CX_ROW["revises"]["stem"]
+
+# Reviewer classification of every option on a question whose options are asymptotic bounds.
+# tight: the tightest bound. loose: a true upper bound that is not tight. invalid: false.
+BOUNDS = {
+    "sprint1-arr-02": {
+        "O(n)": "tight",
+        "O(1)": "invalid",
+        "O(log n)": "invalid",
+        "O(n²) always": "loose",
+    },
+    "sprint1-arr-03": {
+        "Θ(n) comparisons": "tight",
+        "Θ(1)": "invalid",
+        "Θ(log n)": "invalid",
+        "Θ(n²) minimum always": "invalid",
+    },
+    "sprint1-arr-04": {"O(n)": "tight", "O(1)": "invalid", "O(n²)": "loose", "O(2ⁿ)": "loose"},
+    "sprint1-arr-05": {
+        "O(n)": "tight",
+        "O(n²) required always": "invalid",
+        "O(log n)": "invalid",
+        "O(n!)": "loose",
+    },
+    "sprint1-arr-06": {
+        "O(n) average time": "tight",
+        "O(n²) unavoidable": "invalid",
+        "O(1) time always": "invalid",
+        "O(n log n) space minimum": "invalid",
+    },
+    "sprint1-arr-07": {
+        "O(1) auxiliary": "tight",
+        "O(n) auxiliary required": "invalid",
+        "O(n²) auxiliary": "loose",
+        "O(log n) auxiliary required": "invalid",
+    },
+    "sprint1-arr-08": {
+        "O(n) time and O(1) extra space": "tight",
+        "Only O(n²) time": "invalid",
+        "Only with O(n) extra always": "invalid",
+        "O(log n) time": "invalid",
+    },
+    "sprint1-arr-09": {
+        "O(1) per query after O(n) preprocess": "tight",
+        "O(n) per query always with no benefit": "invalid",
+        "O(n²) preprocess mandatory": "invalid",
+        "O(log n) preprocess only": "invalid",
+    },
+    "sprint1-arr-10": {
+        "O(n) time, O(1) space": "tight",
+        "O(n log n) time required": "invalid",
+        "O(n²) time": "loose",
+        "O(n) space required": "invalid",
+    },
+    "sprint1-str-09": {
+        "O(1) extra memory": "tight",
+        "O(n) extra memory required": "invalid",
+        "O(n²) extra memory": "loose",
+        "O(2ⁿ) extra memory": "loose",
+    },
+    "sprint1-str-10": {
+        "O(n) extra memory": "tight",
+        "O(1) extra memory": "invalid",
+        "O(log n) extra memory": "invalid",
+        "O(n²) extra memory": "loose",
+    },
+    "sprint1-cx-01": {
+        "O(n²)": "tight",
+        "O(n)": "invalid",
+        "O(log n)": "invalid",
+        "O(1)": "invalid",
+    },
+    "sprint1-cx-02": {
+        "O(log n)": "tight",
+        "O(n)": "loose",
+        "O(n²)": "loose",
+        "O(1) for every n > 1": "invalid",
+    },
+    "sprint1-cx-03": {"O(n²)": "tight", "O(n)": "invalid", "O(n³)": "loose", "O(1)": "invalid"},
+    "sprint1-cx-04": {
+        "O(n)": "tight",
+        "O(1)": "invalid",
+        "O(n + 20) as a different class from O(n)": "invalid",
+        "O(20ⁿ)": "loose",
+    },
+    "sprint1-cx-05": {
+        "The formula n(n+1)/2 is O(1); adding the integers one by one is O(n)": "tight",
+        "Both methods are O(1)": "invalid",
+        "Both methods are O(n²)": "loose",
+        "The formula is O(n!)": "loose",
+    },
+    "sprint1-sea-03": {
+        "Θ(n)": "tight",
+        "Θ(1)": "invalid",
+        "Θ(log n)": "invalid",
+        "Θ(n²)": "invalid",
+    },
+}
 
 
 def _necessary_options(premises, options: dict) -> set[str]:
@@ -98,17 +203,125 @@ def test_revised_halving_loop_count_and_bounds():
     assert "Not a valid bound" in why["O(1) for every n > 1"]
 
 
-def test_revision_metadata_is_scoped_to_two_rows():
-    revised = {row["key"]: row for row in load_batch(BATCH)["questions"] if row.get("revises")}
-    assert set(revised) == {SYL, CX}
-    assert all(row["version"] == 2 and row["revises"]["version"] == 1 for row in revised.values())
-    seed_texts = {row[4] for row in APTITUDE_MCQS}
-    assert SYL_PRIOR in seed_texts
-    assert REVISED_SEED_STEMS == {
-        row["revises"]["stem"]: key for key, row in revised.items() if row["adoption"] == "required"
-    }
+def test_revision_metadata_matches_the_reviewed_list():
+    assert REWORDED == [
+        "sprint1-syl-03",
+        "sprint1-arr-02",
+        "sprint1-arr-04",
+        "sprint1-arr-05",
+        "sprint1-arr-07",
+        "sprint1-arr-10",
+        "sprint1-str-09",
+        "sprint1-str-10",
+        "sprint1-cx-02",
+        "sprint1-cx-04",
+        "sprint1-cx-05",
+    ]
+    assert EXPLANATION_ONLY == [
+        "sprint1-pct-04",
+        "sprint1-ser-03",
+        "sprint1-ch-01",
+        "sprint1-arr-03",
+        "sprint1-str-08",
+        "sprint1-sea-02",
+    ]
+    assert all(ROWS[key]["version"] == 2 for key in VERSIONED)
+    assert all(ROWS[key]["revises"]["version"] == 1 for key in REWORDED)
+    assert all(row["version"] == 1 for row in QUESTIONS if row["key"] not in VERSIONED)
+    seed_texts = {row[4] for row in APTITUDE_MCQS} | {row[4] for row in TECHNICAL_MCQS}
+    assert all(ROWS[key]["revises"]["stem"] in seed_texts for key in ADOPTED_REWORDED)
+    assert all(ROWS[key]["stem"] not in seed_texts for key in REWORDED)
+    assert REVISED_SEED_STEMS == {ROWS[key]["revises"]["stem"]: key for key in ADOPTED_REWORDED}
     assert superseded_by_revision(SYL_PRIOR, {SYL}) is True
     assert superseded_by_revision(SYL_PRIOR, set()) is False
+
+
+def test_bound_questions_have_one_tightest_answer_and_honest_explanations():
+    bound_rows = [
+        row
+        for row in QUESTIONS
+        if any("O(" in opt["text"] or "Θ(" in opt["text"] for opt in row["options"])
+    ]
+    assert {row["key"] for row in bound_rows} == set(BOUNDS)
+    for row in bound_rows:
+        labels = BOUNDS[row["key"]]
+        assert set(labels) == {opt["text"] for opt in row["options"]}, row["key"]
+        assert [opt["text"] for opt in row["options"] if opt["correct"]] == [
+            text for text, label in labels.items() if label == "tight"
+        ], row["key"]
+        if "loose" in labels.values():
+            assert "tightest" in row["stem"], row["key"]
+        for opt in row["options"]:
+            label = labels[opt["text"]]
+            if label == "loose":
+                assert "upper bound" in opt["why"], row["key"]
+                assert any(
+                    word in opt["why"] for word in ("not the tightest", "loose", "far from tight")
+                )
+            elif label == "invalid":
+                assert "valid upper bound" not in opt["why"].lower(), (row["key"], opt["text"])
+
+
+def _kadane(values: list[int]) -> tuple[list[int], list[int]]:
+    ending = best = values[0]
+    endings, bests = [ending], [best]
+    for value in values[1:]:
+        ending = max(value, ending + value)
+        best = max(best, ending)
+        endings.append(ending)
+        bests.append(best)
+    return endings, bests
+
+
+def _signed(values: list[int]) -> str:
+    return ", ".join(str(value).replace("-", "−") for value in values)
+
+
+def test_corrected_explanations_match_checked_values():
+    kadane = ROWS["sprint1-arr-05"]["explanation"]
+    endings, bests = _kadane([1, -2, 3])
+    assert (endings, bests) == ([1, -1, 3], [1, 1, 3])
+    assert "ending 1, then −1, then 3; best 1, then 1, then 3. The answer is 3." in kadane
+    assert "ending 1, then 1, then 3" not in kadane
+    endings, bests = _kadane([-2, 1, -3, 4, -1, 2, 1])
+    assert f"the ending sums are {_signed(endings)}. The best is {bests[-1]}" in kadane
+    assert sum([4, -1, 2, 1]) == bests[-1] == 6
+
+    squares = ROWS["sprint1-ser-03"]["explanation"]
+    assert "4²+4" not in squares and 4**2 + 4 == 20
+    assert [k * k for k in range(1, 6)] == [1, 4, 9, 16, 25]
+    assert "consecutive perfect squares" in squares and "5² = 25" in squares
+    assert "gaps 3, 5, 7, 9" in squares
+
+    assert 100 / 640 * 100 == 15.625
+    assert "100 is 15.625% of 640" in ROWS["sprint1-pct-04"]["explanation"]
+    assert 500 - 300 == 200 == 2 * 100
+    assert "100 is only half the gap" in ROWS["sprint1-ch-01"]["explanation"]
+    assert len("ab" + "c") == 3 and '"abc" has 3' in ROWS["sprint1-str-08"]["explanation"]
+
+    maximum = ROWS["sprint1-arr-03"]["explanation"]
+    assert "candidate ← A[0]" in maximum and "candidate ← A[1]" not in maximum
+    assert "exactly n−1 comparisons" in maximum
+
+    values, target, low, high, middles = [2, 4, 6, 8, 10], 6, 0, 4, []
+    while low <= high:
+        mid = low + (high - low) // 2
+        middles.append(mid)
+        if values[mid] == target:
+            break
+        low, high = (mid + 1, high) if values[mid] < target else (low, mid - 1)
+    assert middles == [2]
+    search = ROWS["sprint1-sea-02"]["explanation"]
+    assert "The first middle is not the answer" not in search
+    assert "The first middle, index 2, already holds 6" in search
+
+    setup = ROWS["sprint1-cx-04"]["explanation"]
+    assert 20 + 5 == 25 and 20 + 50 == 70
+    assert "20 setup steps and 5 additions, 25 steps in total" in setup
+
+    sums = ROWS["sprint1-cx-05"]
+    assert "Count each arithmetic operation as one step" in sums["stem"]
+    assert all(n * (n + 1) // 2 == sum(range(1, n + 1)) for n in range(200))
 
 
 def test_revises_is_refused_outside_the_sprint_batch(tmp_path):
@@ -133,14 +346,15 @@ def _write_questions(target: Path, data: dict) -> None:
 
 
 def _previous_version(tmp_path: Path) -> Path:
-    """The version-1 identity of the two rows: original stems, version 1, no revision record."""
+    """The version-1 identity of the revised rows: original stems, version 1, no revision record."""
     target = tmp_path / "previous"
     shutil.copytree(BATCH, target)
     data = json.loads((target / "questions.json").read_text(encoding="utf-8"))
     for row in data["questions"]:
         prior = row.pop("revises", None)
         if prior:
-            row["stem"], row["version"] = prior["stem"], prior["version"]
+            row["stem"] = prior["stem"]
+        row["version"] = 1
     _write_questions(target, data)
     return target
 
@@ -198,7 +412,7 @@ async def _assert_nothing_applied(syl_id) -> None:
         new_stems = await db.scalar(
             select(func.count())
             .select_from(Question)
-            .where(Question.question_text.in_([SYL_ROW["stem"], CX_ROW["stem"]]))
+            .where(Question.question_text.in_(REVISED_STEMS))
         )
         assert ledger == 0
         assert keyed == 0
@@ -208,20 +422,25 @@ async def _assert_nothing_applied(syl_id) -> None:
 
 
 @pytest.mark.asyncio
-async def test_unexpected_original_stem_refuses_adoption(client):
+@pytest.mark.parametrize("key", ADOPTED_REWORDED)
+async def test_unexpected_original_stem_refuses_adoption(client, key):
     seeded = await _fresh_syllogism()
+    prior = ROWS[key]["revises"]["stem"]
     async with AsyncSessionLocal() as db:
-        row = await db.get(Question, seeded["id"])
-        row.question_text = SYL_PRIOR + " Choose one."
+        row = (
+            await db.execute(select(Question).where(Question.question_text == prior))
+        ).scalar_one()
+        row_id = row.id
+        row.question_text = prior + " Choose one."
         await db.commit()
         refused = await apply_batch(db, BATCH, allow_remote=False)
     assert refused["refused"] is True
-    assert any(item.startswith(SYL) and "found 0" in item for item in refused["rejected"])
+    assert any(item.startswith(key) and "found 0" in item for item in refused["rejected"])
     await _assert_nothing_applied(seeded["id"])
     async with AsyncSessionLocal() as db:
-        row = await db.get(Question, seeded["id"])
-        assert row.question_text == SYL_PRIOR + " Choose one."
-        row.question_text = SYL_PRIOR
+        row = await db.get(Question, row_id)
+        assert row.question_text == prior + " Choose one."
+        row.question_text = prior
         await db.commit()
 
 
@@ -312,47 +531,50 @@ async def test_upgrade_from_version_one_keeps_ids_and_old_batch_cannot_downgrade
     assert first["refused"] is False, first
     v1 = {row["key"]: row for row in first["identity"]}
     assert v1[SYL]["row"] == "adopted" and v1[SYL]["question_id"] == str(seeded["id"])
-    assert v1[CX]["row"] == "created"
+    assert all(v1[key]["row"] == "adopted" for key in ADOPTED_REWORDED)
+    assert all(v1[key]["row"] == "created" for key in REWORDED if key not in ADOPTED_REWORDED)
 
     async with AsyncSessionLocal() as db:
         upgraded = await apply_batch(db, BATCH, allow_remote=False)
     assert upgraded["refused"] is False, upgraded
     assert upgraded["counts"]["question"] == {
         "create": 0,
-        "update": 2,
-        "unchanged": 68,
+        "update": len(VERSIONED),
+        "unchanged": 70 - len(VERSIONED),
         "rejected": 0,
     }
     v2 = {row["key"]: row for row in upgraded["identity"]}
-    for key in (SYL, CX):
-        assert v2[key]["row"] == "revised"
-        assert v2[key]["stem_changed"] is True
-        assert v2[key]["question_id"] == v1[key]["question_id"]
-        assert v2[key]["option_ids"] == v1[key]["option_ids"]
+    for key in VERSIONED:
+        assert v2[key]["row"] == ("revised" if key in REWORDED else "updated"), key
+        assert v2[key]["stem_changed"] is (key in REWORDED), key
+        assert v2[key]["question_id"] == v1[key]["question_id"], key
+        assert v2[key]["option_ids"] == v1[key]["option_ids"], key
         assert v2[key]["option_ids_changed"] is False and v2[key]["option_text_changed"] is False
-    assert [row["key"] for row in upgraded["identity"] if row["stem_changed"]] == [SYL, CX]
+    assert [row["key"] for row in upgraded["identity"] if row["stem_changed"]] == REWORDED
 
     async with AsyncSessionLocal() as db:
         replay = await apply_batch(db, previous, allow_remote=False)
     assert replay["refused"] is True
-    assert f"{SYL} changed without a version bump" in replay["rejected"]
-    assert f"{CX} changed without a version bump" in replay["rejected"]
+    assert sorted(replay["rejected"]) == sorted(
+        f"{key} changed without a version bump" for key in VERSIONED
+    )
     async with AsyncSessionLocal() as db:
-        for key, row in ((SYL, SYL_ROW), (CX, CX_ROW)):
+        for key in VERSIONED:
             saved = (
                 await db.execute(select(Question).where(Question.content_key == key))
             ).scalar_one()
-            assert saved.question_text == row["stem"]
-            assert saved.explanation == row["explanation"]
+            assert saved.question_text == ROWS[key]["stem"]
+            assert saved.explanation == ROWS[key]["explanation"]
         ledger = (
             (
                 await db.execute(
-                    select(ContentBatchItem).where(ContentBatchItem.item_key.in_([SYL, CX]))
+                    select(ContentBatchItem).where(ContentBatchItem.item_key.in_(VERSIONED))
                 )
             )
             .scalars()
             .all()
         )
+        assert len(ledger) == len(VERSIONED)
         assert {item.version for item in ledger} == {2}
 
     async with AsyncSessionLocal() as db:
@@ -379,6 +601,24 @@ async def test_revision_preserves_ids_history_snapshots_and_scoring(client, stud
     headers, email = student_auth
     seeded = await _fresh_syllogism()
     async with AsyncSessionLocal() as db:
+        adopted_before = {}
+        for row in QUESTIONS:
+            if row["adoption"] != "required":
+                continue
+            stem = (row.get("revises") or {}).get("stem") or row["stem"]
+            current = (
+                await db.execute(
+                    select(Question)
+                    .options(selectinload(Question.options))
+                    .where(Question.question_text == stem)
+                )
+            ).scalar_one()
+            adopted_before[row["key"]] = (
+                str(current.id),
+                [str(opt.id) for opt in sorted(current.options, key=lambda item: item.sort_order)],
+                (current.marks, current.negative_marks),
+            )
+        assert len(adopted_before) == 50
         user = (await db.execute(select(User).where(User.email == email))).scalar_one()
         bookmark = Bookmark(user_id=user.id, question_id=seeded["id"])
         db.add(bookmark)
@@ -425,11 +665,27 @@ async def test_revision_preserves_ids_history_snapshots_and_scoring(client, stud
     assert identity[SYL]["question_id"] == str(seeded["id"])
     assert identity[SYL]["option_ids"] == seeded["option_ids"]
     assert identity[CX]["row"] == "created" and identity[CX]["stem_changed"] is False
-    assert sum(row["row"] == "adopted" for row in result["identity"]) == 49
+    assert sum(row["row"] == "adopted" for row in result["identity"]) == 50 - len(ADOPTED_REWORDED)
+    assert [row["key"] for row in result["identity"] if row["row"] == "revised"] == ADOPTED_REWORDED
     assert all(
         row["option_ids_changed"] is False and row["option_text_changed"] is False
         for row in result["identity"]
     )
+    for key, (question_id, option_ids, _marks) in adopted_before.items():
+        assert (identity[key]["question_id"], identity[key]["option_ids"]) == (
+            question_id,
+            option_ids,
+        )
+
+    async with AsyncSessionLocal() as db:
+        for key, (question_id, option_ids, marks) in adopted_before.items():
+            kept = (
+                await db.execute(select(Question).where(Question.content_key == key))
+            ).scalar_one()
+            assert str(kept.id) == question_id
+            assert (kept.marks, kept.negative_marks) == marks
+            assert kept.question_text == ROWS[key]["stem"]
+            assert kept.explanation == ROWS[key]["explanation"]
 
     async with AsyncSessionLocal() as db:
         saved = (
@@ -485,7 +741,9 @@ async def test_revision_preserves_ids_history_snapshots_and_scoring(client, stud
         f"/api/v1/practice/sessions/{pending_id}/questions/1", headers=headers
     )
     assert old_view.json()["question"]["question_text"] == SYL_PRIOR
-    assert [opt["id"] for opt in old_view.json()["question"]["options"]] == seeded["option_ids"]
+    assert sorted(opt["id"] for opt in old_view.json()["question"]["options"]) == sorted(
+        seeded["option_ids"]
+    )
     old_answer = await client.post(
         f"/api/v1/practice/sessions/{pending_id}/questions/1/answer",
         headers=headers,
@@ -524,7 +782,7 @@ async def test_revision_preserves_ids_history_snapshots_and_scoring(client, stud
             await db.scalar(
                 select(func.count())
                 .select_from(Question)
-                .where(Question.question_text == SYL_PRIOR)
+                .where(Question.question_text.in_(list(REVISED_SEED_STEMS)))
             )
             == 0
         )

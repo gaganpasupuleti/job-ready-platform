@@ -133,7 +133,7 @@
       "skill": "quantitative",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "placement",
       "category_slug": "aptitude",
       "topic_slug": "percentages",
@@ -158,7 +158,7 @@
           "key": "C",
           "text": "100",
           "correct": false,
-          "why": "100 is 640/6.4, not one eighth of 640."
+          "why": "100 is 15.625% of 640, not 12.5%."
         },
         {
           "key": "D",
@@ -167,7 +167,7 @@
           "why": "72 is 11.25% of 640, not 12.5%."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: 80\n\nStep-by-step\n1. 12.5/100 = 1/8.\n2. 640 × 1/8 = 80.\n\nWhy other options are wrong\n- 64: 64 is 10% of 640, not 12.5%.\n- 100: 100 is 640/6.4, not one eighth of 640.\n- 72: 72 is 11.25% of 640, not 12.5%.\n\nLearn the concept\n12.5% is one eighth of a whole because 12.5 × 8 = 100.\n\nFormula or key principle\n12.5% of a number = number / 8.\n\nWorked example\n640 / 8 = 80.\n\nRelated lesson\ncrt-quant-percentages — Percentages for placement aptitude. Check this against the published percentages lesson, then the other items in this set.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=percentages; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: 80\n\nStep-by-step\n1. 12.5/100 = 1/8.\n2. 640 × 1/8 = 80.\n\nWhy other options are wrong\n- 64: 64 is 10% of 640, not 12.5%.\n- 100: 100 is 15.625% of 640, not 12.5%.\n- 72: 72 is 11.25% of 640, not 12.5%.\n\nLearn the concept\n12.5% is one eighth of a whole because 12.5 × 8 = 100.\n\nFormula or key principle\n12.5% of a number = number / 8.\n\nWorked example\n640 / 8 = 80.\n\nRelated lesson\ncrt-quant-percentages — Percentages for placement aptitude. Check this against the published percentages lesson, then the other items in this set.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=percentages; difficulty=easy; type=single-choice"
     },
     {
       "key": "sprint1-pl-01",
@@ -511,7 +511,7 @@
       "skill": "logical-reasoning",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "placement",
       "category_slug": "aptitude",
       "topic_slug": "series",
@@ -530,7 +530,7 @@
           "key": "B",
           "text": "20",
           "correct": false,
-          "why": "20 is not a perfect square, and it is not 4²+4."
+          "why": "20 adds only 4 to 16. The gaps so far are 3, 5, and 7, and 20 is not a perfect square, so it breaks the squares pattern."
         },
         {
           "key": "C",
@@ -545,7 +545,7 @@
           "why": "36 is 6², which skips 5²."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: 25\n\nStep-by-step\n1. 1, 4, 9, and 16 are 1², 2², 3², and 4².\n2. The next integer is 5.\n3. 5² = 25.\n\nWhy other options are wrong\n- 20: 20 is not a perfect square, and it is not 4²+4.\n- 24: 24 continues neither the squares nor a constant gap.\n- 36: 36 is 6², which skips 5².\n\nLearn the concept\nSquare numbers are 1², 2², 3², and so on. The next square uses the next integer.\n\nFormula or key principle\nn² for n = 1, 2, 3, 4, 5.\n\nWorked example\n5² = 25.\n\nRelated lesson\ncrt-logical-patterns — Number patterns in logical reasoning. The number-patterns lesson asks you to test one rule on every term. These are the first five squares.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=series; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: 25\n\nStep-by-step\n1. 1, 4, 9, and 16 are 1², 2², 3², and 4².\n2. The intended pattern is consecutive perfect squares, so the next term is the square of 5.\n3. 5² = 25. The gaps 3, 5, 7, 9 confirm the same pattern.\n\nWhy other options are wrong\n- 20: 20 adds only 4 to 16. The gaps so far are 3, 5, and 7, and 20 is not a perfect square, so it breaks the squares pattern.\n- 24: 24 continues neither the squares nor a constant gap.\n- 36: 36 is 6², which skips 5².\n\nLearn the concept\nThis item uses the consecutive-squares pattern 1², 2², 3², 4². A finite list can be continued by other rules, so name the rule and check it on every term.\n\nFormula or key principle\nTerm k = k², so the fifth term is 5² = 25. The gaps 3, 5, 7 are consecutive odd numbers, and the next gap is 9.\n\nWorked example\n16 + 9 = 25 = 5².\n\nRelated lesson\ncrt-logical-patterns — Number patterns in logical reasoning. The number-patterns lesson asks you to test one rule on every term. These are the first five squares.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=series; difficulty=easy; type=single-choice"
     },
     {
       "key": "sprint1-ser-04",
@@ -1481,7 +1481,7 @@
       "skill": "data-interpretation",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "placement",
       "category_slug": "aptitude",
       "topic_slug": "charts",
@@ -1512,10 +1512,10 @@
           "key": "D",
           "text": "100",
           "correct": false,
-          "why": "100 is not 500−300."
+          "why": "100 is only half the gap. 500 − 300 = 200."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: 200\n\nStep-by-step\n1. Read Android 500 and iOS 300.\n2. Subtract.\n3. The difference is 200.\n\nWhy other options are wrong\n- 800: 800 is the sum 500+300. The question asks how many more, which is a difference.\n- 300: 300 is the iOS bar, not the gap.\n- 100: 100 is not 500−300.\n\nLearn the concept\nA bar difference is the taller bar minus the shorter bar.\n\nFormula or key principle\nAndroid − iOS = 500 − 300.\n\nWorked example\n500 − 300 = 200.\n\nRelated lesson\ncrt-sprint-charts — Bar charts and pie shares. Charts lesson. Adding the bars answers a different question.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=charts; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: 200\n\nStep-by-step\n1. Read Android 500 and iOS 300.\n2. Subtract.\n3. The difference is 200.\n\nWhy other options are wrong\n- 800: 800 is the sum 500+300. The question asks how many more, which is a difference.\n- 300: 300 is the iOS bar, not the gap.\n- 100: 100 is only half the gap. 500 − 300 = 200.\n\nLearn the concept\nA bar difference is the taller bar minus the shorter bar.\n\nFormula or key principle\nAndroid − iOS = 500 − 300.\n\nWorked example\n500 − 300 = 200.\n\nRelated lesson\ncrt-sprint-charts — Bar charts and pie shares. Charts lesson. Adding the bars answers a different question.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=charts; difficulty=easy; type=single-choice"
     },
     {
       "key": "sprint1-ch-02",
@@ -1729,11 +1729,11 @@
     },
     {
       "key": "sprint1-arr-02",
-      "stem": "Inserting at the front of a plain dynamic array is typically?",
+      "stem": "What is the tightest time bound for inserting at the front of a plain dynamic array that holds n elements?",
       "skill": "arrays",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "arrays",
@@ -1764,10 +1764,14 @@
           "key": "D",
           "text": "O(n²) always",
           "correct": false,
-          "why": "One front insert shifts n items once. It is not a nested n×n shift."
+          "why": "A valid upper bound, because n ≤ n², but not the tightest. One front insert shifts n items once. It is not a nested n×n shift."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: O(n)\n\nStep-by-step\n1. The new item needs index 0.\n2. Every old item moves one index higher.\n3. That shift touches n items, so the cost is O(n).\n\nWhy other options are wrong\n- O(1): O(1) would be true for a structure with a free head pointer, not for shifting a contiguous array.\n- O(log n): Nothing is being halved. The work is a shift of n items.\n- O(n²) always: One front insert shifts n items once. It is not a nested n×n shift.\n\nLearn the concept\nInserting at the front of a contiguous array moves every current element one slot to the right.\n\nFormula or key principle\nFront insert on a dynamic array is O(n) element moves.\n\nWorked example\nInserting x at the front of [a,b,c] writes [x,a,b,c] after shifting three items.\n\nWorked algorithm\nShift from the last index down to 0, then write the new value at 0. Dry run: [a,b,c] → [a,b,c,_] → [a,b,c,c] → [a,b,b,c] → [a,a,b,c] → [x,a,b,c]. Time O(n). Extra space O(1). Edge case: an empty array inserts in O(1).\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. A linked list can insert at the head in O(1). This question is about a plain array.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: O(n)\n\nStep-by-step\n1. The new item needs index 0.\n2. Every old item moves one index higher.\n3. That shift touches n items, so the tightest bound is O(n).\n\nWhy other options are wrong\n- O(1): O(1) would be true for a structure with a free head pointer, not for shifting a contiguous array.\n- O(log n): Nothing is being halved. The work is a shift of n items.\n- O(n²) always: A valid upper bound, because n ≤ n², but not the tightest. One front insert shifts n items once. It is not a nested n×n shift.\n\nLearn the concept\nInserting at the front of a contiguous array moves every current element one slot to the right.\n\nFormula or key principle\nFront insert on a dynamic array moves all n elements, so it is Θ(n) and the tightest bound is O(n).\n\nWorked example\nInserting x at the front of [a,b,c] writes [x,a,b,c] after shifting three items.\n\nWorked algorithm\nShift from the last index down to 0, then write the new value at 0. Dry run: [a,b,c] → [a,b,c,_] → [a,b,c,c] → [a,b,b,c] → [a,a,b,c] → [x,a,b,c]. Time O(n). Extra space O(1). Edge case: an empty array inserts in O(1).\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. A linked list can insert at the head in O(1). This question is about a plain array.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice",
+      "revises": {
+        "stem": "Inserting at the front of a plain dynamic array is typically?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-arr-03",
@@ -1775,7 +1779,7 @@
       "skill": "arrays",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "arrays",
@@ -1809,15 +1813,15 @@
           "why": "One comparison per extra element is enough. Quadratic work is not required."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: Θ(n) comparisons\n\nStep-by-step\n1. Start with the first value as the candidate.\n2. Compare every remaining value.\n3. n elements require a linear number of comparisons.\n\nWhy other options are wrong\n- Θ(1): A constant check cannot look at a later, larger value.\n- Θ(log n): Halving needs a sorted order. The array is unsorted.\n- Θ(n²) minimum always: One comparison per extra element is enough. Quadratic work is not required.\n\nLearn the concept\nAn unsorted array has no order you can use to skip elements. The maximum can be anywhere.\n\nFormula or key principle\nWorst-case comparisons to find the maximum: Θ(n).\n\nWorked example\nIn [3,1,4], the scan sees 3, then 1, then 4, and keeps 4.\n\nWorked algorithm\ncandidate ← A[1]; for each later value, replace candidate if the value is larger. Dry run [3,1,4]: 3, then 3, then 4. Time Θ(n). Space O(1). Edge case: one element returns that element with no extra comparison.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Coding practice in the DSA list: max-element.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: Θ(n) comparisons\n\nStep-by-step\n1. Start with the first value as the candidate.\n2. Compare every remaining value.\n3. n elements require a linear number of comparisons.\n\nWhy other options are wrong\n- Θ(1): A constant check cannot look at a later, larger value.\n- Θ(log n): Halving needs a sorted order. The array is unsorted.\n- Θ(n²) minimum always: One comparison per extra element is enough. Quadratic work is not required.\n\nLearn the concept\nAn unsorted array has no order you can use to skip elements. The maximum can be anywhere.\n\nFormula or key principle\nWorst-case comparisons to find the maximum: Θ(n).\n\nWorked example\nIn [3,1,4], the scan sees 3, then 1, then 4, and keeps 4.\n\nWorked algorithm\ncandidate ← A[0]; for each later value A[1] to A[n−1], replace candidate if the value is larger. Dry run [3,1,4]: 3, then 3, then 4. Time Θ(n), exactly n−1 comparisons. Space O(1). Edge case: one element returns that element with no extra comparison.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Coding practice in the DSA list: max-element.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice"
     },
     {
       "key": "sprint1-arr-04",
-      "stem": "Two arrays of equal length; element-wise sum loop is?",
+      "stem": "Two arrays each hold n elements. What is the tightest time bound for a loop that adds them element by element?",
       "skill": "arrays",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "arrays",
@@ -1842,24 +1846,28 @@
           "key": "C",
           "text": "O(n²)",
           "correct": false,
-          "why": "There is no nested loop over the pairs of indices."
+          "why": "A valid upper bound, because n ≤ n², but not the tightest. There is no nested loop over the pairs of indices."
         },
         {
           "key": "D",
           "text": "O(2ⁿ)",
           "correct": false,
-          "why": "Nothing branches into two recursive calls per element."
+          "why": "Also a valid upper bound, but far looser. Nothing branches into two recursive calls per element."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: O(n)\n\nStep-by-step\n1. Each index does one addition.\n2. There are n indices.\n3. The loop is O(n).\n\nWhy other options are wrong\n- O(1): The work grows when n grows. It is not constant.\n- O(n²): There is no nested loop over the pairs of indices.\n- O(2ⁿ): Nothing branches into two recursive calls per element.\n\nLearn the concept\nAdding two equal-length arrays element by element visits each index once.\n\nFormula or key principle\nOne loop from 0 to n−1 is O(n).\n\nWorked example\n[1,2] + [3,4] = [4,6] after two additions.\n\nWorked algorithm\nFor i from 0 to n−1, C[i] ← A[i] + B[i]. Dry run n=2: index 0 writes 4, index 1 writes 6. Time O(n). Output space O(n). Extra working space O(1). Edge case: n = 0 writes an empty result.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Do not square the cost because there are two arrays.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: O(n)\n\nStep-by-step\n1. Each index does one addition.\n2. There are n indices.\n3. The loop is Θ(n), so the tightest bound is O(n).\n\nWhy other options are wrong\n- O(1): The work grows when n grows. It is not constant.\n- O(n²): A valid upper bound, because n ≤ n², but not the tightest. There is no nested loop over the pairs of indices.\n- O(2ⁿ): Also a valid upper bound, but far looser. Nothing branches into two recursive calls per element.\n\nLearn the concept\nAdding two equal-length arrays element by element visits each index once.\n\nFormula or key principle\nOne loop from 0 to n−1 is O(n).\n\nWorked example\n[1,2] + [3,4] = [4,6] after two additions.\n\nWorked algorithm\nFor i from 0 to n−1, C[i] ← A[i] + B[i]. Dry run n=2: index 0 writes 4, index 1 writes 6. Time O(n). Output space O(n). Extra working space O(1). Edge case: n = 0 writes an empty result.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Do not square the cost because there are two arrays.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=easy; type=single-choice",
+      "revises": {
+        "stem": "Two arrays of equal length; element-wise sum loop is?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-arr-05",
-      "stem": "Kadane-style max subarray sum (classic contiguous) runs in?",
+      "stem": "Kadane's algorithm finds the maximum sum of a non-empty contiguous subarray of n numbers. What is its tightest time bound?",
       "skill": "arrays",
       "difficulty": "medium",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "arrays",
@@ -1890,10 +1898,14 @@
           "key": "D",
           "text": "O(n!)",
           "correct": false,
-          "why": "There is no permutation of the array."
+          "why": "A valid upper bound, because n ≤ n!, but far from tight. The scan visits each index once and never permutes the array."
         }
       ],
-      "explanation": "Difficulty: medium\nCorrect answer: O(n)\n\nStep-by-step\n1. At each index, extend the previous ending sum or start over.\n2. Also keep the best sum so far.\n3. Each index is visited once.\n\nWhy other options are wrong\n- O(n²) required always: A linear scan exists, so quadratic time is not required.\n- O(log n): The algorithm does not discard half of an unsorted array.\n- O(n!): There is no permutation of the array.\n\nLearn the concept\nKadane's scan keeps the best sum that ends at the current index and the best sum seen anywhere.\n\nFormula or key principle\nClassic non-empty maximum subarray: O(n) time and O(1) extra space.\n\nWorked example\nOn [−2,1,−3,4,−1,2,1], the best ending sums reach 4, 3, 5, 6. The answer is 6, from [4,−1,2,1].\n\nWorked algorithm\nending ← A[0]; best ← A[0]; for each next x: ending ← max(x, ending+x); best ← max(best, ending). Dry run [1,−2,3]: ending 1, then 1, then 3; best 3. Time O(n). Space O(1). Edge case: all negative values return the largest single value for the non-empty version.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. The quadratic double loop also works, but it is not required.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: O(n)\n\nStep-by-step\n1. At each index, extend the previous ending sum or start over.\n2. Also keep the best sum so far.\n3. Each index is visited once, so the tightest bound is O(n).\n\nWhy other options are wrong\n- O(n²) required always: A linear scan exists, so quadratic time is not required.\n- O(log n): The algorithm does not discard half of an unsorted array.\n- O(n!): A valid upper bound, because n ≤ n!, but far from tight. The scan visits each index once and never permutes the array.\n\nLearn the concept\nKadane's scan keeps the best sum that ends at the current index and the best sum seen anywhere.\n\nFormula or key principle\nClassic non-empty maximum subarray: O(n) time and O(1) extra space.\n\nWorked example\nOn [−2,1,−3,4,−1,2,1], the ending sums are −2, 1, −2, 4, 3, 5, 6. The best is 6, from [4,−1,2,1].\n\nWorked algorithm\nending ← A[0]; best ← A[0]; for each next x: ending ← max(x, ending+x); best ← max(best, ending). Dry run [1,−2,3]: ending 1, then −1, then 3; best 1, then 1, then 3. The answer is 3. Time O(n). Space O(1). Edge case: all negative values return the largest single value for the non-empty version.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. The quadratic double loop also works, but it is not required.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice",
+      "revises": {
+        "stem": "Kadane-style max subarray sum (classic contiguous) runs in?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-arr-06",
@@ -1939,11 +1951,11 @@
     },
     {
       "key": "sprint1-arr-07",
-      "stem": "Reversing an array in place swaps from ends toward center. Extra space?",
+      "stem": "Reversing an array of n elements in place swaps from the ends toward the center. What is the tightest bound on the extra space?",
       "skill": "arrays",
       "difficulty": "medium",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "arrays",
@@ -1968,7 +1980,7 @@
           "key": "C",
           "text": "O(n²) auxiliary",
           "correct": false,
-          "why": "The swaps do not allocate a quadratic table."
+          "why": "A valid upper bound, because 1 ≤ n², but not the tightest. The swaps do not allocate a quadratic table."
         },
         {
           "key": "D",
@@ -1977,7 +1989,11 @@
           "why": "The iterative swap does not build a recursion stack of depth log n."
         }
       ],
-      "explanation": "Difficulty: medium\nCorrect answer: O(1) auxiliary\n\nStep-by-step\n1. Set left at the first index and right at the last.\n2. Swap, then move inward.\n3. Only a few index variables are extra.\n\nWhy other options are wrong\n- O(n) auxiliary required: A second array would use O(n). The in-place swap does not.\n- O(n²) auxiliary: The swaps do not allocate a quadratic table.\n- O(log n) auxiliary required: The iterative swap does not build a recursion stack of depth log n.\n\nLearn the concept\nIn-place reverse swaps the ends and walks inward. The extra memory does not grow with n.\n\nFormula or key principle\nAuxiliary space O(1). Time O(n).\n\nWorked example\n[a,b,c,d] swaps to [d,b,c,a], then [d,c,b,a].\n\nWorked algorithm\nwhile left < right: swap A[left], A[right]; left ← left+1; right ← right−1. Dry run [a,b,c,d] → [d,b,c,a] → [d,c,b,a]. Time O(n). Space O(1). Edge cases: empty and one-element arrays do nothing.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. The published arrays lesson traces this swap. Coding practice: reverse-string uses the same two-end idea on characters.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: O(1) auxiliary\n\nStep-by-step\n1. Set left at the first index and right at the last.\n2. Swap, then move inward.\n3. Only a few index variables are extra.\n\nWhy other options are wrong\n- O(n) auxiliary required: A second array would use O(n). The in-place swap does not.\n- O(n²) auxiliary: A valid upper bound, because 1 ≤ n², but not the tightest. The swaps do not allocate a quadratic table.\n- O(log n) auxiliary required: The iterative swap does not build a recursion stack of depth log n.\n\nLearn the concept\nIn-place reverse swaps the ends and walks inward. The extra memory does not grow with n.\n\nFormula or key principle\nAuxiliary space O(1). Time O(n).\n\nWorked example\n[a,b,c,d] swaps to [d,b,c,a], then [d,c,b,a].\n\nWorked algorithm\nwhile left < right: swap A[left], A[right]; left ← left+1; right ← right−1. Dry run [a,b,c,d] → [d,b,c,a] → [d,c,b,a]. Time O(n). Space O(1). Edge cases: empty and one-element arrays do nothing.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. The published arrays lesson traces this swap. Coding practice: reverse-string uses the same two-end idea on characters.\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=medium; type=single-choice",
+      "revises": {
+        "stem": "Reversing an array in place swaps from ends toward center. Extra space?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-arr-08",
@@ -2065,11 +2081,11 @@
     },
     {
       "key": "sprint1-arr-10",
-      "stem": "Dutch National Flag (3-way partition) for an array of 0/1/2 values runs in?",
+      "stem": "The Dutch National Flag 3-way partition groups an array of n values that are each 0, 1, or 2. What are its tightest time and extra-space bounds?",
       "skill": "arrays",
       "difficulty": "hard",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "arrays",
@@ -2094,7 +2110,7 @@
           "key": "C",
           "text": "O(n²) time",
           "correct": false,
-          "why": "The pointers only move inward. They do not nest."
+          "why": "A valid upper bound on the time, but not the tightest. The pointers only move inward and never nest, so the time is O(n)."
         },
         {
           "key": "D",
@@ -2103,7 +2119,11 @@
           "why": "The swaps happen inside the same array."
         }
       ],
-      "explanation": "Difficulty: hard\nCorrect answer: O(n) time, O(1) space\n\nStep-by-step\n1. low marks the end of the 0s. mid scans. high marks the start of the 2s.\n2. Swap 0s toward low and 2s toward high.\n3. Each element is moved a constant number of times.\n\nWhy other options are wrong\n- O(n log n) time required: Comparison sorting is enough but not required for three known keys.\n- O(n²) time: The pointers only move inward. They do not nest.\n- O(n) space required: The swaps happen inside the same array.\n\nLearn the concept\nThe Dutch national flag partition groups 0, then 1, then 2 with three pointers in one pass.\n\nFormula or key principle\nO(n) time and O(1) extra space.\n\nWorked example\n[2,0,1] becomes [0,1,2].\n\nWorked algorithm\nlow ← 0; mid ← 0; high ← n−1. While mid ≤ high: 0 swaps with low and both advance; 1 advances mid; 2 swaps with high and high retreats. Dry run [2,0,1] → [1,0,2] → [0,1,2]. Time O(n). Space O(1). Edge case: an array of only one value never needs a nested pass.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Sorting would also group them, but the three-way partition does not need O(n log n).\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=hard; type=single-choice"
+      "explanation": "Difficulty: hard\nCorrect answer: O(n) time, O(1) space\n\nStep-by-step\n1. low marks the end of the 0s. mid scans. high marks the start of the 2s.\n2. Swap 0s toward low and 2s toward high.\n3. Each element is moved a constant number of times.\n\nWhy other options are wrong\n- O(n log n) time required: Comparison sorting is enough but not required for three known keys.\n- O(n²) time: A valid upper bound on the time, but not the tightest. The pointers only move inward and never nest, so the time is O(n).\n- O(n) space required: The swaps happen inside the same array.\n\nLearn the concept\nThe Dutch national flag partition groups 0, then 1, then 2 with three pointers in one pass.\n\nFormula or key principle\nO(n) time and O(1) extra space.\n\nWorked example\n[2,0,1] becomes [0,1,2].\n\nWorked algorithm\nlow ← 0; mid ← 0; high ← n−1. While mid ≤ high: 0 swaps with low and both advance; 1 advances mid; 2 swaps with high and high retreats. Dry run [2,0,1] → [1,0,2] → [0,1,2]. Time O(n). Space O(1). Edge case: an array of only one value never needs a nested pass.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-arrays-strings — Arrays and strings. Arrays lesson. Sorting would also group them, but the three-way partition does not need O(n log n).\n\nTopic metadata\ndomain=technical; category=dsa; topic=arrays; difficulty=hard; type=single-choice",
+      "revises": {
+        "stem": "Dutch National Flag (3-way partition) for an array of 0/1/2 values runs in?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-str-01",
@@ -2405,7 +2425,7 @@
       "skill": "strings",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "strings",
@@ -2436,18 +2456,18 @@
           "key": "D",
           "text": "5",
           "correct": false,
-          "why": "5 is not 2+1."
+          "why": "5 is more characters than the result has. \"abc\" has 3."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: 3\n\nStep-by-step\n1. Length of \"ab\" is 2.\n2. Length of \"c\" is 1.\n3. 2+1=3, and the string is \"abc\".\n\nWhy other options are wrong\n- 2: 2 is only the length of \"ab\".\n- 1: 1 is only the length of \"c\".\n- 5: 5 is not 2+1.\n\nLearn the concept\nConcatenation copies both strings in order. The length is the sum of the lengths.\n\nFormula or key principle\nlength(X+Y) = length(X) + length(Y).\n\nWorked example\n\"ab\" + \"c\" = \"abc\", length 3.\n\nWorked algorithm\nCopy ab, then copy c. Dry run writes a, b, c. Time O(n+m). Space O(n+m) for the new string. Edge case: concatenating an empty string does not change the other length.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Building a new string costs time proportional to the characters copied.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: 3\n\nStep-by-step\n1. Length of \"ab\" is 2.\n2. Length of \"c\" is 1.\n3. 2+1=3, and the string is \"abc\".\n\nWhy other options are wrong\n- 2: 2 is only the length of \"ab\".\n- 1: 1 is only the length of \"c\".\n- 5: 5 is more characters than the result has. \"abc\" has 3.\n\nLearn the concept\nConcatenation copies both strings in order. The length is the sum of the lengths.\n\nFormula or key principle\nlength(X+Y) = length(X) + length(Y).\n\nWorked example\n\"ab\" + \"c\" = \"abc\", length 3.\n\nWorked algorithm\nCopy ab, then copy c. Dry run writes a, b, c. Time O(n+m). Space O(n+m) for the new string. Edge case: concatenating an empty string does not change the other length.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Building a new string costs time proportional to the characters copied.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=easy; type=single-choice"
     },
     {
       "key": "sprint1-str-09",
-      "stem": "A two-pointer palindrome check that stops at the first mismatch uses how much extra memory?",
+      "stem": "A two-pointer palindrome check stops at the first mismatch. What is the tightest bound on its extra memory for an n-character string?",
       "skill": "strings",
       "difficulty": "medium",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "strings",
@@ -2472,24 +2492,28 @@
           "key": "C",
           "text": "O(n²) extra memory",
           "correct": false,
-          "why": "The check does not allocate a table of pairs."
+          "why": "A valid upper bound, because 1 ≤ n², but not the tightest. The check does not allocate a table of pairs."
         },
         {
           "key": "D",
           "text": "O(2ⁿ) extra memory",
           "correct": false,
-          "why": "The check does not branch on every character."
+          "why": "Also a valid upper bound, but far looser. The check does not branch on every character."
         }
       ],
-      "explanation": "Difficulty: medium\nCorrect answer: O(1) extra memory\n\nStep-by-step\n1. Store two indices.\n2. Move them toward the center.\n3. The extra memory stays constant.\n\nWhy other options are wrong\n- O(n) extra memory required: A reversed copy would use O(n). The two pointers do not build that copy.\n- O(n²) extra memory: The check does not allocate a table of pairs.\n- O(2ⁿ) extra memory: The check does not branch on every character.\n\nLearn the concept\nIndices are scalar variables. They do not grow with the string.\n\nFormula or key principle\nExtra space O(1). Time O(n) in the worst case, when the string is a palindrome.\n\nWorked example\n\"abba\" checks a/a, then b/b, and accepts.\n\nWorked algorithm\nleft and right move inward. Dry run \"abba\": both pairs match. Time O(n). Space O(1). Edge case: a mismatch returns false without reading the rest, so the best case can be O(1) time.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Compare this with building a reversed copy, which uses linear extra memory.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=medium; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: O(1) extra memory\n\nStep-by-step\n1. Store two indices.\n2. Move them toward the center.\n3. The extra memory stays constant, so the tightest bound is O(1).\n\nWhy other options are wrong\n- O(n) extra memory required: A reversed copy would use O(n). The two pointers do not build that copy.\n- O(n²) extra memory: A valid upper bound, because 1 ≤ n², but not the tightest. The check does not allocate a table of pairs.\n- O(2ⁿ) extra memory: Also a valid upper bound, but far looser. The check does not branch on every character.\n\nLearn the concept\nIndices are scalar variables. They do not grow with the string.\n\nFormula or key principle\nExtra space O(1). Time O(n) in the worst case, when the string is a palindrome.\n\nWorked example\n\"abba\" checks a/a, then b/b, and accepts.\n\nWorked algorithm\nleft and right move inward. Dry run \"abba\": both pairs match. Time O(n). Space O(1). Edge case: a mismatch returns false without reading the rest, so the best case can be O(1) time.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. Compare this with building a reversed copy, which uses linear extra memory.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=medium; type=single-choice",
+      "revises": {
+        "stem": "A two-pointer palindrome check that stops at the first mismatch uses how much extra memory?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-str-10",
-      "stem": "If strings cannot be edited in place, how much extra memory does building the reverse of an n-character string take?",
+      "stem": "If strings cannot be edited in place, what is the tightest bound on the extra memory needed to build the reverse of an n-character string?",
       "skill": "strings",
       "difficulty": "medium",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "strings",
@@ -2514,16 +2538,20 @@
           "key": "C",
           "text": "O(log n) extra memory",
           "correct": false,
-          "why": "The new string is not a balanced tree of log n cells in this model."
+          "why": "Not a valid bound. The result alone holds n characters, and n grows faster than log n."
         },
         {
           "key": "D",
           "text": "O(n²) extra memory",
           "correct": false,
-          "why": "Each character is stored once in the result, not n times."
+          "why": "A valid upper bound, because n ≤ n², but not the tightest. Each character is stored once in the result, not n times."
         }
       ],
-      "explanation": "Difficulty: medium\nCorrect answer: O(n) extra memory\n\nStep-by-step\n1. The result needs one slot per input character.\n2. Those n slots are new.\n3. The extra memory is O(n).\n\nWhy other options are wrong\n- O(1) extra memory: O(1) fits an in-place buffer. A new string must hold n characters.\n- O(log n) extra memory: The new string is not a balanced tree of log n cells in this model.\n- O(n²) extra memory: Each character is stored once in the result, not n times.\n\nLearn the concept\nAn immutable string operation allocates the result. The reverse result has n characters.\n\nFormula or key principle\nExtra space Θ(n) for the new string. Time Θ(n) to copy.\n\nWorked example\nReversing \"code\" allocates a new 4-character string \"edoc\".\n\nWorked algorithm\nAllocate n cells and fill them from the end of the source. Dry run \"ab\" allocates \"ba\". Time O(n). Space O(n). Edge case: n = 0 allocates an empty result.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. The coding problem reverse-string prints a new line; the extra output is proportional to n.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=medium; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: O(n) extra memory\n\nStep-by-step\n1. The result needs one slot per input character.\n2. Those n slots are new.\n3. The extra memory is Θ(n), so the tightest bound is O(n).\n\nWhy other options are wrong\n- O(1) extra memory: O(1) fits an in-place buffer. A new string must hold n characters.\n- O(log n) extra memory: Not a valid bound. The result alone holds n characters, and n grows faster than log n.\n- O(n²) extra memory: A valid upper bound, because n ≤ n², but not the tightest. Each character is stored once in the result, not n times.\n\nLearn the concept\nAn immutable string operation allocates the result. The reverse result has n characters.\n\nFormula or key principle\nExtra space Θ(n) for the new string. Time Θ(n) to copy.\n\nWorked example\nReversing \"code\" allocates a new 4-character string \"edoc\".\n\nWorked algorithm\nAllocate n cells and fill them from the end of the source. Dry run \"ab\" allocates \"ba\". Time O(n). Space O(n). Edge case: n = 0 allocates an empty result.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-strings — Scanning a string. String-scan lesson. The coding problem reverse-string prints a new line; the extra output is proportional to n.\n\nTopic metadata\ndomain=technical; category=dsa; topic=strings; difficulty=medium; type=single-choice",
+      "revises": {
+        "stem": "If strings cannot be edited in place, how much extra memory does building the reverse of an n-character string take?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-cx-01",
@@ -2657,11 +2685,11 @@
     },
     {
       "key": "sprint1-cx-04",
-      "stem": "A function does 20 steps of setup and then one loop of n additions. What is the time complexity?",
+      "stem": "A function does 20 steps of setup and then one loop of n additions. What is the tightest Big-O time bound?",
       "skill": "complexity",
       "difficulty": "medium",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "basics",
@@ -2692,18 +2720,22 @@
           "key": "D",
           "text": "O(20ⁿ)",
           "correct": false,
-          "why": "20ⁿ would be exponential. The 20 here is a fixed setup, not the base of an exponent."
+          "why": "A valid but extremely loose upper bound. 20ⁿ grows exponentially, while the work is 20 + n. The 20 here is a fixed setup, not the base of an exponent."
         }
       ],
-      "explanation": "Difficulty: medium\nCorrect answer: O(n)\n\nStep-by-step\n1. Setup is constant.\n2. The loop is linear.\n3. Constant plus linear is linear.\n\nWhy other options are wrong\n- O(1): The loop still grows with n. The 20 setup steps do not cancel it.\n- O(n + 20) as a different class from O(n): O(n + 20) is the same class as O(n). Adding a constant does not create a new class.\n- O(20ⁿ): 20ⁿ would be exponential. The 20 here is a fixed setup, not the base of an exponent.\n\nLearn the concept\nO(1) + O(n) = O(n).\n\nFormula or key principle\n20 + n steps.\n\nWorked example\nn = 5 does 25 additions-and-setup steps. n = 50 does 70. The growth follows n.\n\nWorked algorithm\nCount setup, then count the loop. Dry run n=4: 20 setup steps plus 4 loop steps. Time O(n). Space O(1) if each addition reuses one variable. Edge case: n = 0 leaves only the setup, which is allowed inside O(n).\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Constants are dropped in the class even though they matter on a real machine.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=medium; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: O(n)\n\nStep-by-step\n1. Setup is constant.\n2. The loop is linear.\n3. Constant plus linear is Θ(n), so the tightest bound is O(n).\n\nWhy other options are wrong\n- O(1): The loop still grows with n. The 20 setup steps do not cancel it.\n- O(n + 20) as a different class from O(n): O(n + 20) is the same class as O(n). Adding a constant does not create a new class.\n- O(20ⁿ): A valid but extremely loose upper bound. 20ⁿ grows exponentially, while the work is 20 + n. The 20 here is a fixed setup, not the base of an exponent.\n\nLearn the concept\nO(1) + O(n) = O(n).\n\nFormula or key principle\n20 + n steps.\n\nWorked example\nn = 5 does 20 setup steps and 5 additions, 25 steps in total. n = 50 does 70. The growth follows n.\n\nWorked algorithm\nCount setup, then count the loop. Dry run n=4: 20 setup steps plus 4 loop steps. Time O(n). Space O(1) if each addition reuses one variable. Edge case: n = 0 leaves only the 20 setup steps. Big-O describes growth as n increases, so that constant does not change the class.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Constants are dropped in the class even though they matter on a real machine.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=medium; type=single-choice",
+      "revises": {
+        "stem": "A function does 20 steps of setup and then one loop of n additions. What is the time complexity?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-cx-05",
-      "stem": "You need the sum 1 + 2 + … + n. Which statement is accurate?",
+      "stem": "You need the sum 1 + 2 + … + n. Count each arithmetic operation as one step. Which statement gives the tightest time bounds for the formula n(n+1)/2 and for adding the integers one by one?",
       "skill": "complexity",
       "difficulty": "hard",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "basics",
@@ -2722,22 +2754,26 @@
           "key": "B",
           "text": "Both methods are O(1)",
           "correct": false,
-          "why": "Walking from 1 to n does work that grows with n."
+          "why": "Not valid for the loop. Walking from 1 to n does n additions, which grows with n."
         },
         {
           "key": "C",
           "text": "Both methods are O(n²)",
           "correct": false,
-          "why": "The loop adds once per integer. It is not a nested pair of loops. The formula is constant."
+          "why": "Valid upper bounds for both methods, but not the tightest. The formula is O(1), and the loop adds once per integer, so it is O(n). Neither is a nested pair of loops."
         },
         {
           "key": "D",
           "text": "The formula is O(n!)",
           "correct": false,
-          "why": "The formula uses a fixed number of arithmetic operations, not a factorial."
+          "why": "A valid but very loose upper bound for the formula, and it says nothing about the loop. The formula uses a fixed number of arithmetic operations, so its tightest bound is O(1)."
         }
       ],
-      "explanation": "Difficulty: hard\nCorrect answer: The formula n(n+1)/2 is O(1); adding the integers one by one is O(n)\n\nStep-by-step\n1. The closed form multiplies n by n+1 and divides by 2.\n2. That is a fixed amount of arithmetic.\n3. The loop performs n additions.\n\nWhy other options are wrong\n- Both methods are O(1): Walking from 1 to n does work that grows with n.\n- Both methods are O(n²): The loop adds once per integer. It is not a nested pair of loops. The formula is constant.\n- The formula is O(n!): The formula uses a fixed number of arithmetic operations, not a factorial.\n\nLearn the concept\nThe same result can have two algorithms with different costs.\n\nFormula or key principle\nSum = n(n+1)/2.\n\nWorked example\nn = 4. Formula: 4×5/2 = 10. Loop: 1+2+3+4 = 10.\n\nWorked algorithm\nFormula: three arithmetic operations. Loop: for i from 1 to n, add i. Dry run n=4 gives 10 either way. Formula time O(1), loop time O(n). Space O(1) for both if you store only the total. Edge case: n = 0 sums to 0.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Choose the method the question names before you name the class.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=hard; type=single-choice"
+      "explanation": "Difficulty: hard\nCorrect answer: The formula n(n+1)/2 is O(1); adding the integers one by one is O(n)\n\nStep-by-step\n1. With each arithmetic operation counted as one step, the closed form is one addition, one multiplication, and one division.\n2. That count does not depend on n, so the formula's tightest bound is O(1).\n3. The loop performs n additions, so its tightest bound is O(n).\n\nWhy other options are wrong\n- Both methods are O(1): Not valid for the loop. Walking from 1 to n does n additions, which grows with n.\n- Both methods are O(n²): Valid upper bounds for both methods, but not the tightest. The formula is O(1), and the loop adds once per integer, so it is O(n). Neither is a nested pair of loops.\n- The formula is O(n!): A valid but very loose upper bound for the formula, and it says nothing about the loop. The formula uses a fixed number of arithmetic operations, so its tightest bound is O(1).\n\nLearn the concept\nThe same result can have two algorithms with different costs. This question counts each arithmetic operation as one step. A model that charges for the number of digits would cost more for very large n.\n\nFormula or key principle\nSum = n(n+1)/2.\n\nWorked example\nn = 4. Formula: 4×5/2 = 10. Loop: 1+2+3+4 = 10.\n\nWorked algorithm\nFormula: three arithmetic operations. Loop: for i from 1 to n, add i. Dry run n=4 gives 10 either way. Formula time O(1), loop time O(n). Space O(1) for both if you store only the total. Edge case: n = 0 sums to 0.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Choose the method the question names before you name the class.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=hard; type=single-choice",
+      "revises": {
+        "stem": "You need the sum 1 + 2 + … + n. Which statement is accurate?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-sea-01",
@@ -2787,7 +2823,7 @@
       "skill": "searching",
       "difficulty": "medium",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "searching",
@@ -2806,13 +2842,13 @@
           "key": "B",
           "text": "0",
           "correct": false,
-          "why": "Index 0 holds 2. The first middle is not the answer."
+          "why": "Index 0 holds 2, not 6. Binary search returns the index where it finds 6."
         },
         {
           "key": "C",
           "text": "1",
           "correct": false,
-          "why": "Index 1 holds 4. The search moves right after seeing 4 only if the middle is 4; in this array the first middle is 6."
+          "why": "Index 1 holds 4, not 6. The first middle, index 2, already holds 6, so the search never reaches index 1."
         },
         {
           "key": "D",
@@ -2821,7 +2857,7 @@
           "why": "Index 4 holds 10, which is past the target."
         }
       ],
-      "explanation": "Difficulty: medium\nCorrect answer: 2\n\nStep-by-step\n1. low = 0 and high = 4. mid = 2.\n2. The value at mid is 6, which is the target.\n3. Return index 2.\n\nWhy other options are wrong\n- 0: Index 0 holds 2. The first middle is not the answer.\n- 1: Index 1 holds 4. The search moves right after seeing 4 only if the middle is 4; in this array the first middle is 6.\n- 4: Index 4 holds 10, which is past the target.\n\nLearn the concept\nBinary search is valid on a sorted array. It compares the middle and discards half.\n\nFormula or key principle\nmid = low + floor((high−low)/2), using a form that stays inside the index range.\n\nWorked example\n[2,4,6,8,10], target 6, first mid index 2, value 6.\n\nWorked algorithm\nlow 0, high 4, mid 2, A[2]=6, return 2. Dry run stops after one comparison. Time O(log n) worst case, O(1) in this lucky first hit. Space O(1) for the iterative form. Edge case: an even length uses the chosen mid formula consistently.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-searching — Linear and binary search. Searching lesson. Coding practice: binary-search. The published complexity lesson explains the log n count, not this index trace.\n\nTopic metadata\ndomain=technical; category=dsa; topic=searching; difficulty=medium; type=single-choice"
+      "explanation": "Difficulty: medium\nCorrect answer: 2\n\nStep-by-step\n1. low = 0 and high = 4. mid = 2.\n2. The value at mid is 6, which is the target.\n3. Return index 2.\n\nWhy other options are wrong\n- 0: Index 0 holds 2, not 6. Binary search returns the index where it finds 6.\n- 1: Index 1 holds 4, not 6. The first middle, index 2, already holds 6, so the search never reaches index 1.\n- 4: Index 4 holds 10, which is past the target.\n\nLearn the concept\nBinary search is valid on a sorted array. It compares the middle and discards half.\n\nFormula or key principle\nmid = low + floor((high−low)/2), using a form that stays inside the index range.\n\nWorked example\n[2,4,6,8,10], target 6, first mid index 2, value 6.\n\nWorked algorithm\nlow 0, high 4, mid 2, A[2]=6, return 2. Dry run stops after one comparison. Time O(log n) worst case, O(1) in this lucky first hit. Space O(1) for the iterative form. Edge case: an even length uses the chosen mid formula consistently.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-searching — Linear and binary search. Searching lesson. Coding practice: binary-search. The published complexity lesson explains the log n count, not this index trace.\n\nTopic metadata\ndomain=technical; category=dsa; topic=searching; difficulty=medium; type=single-choice"
     },
     {
       "key": "sprint1-sea-03",
