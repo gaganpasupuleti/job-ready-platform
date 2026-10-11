@@ -1,8 +1,16 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 import { apiBaseUrl, loadManifest, loginAs } from './helpers'
 
 const fixtures = loadManifest()
+
+// Submit Exam is only offered on the last question, so jump there with the navigator.
+async function goToLastExamQuestion(page: Page) {
+  const navigatorButtons = page.getByRole('button', { name: /^question \d+, (answered|unanswered)/i })
+  await expect(navigatorButtons.first()).toBeVisible({ timeout: 15_000 })
+  await navigatorButtons.last().click()
+  await expect(navigatorButtons.last()).toHaveAccessibleName(/, current$/i)
+}
 
 test.describe('MCQ practice and exam', () => {
   test.beforeEach(async ({ page }) => {
@@ -67,6 +75,7 @@ test.describe('MCQ practice and exam', () => {
     await expect(page.getByText(/^saved$/i)).toBeVisible({ timeout: 10_000 })
     await expect(page.getByText(/% answered/i)).toBeVisible()
     await expect(page.getByText(/time left:/i)).toBeVisible()
+    await goToLastExamQuestion(page)
     await page.getByRole('button', { name: /submit exam/i }).click()
     await expect(page.getByRole('button', { name: /confirm submit/i })).toBeVisible()
   })
@@ -83,6 +92,10 @@ test.describe('MCQ practice and exam', () => {
     const sessionId = sessionUrl.match(/\/practice\/sessions\/([^/]+)/)?.[1]
     expect(sessionId).toBeTruthy()
 
+    await expect(page.getByRole('group', { name: /answer options/i })).toBeVisible({
+      timeout: 20_000,
+    })
+    await goToLastExamQuestion(page)
     await expect(page.getByRole('group', { name: /answer options/i })).toBeVisible({
       timeout: 20_000,
     })
