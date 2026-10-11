@@ -277,16 +277,20 @@ NOTES = [
         },
     ),
     _note(
-        "“No A is B” plus “all B are C” forces some C (the B's) to lie outside A, when the B group exists.",
-        "Some gadgets are not phones.",
-        "Every laptop is a gadget and no laptop is a phone, so those gadgets are not phones.",
+        "“No A is B” plus “all B are C” forces some C (the B's) to lie outside A only when at least one B exists. This question states that at least one laptop exists.",
+        "No A is B, at least one B exists, and all B are C, so some C are not A.",
+        "Take any laptop. It is a gadget, and it is not a phone. That one gadget makes “some gadgets are not phones” true.",
         "crt-sprint-syllogisms",
         "Stay on the syllogisms lesson. Do not widen “some” into “no” or “all”.",
-        ["All laptops are gadgets.", "No phone is a laptop, so those laptops are not phones.", "Therefore some gadgets are not phones."],
+        [
+            "At least one laptop exists. Call it L.",
+            "All laptops are gadgets, so L is a gadget.",
+            "No phone is a laptop, so L is not a phone. L is a gadget that is not a phone, so some gadgets are not phones.",
+        ],
         {
-            "No gadget is a phone": "Phones could still be gadgets that are not laptops.",
-            "All gadgets are laptops": "The statements never say that every gadget is a laptop.",
-            "All phones are laptops": "That contradicts “no phone is a laptop”.",
+            "No gadget is a phone": "Possible, but not forced. A phone can be a gadget that is not a laptop, and that arrangement fits every statement.",
+            "All gadgets are laptops": "Possible, but not forced. The statements only place laptops inside gadgets. Other gadgets, such as a phone, are allowed.",
+            "All phones are laptops": "Never forced. If at least one phone exists, it contradicts “no phone is a laptop”, and the statements do not say that any phone exists.",
         },
     ),
     _note(
@@ -1080,18 +1084,22 @@ def _original_questions() -> list[dict]:
             "A loop sets x = n and replaces x with floor(x/2) until x is 0. What is the time complexity?",
             "O(log n)", ["O(n)", "O(n²)", "O(1) for every n > 1"],
             {
-                "O(n)": "The loop does not subtract 1. It discards half of x each time.",
-                "O(n²)": "There is only one loop, and it shrinks x.",
-                "O(1) for every n > 1": "Larger n needs more halvings. n = 8 takes more steps than n = 2.",
+                "O(n)": "A valid upper bound, because log n ≤ n, but not the tightest. The loop halves x instead of subtracting 1, so it runs far fewer than n times.",
+                "O(n²)": "Also a valid upper bound, but even looser than O(n). There is one loop, and x shrinks by half each time.",
+                "O(1) for every n > 1": "Not a valid bound. The loop runs floor(log2 n) + 1 times, which grows without limit: n = 2 takes 2 iterations, n = 8 takes 4, and n = 1024 takes 11.",
             },
-            ["Each iteration halves x.", "The number of halvings until 1 is about log2(n).", "That growth is O(log n)."],
-            "Halving reaches a constant after a logarithmic number of steps.",
-            "Iterations are floor(log2 n) + 1 while x stays positive.",
-            "n = 8: 8, 4, 2, 1, then the next step reaches 0. Four halvings from 8.",
+            [
+                "Each iteration replaces x with floor(x/2), which removes the last binary digit of x.",
+                "x reaches 0 after one iteration per binary digit of n, so the loop runs floor(log2 n) + 1 times.",
+                "That count grows like log n, so the tightest Big-O bound is O(log n).",
+            ],
+            "Halving reaches 0 after a logarithmic number of steps. A looser class such as O(n) still bounds the loop from above, but the tightest bound is the one that matches its growth.",
+            "Iterations = floor(log2 n) + 1 for every n ≥ 1, which is Θ(log n).",
+            "n = 8: 8 → 4 → 2 → 1 → 0. That is 4 iterations, and floor(log2 8) + 1 = 4.",
             "dsa-sprint-complexity",
             "Complexity lesson. Binary search uses this same halving count.",
             "technical", "dsa", "basics",
-            "while x > 0: x ← floor(x/2). Dry run 8 → 4 → 2 → 1 → 0. Time O(log n). Space O(1). Edge case: n = 1 finishes in one halving to 0.",
+            "while x > 0: x ← floor(x/2). Dry run n = 8: 8 → 4 → 2 → 1 → 0, four iterations. Time Θ(log n). Space O(1). Edge cases: n = 2 takes 2 iterations (2 → 1 → 0), and n = 3 also takes 2 (3 → 1 → 0). The question starts at n ≥ 2 so that log n is positive; n = 1 would take one iteration.",
         ),
         _original(
             "sprint1-cx-03", "complexity", "medium",
@@ -1263,6 +1271,14 @@ def _check_math() -> None:
     assert 12 + 8 + 16 + 4 == 40 and 16 / 40 == 0.4
     assert 4 * 5 / 2 == 10
     assert (0 + (4 - 0) // 2) == 2
+    # halving loop: iterations equal the binary length of n
+    for n in (1, 2, 3, 8, 1024):
+        x, iterations = n, 0
+        while x > 0:
+            x //= 2
+            iterations += 1
+        assert iterations == n.bit_length()
+    assert [(2).bit_length(), (3).bit_length(), (8).bit_length(), (1024).bit_length()] == [2, 2, 4, 11]
     # six-item binary search middles
     low, high = 0, 5
     mids = []
@@ -1704,6 +1720,23 @@ def _write_text(path: Path, text: str) -> None:
     path.write_bytes(text.replace("\n", "\r\n").encode("utf-8"))
 
 
+# Reworded after the version-1 approval. Each row keeps its key and option text, raises its
+# version, and records the stem it replaces so the importer can match the existing row.
+REVISIONS = {
+    "sprint1-syl-03": "No phone is a laptop. At least one laptop exists. All laptops are gadgets. Which conclusion necessarily follows?",
+    "sprint1-cx-02": "For a positive integer n ≥ 2, a loop sets x = n and repeatedly replaces x with floor(x/2) until x becomes 0. What is the tightest Big-O time bound?",
+}
+
+
+def _apply_revisions(questions: list[dict]) -> None:
+    by_key = {row["key"]: row for row in questions}
+    for key, stem in REVISIONS.items():
+        row = by_key[key]
+        row["revises"] = {"stem": row["stem"], "version": row["version"]}
+        row["stem"] = stem
+        row["version"] += 1
+
+
 def main() -> None:
     _check_math()
     questions = _selected_questions() + _original_questions()
@@ -1711,6 +1744,7 @@ def main() -> None:
         raise SystemExit(len(questions))
     if len({row["key"] for row in questions}) != 70:
         raise SystemExit("duplicate keys")
+    _apply_revisions(questions)
     articles = ROOT / "articles"
     articles.mkdir(exist_ok=True)
     for name, body in ARTICLES.items():

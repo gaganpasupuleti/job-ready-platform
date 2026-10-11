@@ -12,6 +12,7 @@ from uuid import uuid4
 from sqlalchemy import select
 
 from app.content.hashing import content_hash
+from app.content.revised_seed_stems import superseded_by_revision
 from app.db.session import AsyncSessionLocal, engine
 from app.models.enums import Difficulty, QuestionType
 from app.models.question import Question, QuestionOption
@@ -30,6 +31,8 @@ async def seed_phase11_mcqs() -> tuple[int, int]:
         existing_texts = list((await session.execute(select(Question.question_text))).scalars().all())
         existing_text_set = set(existing_texts)
         existing_hashes = {content_hash(t) for t in existing_texts}
+        keyed = select(Question.content_key).where(Question.content_key.is_not(None))
+        existing_keys = set((await session.execute(keyed)).scalars().all())
 
         domains = {d.slug: d for d in (await session.execute(select(Domain))).scalars().all()}
         categories = {
@@ -52,7 +55,11 @@ async def seed_phase11_mcqs() -> tuple[int, int]:
             w3,
         ) in rows:
             digest = content_hash(text)
-            if text in existing_text_set or digest in existing_hashes:
+            if (
+                text in existing_text_set
+                or digest in existing_hashes
+                or superseded_by_revision(text, existing_keys)
+            ):
                 skipped += 1
                 continue
 

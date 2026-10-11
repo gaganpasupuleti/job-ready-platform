@@ -85,6 +85,17 @@ def load_batch(path: Path) -> dict:
             rejected.append(f"{question['key']} multi-select count")
         if len({opt["key"] for opt in question["options"]}) != len(question["options"]):
             rejected.append(f"{question['key']} duplicate options")
+        revises = question.get("revises")
+        if revises is not None:
+            if manifest["batch_id"] != SPRINT_BATCH_ID:
+                rejected.append(f"{question['key']} revises a stem outside the sprint batch")
+            elif (
+                not isinstance(revises.get("stem"), str)
+                or not revises["stem"]
+                or revises["stem"] == question["stem"]
+                or int(revises.get("version") or 0) >= int(question.get("version") or 1)
+            ):
+                rejected.append(f"{question['key']} revision needs a different prior stem and a lower prior version")
     for pack in packs:
         for family in pack["families"]:
             if family not in FAMILY_IDS:
@@ -409,7 +420,9 @@ async def _same_taxonomy(db: AsyncSession, question: Question, topic: Topic) -> 
     return category is not None and target is not None and category.domain_id == question.domain_id and category.domain_id == target.domain_id
 
 
-def _identity_record(key: str, how: str, question: Question | None, *, option_text_changed: bool = False) -> dict:
+def _identity_record(
+    key: str, how: str, question: Question | None, *, option_text_changed: bool = False, stem_changed: bool = False
+) -> dict:
     options = sorted(question.options, key=lambda item: item.sort_order) if question is not None else []
     return {
         "key": key,
@@ -417,6 +430,7 @@ def _identity_record(key: str, how: str, question: Question | None, *, option_te
         "question_id": None if question is None else str(question.id),
         "option_ids_changed": False,
         "option_text_changed": option_text_changed,
+        "stem_changed": stem_changed,
         "option_ids": [str(option.id) for option in options],
     }
 
@@ -455,21 +469,27 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                 )
         if sprint:
             adoption = row.get("adoption")
+            prior_stem = (row.get("revises") or {}).get("stem")
+            accepted = {row["stem"], prior_stem} - {None}
             if adoption not in {"required", "create"}:
                 problems.append(f"{row['key']} missing adoption mode")
             elif target_topic is not None and adoption == "required":
-                matches = await _questions_by_stem(db, row["stem"])
+                matches = await _questions_by_stem(db, prior_stem or row["stem"])
                 if current is None:
                     if len(matches) != 1 or matches[0].content_key is not None:
                         problems.append(f"{row['key']} expected exactly one existing stem, found {len(matches)}")
                     else:
                         current = matches[0]
-                        how = "adopted"
+                        how = "revised" if prior_stem else "adopted"
+                    if prior_stem and await _questions_by_stem(db, row["stem"]):
+                        problems.append(f"{row['key']} revised stem already exists on another row")
                 else:
+                    if prior_stem:
+                        matches += await _questions_by_stem(db, row["stem"])
                     others = [item for item in matches if item.id != current.id]
-                    if others or current.question_text != row["stem"]:
+                    if others or current.question_text not in accepted:
                         problems.append(f"{row['key']} stem does not match exactly one existing row")
-                    how = "updated"
+                    how = "revised" if current.question_text != row["stem"] else "updated"
                 if current is not None and target_topic is not None:
                     if not await _same_taxonomy(db, current, target_topic):
                         problems.append(f"{row['key']} would move off its current topic")
@@ -483,13 +503,15 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                         problems.append(f"{row['key']} question type does not match")
             elif target_topic is not None and adoption == "create":
                 matches = await _questions_by_stem(db, row["stem"])
+                if prior_stem:
+                    matches += await _questions_by_stem(db, prior_stem)
                 if current is None:
                     if matches:
                         problems.append(f"{row['key']} stem already exists and cannot be created")
                     how = "created"
                 else:
                     others = [item for item in matches if item.id != current.id]
-                    if others or current.question_text != row["stem"]:
+                    if others or current.question_text not in accepted:
                         problems.append(f"{row['key']} stem does not match exactly one existing row")
                     if not await _same_taxonomy(db, current, target_topic):
                         problems.append(f"{row['key']} would move off its current topic")
@@ -501,7 +523,12 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
                         QuestionType.MULTIPLE_CHOICE if row["mode"] == "multi" else QuestionType.SINGLE_CHOICE
                     ):
                         problems.append(f"{row['key']} question type does not match")
-                    how = "updated"
+                    how = "revised" if current.question_text != row["stem"] else "updated"
+            if action["action"] == "unchanged":
+                if current is None or current.content_key != row["key"]:
+                    problems.append(f"{row['key']} recorded as applied but its keyed row is missing")
+                elif current.question_text != row["stem"]:
+                    problems.append(f"{row['key']} recorded as current but the stored stem has drifted")
         else:
             if current is not None and target_topic is not None and current.topic_id != target_topic.id:
                 problems.append(f"{row['key']} would move off its current topic")
@@ -590,8 +617,11 @@ async def apply_batch(db: AsyncSession, path: Path, *, allow_remote: bool = Fals
             elif plan_row["sprint"]:
                 if current.content_key is None:
                     current.content_key = key
+                stem_changed = bool(row.get("revises")) and current.question_text != row["stem"]
+                if stem_changed:
+                    current.question_text = row["stem"]
                 current.explanation = explanation
-                identity.append(_identity_record(key, plan_row["how"], current))
+                identity.append(_identity_record(key, plan_row["how"], current, stem_changed=stem_changed))
             else:
                 if current.content_key is None:
                     current.content_key = key

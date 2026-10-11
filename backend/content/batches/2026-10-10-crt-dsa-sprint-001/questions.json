@@ -717,11 +717,11 @@
     },
     {
       "key": "sprint1-syl-03",
-      "stem": "No phone is a laptop. All laptops are gadgets. Which follows?",
+      "stem": "No phone is a laptop. At least one laptop exists. All laptops are gadgets. Which conclusion necessarily follows?",
       "skill": "logical-reasoning",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "placement",
       "category_slug": "aptitude",
       "topic_slug": "syllogisms",
@@ -740,22 +740,26 @@
           "key": "B",
           "text": "No gadget is a phone",
           "correct": false,
-          "why": "Phones could still be gadgets that are not laptops."
+          "why": "Possible, but not forced. A phone can be a gadget that is not a laptop, and that arrangement fits every statement."
         },
         {
           "key": "C",
           "text": "All gadgets are laptops",
           "correct": false,
-          "why": "The statements never say that every gadget is a laptop."
+          "why": "Possible, but not forced. The statements only place laptops inside gadgets. Other gadgets, such as a phone, are allowed."
         },
         {
           "key": "D",
           "text": "All phones are laptops",
           "correct": false,
-          "why": "That contradicts “no phone is a laptop”."
+          "why": "Never forced. If at least one phone exists, it contradicts “no phone is a laptop”, and the statements do not say that any phone exists."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: Some gadgets are not phones\n\nStep-by-step\n1. All laptops are gadgets.\n2. No phone is a laptop, so those laptops are not phones.\n3. Therefore some gadgets are not phones.\n\nWhy other options are wrong\n- No gadget is a phone: Phones could still be gadgets that are not laptops.\n- All gadgets are laptops: The statements never say that every gadget is a laptop.\n- All phones are laptops: That contradicts “no phone is a laptop”.\n\nLearn the concept\n“No A is B” plus “all B are C” forces some C (the B's) to lie outside A, when the B group exists.\n\nFormula or key principle\nSome gadgets are not phones.\n\nWorked example\nEvery laptop is a gadget and no laptop is a phone, so those gadgets are not phones.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Stay on the syllogisms lesson. Do not widen “some” into “no” or “all”.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: Some gadgets are not phones\n\nStep-by-step\n1. At least one laptop exists. Call it L.\n2. All laptops are gadgets, so L is a gadget.\n3. No phone is a laptop, so L is not a phone. L is a gadget that is not a phone, so some gadgets are not phones.\n\nWhy other options are wrong\n- No gadget is a phone: Possible, but not forced. A phone can be a gadget that is not a laptop, and that arrangement fits every statement.\n- All gadgets are laptops: Possible, but not forced. The statements only place laptops inside gadgets. Other gadgets, such as a phone, are allowed.\n- All phones are laptops: Never forced. If at least one phone exists, it contradicts “no phone is a laptop”, and the statements do not say that any phone exists.\n\nLearn the concept\n“No A is B” plus “all B are C” forces some C (the B's) to lie outside A only when at least one B exists. This question states that at least one laptop exists.\n\nFormula or key principle\nNo A is B, at least one B exists, and all B are C, so some C are not A.\n\nWorked example\nTake any laptop. It is a gadget, and it is not a phone. That one gadget makes “some gadgets are not phones” true.\n\nRelated lesson\ncrt-sprint-syllogisms — What a syllogism forces. Stay on the syllogisms lesson. Do not widen “some” into “no” or “all”.\n\nTopic metadata\ndomain=placement; category=aptitude; topic=syllogisms; difficulty=easy; type=single-choice",
+      "revises": {
+        "stem": "No phone is a laptop. All laptops are gadgets. Which follows?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-syl-04",
@@ -2565,11 +2569,11 @@
     },
     {
       "key": "sprint1-cx-02",
-      "stem": "A loop sets x = n and replaces x with floor(x/2) until x is 0. What is the time complexity?",
+      "stem": "For a positive integer n ≥ 2, a loop sets x = n and repeatedly replaces x with floor(x/2) until x becomes 0. What is the tightest Big-O time bound?",
       "skill": "complexity",
       "difficulty": "easy",
       "mode": "single",
-      "version": 1,
+      "version": 2,
       "domain_slug": "technical",
       "category_slug": "dsa",
       "topic_slug": "basics",
@@ -2588,22 +2592,26 @@
           "key": "B",
           "text": "O(n)",
           "correct": false,
-          "why": "The loop does not subtract 1. It discards half of x each time."
+          "why": "A valid upper bound, because log n ≤ n, but not the tightest. The loop halves x instead of subtracting 1, so it runs far fewer than n times."
         },
         {
           "key": "C",
           "text": "O(n²)",
           "correct": false,
-          "why": "There is only one loop, and it shrinks x."
+          "why": "Also a valid upper bound, but even looser than O(n). There is one loop, and x shrinks by half each time."
         },
         {
           "key": "D",
           "text": "O(1) for every n > 1",
           "correct": false,
-          "why": "Larger n needs more halvings. n = 8 takes more steps than n = 2."
+          "why": "Not a valid bound. The loop runs floor(log2 n) + 1 times, which grows without limit: n = 2 takes 2 iterations, n = 8 takes 4, and n = 1024 takes 11."
         }
       ],
-      "explanation": "Difficulty: easy\nCorrect answer: O(log n)\n\nStep-by-step\n1. Each iteration halves x.\n2. The number of halvings until 1 is about log2(n).\n3. That growth is O(log n).\n\nWhy other options are wrong\n- O(n): The loop does not subtract 1. It discards half of x each time.\n- O(n²): There is only one loop, and it shrinks x.\n- O(1) for every n > 1: Larger n needs more halvings. n = 8 takes more steps than n = 2.\n\nLearn the concept\nHalving reaches a constant after a logarithmic number of steps.\n\nFormula or key principle\nIterations are floor(log2 n) + 1 while x stays positive.\n\nWorked example\nn = 8: 8, 4, 2, 1, then the next step reaches 0. Four halvings from 8.\n\nWorked algorithm\nwhile x > 0: x ← floor(x/2). Dry run 8 → 4 → 2 → 1 → 0. Time O(log n). Space O(1). Edge case: n = 1 finishes in one halving to 0.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Binary search uses this same halving count.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=easy; type=single-choice"
+      "explanation": "Difficulty: easy\nCorrect answer: O(log n)\n\nStep-by-step\n1. Each iteration replaces x with floor(x/2), which removes the last binary digit of x.\n2. x reaches 0 after one iteration per binary digit of n, so the loop runs floor(log2 n) + 1 times.\n3. That count grows like log n, so the tightest Big-O bound is O(log n).\n\nWhy other options are wrong\n- O(n): A valid upper bound, because log n ≤ n, but not the tightest. The loop halves x instead of subtracting 1, so it runs far fewer than n times.\n- O(n²): Also a valid upper bound, but even looser than O(n). There is one loop, and x shrinks by half each time.\n- O(1) for every n > 1: Not a valid bound. The loop runs floor(log2 n) + 1 times, which grows without limit: n = 2 takes 2 iterations, n = 8 takes 4, and n = 1024 takes 11.\n\nLearn the concept\nHalving reaches 0 after a logarithmic number of steps. A looser class such as O(n) still bounds the loop from above, but the tightest bound is the one that matches its growth.\n\nFormula or key principle\nIterations = floor(log2 n) + 1 for every n ≥ 1, which is Θ(log n).\n\nWorked example\nn = 8: 8 → 4 → 2 → 1 → 0. That is 4 iterations, and floor(log2 8) + 1 = 4.\n\nWorked algorithm\nwhile x > 0: x ← floor(x/2). Dry run n = 8: 8 → 4 → 2 → 1 → 0, four iterations. Time Θ(log n). Space O(1). Edge cases: n = 2 takes 2 iterations (2 → 1 → 0), and n = 3 also takes 2 (3 → 1 → 0). The question starts at n ≥ 2 so that log n is positive; n = 1 would take one iteration.\n\nDry run, time complexity, space complexity, and edge cases are in that algorithm trace.\n\nRelated lesson\ndsa-sprint-complexity — Checking a big-O claim. Complexity lesson. Binary search uses this same halving count.\n\nTopic metadata\ndomain=technical; category=dsa; topic=basics; difficulty=easy; type=single-choice",
+      "revises": {
+        "stem": "A loop sets x = n and replaces x with floor(x/2) until x is 0. What is the time complexity?",
+        "version": 1
+      }
     },
     {
       "key": "sprint1-cx-03",

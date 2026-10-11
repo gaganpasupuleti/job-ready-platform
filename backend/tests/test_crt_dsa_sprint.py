@@ -120,9 +120,12 @@ async def _seed_required(db) -> Question:
     for row in batch["questions"]:
         if row.get("adoption") != "required":
             continue
+        seed_stem = (row.get("revises") or {}).get("stem") or row["stem"]
         current = (
             await db.execute(
-                select(Question).options(selectinload(Question.options)).where(Question.question_text == row["stem"])
+                select(Question)
+                .options(selectinload(Question.options))
+                .where(Question.question_text.in_({seed_stem, row["stem"]}))
             )
         ).scalar_one_or_none()
         if current is None:
@@ -130,7 +133,7 @@ async def _seed_required(db) -> Question:
             category = await db.get(Category, topic.category_id)
             current = Question(
                 question_type=QuestionType.SINGLE_CHOICE,
-                question_text=row["stem"],
+                question_text=seed_stem,
                 explanation="SHORT SEED",
                 difficulty={"easy": Difficulty.EASY, "medium": Difficulty.MEDIUM, "hard": Difficulty.HARD}[row["difficulty"]],
                 domain_id=category.domain_id,
@@ -193,7 +196,8 @@ async def test_sprint_batch_preserves_ids_scores_and_hides_exam_answers(client, 
     async with AsyncSessionLocal() as db:
         result = await apply_batch(db, BATCH, allow_remote=False)
     assert result["refused"] is False, result
-    assert sum(row["row"] == "adopted" for row in result["identity"]) == 50
+    assert sum(row["row"] == "adopted" for row in result["identity"]) == 49
+    assert [row["key"] for row in result["identity"] if row["row"] == "revised"] == ["sprint1-syl-03"]
     assert sum(row["row"] == "created" for row in result["identity"]) == 20
     assert all(row["option_text_changed"] is False and row["option_ids_changed"] is False for row in result["identity"])
     identity = {row["key"]: row for row in result["identity"]}
