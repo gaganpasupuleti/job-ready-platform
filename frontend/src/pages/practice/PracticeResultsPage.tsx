@@ -86,7 +86,9 @@ export function PracticeResultsPage() {
                   Your answer: {item.selected_option_texts.join(', ') || 'Not answered'}
                 </p>
                 <p className="text-sm text-[var(--color-text-muted)]">
-                  Correct answer: {item.correct_option_texts.join(', ')}
+                  {item.correct_option_texts.length > 0
+                    ? `Correct answer: ${item.correct_option_texts.join(', ')}`
+                    : 'Correct answer: shown after you answer or finish the session'}
                 </p>
                 {item.explanation && (
                   <p className="mt-3 text-[var(--color-text)]">{item.explanation}</p>
