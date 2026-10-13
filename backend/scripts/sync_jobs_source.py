@@ -4,6 +4,9 @@ Source access stays read-only. A full catalog apply remains disabled.
 A reviewed batch reads the application target from JOBS_APPLY_DATABASE_URL.
 Confirm that target with host:port/database. Do not pass a DSN as an argument.
 The source and application targets are refused if they are the same or swapped.
+
+--plan-publication-candidates is read-only. It writes a proposed batch and a report
+into --output-dir and never records decisions or writes jobs.
 """
 
 from __future__ import annotations
@@ -37,11 +40,17 @@ from app.services.jobs_source_sync import (
     plan_sync,
     source_identity,
 )
+from app.services.publication_candidates import (
+    planner_targets,
+    run_publication_planner,
+    summary_lines,
+)
 
 logging.getLogger("sqlalchemy.engine").setLevel(logging.CRITICAL)
 logging.getLogger("sqlalchemy.pool").setLevel(logging.CRITICAL)
 
 APPLY_TARGET_ENV = "JOBS_APPLY_DATABASE_URL"
+PLAN_APPLICATION_ENV = "JOBS_PLAN_APPLICATION_DATABASE_URL"
 
 DISPOSABLE_DATABASE = "jobready_sync_disposable"
 
@@ -214,6 +223,49 @@ async def _verify_named_batch(target_url: str, names) -> int:
     return 0
 
 
+def _plan_application_url() -> str:
+    """Planner reads the application under a read-only session, never through the apply target."""
+    value = os.environ.get(PLAN_APPLICATION_ENV, "").strip()
+    value = value or os.environ.get("DATABASE_URL", "").strip()
+    if not value:
+        raise SystemExit("PLAN_REFUSED application database is not configured")
+    return value
+
+
+async def _plan_publication_candidates(output_dir: str) -> int:
+    try:
+        source_url = _source_dsn()
+        application_url = _plan_application_url()
+        source_target, application_target = planner_targets(source_url, application_url)
+    except SystemExit as exc:
+        print(exc.code if isinstance(exc.code, str) else "PLAN_REFUSED target configuration")
+        print("NO_WRITES publication planning only")
+        return 2
+    print("SOURCE_TARGET", source_target)
+    print("APPLICATION_TARGET", application_target)
+    try:
+        result = await run_publication_planner(
+            source_dsn=source_url,
+            application_dsn=application_url,
+            output_dir=Path(output_dir),
+        )
+    except SystemExit as exc:
+        print(exc.code if isinstance(exc.code, str) else "PLAN_REFUSED")
+        print("NO_WRITES publication planning only")
+        return 2
+    except FileExistsError:
+        print("PLAN_REFUSED planner artifacts already exist")
+        print("NO_WRITES publication planning only")
+        return 2
+    except Exception as exc:
+        print("PLAN_FAILED", type(exc).__name__)
+        print("NO_WRITES publication planning only")
+        return 1
+    for line in summary_lines(result):
+        print(line)
+    return 0
+
+
 async def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", default=True)
@@ -225,7 +277,29 @@ async def main() -> int:
     parser.add_argument("--confirm-target", default="")
     parser.add_argument("--target-database", default="")
     parser.add_argument("--target-url", default="")
+    parser.add_argument("--plan-publication-candidates", action="store_true")
+    parser.add_argument("--output-dir", default="")
     args = parser.parse_args()
+    if args.plan_publication_candidates:
+        if (
+            args.apply
+            or args.apply_local_disposable
+            or args.apply_reviewed_batch
+            or args.verify_reviewed_batch
+            or args.batch.strip()
+            or args.confirm_target.strip()
+            or args.target_database.strip()
+            or args.target_url.strip()
+        ):
+            print("PLAN_REFUSED planning cannot be combined with apply, batch, or target options")
+            return 2
+        if not args.output_dir.strip():
+            print("PLAN_REFUSED --output-dir is required")
+            return 2
+        return await _plan_publication_candidates(args.output_dir.strip())
+    if args.output_dir.strip():
+        print("PLAN_REFUSED --output-dir is only used with --plan-publication-candidates")
+        return 2
     if args.apply and not args.apply_local_disposable and not args.apply_reviewed_batch:
         print("APPLY_REFUSED production and source writes are disabled")
         return 2
