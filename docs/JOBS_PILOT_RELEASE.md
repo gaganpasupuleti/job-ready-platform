@@ -39,6 +39,40 @@ python scripts/sync_jobs_source.py --verify-reviewed-batch --batch reviewed.txt 
 
 `reviewed.txt` is one `source/job_id` pair per line. `#` comments are ignored. Bare `--apply` still refuses.
 
+## Publication candidate planner (PUB-01)
+
+The workflow is: catalog → publication candidate planner → human/product policy review → publication decisions → reviewed batch → existing guarded apply → verification. PUB-01 stops before publication decisions.
+
+```text
+python scripts/sync_jobs_source.py --plan-publication-candidates --output-dir <directory>
+```
+
+The planner is read-only on both databases. The catalog session sets `TRANSACTION READ ONLY` and verifies `transaction_read_only=on` before reading. The application session is opened from `JOBS_PLAN_APPLICATION_DATABASE_URL`, or `DATABASE_URL` if that is unset, and is verified read-only the same way. It never reads `JOBS_APPLY_DATABASE_URL`. It never records a decision and never inserts, updates, or archives a job. It prints only host, port, and database for each target. It cannot be combined with `--apply`, `--apply-reviewed-batch`, `--verify-reviewed-batch`, `--batch`, `--confirm-target`, `--target-database`, or `--target-url`.
+
+Eligibility is `jobs_source_sync.exclusion_reasons(row, "publish")`: the existing content gate evaluated as if a publish decision existed. Source `approved_status` and `manual_review_needed` are not converted into approval. Identity is only `jobs.external_id = jobs-server:<job_id>`; there is no title, company, or URL matching.
+
+Every catalog row gets exactly one category, checked in this order:
+
+1. `IDENTITY_CONFLICT` — blank or unsafe `job_id`/source, a `job_id` used by more than one catalog row, or more than one application row with the same `external_id`.
+2. `LINK_INACTIVE` — the canonical gate reports `link_not_active`.
+3. `WITHHELD` — a `withhold` decision exists.
+4. `VISIBLE_OR_ALREADY_PUBLISHED` — a `publish` decision and an active application row.
+5. `DECISION_EXISTS_APP_ROW_MISSING` — a `publish` decision and no application row.
+6. `PUBLISH_DECISION_MISSING_CONTENT_ELIGIBLE` — no decision, no application row, and no content reason.
+7. `PUBLISH_DECISION_MISSING_CONTENT_BLOCKED` — no decision, no application row, and at least one content reason.
+8. `OTHER` — inconsistent states, reported by reason: a `publish` decision with an archived or inactive row, an application row without a decision, or an unrecognized decision value.
+
+The planner writes two new files and refuses to overwrite either:
+
+- `publication_candidates_<UTC timestamp>.txt` — the PROPOSED batch. Only category 6, one `source/job_id` per line, sorted by source then `job_id`, no comments. It is the format `parse_reviewed_batch` reads.
+- `publication_candidates_<UTC timestamp>.json` — counts by category, decision, content reason, candidate breakdowns, quality warnings, and one record per candidate.
+
+This file contains candidates only. It does not represent publication approval and cannot by itself create publication decisions.
+
+`candidate_set_sha256` is the SHA-256 of the exact batch file bytes. The same candidate set gives the same hash regardless of catalog order. Use it to detect drift between review and apply. It is not approval.
+
+Quality warnings — `role_family_other_review`, `manual_review_needed`, `experienced_role`, `missing_date_posted` — are review metadata only. They do not exclude a candidate. Generated files are gitignored; keep them out of source-controlled fixture directories.
+
 ## Migration order
 
 1. Take a backup of the application database (`pg_dump` of `jobready_db` or the hosted equivalent). Keep it off the laptop if this is the public cutover.

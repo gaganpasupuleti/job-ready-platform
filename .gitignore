@@ -61,3 +61,7 @@ frontend/.vite/
 backend/alembic/versions/*.pyc
 
 backups/
+
+# Publication planner output: proposed candidates only, never approval
+publication_candidates_*.txt
+publication_candidates_*.json
