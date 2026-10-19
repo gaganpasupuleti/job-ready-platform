@@ -337,6 +337,12 @@ export interface JobFilterOptions {
   experience_buckets: string[]
 }
 
+export interface PublicationDecision {
+  source: string
+  source_job_id: string
+  decision: 'publish' | 'withhold'
+}
+
 export interface JobListFilters {
   q?: string
   role?: string

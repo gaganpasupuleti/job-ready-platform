@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Card } from '@/components/common/Card'
 import { PracticeTrackNav } from '@/components/practice/PracticeTrackNav'
+import { ManualAssignmentSection } from '@/features/projects/ManualAssignmentSection'
 import { humanLabel } from '@/lib/studentLabels'
 import { fetchProjects } from '@/services/learnService'
 
@@ -104,6 +105,8 @@ export function ProjectsPage() {
           })}
         </div>
       )}
+
+      <ManualAssignmentSection />
     </div>
   )
 }

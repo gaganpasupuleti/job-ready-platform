@@ -13,6 +13,15 @@ export default defineConfig({
       '@': path.resolve(rootDir, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('monaco-editor') || id.includes('@monaco-editor')) return 'monaco'
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {

@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { ManualAssignmentSection } from '@/features/projects/ManualAssignmentSection'
 import { humanLabel } from '@/lib/studentLabels'
 import { completeProjectTask, fetchProject, startProject } from '@/services/learnService'
 
@@ -132,6 +133,7 @@ export function ProjectDetailPage() {
         </div>
       </Card>
 
+      <ManualAssignmentSection projectId={data.id} />
       {data.completion_blocked && (
         <p role="status" className="rounded-[5px] border border-[var(--color-border)] bg-[var(--color-surface-muted)] p-3 text-sm">
           {data.completion_note ??

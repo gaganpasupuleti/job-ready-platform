@@ -18,6 +18,18 @@ async function showCodePane(page: Page) {
 }
 
 const fixtures = loadManifest()
+
+async function openVisibleCodePane(page: Page) {
+  const tabs = page.getByRole('button', { name: /^code$/i })
+  const count = await tabs.count()
+  for (let index = count - 1; index >= 0; index -= 1) {
+    const tab = tabs.nth(index)
+    if (await tab.isVisible()) {
+      await tab.click()
+      return
+    }
+  }
+}
 let coding: CodingFixture
 
 test.describe('Coding / DSA with Judge0 disabled', () => {

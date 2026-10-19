@@ -10,6 +10,8 @@
     "lint": "oxlint",
     "test:unit": "node --experimental-strip-types --test scripts/frontend-checks.test.ts",
     "preview": "vite preview",
+    "test:overview": "node --experimental-strip-types --test tests/overviewModel.test.ts",
+    "test:library": "node --experimental-strip-types --test tests/libraryCache.test.ts tests/readerModel.test.ts tests/uploadModel.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report"
@@ -22,6 +24,7 @@
     "lucide-react": "^1.35.0",
     "marked": "14.0.0",
     "monaco-editor": "^0.55.1",
+    "pdfjs-dist": "^6.3.289",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.3",

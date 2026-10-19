@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, Terminal } from 'lucide-react'
 
 import { Button } from '@/components/common/Button'
 import { LoadingState } from '@/components/practice-workspace/PracticeWorkspace'
+import { StudentOverview } from '@/features/dashboard/StudentOverview'
 import { useAuth } from '@/hooks/useAuth'
 import { continuationAction, knownPercent, readinessScoreLabel } from '@/lib/studentLabels'
 import { fetchCodingProgress } from '@/services/codingService'
@@ -78,6 +79,8 @@ export function DashboardPage() {
           </Button>
         </Link>
       </div>
+
+      {uid ? <StudentOverview userId={uid} /> : null}
 
       <div className="desk-grid">
         <div className="desk-primary">

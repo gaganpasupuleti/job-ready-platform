@@ -3,14 +3,18 @@ from fastapi import APIRouter
 from app.api.v1 import (
     admin,
     admin_ai,
+    admin_assignments,
     admin_content,
     admin_infra,
     admin_interviews,
     admin_learn,
     admin_readiness,
+    admin_support,
     ai,
     admin_jobs,
+    admin_library,
     applications,
+    assignments,
     auth,
     coding,
     health,
@@ -19,13 +23,16 @@ from app.api.v1 import (
     interviews,
     jobs,
     learn,
+    library,
     mistakes,
     modules,
+    notifications,
     practice,
     readiness,
     sql_playground,
     sql_practice,
     studio,
+    support,
 )
 
 api_router = APIRouter()
@@ -42,7 +49,9 @@ api_router.include_router(jobs.router, tags=["jobs"])
 api_router.include_router(applications.router, tags=["applications"])
 api_router.include_router(readiness.router, tags=["readiness"])
 api_router.include_router(mistakes.router, tags=["mistakes"])
+api_router.include_router(assignments.router, tags=["assignments"])
 api_router.include_router(learn.router, tags=["learn"])
+api_router.include_router(library.router, tags=["library"])
 api_router.include_router(ai.router, tags=["ai"])
 api_router.include_router(infra.router, tags=["infra"])
 api_router.include_router(admin.router, tags=["admin"])
@@ -51,6 +60,11 @@ api_router.include_router(admin_infra.router, tags=["admin-infra"])
 api_router.include_router(admin_content.router, tags=["admin-content"])
 api_router.include_router(admin_interviews.router, tags=["admin-interviews"])
 api_router.include_router(admin_jobs.router, tags=["admin-jobs"])
+api_router.include_router(admin_library.router, tags=["admin-library"])
+api_router.include_router(admin_assignments.router, tags=["admin-assignments"])
+api_router.include_router(admin_support.router, tags=["admin-support"])
+api_router.include_router(support.router, tags=["support"])
+api_router.include_router(notifications.router, tags=["notifications"])
 api_router.include_router(admin_readiness.router, tags=["admin-readiness"])
 api_router.include_router(admin_learn.router, tags=["admin-learn"])
 api_router.include_router(studio.router, tags=["studio"])

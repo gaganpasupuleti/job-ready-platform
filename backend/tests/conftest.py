@@ -1,6 +1,11 @@
 import asyncio
+import os
 import uuid
 from pathlib import Path
+
+# Before the app loads settings. A developer .env may contain real R2
+# credentials; ordinary tests must not use them.
+os.environ["APP_ENV"] = "test"
 
 import pytest
 from httpx import ASGITransport, AsyncClient

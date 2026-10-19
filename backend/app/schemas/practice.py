@@ -154,6 +154,7 @@ class TopicPerformance(BaseModel):
 
 class QuestionReviewItem(BaseModel):
     question_number: int
+    question_id: UUID
     question_text: str
     selected_option_ids: list[UUID]
     correct_option_ids: list[UUID]

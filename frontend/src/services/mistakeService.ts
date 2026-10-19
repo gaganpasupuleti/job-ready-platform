@@ -1,5 +1,6 @@
 import { apiClient } from '@/api/client'
 import { apiEndpoints } from '@/api/config'
+import type { SessionDetail } from '@/types/practice'
 import type { MistakeItem, MistakeSummary } from '@/types/readiness'
 
 export async function fetchMistakes(params?: { source_type?: string; view?: string }) {
@@ -19,5 +20,12 @@ export async function markMistakeReviewed(id: string) {
 
 export async function resolveMistake(id: string) {
   const { data } = await apiClient.patch<MistakeItem>(apiEndpoints.mistakes.detail(id))
+  return data
+}
+
+export async function startRetrySession(questionIds: string[]) {
+  const { data } = await apiClient.post<SessionDetail>(apiEndpoints.mistakes.retrySession, {
+    question_ids: questionIds,
+  })
   return data
 }

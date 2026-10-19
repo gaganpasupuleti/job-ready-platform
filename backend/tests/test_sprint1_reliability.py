@@ -267,6 +267,8 @@ async def test_lesson_attempt_verification_via_service(client, student_auth, lea
                 select(CourseLesson).where(CourseLesson.is_published.is_(True)).limit(1)
             )
         ).scalar_one()
+        original_problem_id = lesson.coding_problem_id
+        original_requires_submit = lesson.completion_requires_submit
         lesson.coding_problem_id = problem.id
         lesson.completion_requires_submit = True
         await db.commit()
@@ -276,142 +278,150 @@ async def test_lesson_attempt_verification_via_service(client, student_auth, lea
         problem_id = problem.id
         other_problem_id = other_problem.id
 
-    async def _add_submission(
-        *,
-        owner_id,
-        problem_id_,
-        submission_type,
-        status,
-    ) -> uuid.UUID:
-        async with AsyncSessionLocal() as db:
-            sub = CodingSubmission(
-                user_id=owner_id,
-                problem_id=problem_id_,
-                source_code="print(1)",
-                language_id=71,
-                language_name="Python",
-                submission_type=submission_type,
-                status=status,
-                passed_tests=1 if status == SubmissionStatus.ACCEPTED else 0,
-                total_tests=1,
-            )
-            db.add(sub)
-            await db.commit()
-            await db.refresh(sub)
-            return sub.id
-
-    async def _attempt(submission_id: uuid.UUID | None = None, **extra) -> dict:
-        payload = dict(extra)
-        if submission_id is not None:
-            payload["coding_submission_id"] = str(submission_id)
-        res = await client.post(
-            f"/api/v1/lessons/{lesson_id}/attempt",
-            headers=headers,
-            json=payload,
-        )
-        assert res.status_code == 200, res.text
-        return res.json()
-
-    accepted_run = await _add_submission(
-        owner_id=user_id,
-        problem_id_=problem_id,
-        submission_type=SubmissionType.RUN,
-        status=SubmissionStatus.ACCEPTED,
-    )
-    body = await _attempt(accepted_run, is_correct=True)
-    assert body["verified"] is False
-    assert body["is_correct"] is None
-
-    unrelated = await _add_submission(
-        owner_id=user_id,
-        problem_id_=other_problem_id,
-        submission_type=SubmissionType.SUBMIT,
-        status=SubmissionStatus.ACCEPTED,
-    )
-    body = await _attempt(unrelated)
-    assert body["verified"] is False
-    assert body["is_correct"] is None
-
-    wrong_owner = await _add_submission(
-        owner_id=other_id,
-        problem_id_=problem_id,
-        submission_type=SubmissionType.SUBMIT,
-        status=SubmissionStatus.ACCEPTED,
-    )
-    body = await _attempt(wrong_owner)
-    assert body["verified"] is False
-    assert body["is_correct"] is None
-
-    failed = await _add_submission(
-        owner_id=user_id,
-        problem_id_=problem_id,
-        submission_type=SubmissionType.SUBMIT,
-        status=SubmissionStatus.WRONG_ANSWER,
-    )
-    body = await _attempt(failed)
-    assert body["verified"] is False
-    assert body["is_correct"] is False
-
-    pending = await _add_submission(
-        owner_id=user_id,
-        problem_id_=problem_id,
-        submission_type=SubmissionType.SUBMIT,
-        status=SubmissionStatus.PENDING,
-    )
-    body = await _attempt(pending)
-    assert body["verified"] is False
-    assert body["is_correct"] is False
-
-    blocked = await client.post(f"/api/v1/lessons/{lesson_id}/complete", headers=headers)
-    assert blocked.status_code == 400, blocked.text
-
-    accepted_submit = await _add_submission(
-        owner_id=user_id,
-        problem_id_=problem_id,
-        submission_type=SubmissionType.SUBMIT,
-        status=SubmissionStatus.ACCEPTED,
-    )
-    body = await _attempt(accepted_submit)
-    assert body["verified"] is True
-    assert body["is_correct"] is True
-
-    async with AsyncSessionLocal() as db:
-        attempts = (
-            await db.execute(
-                select(LessonAttempt)
-                .where(LessonAttempt.user_id == user_id, LessonAttempt.lesson_id == lesson_id)
-                .order_by(LessonAttempt.created_at.asc())
-            )
-        ).scalars().all()
-        assert len(attempts) >= 6
-        verified_rows = [a for a in attempts if a.is_correct is True]
-        assert len(verified_rows) == 1
-        assert verified_rows[0].coding_submission_id == accepted_submit
-
-        svc = LearnService(db)
-        user_row = await UserRepository(db).get_by_email(email)
-        assert user_row is not None
-        ok = await svc.record_attempt(
-            lesson_id,
-            user_row,
-            {"coding_submission_id": str(accepted_submit)},
-        )
-        assert ok["verified"] is True
-
-    complete = await client.post(f"/api/v1/lessons/{lesson_id}/complete", headers=headers)
-    assert complete.status_code == 200, complete.text
-    assert complete.json()["status"] == "completed"
-
-    async with AsyncSessionLocal() as db:
-        progress = (
-            await db.execute(
-                select(UserLessonProgress).where(
-                    UserLessonProgress.user_id == user_id,
-                    UserLessonProgress.lesson_id == lesson_id,
+    try:
+        async def _add_submission(
+            *,
+            owner_id,
+            problem_id_,
+            submission_type,
+            status,
+        ) -> uuid.UUID:
+            async with AsyncSessionLocal() as db:
+                sub = CodingSubmission(
+                    user_id=owner_id,
+                    problem_id=problem_id_,
+                    source_code="print(1)",
+                    language_id=71,
+                    language_name="Python",
+                    submission_type=submission_type,
+                    status=status,
+                    passed_tests=1 if status == SubmissionStatus.ACCEPTED else 0,
+                    total_tests=1,
                 )
+                db.add(sub)
+                await db.commit()
+                await db.refresh(sub)
+                return sub.id
+
+        async def _attempt(submission_id: uuid.UUID | None = None, **extra) -> dict:
+            payload = dict(extra)
+            if submission_id is not None:
+                payload["coding_submission_id"] = str(submission_id)
+            res = await client.post(
+                f"/api/v1/lessons/{lesson_id}/attempt",
+                headers=headers,
+                json=payload,
             )
-        ).scalar_one()
-        assert progress.status == ProgressStatus.COMPLETED
+            assert res.status_code == 200, res.text
+            return res.json()
+
+        accepted_run = await _add_submission(
+            owner_id=user_id,
+            problem_id_=problem_id,
+            submission_type=SubmissionType.RUN,
+            status=SubmissionStatus.ACCEPTED,
+        )
+        body = await _attempt(accepted_run, is_correct=True)
+        assert body["verified"] is False
+        assert body["is_correct"] is None
+
+        unrelated = await _add_submission(
+            owner_id=user_id,
+            problem_id_=other_problem_id,
+            submission_type=SubmissionType.SUBMIT,
+            status=SubmissionStatus.ACCEPTED,
+        )
+        body = await _attempt(unrelated)
+        assert body["verified"] is False
+        assert body["is_correct"] is None
+
+        wrong_owner = await _add_submission(
+            owner_id=other_id,
+            problem_id_=problem_id,
+            submission_type=SubmissionType.SUBMIT,
+            status=SubmissionStatus.ACCEPTED,
+        )
+        body = await _attempt(wrong_owner)
+        assert body["verified"] is False
+        assert body["is_correct"] is None
+
+        failed = await _add_submission(
+            owner_id=user_id,
+            problem_id_=problem_id,
+            submission_type=SubmissionType.SUBMIT,
+            status=SubmissionStatus.WRONG_ANSWER,
+        )
+        body = await _attempt(failed)
+        assert body["verified"] is False
+        assert body["is_correct"] is False
+
+        pending = await _add_submission(
+            owner_id=user_id,
+            problem_id_=problem_id,
+            submission_type=SubmissionType.SUBMIT,
+            status=SubmissionStatus.PENDING,
+        )
+        body = await _attempt(pending)
+        assert body["verified"] is False
+        assert body["is_correct"] is False
+
+        blocked = await client.post(f"/api/v1/lessons/{lesson_id}/complete", headers=headers)
+        assert blocked.status_code == 400, blocked.text
+
+        accepted_submit = await _add_submission(
+            owner_id=user_id,
+            problem_id_=problem_id,
+            submission_type=SubmissionType.SUBMIT,
+            status=SubmissionStatus.ACCEPTED,
+        )
+        body = await _attempt(accepted_submit)
+        assert body["verified"] is True
+        assert body["is_correct"] is True
+
+        async with AsyncSessionLocal() as db:
+            attempts = (
+                await db.execute(
+                    select(LessonAttempt)
+                    .where(LessonAttempt.user_id == user_id, LessonAttempt.lesson_id == lesson_id)
+                    .order_by(LessonAttempt.created_at.asc())
+                )
+            ).scalars().all()
+            assert len(attempts) >= 6
+            verified_rows = [a for a in attempts if a.is_correct is True]
+            assert len(verified_rows) == 1
+            assert verified_rows[0].coding_submission_id == accepted_submit
+
+            svc = LearnService(db)
+            user_row = await UserRepository(db).get_by_email(email)
+            assert user_row is not None
+            ok = await svc.record_attempt(
+                lesson_id,
+                user_row,
+                {"coding_submission_id": str(accepted_submit)},
+            )
+            assert ok["verified"] is True
+
+        complete = await client.post(f"/api/v1/lessons/{lesson_id}/complete", headers=headers)
+        assert complete.status_code == 200, complete.text
+        assert complete.json()["status"] == "completed"
+
+        async with AsyncSessionLocal() as db:
+            progress = (
+                await db.execute(
+                    select(UserLessonProgress).where(
+                        UserLessonProgress.user_id == user_id,
+                        UserLessonProgress.lesson_id == lesson_id,
+                    )
+                )
+            ).scalar_one()
+            assert progress.status == ProgressStatus.COMPLETED
+    finally:
+        async with AsyncSessionLocal() as db:
+            row = await db.get(CourseLesson, lesson_id)
+            if row is not None:
+                row.coding_problem_id = original_problem_id
+                row.completion_requires_submit = original_requires_submit
+                await db.commit()
 
 
 @pytest.mark.asyncio

@@ -1,22 +1,36 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Page, type Route } from '@playwright/test'
 import { advance, createSession, indentAt, metrics } from '../src/features/typing/engine'
 
-// Auth is fixture-backed; actual typing runs in the app without backend services.
+const typingUser = {
+  id: 'typing-a',
+  email: 'a@example.test',
+  username: 'learner',
+  full_name: 'Typing Learner',
+  role: 'student',
+  is_active: true,
+}
+
+function fulfillJson(route: Route, body: unknown) {
+  return route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(body),
+  })
+}
+
+// Auth is fixture-backed. Shell calls must not reach the API: a 401 clears the
+// fixture token and sends /practice/typing to the login page.
 async function openStudio(page: Page) {
-  await page.route('**/api/v1/auth/me', (route) =>
-    route.fulfill({
-      json: {
-        id: 'typing-a',
-        email: 'a@example.test',
-        username: 'learner',
-        full_name: 'Typing Learner',
-        role: 'student',
-        is_active: true,
-      },
-    }),
-  )
+  await page.route('**/api/v1/**', (route) => {
+    const url = route.request().url()
+    if (url.includes('/auth/me')) return fulfillJson(route, typingUser)
+    if (url.includes('/notifications/unread')) return fulfillJson(route, { count: 0 })
+    if (url.includes('/notifications')) return fulfillJson(route, { items: [], next_cursor: null })
+    return fulfillJson(route, {})
+  })
   await page.addInitScript(() => localStorage.setItem('jrp_access_token', 'typing-fixture-token'))
   await page.goto('/practice/typing')
+  await expect(page).not.toHaveURL(/\/login/)
   await expect(page.getByRole('heading', { name: 'Find your typing rhythm.' })).toBeVisible()
 }
 async function custom(page: Page, text: string) {
