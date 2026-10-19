@@ -153,7 +153,7 @@ export function LibraryReaderPage() {
       <div className="min-w-0">
         <BackLink />
         <ErrorState message={error} />
-        <Button type="button" className="mt-3" onClick={() => void queryClient.invalidateQueries({ queryKey: ['library-file', user?.id, bookId, fileUrl] })}>Retry</Button>
+        <Button type="button" className="mt-3" onClick={() => void queryClient.invalidateQueries({ queryKey: ['library-file', user?.id, bookId] })}>Retry</Button>
       </div>
     )
   }

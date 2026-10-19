@@ -112,7 +112,7 @@ export async function fetchLibraryBookFile(id: string): Promise<ArrayBuffer> {
   } catch (error: unknown) {
     const message =
       error instanceof Error && error.message ? error.message : 'This PDF file could not be opened.'
-    throw new LibraryFileError(message)
+    throw new LibraryFileError(message, 0)
   }
 }
 
