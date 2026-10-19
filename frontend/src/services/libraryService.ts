@@ -1,6 +1,5 @@
 import { apiClient } from '@/api/client'
-import { apiEndpoints, AUTH_TOKEN_KEY } from '@/api/config'
-import { libraryFileNeedsBearer } from '@/features/library/libraryFileAuth'
+import { apiEndpoints } from '@/api/config'
 
 export type ReadingStatus = 'not_started' | 'reading' | 'completed'
 export type BookPublication = 'draft' | 'published' | 'archived'
@@ -103,29 +102,18 @@ export async function saveReadingProgress(id: string, lastPage: number) {
   return data
 }
 
-export async function fetchLibraryFile(url: string) {
-  const headers: Record<string, string> = {}
-  const resolved =
-    url.startsWith('http://') || url.startsWith('https://')
-      ? url
-      : new URL(url, typeof window !== 'undefined' ? window.location.origin : 'http://localhost').href
-  const token = libraryFileNeedsBearer(url) ? localStorage.getItem(AUTH_TOKEN_KEY) : null
-  if (token) headers.Authorization = `Bearer ${token}`
-  const response = await fetch(resolved, { headers, credentials: 'same-origin' })
-  if (token && token !== localStorage.getItem(AUTH_TOKEN_KEY)) {
-    throw new Error('Session changed')
+/** PDF bytes via the API client (correct host when frontend and API are split). */
+export async function fetchLibraryBookFile(id: string): Promise<ArrayBuffer> {
+  try {
+    const { data } = await apiClient.get<ArrayBuffer>(`${apiEndpoints.library.book(id)}/file`, {
+      responseType: 'arraybuffer',
+    })
+    return data
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error && error.message ? error.message : 'This PDF file could not be opened.'
+    throw new LibraryFileError(message)
   }
-  if (!response.ok) {
-    let message = 'This PDF file could not be opened.'
-    try {
-      const body = (await response.json()) as { detail?: unknown }
-      if (typeof body.detail === 'string') message = body.detail
-    } catch {
-      message = response.status === 404 ? 'This PDF file is missing.' : message
-    }
-    throw new LibraryFileError(message, response.status)
-  }
-  return response.arrayBuffer()
 }
 
 export async function uploadAdminPdf(id: string, file: File) {

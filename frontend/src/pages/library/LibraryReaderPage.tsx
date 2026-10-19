@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react'
 
-import { apiEndpoints } from '@/api/config'
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card } from '@/components/common/Card'
@@ -15,7 +14,7 @@ import { acceptStudentBook, loadLibraryBook } from '@/features/library/libraryQu
 import { initialReaderPage, progressWrite } from '@/features/library/readerModel'
 import { useAuth } from '@/hooks/useAuth'
 import { openLibraryPdf } from '@/lib/renderLibraryPdf'
-import { fetchLibraryFile, saveReadingProgress, setReadingStatus, type ReadingStatus, type StudentBook } from '@/services/libraryService'
+import { fetchLibraryBookFile, saveReadingProgress, setReadingStatus, type ReadingStatus, type StudentBook } from '@/services/libraryService'
 
 const STATUSES: { value: ReadingStatus; label: string }[] = [
   { value: 'not_started', label: 'Not started' },
@@ -44,18 +43,17 @@ export function LibraryReaderPage() {
   })
   const book = bookQuery.data
   const canRead = Boolean(book?.available && book.has_file)
-  const fileUrl = canRead && bookId ? `${apiEndpoints.library.book(bookId)}/file` : null
   const fileQuery = useQuery({
-    queryKey: ['library-file', user?.id, bookId, fileUrl],
+    queryKey: ['library-file', user?.id, bookId],
     queryFn: async () => {
       const current = queryClient.getQueryData<StudentBook>(['library-book', user?.id, bookId])
       if (!current?.available) throw new Error('This resource is not available.')
-      const bytes = await fetchLibraryFile(fileUrl ?? '')
+      const bytes = await fetchLibraryBookFile(bookId)
       const after = queryClient.getQueryData<StudentBook>(['library-book', user?.id, bookId])
       if (!after?.available) throw new Error('This resource is not available.')
       return bytes
     },
-    enabled: Boolean(fileUrl),
+    enabled: Boolean(canRead && bookId),
     retry: false,
     structuralSharing: false,
   })
