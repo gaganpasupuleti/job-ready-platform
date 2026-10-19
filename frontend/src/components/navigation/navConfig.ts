@@ -40,6 +40,7 @@ export const primaryNavItems: { label: string; path: string; match?: string[] }[
     match: ['/practice/aptitude', '/practice/mcq', '/practice/sessions', '/assessments'],
   },
   { label: 'Review', path: '/mistakes', match: ['/mistakes'] },
+  { label: 'Library', path: '/library', match: ['/library'] },
 ]
 
 /** Secondary destinations kept reachable (More drawer / footer links). */
