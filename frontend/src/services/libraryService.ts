@@ -1,5 +1,6 @@
 import { apiClient } from '@/api/client'
 import { apiEndpoints, AUTH_TOKEN_KEY } from '@/api/config'
+import { libraryFileNeedsBearer } from '@/features/library/libraryFileAuth'
 
 export type ReadingStatus = 'not_started' | 'reading' | 'completed'
 export type BookPublication = 'draft' | 'published' | 'archived'
@@ -21,6 +22,8 @@ export type StudentBook = {
 export type StudentBookPage = {
   items: StudentBook[]
   categories: string[]
+  total: number
+  total_published: number
 }
 
 export type AdminBook = {
@@ -102,9 +105,13 @@ export async function saveReadingProgress(id: string, lastPage: number) {
 
 export async function fetchLibraryFile(url: string) {
   const headers: Record<string, string> = {}
-  const token = url.startsWith('/') ? localStorage.getItem(AUTH_TOKEN_KEY) : null
+  const resolved =
+    url.startsWith('http://') || url.startsWith('https://')
+      ? url
+      : new URL(url, typeof window !== 'undefined' ? window.location.origin : 'http://localhost').href
+  const token = libraryFileNeedsBearer(url) ? localStorage.getItem(AUTH_TOKEN_KEY) : null
   if (token) headers.Authorization = `Bearer ${token}`
-  const response = await fetch(url, { headers })
+  const response = await fetch(resolved, { headers, credentials: 'same-origin' })
   if (token && token !== localStorage.getItem(AUTH_TOKEN_KEY)) {
     throw new Error('Session changed')
   }

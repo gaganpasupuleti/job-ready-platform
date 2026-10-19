@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from uuid import UUID, uuid4
 
@@ -15,6 +15,7 @@ from app.models.job import (
     ApplicationStatusHistory,
     Job,
     JobApplication,
+    JobEngagement,
     JobRoleMap,
     JobSkill,
     SavedJob,
@@ -31,6 +32,8 @@ from app.schemas.job import (
     ApplicationUpdate,
     JobCard,
     JobDetail,
+    JobEngagementJob,
+    JobEngagementStudent,
     JobFamilyCount,
     JobFamilyCounts,
     JobFilterOptions,
@@ -45,6 +48,7 @@ from app.schemas.job import (
     SavedJobItem,
 )
 from app.services.job_match_service import JobMatchService
+from app.services.job_portal_dates import added_window
 from app.services.job_normalization import validate_url
 from app.services.job_taxonomy import (
     EXPERIENCE_BUCKETS,
@@ -61,6 +65,17 @@ def _utcnow() -> datetime:
 def _not_expired():
     """Student browse hides listings whose recorded expiry is already past."""
     return or_(Job.expires_at.is_(None), Job.expires_at >= _utcnow())
+
+
+def _added_bounds(
+    added_within: str | None,
+    added_from: date | None,
+    added_to: date | None,
+) -> tuple[datetime | None, datetime | None]:
+    try:
+        return added_window(added_within, added_from, added_to)
+    except ValueError as exc:
+        raise AppException(str(exc), status_code=422) from exc
 
 
 class JobService:
@@ -154,6 +169,7 @@ class JobService:
             experience_min_years=job.experience_min_years,
             experience_max_years=job.experience_max_years,
             posted_at=job.posted_at,
+            first_seen_at=job.first_seen_at,
             status=job.status,
             is_remote=job.is_remote,
             top_skills=list(skills),
@@ -176,6 +192,8 @@ class JobService:
         employment_type: str | None = None,
         experience_min: int | None = None,
         posted_within_days: int | None = None,
+        added_start: datetime | None = None,
+        added_end: datetime | None = None,
         role_family: str | None = None,
         location: str | None = None,
         experience_bucket: str | None = None,
@@ -219,8 +237,16 @@ class JobService:
                 or_(Job.experience_min_years.is_(None), Job.experience_min_years <= experience_min)
             )
         if posted_within_days:
+            # Employer posting date. A null posted_at is excluded, not treated as old.
             cutoff = _utcnow() - timedelta(days=posted_within_days)
             stmt = stmt.where(Job.posted_at.is_not(None), Job.posted_at >= cutoff)
+        if added_start is not None or added_end is not None:
+            # Portal ingestion date. A null first_seen_at is excluded, not treated as old.
+            stmt = stmt.where(Job.first_seen_at.is_not(None))
+            if added_start is not None:
+                stmt = stmt.where(Job.first_seen_at >= added_start)
+            if added_end is not None:
+                stmt = stmt.where(Job.first_seen_at < added_end)
         location_name = catalog_text(location)
         if location_name:
             stmt = stmt.where(func.lower(func.trim(Job.location_text)) == location_name.lower())
@@ -246,9 +272,22 @@ class JobService:
             stmt = stmt.where(Job.id.in_(skill_ids))
         return stmt.distinct()
 
-    async def family_counts(self, **filters) -> JobFamilyCounts:
+    async def family_counts(
+        self,
+        *,
+        added_within: str | None = None,
+        added_from: date | None = None,
+        added_to: date | None = None,
+        **filters,
+    ) -> JobFamilyCounts:
         """Counts ignore the selected family so every pill stays comparable."""
-        ids = self._browse_ids(**filters, apply_family=False).subquery()
+        added_start, added_end = _added_bounds(added_within, added_from, added_to)
+        ids = self._browse_ids(
+            **filters,
+            added_start=added_start,
+            added_end=added_end,
+            apply_family=False,
+        ).subquery()
         total = int(await self.db.scalar(select(func.count()).select_from(ids)) or 0)
         grouped = (
             await self.db.execute(
@@ -347,6 +386,9 @@ class JobService:
         employment_type: str | None = None,
         experience_min: int | None = None,
         posted_within_days: int | None = None,
+        added_within: str | None = None,
+        added_from: date | None = None,
+        added_to: date | None = None,
         role_family: str | None = None,
         location: str | None = None,
         experience_bucket: str | None = None,
@@ -356,6 +398,7 @@ class JobService:
     ) -> JobListResponse:
         limit = min(max(limit, 1), 50)
         page = max(page, 1)
+        added_start, added_end = _added_bounds(added_within, added_from, added_to)
         ids = self._browse_ids(
             q=q,
             role=role,
@@ -369,6 +412,8 @@ class JobService:
             employment_type=employment_type,
             experience_min=experience_min,
             posted_within_days=posted_within_days,
+            added_start=added_start,
+            added_end=added_end,
             role_family=role_family,
             location=location,
             experience_bucket=experience_bucket,
@@ -390,6 +435,107 @@ class JobService:
         saved = await self._saved_ids(user.id, [j.id for j in jobs])
         items = [await self._to_card(j, user.id, saved) for j in jobs]
         return JobListResponse(items=items, total=total, page=page, limit=limit)
+
+    async def _job_by_id_or_slug(self, id_or_slug: str) -> Job:
+        job = None
+        try:
+            job = await self.db.get(Job, UUID(id_or_slug))
+        except ValueError:
+            job = (
+                await self.db.execute(select(Job).where(Job.slug == id_or_slug))
+            ).scalar_one_or_none()
+        if job is None:
+            raise AppException("Job not found", status_code=404)
+        return job
+
+    async def record_job_engagement(self, user: User, id_or_slug: str, *, opened: bool, seconds: int) -> None:
+        job = await self._job_by_id_or_slug(id_or_slug)
+        added = min(max(int(seconds), 0), 60)
+        if not opened and added == 0:
+            return
+        now = datetime.now(UTC)
+        row = (
+            await self.db.execute(
+                select(JobEngagement).where(
+                    JobEngagement.user_id == user.id,
+                    JobEngagement.job_id == job.id,
+                )
+            )
+        ).scalar_one_or_none()
+        if row is None:
+            self.db.add(
+                JobEngagement(
+                    id=uuid4(),
+                    user_id=user.id,
+                    job_id=job.id,
+                    open_count=1 if opened else 0,
+                    duration_seconds=added,
+                    first_opened_at=now,
+                    last_opened_at=now,
+                )
+            )
+        else:
+            if opened:
+                row.open_count += 1
+            row.duration_seconds += added
+            row.last_opened_at = now
+        await self.db.commit()
+
+    async def engagement_summary(self) -> list[JobEngagementStudent]:
+        rows = (
+            await self.db.execute(
+                select(
+                    User.email,
+                    User.full_name,
+                    func.count(JobEngagement.job_id),
+                    func.coalesce(func.sum(JobEngagement.open_count), 0),
+                    func.coalesce(func.sum(JobEngagement.duration_seconds), 0),
+                    func.max(JobEngagement.last_opened_at),
+                )
+                .join(JobEngagement, JobEngagement.user_id == User.id)
+                .group_by(User.id)
+                .order_by(func.coalesce(func.sum(JobEngagement.duration_seconds), 0).desc(), User.email)
+            )
+        ).all()
+        return [
+            JobEngagementStudent(
+                email=email,
+                full_name=full_name,
+                jobs_opened=int(jobs),
+                opens=int(opens),
+                duration_seconds=int(seconds),
+                last_opened_at=last_opened,
+            )
+            for email, full_name, jobs, opens, seconds, last_opened in rows
+        ]
+
+    async def engagement_jobs(self) -> list[JobEngagementJob]:
+        rows = (
+            await self.db.execute(
+                select(
+                    User.email,
+                    User.full_name,
+                    Job.title,
+                    JobEngagement.open_count,
+                    JobEngagement.duration_seconds,
+                    JobEngagement.last_opened_at,
+                )
+                .join(JobEngagement, JobEngagement.user_id == User.id)
+                .join(Job, Job.id == JobEngagement.job_id)
+                .order_by(JobEngagement.last_opened_at.desc())
+            )
+        ).all()
+        return [
+            JobEngagementJob(
+                email=email,
+                full_name=full_name,
+                job_title=title,
+                opens=int(opens),
+                duration_seconds=int(seconds),
+                last_opened_at=last_opened,
+            )
+            for email, full_name, title, opens, seconds, last_opened in rows
+        ]
 
     async def get_job(self, user: User, id_or_slug: str) -> JobDetail:
         job = None
@@ -467,6 +613,7 @@ class JobService:
             source_url=job.source_url,
             apply_url=job.apply_url,
             posted_at=job.posted_at,
+            first_seen_at=job.first_seen_at,
             expires_at=job.expires_at,
             last_seen_at=job.last_seen_at,
             status=job.status,

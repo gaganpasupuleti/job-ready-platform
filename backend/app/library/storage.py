@@ -1,6 +1,5 @@
 """Library object storage. Students never see keys or credentials."""
 
-import re
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -9,9 +8,8 @@ from uuid import UUID
 
 from app.core.config import settings
 from app.library.fixtures import LOCAL_FIXTURE_KEY, fixture_pdf_bytes
-from app.library.r2 import R2Config, presign_get, signed_headers
-
-_OBJECT_KEY = re.compile(r"^library/books/[0-9a-fA-F-]{36}/[0-9a-f]{32}\.pdf$")
+from app.library.import_keys import IMPORT_PREFIX, storage_key_allowed
+from app.library.r2 import R2Config, list_object_keys, presign_get, signed_headers
 
 
 class StorageError(Exception):
@@ -37,6 +35,9 @@ class LibraryStorage:
     def read_bytes(self, key: str) -> bytes | None:
         raise NotImplementedError
 
+    def list_import_pdfs(self) -> list[str]:
+        raise NotImplementedError
+
 
 class UnconfiguredStorage(LibraryStorage):
     def put(self, key: str, body: bytes) -> None:
@@ -52,6 +53,9 @@ class UnconfiguredStorage(LibraryStorage):
         raise StorageError("PDF storage is not configured.", 503)
 
     def read_bytes(self, key: str) -> bytes | None:
+        raise StorageError("PDF storage is not configured.", 503)
+
+    def list_import_pdfs(self) -> list[str]:
         raise StorageError("PDF storage is not configured.", 503)
 
 
@@ -85,7 +89,22 @@ class R2Storage(LibraryStorage):
         return presign_get(self.config, key, datetime.now(timezone.utc), expires=300)
 
     def read_bytes(self, key: str) -> bytes | None:
-        return None
+        url, headers = signed_headers(self.config, "GET", key, datetime.now(timezone.utc))
+        request = Request(url, headers=headers, method="GET")
+        try:
+            with urlopen(request, timeout=120) as response:
+                return response.read()
+        except HTTPError as exc:
+            if exc.code == 404:
+                raise StorageError("This PDF file is missing.", 404) from None
+            raise StorageError("PDF storage could not be reached.", 503) from None
+        except URLError:
+            raise StorageError("PDF storage could not be reached.", 503) from None
+
+    def list_import_pdfs(self) -> list[str]:
+        now = datetime.now(timezone.utc)
+        keys = list_object_keys(self.config, IMPORT_PREFIX, now)
+        return [key for key in keys if key.lower().endswith(".pdf")]
 
     def _request(self, method: str, key: str, body: bytes | None) -> None:
         url, headers = signed_headers(self.config, method, key, datetime.now(timezone.utc))
@@ -137,8 +156,19 @@ class DevDiskStorage(LibraryStorage):
             return None
         return path.read_bytes()
 
+    def list_import_pdfs(self) -> list[str]:
+        base = self.root.joinpath(*IMPORT_PREFIX.rstrip("/").split("/"))
+        if not base.is_dir():
+            return []
+        keys: list[str] = []
+        for path in base.rglob("*.pdf"):
+            rel = path.relative_to(self.root).as_posix()
+            if storage_key_allowed(rel):
+                keys.append(rel)
+        return sorted(keys)
+
     def _path(self, key: str) -> Path:
-        if not _OBJECT_KEY.fullmatch(key):
+        if not storage_key_allowed(key):
             raise StorageError("This PDF file is missing.", 404)
         return self.root.joinpath(*key.split("/"))
 

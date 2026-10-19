@@ -3,13 +3,14 @@
 from urllib.parse import urlparse
 from uuid import UUID, uuid4
 
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.exceptions import AppException
 from app.library.fixtures import LOCAL_FIXTURE_KEY
+from app.library.import_keys import metadata_from_import_key
 from app.library.storage import StorageError, library_storage
 from app.models.library import LibraryBook, LibraryBookmark, LibraryReadingStatus
 from app.models.user import User
@@ -173,6 +174,49 @@ class LibraryService:
     async def admin_get(self, book_id: UUID) -> AdminLibraryBook:
         return self._admin(await self._book(book_id))
 
+    async def sync_import_catalog(self, admin: User) -> list[AdminLibraryBook]:
+        """Register PDFs already in library/import/… on R2 (or dev disk) as published books."""
+        store = library_storage()
+        try:
+            keys = store.list_import_pdfs()
+        except (StorageError, OSError) as exc:
+            raise AppException("Could not list books in import storage.", status_code=503) from exc
+        known = set(
+            (
+                await self.db.execute(
+                    select(LibraryBook.storage_key).where(LibraryBook.storage_key.isnot(None))
+                )
+            ).scalars()
+        )
+        created: list[LibraryBook] = []
+        for key in keys:
+            if key in known:
+                continue
+            try:
+                if not store.exists(key):
+                    continue
+                title, category, description = metadata_from_import_key(key)
+            except ValueError:
+                continue
+            book = LibraryBook(
+                id=uuid4(),
+                title=title,
+                author="Cloudflare import",
+                description=description,
+                category=category,
+                external_url=None,
+                storage_key=key,
+                status="published",
+                created_by=admin.id,
+            )
+            self.db.add(book)
+            created.append(book)
+        if created:
+            await self.db.commit()
+            for book in created:
+                await self.db.refresh(book)
+        return [self._admin(book) for book in created]
+
     async def browse(self, user: User, query: str | None, category: str | None) -> StudentLibraryPage:
         statement = select(LibraryBook).where(LibraryBook.status == "published")
         if category and category.strip():
@@ -185,6 +229,11 @@ class LibraryService:
         books = (
             await self.db.execute(statement.order_by(LibraryBook.title, LibraryBook.id))
         ).scalars().all()
+        total_published = (
+            await self.db.execute(
+                select(func.count()).select_from(LibraryBook).where(LibraryBook.status == "published")
+            )
+        ).scalar_one()
         categories = (
             await self.db.execute(
                 select(LibraryBook.category)
@@ -196,6 +245,8 @@ class LibraryService:
         return StudentLibraryPage(
             items=[await self._student(book, user.id) for book in books],
             categories=list(categories),
+            total=len(books),
+            total_published=int(total_published),
         )
 
     async def saved(self, user: User) -> list[StudentLibraryBook]:

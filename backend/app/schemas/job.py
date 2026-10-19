@@ -47,6 +47,7 @@ class JobCard(BaseModel):
     experience_min_years: int | None = None
     experience_max_years: int | None = None
     posted_at: datetime | None = None
+    first_seen_at: datetime | None = None
     status: JobStatus
     is_remote: bool | None = None
     top_skills: list[str] = []
@@ -114,6 +115,7 @@ class JobDetail(BaseModel):
     source_url: str | None = None
     apply_url: str | None = None
     posted_at: datetime | None = None
+    first_seen_at: datetime | None = None
     expires_at: datetime | None = None
     last_seen_at: datetime | None = None
     status: JobStatus
@@ -341,3 +343,26 @@ class PublicationDecisionPublic(BaseModel):
     source: str
     source_job_id: str
     decision: str
+
+
+class JobEngagementUpdate(BaseModel):
+    opened: bool = False
+    seconds: int = Field(default=0, ge=0, le=60)
+
+
+class JobEngagementStudent(BaseModel):
+    email: str
+    full_name: str | None
+    jobs_opened: int
+    opens: int
+    duration_seconds: int
+    last_opened_at: datetime | None
+
+
+class JobEngagementJob(BaseModel):
+    email: str
+    full_name: str | None
+    job_title: str
+    opens: int
+    duration_seconds: int
+    last_opened_at: datetime

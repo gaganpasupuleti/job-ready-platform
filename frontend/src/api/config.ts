@@ -12,8 +12,10 @@ export const apiEndpoints = {
   health: '/api/v1/health',
   modules: '/api/v1/modules',
   auth: {
+    config: '/api/v1/auth/config',
     register: '/api/v1/auth/register',
     login: '/api/v1/auth/login',
+    google: '/api/v1/auth/google',
     me: '/api/v1/auth/me',
     logout: '/api/v1/auth/logout',
   },
@@ -79,6 +81,8 @@ export const apiEndpoints = {
     interviewPack: (id: string) => `/api/v1/admin/interviews/packs/${id}`,
     jobs: {
       list: '/api/v1/admin/jobs',
+      engagement: '/api/v1/admin/jobs/engagement',
+      engagementJobs: '/api/v1/admin/jobs/engagement/jobs',
       detail: (id: string) => `/api/v1/admin/jobs/${id}`,
       archive: (id: string) => `/api/v1/admin/jobs/${id}/archive`,
       sources: '/api/v1/admin/jobs/sources',
@@ -230,6 +234,7 @@ export const apiEndpoints = {
     saved: '/api/v1/jobs/saved',
     recommended: '/api/v1/jobs/recommended',
     detail: (idOrSlug: string) => `/api/v1/jobs/${idOrSlug}`,
+    engagement: (idOrSlug: string) => `/api/v1/jobs/${idOrSlug}/engagement`,
     save: (id: string) => `/api/v1/jobs/${id}/save`,
     apply: (id: string) => `/api/v1/jobs/${id}/apply`,
     prepare: (id: string) => `/api/v1/jobs/${id}/prepare`,

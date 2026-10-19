@@ -25,6 +25,7 @@ from app.models import (  # noqa: F401
     Subtopic,
     Topic,
     User,
+    UserAuthIdentity,
 )
 from app.models.coding import (  # noqa: F401
     CodingProblem,

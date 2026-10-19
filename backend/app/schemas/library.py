@@ -71,6 +71,8 @@ class StudentLibraryBook(BaseModel):
 class StudentLibraryPage(BaseModel):
     items: list[StudentLibraryBook]
     categories: list[str]
+    total: int
+    total_published: int
 
 
 class ReadingStatusUpdate(BaseModel):

@@ -106,6 +106,14 @@ class Settings(BaseSettings):
     jwt_secret_key: str = _UNSAFE_JWT_DEFAULT
     jwt_access_token_expire_minutes: int = 60 * 24
 
+    # Google Identity Services ID-token audience. Not a client secret.
+    google_client_id: str = ""
+    # None follows app_env: closed in production, open in development and test.
+    public_registration_enabled: bool | None = None
+    # Comma-separated emails. Admin can always use a password. In production an
+    # empty list blocks every non-admin password login.
+    password_login_emails: str = ""
+
     # Login abuse controls (Redis-backed; process-local fallback if Redis unavailable)
     login_max_failures: int = 10
     login_failure_window_seconds: int = 300

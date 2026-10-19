@@ -14,6 +14,12 @@ export async function login(payload: LoginPayload): Promise<AuthResponse> {
   return data
 }
 
+export async function loginWithGoogle(credential: string): Promise<AuthResponse> {
+  const { data } = await apiClient.post<AuthResponse>(apiEndpoints.auth.google, { credential })
+  setAuthToken(data.access_token)
+  return data
+}
+
 export async function fetchMe(): Promise<User> {
   const { data } = await apiClient.get<User>(apiEndpoints.auth.me)
   return data

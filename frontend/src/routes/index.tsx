@@ -62,6 +62,7 @@ import { CompanyPrepDetailPage } from '@/pages/interviews/CompanyPrepDetailPage'
 import { AdminInterviewPacksPage } from '@/pages/admin/AdminInterviewPacksPage'
 import { AdminAssignmentsPage } from '@/pages/admin/AdminAssignmentsPage'
 import { AdminFeedbackPage } from '@/pages/admin/AdminFeedbackPage'
+import { AdminJobActivityPage } from '@/pages/admin/AdminJobActivityPage'
 import { AdminLibraryPage } from '@/pages/admin/AdminLibraryPage'
 import { AdminJobsPage } from '@/pages/admin/AdminJobsPage'
 import { AdminReadinessPage } from '@/pages/admin/AdminReadinessPage'
@@ -535,14 +536,8 @@ export function AppRoutes() {
             </AdminRoute>
           }
         />
-        <Route
-          path="support/requests"
-          element={<MyRequestsPage />}
-        />
-        <Route
-          path="support/requests/:ticketId"
-          element={<MyRequestsPage />}
-        />
+        <Route path="support/requests" element={<MyRequestsPage />} />
+        <Route path="support/requests/:ticketId" element={<MyRequestsPage />} />
         <Route
           path="admin/library"
           element={
@@ -572,6 +567,14 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminAssignmentsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/job-activity"
+          element={
+            <AdminRoute>
+              <AdminJobActivityPage />
             </AdminRoute>
           }
         />

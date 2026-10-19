@@ -4,6 +4,9 @@ import { marked, type Token, type Tokens } from 'marked'
 
 import { capabilityNotice, mergeLanguageChoices, resolveLanguageId, runControlState } from '../src/lib/codingRuntime.ts'
 import { isDroppedMarkdownToken, omitChromeOwnedBlocks, prepareRichText, safeHref } from '../src/lib/richText.ts'
+import { canOfferRegistration } from '../src/lib/authPolicy.ts'
+import { addedToJobReadyLabel, employerPostedLabel, isPortalDate, portalAddedParams } from '../src/lib/jobPortalDates.ts'
+import { googleDestination, resolveGoogleClientId } from '../src/lib/googleAuth.ts'
 import {
   continuationAction,
   materialKindLabel,
@@ -172,15 +175,28 @@ describe('jobs, readiness, practice counts, and continuation', () => {
     })
     assert.match(unconfigured.summary, /not a personalized match/)
     assert.equal(unconfigured.showPreferencesLink, true)
-    const configured = jobsRecommendationCopy({
+    const fallback = jobsRecommendationCopy({
       preferencesError: false,
       configured: true,
       targetName: 'Data Engineer',
       scored: false,
       hasItems: true,
     })
-    assert.match(configured.summary, /Data Engineer/)
-    assert.equal(configured.showPreferencesLink, false)
+    assert.match(fallback.summary, /recent openings from the catalog/)
+    assert.match(fallback.summary, /not personalized recommendations/)
+    assert.doesNotMatch(fallback.summary, /Data Engineer/)
+    assert.doesNotMatch(fallback.summary, /related to/)
+    assert.equal(fallback.showPreferencesLink, false)
+    const scored = jobsRecommendationCopy({
+      preferencesError: false,
+      configured: true,
+      targetName: 'Data Engineer',
+      scored: true,
+      hasItems: true,
+    })
+    assert.match(scored.summary, /Openings related to Data Engineer/)
+    assert.match(scored.summary, /not a hiring probability/)
+    assert.equal(scored.showPreferencesLink, false)
   })
 
   it('does not turn an unconfigured readiness score or an unknown count into zero', () => {
@@ -324,10 +340,68 @@ describe('review labels and progress figures', () => {
     assert.equal(showGlobalWeakTopics('mcq'), false)
   })
 
+  it('offers registration only when the API says it is open', () => {
+    assert.equal(canOfferRegistration(true), true)
+    assert.equal(canOfferRegistration(false), false)
+    assert.equal(canOfferRegistration(undefined), false)
+    assert.equal(canOfferRegistration(null), false)
+  })
+
+  it('keeps Google sign-in hidden until a client id is configured', () => {
+    assert.equal(resolveGoogleClientId(undefined, 'e2e-client', true), 'e2e-client')
+    assert.equal(resolveGoogleClientId('  real-client  ', 'e2e-client', true), 'real-client')
+    assert.equal(resolveGoogleClientId('', 'e2e-client', false), '')
+    assert.equal(resolveGoogleClientId(undefined, null, false), '')
+  })
+
+  it('sends a new Google student to preferences and an existing student to from', () => {
+    assert.equal(googleDestination(true, '/practice'), '/jobs/preferences')
+    assert.equal(googleDestination(false, '/practice'), '/practice')
+    assert.equal(googleDestination(false, null), '/jobs')
+    assert.equal(googleDestination(false, '//evil.example'), '/jobs')
+  })
+
   it('does not turn a missing progress figure into zero', () => {
     assert.equal(knownCount(undefined), '—')
     assert.equal(knownCount(0), '0')
     assert.equal(knownPercent(null), null)
     assert.equal(knownPercent(20), '20%')
+  })
+})
+
+describe('portal ingestion dates', () => {
+  it('keeps employer posting dates separate and does not invent a date', () => {
+    assert.equal(employerPostedLabel(null), 'Employer posting date unavailable')
+    assert.equal(employerPostedLabel(''), 'Employer posting date unavailable')
+    assert.equal(employerPostedLabel('not-a-date'), 'Employer posting date unavailable')
+    assert.match(employerPostedLabel('2026-10-09T07:20:00Z'), /^Employer posted /)
+    assert.equal(addedToJobReadyLabel(null), 'Added to JobReady date unavailable')
+    assert.equal(addedToJobReadyLabel(undefined), 'Added to JobReady date unavailable')
+    assert.match(addedToJobReadyLabel('2026-10-09T07:20:00Z'), /^Added to JobReady /)
+  })
+
+  it('sends a preset or a custom range, never both', () => {
+    assert.deepEqual(portalAddedParams('today', '2026-10-01', '2026-10-03'), {
+      added_within: 'today',
+      added_from: undefined,
+      added_to: undefined,
+    })
+    assert.deepEqual(portalAddedParams('custom', '2026-10-01', '2026-10-03'), {
+      added_within: undefined,
+      added_from: '2026-10-01',
+      added_to: '2026-10-03',
+    })
+    assert.deepEqual(portalAddedParams('custom', 'yesterday', '2026-10-03'), {
+      added_within: undefined,
+      added_from: undefined,
+      added_to: '2026-10-03',
+    })
+    assert.deepEqual(portalAddedParams('', '2026-10-01', '2026-10-03'), {
+      added_within: undefined,
+      added_from: undefined,
+      added_to: undefined,
+    })
+    assert.equal(isPortalDate('2026-10-09'), true)
+    assert.equal(isPortalDate('2026-10-09T00:00:00Z'), false)
   })
 })

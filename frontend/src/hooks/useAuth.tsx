@@ -11,7 +11,7 @@ import {
 import { AUTH_TOKEN_KEY } from '@/api/config'
 import { getAuthToken } from '@/api/client'
 import { clearAuthQueryCache } from '@/queryClient'
-import { fetchMe, login, logoutApi, register } from '@/services/authService'
+import { fetchMe, login, loginWithGoogle, logoutApi, register } from '@/services/authService'
 import type { AuthResponse, LoginPayload, RegisterPayload, User } from '@/types/auth'
 
 interface AuthContextValue {
@@ -19,6 +19,7 @@ interface AuthContextValue {
   isLoading: boolean
   isAuthenticated: boolean
   login: (payload: LoginPayload) => Promise<AuthResponse>
+  loginWithGoogle: (credential: string) => Promise<AuthResponse>
   register: (payload: RegisterPayload) => Promise<AuthResponse>
   logout: () => Promise<void>
   refreshUser: () => Promise<void>
@@ -68,6 +69,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login: async (payload) => {
         clearAuthQueryCache()
         const response = await login(payload)
+        setUser(response.user)
+        return response
+      },
+      loginWithGoogle: async (credential) => {
+        clearAuthQueryCache()
+        const response = await loginWithGoogle(credential)
         setUser(response.user)
         return response
       },

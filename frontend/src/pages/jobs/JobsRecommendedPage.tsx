@@ -62,9 +62,11 @@ export function JobsRecommendedPage() {
           <EmptyState
             title="No relevant jobs yet"
             description={
-              configured
+              configured && scored
                 ? 'Nothing in the current catalog matches this target role.'
-                : 'Set a target role, or browse the full catalog.'
+                : configured
+                  ? 'No recent catalog listings are available.'
+                  : 'Set a target role, or browse the full catalog.'
             }
           />
           <Link to="/jobs">

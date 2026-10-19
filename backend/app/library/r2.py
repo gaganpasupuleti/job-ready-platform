@@ -1,10 +1,13 @@
-"""Private R2 read links. This module does not request the object."""
+"""Private R2 read links and object listing."""
 
 import hashlib
 import hmac
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from datetime import datetime
-from urllib.parse import quote
+from urllib.error import HTTPError, URLError
+from urllib.parse import quote, urlencode
+from urllib.request import Request, urlopen
 
 
 @dataclass(frozen=True)
@@ -85,6 +88,67 @@ def signed_headers(config: R2Config, method: str, key: str, now: datetime, paylo
         "X-Amz-Date": amz_date,
         "Authorization": authorization,
     }
+
+
+def list_object_keys(config: R2Config, prefix: str, now: datetime) -> list[str]:
+    """List object keys under prefix (S3 ListObjectsV2)."""
+    host = f"{config.account_id}.r2.cloudflarestorage.com"
+    keys: list[str] = []
+    token: str | None = None
+    while True:
+        params: dict[str, str] = {"list-type": "2", "prefix": prefix}
+        if token:
+            params["continuation-token"] = token
+        query = urlencode(sorted(params.items()))
+        canonical_uri = "/" + quote(config.bucket, safe="")
+        amz_date = now.strftime("%Y%m%dT%H%M%SZ")
+        datestamp = now.strftime("%Y%m%d")
+        region = "auto"
+        credential = f"{config.access_key_id}/{datestamp}/{region}/s3/aws4_request"
+        names = {
+            "host": host,
+            "x-amz-content-sha256": hashlib.sha256(b"").hexdigest(),
+            "x-amz-date": amz_date,
+        }
+        signed = ";".join(sorted(names))
+        canonical_headers = "".join(f"{name}:{names[name]}\n" for name in sorted(names))
+        canonical_request = "\n".join(["GET", canonical_uri, query, canonical_headers, signed, names["x-amz-content-sha256"]])
+        scope = f"{datestamp}/{region}/s3/aws4_request"
+        string_to_sign = "\n".join(
+            ["AWS4-HMAC-SHA256", amz_date, scope, hashlib.sha256(canonical_request.encode()).hexdigest()]
+        )
+        signature = hmac.new(_signing_key(config.secret_access_key, datestamp, region), string_to_sign.encode(), hashlib.sha256).hexdigest()
+        authorization = f"AWS4-HMAC-SHA256 Credential={credential}, SignedHeaders={signed}, Signature={signature}"
+        url = f"https://{host}{canonical_uri}?{query}"
+        request = Request(
+            url,
+            headers={
+                "Host": host,
+                "X-Amz-Content-Sha256": names["x-amz-content-sha256"],
+                "X-Amz-Date": amz_date,
+                "Authorization": authorization,
+            },
+            method="GET",
+        )
+        try:
+            with urlopen(request, timeout=60) as response:
+                payload = response.read()
+        except HTTPError as exc:
+            raise OSError(f"R2 list failed ({exc.code})") from exc
+        except URLError as exc:
+            raise OSError(f"R2 list unreachable: {exc}") from exc
+        root = ET.fromstring(payload)
+        ns = {"s3": "http://s3.amazonaws.com/doc/2006-03-01/"}
+        for elem in root.findall(".//s3:Contents/s3:Key", ns):
+            if elem.text:
+                keys.append(elem.text)
+        truncated = root.findtext(".//s3:IsTruncated", default="false", namespaces=ns)
+        token_elem = root.find(".//s3:NextContinuationToken", ns)
+        if truncated == "true" and token_elem is not None and token_elem.text:
+            token = token_elem.text
+            continue
+        break
+    return keys
 
 
 def _signing_key(secret: str, datestamp: str, region: str) -> bytes:

@@ -182,6 +182,24 @@ class JobLocation(Base):
     job: Mapped[Job] = relationship(back_populates="locations")
 
 
+class JobEngagement(Base, UUIDPrimaryKeyMixin):
+    """One row per student and job: how many times they opened it, and visible time."""
+
+    __tablename__ = "job_engagements"
+    __table_args__ = (UniqueConstraint("user_id", "job_id", name="uq_job_engagements_user_job"),)
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    job_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    open_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    duration_seconds: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    first_opened_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    last_opened_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
 class SavedJob(Base, UUIDPrimaryKeyMixin):
     __tablename__ = "saved_jobs"
     __table_args__ = (UniqueConstraint("user_id", "job_id", name="uq_saved_jobs_user_job"),)
