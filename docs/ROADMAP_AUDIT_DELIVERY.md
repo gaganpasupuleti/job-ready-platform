@@ -6,6 +6,7 @@
 |------|--------|
 | Audited commit | `24ea439f31edcdd4e90d6ed827cd081cc057cc8c` |
 | Working branch | `feat/official-roadmaps-retro-ui` |
+| Delivery commits | `962e657` (roadmap reliability & viewer), `baaa4a6` (Jobs + layout + retro) |
 | Prior baseline issue | `JobsHubPage` imported `PageIntro` / `FilterDisclosure` but files were not in the audited commit (clean checkout build break). |
 
 Unrelated local WIP (Power BI lab, library, workshop scripts, design-reference junk) was **not** staged or committed.
@@ -50,14 +51,16 @@ Expected: **93** catalog slugs; validation checks slug shape and FE/BE parity.
 
 | Command | Result |
 |---------|--------|
-| `npm run build` (frontend) | Run after changes in CI/local |
-| `python -m pytest tests/test_roadmap_official.py` | Run from `backend/` |
-| `node frontend/scripts/validate-roadmap-catalog.mjs` | Run from repo root |
+| `npm run build` (frontend) | **Pass** (2026-10-20, Vite 8.2.2) |
+| `python -m pytest tests/test_roadmap_official.py -q` | **4 passed** |
+| `node frontend/scripts/validate-roadmap-catalog.mjs` | **93 entries, 0 failures** |
 
 ## Suggested PR split
 
-1. **PR A — Roadmap reliability & viewer** (backend service, catalog, graph fetch, sanitization, viewer UX).
-2. **PR B — Jobs + shared retro tokens** (depends on A only if merging viewer styles; can share base SHA).
+1. **PR A — Roadmap reliability & viewer** — base `24ea439`, tip `962e657`.
+2. **PR B — Jobs + shared retro tokens** — base `962e657`, tip `baaa4a6` (stack on A or cherry-pick UI commit).
+
+PR links: add after `git push` + `gh pr create` (not merged).
 
 ## Reproduce (clean checkout)
 
