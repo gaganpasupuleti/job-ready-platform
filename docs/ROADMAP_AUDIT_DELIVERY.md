@@ -6,7 +6,8 @@
 |------|--------|
 | Audited commit | `24ea439f31edcdd4e90d6ed827cd081cc057cc8c` |
 | Working branch | `feat/official-roadmaps-retro-ui` |
-| Delivery commits | `962e657` (roadmap reliability & viewer), `baaa4a6` (Jobs + layout + retro) |
+| Delivery commits | `962e657` (roadmap), `baaa4a6` (Jobs/UI), `51501e1` (delivery doc) |
+| PR (not merged) | https://github.com/gaganpasupuleti/job-ready-platform/pull/23 |
 | Prior baseline issue | `JobsHubPage` imported `PageIntro` / `FilterDisclosure` but files were not in the audited commit (clean checkout build break). |
 
 Unrelated local WIP (Power BI lab, library, workshop scripts, design-reference junk) was **not** staged or committed.
