@@ -190,34 +190,44 @@ export function JobsHubPage() {
         <Link to="/jobs/preferences">Preferences</Link>
       </nav>
 
-      {summary && (
-        <div className="jobs-summary-strip">
-          <article>
-            <p>Saved</p>
-            <strong>{typeof summary.saved_count === 'number' ? summary.saved_count : '—'}</strong>
-          </article>
-          <article>
-            <p>Applications</p>
-            <strong>{typeof summary.applications_total === 'number' ? summary.applications_total : '—'}</strong>
-            <p>
-              {typeof summary.applied_count === 'number' ? summary.applied_count : '—'} applied ·{' '}
-              {typeof summary.interview_count === 'number' ? summary.interview_count : '—'} interview
-            </p>
-          </article>
-          <article>
-            <p>Offers</p>
-            <strong>{typeof summary.offer_count === 'number' ? summary.offer_count : '—'}</strong>
-          </article>
-          <article>
-            <p>Follow-ups due</p>
-            <strong>{typeof summary.follow_ups_due === 'number' ? summary.follow_ups_due : '—'}</strong>
-            <p>
-              {typeof summary.follow_ups_overdue === 'number' ? summary.follow_ups_overdue : '—'} overdue ·{' '}
-              {typeof summary.follow_ups_today === 'number' ? summary.follow_ups_today : '—'} today
-            </p>
-          </article>
-        </div>
-      )}
+      {summary ? (
+        <p className="jobs-summary-compact text-sm text-[var(--color-text-muted)]">
+          <Link to="/jobs/saved" className="font-semibold text-[var(--color-accent)]">
+            Saved {typeof summary.saved_count === 'number' ? summary.saved_count : '—'}
+          </Link>
+          {' · '}
+          <Link to="/jobs/applications" className="font-semibold text-[var(--color-accent)]">
+            Applications {typeof summary.applications_total === 'number' ? summary.applications_total : '—'}
+          </Link>
+          {typeof summary.offer_count === 'number' ? ` · Offers ${summary.offer_count}` : ''}
+          {typeof summary.follow_ups_due === 'number' ? ` · Follow-ups ${summary.follow_ups_due}` : ''}
+        </p>
+      ) : null}
+
+      <section className="jobs-primary-search" aria-label="Quick search">
+        <input
+          className={inputClass}
+          placeholder="Keywords"
+          value={q}
+          onChange={(event) => setQ(event.target.value)}
+          aria-label="Keywords"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') applyFilters()
+          }}
+        />
+        <CatalogSelect
+          label="Location"
+          value={location ?? ''}
+          options={options.data?.locations ?? []}
+          loading={options.isLoading}
+          error={options.isError}
+          onQueryChange={setLocationQuery}
+          onChange={(next) => writeParams({ location: next || undefined })}
+        />
+        <Button type="button" variant="primary" onClick={applyFilters}>
+          Search
+        </Button>
+      </section>
 
       <section className="jobs-family-panel" aria-label="Job families">
         {families.isLoading ? (
@@ -274,16 +284,6 @@ export function JobsHubPage() {
         <div className="jobs-filter-bar">
         <input
           className={inputClass}
-          placeholder="Keywords"
-          value={q}
-          onChange={(event) => setQ(event.target.value)}
-          aria-label="Keywords"
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') applyFilters()
-          }}
-        />
-        <input
-          className={inputClass}
           placeholder="Skill"
           value={skill}
           onChange={(event) => setSkill(event.target.value)}
@@ -291,15 +291,6 @@ export function JobsHubPage() {
           onKeyDown={(event) => {
             if (event.key === 'Enter') applyFilters()
           }}
-        />
-        <CatalogSelect
-          label="Location"
-          value={location ?? ''}
-          options={options.data?.locations ?? []}
-          loading={options.isLoading}
-          error={options.isError}
-          onQueryChange={setLocationQuery}
-          onChange={(next) => writeParams({ location: next || undefined })}
         />
         <CatalogSelect
           label="Company"
@@ -401,7 +392,7 @@ export function JobsHubPage() {
           <p className="text-sm text-[var(--color-text-muted)]">
             {data.total} job{data.total !== 1 ? 's' : ''} found
           </p>
-          <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="jobs-results-list">
             {data.items.map((job) => (
               <JobCardView key={job.id} job={job} />
             ))}
