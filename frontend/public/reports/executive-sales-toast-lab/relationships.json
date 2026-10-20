@@ -1,0 +1,38 @@
+[
+  {
+    "fromTable": "Sales",
+    "fromColumn": "Salesteamindex",
+    "toTable": "Salesteams",
+    "toColumn": "Salesteamindex",
+    "cardinality": "M:1",
+    "crossFilter": "Single",
+    "active": true
+  },
+  {
+    "fromTable": "Sales",
+    "fromColumn": "Storeindex",
+    "toTable": "storelocations",
+    "toColumn": "Storeindex",
+    "cardinality": "M:1",
+    "crossFilter": "Single",
+    "active": true
+  },
+  {
+    "fromTable": "Sales",
+    "fromColumn": "Productindex",
+    "toTable": "Products_Data",
+    "toColumn": "Productindex",
+    "cardinality": "M:1",
+    "crossFilter": "Single",
+    "active": true
+  },
+  {
+    "fromTable": "Sales",
+    "fromColumn": "Sales Date",
+    "toTable": "Date Table",
+    "toColumn": "Date",
+    "cardinality": "M:1",
+    "crossFilter": "Single",
+    "active": true
+  }
+]

@@ -1,0 +1,59 @@
+{
+  "tables": [
+    {
+      "name": "Date M-W-D",
+      "file": "data/Date_M-W-D.csv",
+      "rows": 3
+    },
+    {
+      "name": "Date Table",
+      "file": "data/Date_Table.csv",
+      "rows": 152
+    },
+    {
+      "name": "Higher Percentile",
+      "file": "data/Higher_Percentile.csv",
+      "rows": 10
+    },
+    {
+      "name": "Lower Percentile",
+      "file": "data/Lower_Percentile.csv",
+      "rows": 10
+    },
+    {
+      "name": "Products_Data",
+      "file": "data/Products_Data.csv",
+      "rows": 47
+    },
+    {
+      "name": "Sales",
+      "file": "data/Sales.csv",
+      "rows": 20000
+    },
+    {
+      "name": "Salesteams",
+      "file": "data/Salesteams.csv",
+      "rows": 28
+    },
+    {
+      "name": "storelocations",
+      "file": "data/storelocations.csv",
+      "rows": 367
+    }
+  ],
+  "measureCount": 52,
+  "queryCount": 6,
+  "relationshipCount": 4,
+  "visualCount": 47,
+  "buildStepCount": 6,
+  "pageWidth": 1280.0,
+  "pageHeight": 780.0,
+  "canvasRect": {
+    "left": 8,
+    "top": 198,
+    "width": 1270,
+    "height": 785
+  },
+  "previewImage": "../executive-sales-toast.png",
+  "canvasReference": "canvas-reference.png"
+}

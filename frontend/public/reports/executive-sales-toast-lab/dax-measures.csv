@@ -1,0 +1,396 @@
+TableName,Name,Expression,DisplayFolder,Description
+# Measures,rows_in_sales,"
+COUNTROWS(Sales)",Core Sales,
+# Measures,Total Sales,"
+SUMX(
+    Sales, 
+    Sales[Order qty] * Sales[unit price] 
+    )",Core Sales,
+# Measures,Total Cost,"
+SUMX(
+    Sales,
+    Sales[Order qty] * Sales[unit cost] 
+)",Core Sales,
+# Measures,Total Profit,[Total Sales] - [Total Cost] ,Core Sales,
+# Measures,Total Orders,SUM( Sales[Order qty] ) ,Core Sales,
+# Measures,Profit Margin %,"
+DIVIDE(
+    [Total Profit],
+    [Total Sales]
+    )
+        ",Core Sales,
+# Measures,another approach _ Total Sales PM,"
+IF( 
+    [Total Sales] = BLANK(),
+    BLANK(),
+    CALCULATE(
+        [Total Sales],
+        PARALLELPERIOD('Date Table'[Date], -1, MONTH ) 
+        )
+)",MOM change,
+# Measures,WOW diff %,"
+DIVIDE(
+    ([Total Sales Current Week] - [Total Sales Previous Week]),
+    [Total Sales Previous Week]
+)",WoW change,
+# Measures,Total Sales Previous Week,"
+CALCULATE(
+    [Total Sales],
+    KEEPFILTERS('Date Table'[WeeknYear] = MAX('Date Table'[WeeknYear]) - 1 )
+)
+",WoW change,
+# Measures,Target Format,"
+FORMAT( [Target +0.2 of Previous month] / 1000000 , ""$#.00M"")",Formatting,
+# Measures,TS PM Previous,"
+VAR _datetable =
+ DATESINPERIOD( 
+    'Date Table'[Date], MAX(Sales[Sales Date]), -1, MONTH )
+VAR _result =
+CALCULATE(
+    [Total Sales],
+    PREVIOUSMONTH(_datetable)
+    )
+RETURN _result    
+",MOM change,
+# Measures,TS PM Current,"
+VAR _datetable =
+ DATESINPERIOD( 
+    'Date Table'[Date], MAX(Sales[Sales Date]), -1, MONTH )
+VAR _result =
+CALCULATE(
+    [Total Sales],
+    _datetable
+    )
+RETURN _result    
+",MOM change,
+# Measures,TS MOM diff %,"
+DIVIDE(
+    ([TS PM Current] - [TS PM Previous]),
+    [TS PM Previous]
+    )",MOM change,
+# Measures,Total profit fx,"
+[Total Profit]",Formatting,
+# Measures,Color Formatting Line Chart,"
+VAR _BottumColors = ""#FA0C27"" 
+VAR _TopColors = ""#1800ED""
+VAR _MiddleColor = ""#B6B1AF""
+VAR _Result = 
+SWITCH(
+    TRUE(),
+    [Total Sales] > [Higher Percentile of Dates], _TopColors,
+    [Total Sales] < [Lower Percentile of Dates], _BottumColors,
+    _MiddleColor
+    )
+RETURN _Result",Formatting,
+# Measures,Median of Dates,"
+VAR _table = FILTER( ALLSELECTED('Date Table'), 'Date Table'[Date] <= [max date] )
+VAR _Result = MEDIANX( _table , [Total Sales] )
+RETURN _Result",Line Dynamic Stats,
+# Measures,Higher Percentile of Dates,"
+VAR _highPth = 'Higher Percentile'[Higher Percentile Value]
+VAR _Result =
+    SWITCH (
+        TRUE (),
+        ISINSCOPE ( 'Date Table'[Date] ), PERCENTILEX.EXC ( ALL( 'Date Table'[Date] ), [Total Sales], _highPth ),
+        ISINSCOPE ( 'Date Table'[Month Short] ),
+            PERCENTILEX.EXC (
+                ALL( 'Date Table'[Month Short] ),
+                [Total Sales],
+                _highPth
+            ),
+        ISINSCOPE ( 'Date Table'[WeeknYear] ),
+            PERCENTILEX.EXC (
+                ALL( 'Date Table'[WeeknYear] ),
+                [Total Sales],
+                _highPth
+            )
+    )
+RETURN
+    _Result",Line Dynamic Stats,
+# Measures,Lower Percentile of Dates,"
+VAR _LowerPth = 'Lower Percentile'[Lower Percentile Value]
+VAR _Result =
+    SWITCH (
+        TRUE (),
+        ISINSCOPE ( 'Date Table'[Date] ), PERCENTILEX.EXC ( ALL( 'Date Table'[Date] ), [Total Sales], _LowerPth ),
+        ISINSCOPE ( 'Date Table'[Month Short] ),
+            PERCENTILEX.EXC (
+                ALL( 'Date Table'[Month Short] ),
+                [Total Sales],
+                _LowerPth
+            ),
+        ISINSCOPE ( 'Date Table'[WeeknYear] ),
+            PERCENTILEX.EXC (
+                ALL( 'Date Table'[WeeknYear] ),
+                [Total Sales],
+                _LowerPth
+            )
+    )
+RETURN
+    _Result",Line Dynamic Stats,
+# Measures,max date,MAX( Sales[Sales Date] ),Line Dynamic Stats,
+# Measures,Average Daily Sales,"
+VAR _table = ALLSELECTED('Date Table')
+VAR _Result = AVERAGEX( _table , [Total Sales] )
+RETURN _Result",Line Dynamic Stats,
+Lower Percentile,Lower Percentile Value,"SELECTEDVALUE('Lower Percentile'[Lower Percentile], 0.25)",,
+Higher Percentile,Higher Percentile Value,"SELECTEDVALUE('Higher Percentile'[Higher Percentile], 0.75)",,
+# Measures,Title dynamic,"
+VAR _selected = SELECTEDVALUE( 'Date M-W-D'[Date M-W-D Order] )
+VAR _result =
+SWITCH(
+    TRUE(),
+    _selected = 0, ""day"",
+    _selected = 1, ""week"",
+    _selected = 2, ""month"",
+    ""day""
+)
+RETURN _result
+",Formatting,
+# Measures,blank,BLANK(),Formatting,
+# Measures,cost formatted,"
+FORMAT( [Total Cost]/1000000, ""$###.00M"" )",Formatting,
+# Measures,profit formatted,"
+FORMAT( [Total Profit]/1000000, ""$###.00M"" )",Formatting,
+# Measures,Formatted KPI % MOM,"
+VAR _Result =
+SWITCH( 
+    TRUE(),
+    [TS MOM diff %] >= 0 , ""▲"",
+    [TS MOM diff %] < 0 , ""▼"",
+    BLANK()
+)
+Return _Result",MOM change,
+# Measures,Total Sales Current Week,"
+CALCULATE(
+    [Total Sales],
+    KEEPFILTERS('Date Table'[WeeknYear] = MAX('Date Table'[WeeknYear]) )
+)
+",WoW change,
+# Measures,Formatted KPI % WoW,"
+VAR _Result =
+SWITCH( 
+    TRUE(),
+    [WOW diff %] >= 0 , ""▲"",
+    [WOW diff %] < 0 , ""▼""
+)
+Return _Result",WoW change,
+# Measures,Orders Previous Week,"
+CALCULATE(
+    [Total Orders],
+    KEEPFILTERS('Date Table'[WeeknYear] = MAX('Date Table'[WeeknYear]) - 1 )
+)
+",WoW change,
+# Measures,Orders Current Week,"
+CALCULATE(
+    [Total Orders],
+    KEEPFILTERS('Date Table'[WeeknYear] = MAX('Date Table'[WeeknYear]) )
+)
+",WoW change,
+# Measures,Orders WOW diff %,"
+DIVIDE(
+    ([Orders Current Week] - [Orders Previous Week]),
+    [Orders Previous Week]
+)",WoW change,
+# Measures,Orders KPI % WoW,"
+VAR _Result =
+SWITCH( 
+    TRUE(),
+    [Orders WOW diff %] >= 0 , ""▲"",
+    [Orders WOW diff %] < 0 , ""▼""
+)
+Return _Result",WoW change,
+# Measures,Orders Current month,"
+VAR _datetable =
+ DATESINPERIOD( 
+    'Date Table'[Date], MAX(Sales[Sales Date]), -1, MONTH )
+VAR _result =
+CALCULATE(
+    [Total Orders],
+    _datetable
+    )
+RETURN _result    
+",MOM change,
+# Measures,Orders Previous month,"
+VAR _datetable =
+ DATESINPERIOD( 
+    'Date Table'[Date], MAX(Sales[Sales Date]), -1, MONTH )
+VAR _result =
+CALCULATE(
+    [Total Orders],
+    PREVIOUSMONTH(_datetable)
+    )
+RETURN _result    
+",MOM change,
+# Measures,Orders MOM diff %,"
+DIVIDE(
+    ([Orders Current month] - [Orders Previous month]),
+    [Orders Previous month]
+)",MOM change,
+# Measures,Orders KPI % MOM,"
+VAR _Result =
+SWITCH( 
+    TRUE(),
+    [Orders MOM diff %] >= 0 , ""▲"",
+    [Orders MOM diff %] < 0 , ""▼""
+)
+Return _Result",MOM change,
+# Measures,Target vs Previous month,"
+DIVIDE( [TS PM Current],
+      [Target +0.2 of Previous month] )",Target,
+# Measures,Target +0.2 of Previous month,"
+([TS PM Previous] + ([TS PM Previous] * 0.2 ) )
+ 
+
+",Target,
+# Measures,Target Diff,"
+IF( [Target +0.2 of Previous month] >= [TS PM Current] ,
+    1 - [Target vs Previous month],
+    0
+    )",Target,
+# Measures,This Month Sales,"
+FORMAT( [TS PM Current] / 1000000 , ""$#.00M"")",Target,
+# Measures,Average Monthly Saeles,"
+VAR _table = VALUES('Date Table'[Month Short] )
+VAR _Result = AVERAGEX( _table , [Total Sales] )
+RETURN _Result",Line Dynamic Stats,
+# Measures,Average Weekly Saeles,"
+VAR _table = VALUES( 'Date Table'[WeeknYear] )
+VAR _Result = AVERAGEX( _table , [Total Sales] )
+RETURN _Result",Line Dynamic Stats,
+# Measures,avg weekly format,"
+FORMAT( [Average Weekly Saeles] / 1000000 , ""$#.000M"")",Line Dynamic Stats,
+# Measures,avg monthly format,"
+FORMAT( [Average Monthly Saeles] / 1000000 , ""$#.000M"")",Line Dynamic Stats,
+# Measures,H Percentile Scetter,"
+VAR _percentile = 'Higher Per (Store)'[Higher Per (Store) Value]
+VAR _table = ALLSELECTED( storelocations[name] )
+VAR _result = 
+PERCENTILEX.INC( 
+    _table,
+    [Total Sales], _percentile 
+)
+RETURN _result",Line Dynamic Stats,
+# Measures,L Percentile Scetter,"
+VAR _percentile = 'Lower Per (store)'[Lower Per (store) Value]
+VAR _table = ALLSELECTED( storelocations[name] )
+VAR _result = 
+PERCENTILEX.INC( 
+    _table,
+    [Total Sales], _percentile 
+)
+RETURN _result",Line Dynamic Stats,
+# Measures,Color Formatting Scatter Chart,"
+VAR _BottumColors = ""#FA0C27"" 
+VAR _TopColors = ""#1800ED""
+VAR _MiddleColor = ""#B6B1AF""
+VAR _Result = 
+SWITCH(
+    TRUE(),
+    [Total Sales] > [H Percentile Scetter], _TopColors,
+    [Total Sales] < [L Percentile Scetter], _BottumColors,
+    _MiddleColor
+    )
+RETURN _Result",Formatting,
+# Measures,ranking_asc,"
+var _ra =
+ RANKX( 
+     ALL(Products_Data),
+     [Total Sales], , ASC, Skip )
+var _if =
+ IF( _ra <= 'Number of Rows'[Parameter Value] , [Total Sales], BLANK() ) 
+return _if ",#_Ranking_Gagan,
+# Measures,ranking_desc,"
+var _ra =
+ RANKX( 
+     ALL(Products_Data),
+     [Total Sales], , DESC, Skip )
+var _if =
+ IF( _ra <= 'Number of Rows'[Parameter Value] , [Total Sales] ,BLANK() )  
+return _if ",#_Ranking_Gagan,
+# Measures,Toast Notification,"
+
+VAR _Filter =
+SWITCH(
+    TRUE(),
+    ISFILTERED(Products_Data) && COUNTX( VALUES(Products_Data[Product Name]),1)>1, ""Products:"" ,
+    ISFILTERED(Products_Data) && COUNTX( VALUES(Products_Data[Product Name]),1)=1, ""Product:"" , //product
+    ISFILTERED(storelocations) && COUNTX( VALUES( storelocations[name]),1)=1, ""Store:"",
+    ISFILTERED(storelocations) && COUNTX( VALUES( storelocations[name]),1)>1, ""Stores:"", // store
+    ISFILTERED(Salesteams)  && COUNTX( VALUES(Salesteams[Sales Team]),1)>1, ""Sales Teams:"",
+    ISFILTERED(Salesteams)  && COUNTX( VALUES(Salesteams[Sales Team]),1)=1, ""Sales Team:"" // sales team
+)
+
+VAR _Value =
+SWITCH(
+    TRUE(),
+    ISFILTERED(Products_Data), CONCATENATEX(Products_Data, Products_Data[Product Name], "" - "", Products_Data[Product Name],ASC ),
+    ISFILTERED(storelocations), CONCATENATEX( storelocations, storelocations[name], "" - "", storelocations[name],ASC ),
+    ISFILTERED(Salesteams), CONCATENATEX( Salesteams, Salesteams[Sales Team], "" - "", Salesteams[Sales Team],ASC )
+)
+
+RETURN
+IF( 
+    NOT ISBLANK( _Filter) ,
+    ""<div id='toastBox'>
+        <div class='Category'> 
+            <p> <span class='textInfo'>Dashboard is filtered! &ensp; ""&_Filter&""</span> ""&_Value&"" </p>
+        </div>
+    </div>""
+)",,
+# Measures,Toast CSS,"
+""
+#toastBox {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;              /* stick to the very top */
+  left: 0;             /* align left edge */
+  bottom: 0;             /* align left edge */
+  width: 100vw;        /* full viewport width */
+  padding: 16px 16px;
+  background-color: #484848;
+  border: 1px solid grey;
+  border-radius: 8px 0px 0px 8px;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2),
+  font-family: sans-serif;
+  font-size: 16px;
+  z-index: 9999;       /* sits on top of nearly everything */
+  opacity: 0;
+  animation: slideInOut 3.5s ease forwards;
+}
+
+.Category p {
+  margin: 0;
+  line-height: 1.4;
+  color: #fff;
+  font-weight: bold;
+}
+
+.textInfo {
+   font-size: 13px;
+   color: rgba(255, 255, 255, 0.75);
+   font-style: normal;
+}
+
+/* Slide from right → stay → slide to left */
+@keyframes slideInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+""",,

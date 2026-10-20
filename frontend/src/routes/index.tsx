@@ -20,6 +20,10 @@ import { DashboardPage } from '@/pages/DashboardPage'
 import { LibraryBookPage } from '@/pages/library/LibraryBookPage'
 import { LibraryPage } from '@/pages/library/LibraryPage'
 import { LibraryReaderPage } from '@/pages/library/LibraryReaderPage'
+import { PowerBiReportPage } from '@/pages/reports/PowerBiReportPage'
+import { PowerBiReportLabPage } from '@/pages/reports/PowerBiReportLabPage'
+import { PowerBiReportPreviewPage } from '@/pages/reports/PowerBiReportPreviewPage'
+import { PowerBiReportsPage } from '@/pages/reports/PowerBiReportsPage'
 import { MyRequestsPage } from '@/pages/support/MyRequestsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { AptitudePage } from '@/pages/practice/AptitudePage'
@@ -164,6 +168,10 @@ export function AppRoutes() {
         <Route path="library" element={<LibraryPage />} />
             <Route path="library/:bookId" element={<LibraryBookPage />} />
             <Route path="library/:bookId/read" element={<LibraryReaderPage />} />
+        <Route path="reports" element={<PowerBiReportsPage />} />
+        <Route path="reports/:reportId/preview" element={<PowerBiReportPreviewPage />} />
+        <Route path="reports/:reportId/lab" element={<PowerBiReportLabPage />} />
+        <Route path="reports/:reportId" element={<PowerBiReportPage />} />
         <Route path="practice" element={<PracticeHubPage />} />
         <Route path="practice/typing" element={<TypingPracticePage />} />
         <Route path="practice/paths/:slug" element={<PracticePathPage />} />

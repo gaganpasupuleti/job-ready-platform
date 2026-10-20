@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import {
   Award,
+  BarChart3,
   BookOpen,
   Bookmark,
   Bot,
@@ -41,6 +42,7 @@ export const primaryNavItems: { label: string; path: string; match?: string[] }[
   },
   { label: 'Review', path: '/mistakes', match: ['/mistakes'] },
   { label: 'Library', path: '/library', match: ['/library'] },
+  { label: 'Reports', path: '/reports', match: ['/reports'] },
 ]
 
 /** Secondary destinations kept reachable (More drawer / footer links). */
@@ -73,6 +75,7 @@ export const navigationConfig: NavSection[] = [
     title: 'More',
     items: [
       { label: 'Library', path: '/library', icon: 'BookOpen' },
+      { label: 'Power BI reports', path: '/reports', icon: 'BarChart3' },
       { label: 'My requests', path: '/support/requests', icon: 'MessageSquare' },
       { label: 'Job Readiness', path: '/readiness', icon: 'Target' },
       { label: 'AI Home', path: '/ai', icon: 'Sparkles' },
@@ -105,6 +108,7 @@ export const moreMenuGroups: { title: string; items: { label: string; path: stri
     title: 'Career',
     items: [
       { label: 'Library', path: '/library' },
+      { label: 'Power BI reports', path: '/reports' },
       { label: 'My requests', path: '/support/requests' },
       { label: 'Projects', path: '/practice/projects' },
       { label: 'Job Readiness', path: '/readiness' },
@@ -149,6 +153,7 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Trophy,
   Briefcase,
   Target,
+  BarChart3,
   BookOpen,
   Bookmark,
   Award,
