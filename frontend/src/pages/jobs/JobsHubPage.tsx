@@ -1,8 +1,10 @@
 import { Link, useSearchParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/common/Button'
+import { FilterDisclosure } from '@/components/layout/FilterDisclosure'
+import { PageIntro } from '@/components/layout/PageIntro'
 import {
   EmptyState,
   ErrorState,
@@ -12,10 +14,18 @@ import { CatalogSelect } from '@/features/jobs/CatalogSelect'
 import { JobCardView } from '@/features/jobs/JobCard'
 import { useAuth } from '@/hooks/useAuth'
 import { isPortalDate, portalAddedParams } from '@/lib/jobPortalDates'
-import { fetchJobFamilyCounts, fetchJobFilterOptions, fetchJobs, fetchJobsSummary } from '@/services/jobService'
+import {
+  fetchJobFamilyCounts,
+  fetchJobFilterOptions,
+  fetchJobs,
+  fetchJobsSummary,
+  saveJob,
+  unsaveJob,
+} from '@/services/jobService'
 
-const inputClass =
-  'rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)]'
+const VISIBLE_ROLE_PILL_COUNT = 8
+
+const inputClass = 'jr-control px-3 py-2 text-sm text-[var(--color-text)]'
 
 function param(searchParams: URLSearchParams, key: string) {
   const value = searchParams.get(key)?.trim()
@@ -25,6 +35,7 @@ function param(searchParams: URLSearchParams, key: string) {
 export function JobsHubPage() {
   const { user } = useAuth()
   const uid = user?.id
+  const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
   const [skill, setSkill] = useState(searchParams.get('skill') ?? '')
@@ -32,6 +43,7 @@ export function JobsHubPage() {
   const [companyQuery, setCompanyQuery] = useState('')
   const [showAllFamilies, setShowAllFamilies] = useState(false)
   const [customDates, setCustomDates] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const page = Number(searchParams.get('page') ?? '1') || 1
   const sort = searchParams.get('sort') ?? 'newest'
@@ -117,6 +129,52 @@ export function JobsHubPage() {
     return [...rows].sort((left, right) => Number(right.id === family) - Number(left.id === family))
   }, [families.data, family])
 
+  const visiblePills = useMemo(() => {
+    if (showAllFamilies) return pills
+    const head = pills.slice(0, VISIBLE_ROLE_PILL_COUNT)
+    if (family && !head.some((item) => item.id === family)) {
+      const selected = pills.find((item) => item.id === family)
+      if (selected) return [...head, selected]
+    }
+    return head
+  }, [pills, showAllFamilies, family])
+
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  const saveMutation = useMutation({
+    mutationFn: async ({ jobId, isSaved }: { jobId: string; isSaved: boolean }) => {
+      if (isSaved) await unsaveJob(jobId)
+      else await saveJob(jobId)
+    },
+    onMutate: () => setSaveError(null),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      queryClient.invalidateQueries({ queryKey: ['jobs-summary'] })
+      queryClient.invalidateQueries({ queryKey: ['jobs-saved'] })
+    },
+    onError: () => {
+      setSaveError('Could not update this saved job. Please try again.')
+    },
+  })
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0
+    if (param(searchParams, 'q')) count += 1
+    if (param(searchParams, 'skill')) count += 1
+    if (location) count += 1
+    if (company) count += 1
+    if (experience) count += 1
+    if (role) count += 1
+    if (addedWithin || addedFrom || addedTo) count += 1
+    if (postedWithin) count += 1
+    if (sort && sort !== 'newest') count += 1
+    return count
+  }, [searchParams, location, company, experience, role, addedWithin, addedFrom, addedTo, postedWithin, sort])
+
+  useEffect(() => {
+    if (activeFilterCount > 0) setFiltersOpen(true)
+  }, [activeFilterCount])
+
   const writeParams = (patch: Record<string, string | undefined>, resetPage = true) => {
     const next = new URLSearchParams(searchParams)
     for (const [key, value] of Object.entries(patch)) {
@@ -150,14 +208,11 @@ export function JobsHubPage() {
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.limit)) : 1
 
   return (
-    <div className="module-page jobs-portal">
-      <header className="module-heading">
-        <div>
-          <p className="eyebrow">Careers</p>
-          <h1>Jobs</h1>
-          <p>Browse openings, save roles, and track applications — live listings only.</p>
-        </div>
-      </header>
+    <div className="module-page jobs-portal space-y-4">
+      <PageIntro
+        title="Jobs"
+        description="Browse openings, save roles, and track applications — live listings only."
+      />
 
       <nav className="jobs-tabs" aria-label="Jobs sections">
         <Link to="/jobs" className="active" aria-current="page">
@@ -173,34 +228,44 @@ export function JobsHubPage() {
         <Link to="/jobs/preferences">Preferences</Link>
       </nav>
 
-      {summary && (
-        <div className="jobs-summary-strip">
-          <article>
-            <p>Saved</p>
-            <strong>{typeof summary.saved_count === 'number' ? summary.saved_count : '—'}</strong>
-          </article>
-          <article>
-            <p>Applications</p>
-            <strong>{typeof summary.applications_total === 'number' ? summary.applications_total : '—'}</strong>
-            <p>
-              {typeof summary.applied_count === 'number' ? summary.applied_count : '—'} applied ·{' '}
-              {typeof summary.interview_count === 'number' ? summary.interview_count : '—'} interview
-            </p>
-          </article>
-          <article>
-            <p>Offers</p>
-            <strong>{typeof summary.offer_count === 'number' ? summary.offer_count : '—'}</strong>
-          </article>
-          <article>
-            <p>Follow-ups due</p>
-            <strong>{typeof summary.follow_ups_due === 'number' ? summary.follow_ups_due : '—'}</strong>
-            <p>
-              {typeof summary.follow_ups_overdue === 'number' ? summary.follow_ups_overdue : '—'} overdue ·{' '}
-              {typeof summary.follow_ups_today === 'number' ? summary.follow_ups_today : '—'} today
-            </p>
-          </article>
-        </div>
-      )}
+      {summary ? (
+        <p className="jobs-summary-compact text-sm text-[var(--color-text-muted)]">
+          <Link to="/jobs/saved" className="font-semibold text-[var(--color-accent)]">
+            Saved {typeof summary.saved_count === 'number' ? summary.saved_count : '—'}
+          </Link>
+          {' · '}
+          <Link to="/jobs/applications" className="font-semibold text-[var(--color-accent)]">
+            Applications {typeof summary.applications_total === 'number' ? summary.applications_total : '—'}
+          </Link>
+          {typeof summary.offer_count === 'number' ? ` · Offers ${summary.offer_count}` : ''}
+          {typeof summary.follow_ups_due === 'number' ? ` · Follow-ups ${summary.follow_ups_due}` : ''}
+        </p>
+      ) : null}
+
+      <section className="jobs-primary-search" aria-label="Quick search">
+        <input
+          className={inputClass}
+          placeholder="Keywords"
+          value={q}
+          onChange={(event) => setQ(event.target.value)}
+          aria-label="Keywords"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') applyFilters()
+          }}
+        />
+        <CatalogSelect
+          label="Location"
+          value={location ?? ''}
+          options={options.data?.locations ?? []}
+          loading={options.isLoading}
+          error={options.isError}
+          onQueryChange={setLocationQuery}
+          onChange={(next) => writeParams({ location: next || undefined })}
+        />
+        <Button type="button" variant="primary" onClick={applyFilters}>
+          Search
+        </Button>
+      </section>
 
       <section className="jobs-family-panel" aria-label="Job families">
         {families.isLoading ? (
@@ -212,7 +277,7 @@ export function JobsHubPage() {
             Unable to load role counts
           </p>
         ) : (
-          <div className={showAllFamilies ? 'jobs-family-pills' : 'jobs-family-pills is-collapsed'}>
+          <div className="jobs-family-pills">
             <button
               type="button"
               className="jobs-family-pill"
@@ -222,7 +287,7 @@ export function JobsHubPage() {
               <span>All jobs</span>
               <span className="jobs-family-count">{families.data?.all ?? ''}</span>
             </button>
-            {pills.map((item) => (
+            {visiblePills.map((item) => (
               <button
                 key={item.id}
                 type="button"
@@ -236,29 +301,27 @@ export function JobsHubPage() {
             ))}
           </div>
         )}
-        {!families.isLoading && !families.isError && (
+        {!families.isLoading && !families.isError && pills.length > VISIBLE_ROLE_PILL_COUNT && (
           <button
             type="button"
             className="jobs-family-toggle"
             aria-expanded={showAllFamilies}
             onClick={() => setShowAllFamilies((current) => !current)}
           >
-            {showAllFamilies ? 'Show fewer' : 'Show all roles'}
+            {showAllFamilies
+              ? 'Show fewer roles'
+              : `More roles (${pills.length - VISIBLE_ROLE_PILL_COUNT} more)`}
           </button>
         )}
       </section>
 
-      <div className="jobs-filter-bar">
-        <input
-          className={inputClass}
-          placeholder="Keywords"
-          value={q}
-          onChange={(event) => setQ(event.target.value)}
-          aria-label="Keywords"
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') applyFilters()
-          }}
-        />
+      <FilterDisclosure
+        title="Search & filters"
+        open={filtersOpen}
+        onOpenChange={setFiltersOpen}
+        activeCount={activeFilterCount}
+      >
+        <div className="jobs-filter-bar">
         <input
           className={inputClass}
           placeholder="Skill"
@@ -268,15 +331,6 @@ export function JobsHubPage() {
           onKeyDown={(event) => {
             if (event.key === 'Enter') applyFilters()
           }}
-        />
-        <CatalogSelect
-          label="Location"
-          value={location ?? ''}
-          options={options.data?.locations ?? []}
-          loading={options.isLoading}
-          error={options.isError}
-          onQueryChange={setLocationQuery}
-          onChange={(next) => writeParams({ location: next || undefined })}
         />
         <CatalogSelect
           label="Company"
@@ -366,7 +420,8 @@ export function JobsHubPage() {
         <Button type="button" variant="secondary" onClick={clearFilters}>
           Clear filters
         </Button>
-      </div>
+        </div>
+      </FilterDisclosure>
 
       {isLoading ? (
         <LoadingState label="Loading jobs" />
@@ -377,9 +432,28 @@ export function JobsHubPage() {
           <p className="text-sm text-[var(--color-text-muted)]">
             {data.total} job{data.total !== 1 ? 's' : ''} found
           </p>
-          <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {saveError || saveMutation.isError ? (
+            <p className="text-sm text-[var(--color-danger)]" role="alert">
+              {saveError ?? 'Could not update this saved job. Please try again.'}{' '}
+              <button
+                type="button"
+                className="font-semibold underline"
+                onClick={() => setSaveError(null)}
+              >
+                Dismiss
+              </button>
+            </p>
+          ) : null}
+          <div className="jobs-results-list">
             {data.items.map((job) => (
-              <JobCardView key={job.id} job={job} />
+              <JobCardView
+                key={job.id}
+                job={job}
+                saving={saveMutation.isPending}
+                onToggleSave={() =>
+                  saveMutation.mutate({ jobId: job.id, isSaved: Boolean(job.is_saved) })
+                }
+              />
             ))}
           </div>
           {totalPages > 1 && (

@@ -1,0 +1,62 @@
+{
+  "slug": "api-design",
+  "title": { "page": "API Design" },
+  "nodes": [
+    {
+      "id": "sec-1",
+      "type": "section",
+      "position": { "x": 40, "y": 40 },
+      "width": 420,
+      "height": 280,
+      "data": { "label": "Foundations", "style": { "borderColor": "#d3cdc3" } }
+    },
+    {
+      "id": "v1",
+      "type": "vertical",
+      "position": { "x": 120, "y": 100 },
+      "width": 20,
+      "height": 80,
+      "data": { "style": { "stroke": "#3f5564", "strokeWidth": 3 } }
+    },
+    {
+      "id": "topic-1",
+      "type": "topic",
+      "position": { "x": 80, "y": 120 },
+      "width": 200,
+      "height": 56,
+      "data": { "label": "REST principles", "oldId": "rest" }
+    },
+    {
+      "id": "sub-1",
+      "type": "subtopic",
+      "position": { "x": 300, "y": 200 },
+      "width": 220,
+      "height": 48,
+      "data": {
+        "label": "Versioning strategies for long-lived public APIs with many consumers"
+      }
+    },
+    {
+      "id": "links-1",
+      "type": "linksgroup",
+      "position": { "x": 80, "y": 340 },
+      "width": 260,
+      "height": 120,
+      "data": {
+        "label": "Related paths",
+        "links": [
+          { "id": "l1", "label": "Backend", "url": "https://roadmap.sh/backend" },
+          { "id": "l2", "label": "Unknown", "url": "https://roadmap.sh/not-in-catalog" }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "topic-1",
+      "target": "sub-1",
+      "style": { "stroke": "#3f5564", "strokeWidth": 3 }
+    }
+  ]
+}

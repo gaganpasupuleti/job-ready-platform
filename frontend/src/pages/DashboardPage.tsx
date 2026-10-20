@@ -232,6 +232,12 @@ export function DashboardPage() {
                 Open readiness
               </Link>
             )}
+            <Link
+              to="/roadmaps"
+              className="mt-2 inline-block text-xs font-medium text-[var(--color-accent)] hover:underline"
+            >
+              Career roadmap
+            </Link>
           </div>
 
           <div className="desk-card">

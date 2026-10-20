@@ -93,7 +93,12 @@ export function JobCardView({
         </div>
       )}
 
-      {action}
+      <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
+        <Link to={`/jobs/${job.slug}`} className="job-card-details-link">
+          View details
+        </Link>
+        {action}
+      </div>
     </Card>
   )
 }
