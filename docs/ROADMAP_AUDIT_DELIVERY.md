@@ -1,75 +1,72 @@
-# Roadmap & UI audit delivery report
+# Roadmap & UI audit delivery report (corrective pass)
 
-## Baseline
+## Baseline and scope
 
 | Item | Value |
 |------|--------|
-| Audited commit | `24ea439f31edcdd4e90d6ed827cd081cc057cc8c` |
-| Working branch | `feat/official-roadmaps-retro-ui` |
-| Delivery commits | `962e657` (roadmap), `baaa4a6` (Jobs/UI), `51501e1` (delivery doc) |
-| PR (not merged) | https://github.com/gaganpasupuleti/job-ready-platform/pull/23 |
-| Prior baseline issue | `JobsHubPage` imported `PageIntro` / `FilterDisclosure` but files were not in the audited commit (clean checkout build break). |
+| Audited head (prior) | `b0dbff1051ba85611f0efdecfbb595b80acc03b0` |
+| Branch | `feat/official-roadmaps-retro-ui` |
+| PR | https://github.com/gaganpasupuleti/job-ready-platform/pull/23 (unmerged) |
+| PR scope note | See `docs/PR23_SCOPE.md` — full PR vs `master` includes Power BI commits `6feebb7`–`e12b145`; roadmap audit commits start at `24ea439` / `962e657`. |
 
-Unrelated local WIP (Power BI lab, library, workshop scripts, design-reference junk) was **not** staged or committed.
+Unrelated local WIP (Power BI unstaged edits, design-reference, etc.) remains unstaged.
 
-## Finding status (summary)
+## Corrective pass — finding status
 
-| Area | Status |
-|------|--------|
-| Catalog accepts single legacy row when API misconfigured | **Fixed** — API must return ≥10 official rows; else bundled `official-roadmaps-index.json`. |
-| Production graph via Vite proxy | **Fixed** — production uses API only; dev proxy remains for local work. |
-| Sync `urlopen` in async route | **Fixed** — `httpx` async fetch + atomic cache write. |
-| Undocumented `design-reference` only | **Fixed** — `ROADMAP_CONTENT_ROOT` / `data/roadmap-syllabus/roadmaps`; bundled catalog JSON in repo. |
-| Student-facing “start backend” copy | **Fixed** — neutral topic errors. |
-| Stale topic on slug change | **Fixed** — selection cleared in `useEffect`. |
-| Unsafe markdown HTML | **Fixed** — DOMPurify + allowed URI scheme filter. |
-| Accidental drag on explore | **Fixed** — drag gated behind “Rearrange layout”. |
-| Missing outline / mobile topic sheet | **Fixed** — outline panel + mobile bottom sheet. |
-| `PageIntro` / `FilterDisclosure` missing | **Fixed** — components committed. |
-| Jobs clipped role pills | **Fixed** — collapsed height `4.6rem` vs pill min-height. |
-| Jobs search hierarchy | **Improved** — primary keyword/location/search always visible; advanced in disclosure. |
-| Full nav / logout menu redesign | **Deferred** — scope limited to shared tokens + Jobs layout. |
-| Browser screenshots | **Not captured** in this session — paths reserved under `frontend/e2e-artifacts/acceptance-shots/` (create manually). |
+| Finding | Status | Evidence |
+|---------|--------|----------|
+| Node `draggable: true` overrides explore mode | **Implemented** | `graph.ts` defaults `draggable: false`; `applyNodesDraggable` toggles edit mode |
+| Outline hide breaks 3-column grid | **Implemented** | `ors-layout--outline-*` / `--article-*` grid classes |
+| Dark mode hardcoded roadmap colors | **Implemented** | `official-roadmap.css` uses `--color-*` / `--jr-*` tokens |
+| Jobs Browse Save not wired | **Implemented** | `JobsHubPage` `saveMutation` + `onToggleSave` |
+| Mobile sheet a11y | **Implemented** | Native `<dialog>` + `showModal`, Escape, focus on open, restore on close |
+| Reduced motion (camera) | **Implemented** | `flowDuration()` on fit/zoom/reset |
+| Markdown link slug validation | **Implemented** | `rewriteRoadmapShMarkdown(md, allowedSlugs)` |
+| Catalog 401 vs 403 | **Implemented** | Both rethrown in `roadmapService.ts` |
+| Malformed graphs | **Implemented** | `_validate_graph_payload` backend; `normalizeOfficialGraph` frontend |
+| `graph_available` overstated | **Implemented** | Backend: cache file exists; bundle defaults false |
+| Catalog “≥10 rows” heuristic | **Implemented** | `source === 'official' && meta.has_bundled_catalog` |
+| Topic Retry | **Implemented** | `RoadmapTopicPanel` + `topicQuery.refetch()` |
+| Role pill clipping | **Implemented** | First N pills + “More roles”; no fixed-height clip |
+| Viewport reset on article load | **Implemented** | `cameraFocusId` only from outline; graph key fit only on slug change |
+| PR Power BI scope | **Documented** | `docs/PR23_SCOPE.md` |
 
-## Content provisioning
+## Instability causes addressed
 
-1. **Catalog:** `backend/app/data/official-roadmap-catalog.json` and `frontend/public/official-roadmaps-index.json` (keep in sync).
-2. **Graphs:** Backend downloads and caches under `backend/app/data/roadmap-cache/` (configurable via `ROADMAP_GRAPH_CACHE_DIR`, TTL `ROADMAP_GRAPH_CACHE_TTL_HOURS`).
-3. **Articles (optional):** Mount syllabus at `ROADMAP_CONTENT_ROOT` pointing at `.../roadmaps/{slug}/content/*.md` (Developer Roadmap content; preserve license attribution returned in API).
+| Cause | Fix |
+|-------|-----|
+| `fitView` on every `initialNodes` reference change | Fit only when `graphKey` (slug) changes |
+| Per-node `draggable: true` | Explore mode forces `draggable: false` on all nodes |
+| Empty article column always reserved | Article column only when a topic is selected |
+| Selection from map triggering camera refit | Camera focus only from outline selection |
 
-## Catalog validation
-
-```bash
-node frontend/scripts/validate-roadmap-catalog.mjs
-cd backend && python -m pytest tests/test_roadmap_official.py -q
-```
-
-Expected: **93** catalog slugs; validation checks slug shape and FE/BE parity.
-
-**Limitation:** Catalog validation does **not** prove each graph or article exists — only index integrity. Graph availability requires API/cache or manual spot checks.
-
-## Test commands run
+## Tests (actual results)
 
 | Command | Result |
 |---------|--------|
-| `npm run build` (frontend) | **Pass** (2026-10-20, Vite 8.2.2) |
-| `python -m pytest tests/test_roadmap_official.py -q` | **4 passed** |
-| `node frontend/scripts/validate-roadmap-catalog.mjs` | **93 entries, 0 failures** |
+| `npm run build` | **Pass** |
+| `npm run test:unit` | **29 passed** (includes `tests/roadmapOfficial.test.ts`) |
+| `python -m pytest tests/test_roadmap_official.py -q` | **5 passed** |
+| `node scripts/validate-roadmap-catalog.mjs` | Run in CI/local (not re-run this pass) |
 
-## Suggested PR split
+## Browser verification
 
-1. **PR A — Roadmap reliability & viewer** — base `24ea439`, tip `962e657`.
-2. **PR B — Jobs + shared retro tokens** — base `962e657`, tip `baaa4a6` (stack on A or cherry-pick UI commit).
+| Check | Status |
+|-------|--------|
+| Multi-viewport / theme screenshots | **Unverified** unless captured under `frontend/e2e-artifacts/acceptance-shots/` in this session |
+| Authenticated roadmap + topic content | Requires running API + login; use dev mock or staging |
 
-PR links: add after `git push` + `gh pr create` (not merged).
+## Content provisioning
 
-## Reproduce (clean checkout)
+Unchanged: bundled catalog JSON; graphs via API cache; articles via `ROADMAP_CONTENT_ROOT` mount.
+
+## Reproduce
 
 ```bash
 git fetch origin feat/official-roadmaps-retro-ui
 git checkout feat/official-roadmaps-retro-ui
-cd frontend && npm ci && npm run build
+cd frontend && npm ci && npm run build && npm run test:unit
 cd ../backend && pip install -r requirements.txt && pytest tests/test_roadmap_official.py -q
 ```
 
-Start API + frontend; open `/roadmaps`, `/roadmaps/api-design`, `/jobs`.
+After corrective commit: record **HEAD SHA** below in git log.

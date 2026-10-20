@@ -40,11 +40,19 @@ export function shouldHideOfficialNode(
   return false
 }
 
-export function rewriteRoadmapShMarkdown(markdown: string): string {
-  return markdown
-    .replace(
-      /\]\(https?:\/\/(?:www\.)?roadmap\.sh\/([a-z0-9-]+)[^)]*\)/gi,
-      '](/roadmaps/$1)',
-    )
-    .replace(/\]\(https?:\/\/(?:www\.)?roadmap\.sh\/?\)/gi, '](/roadmaps)')
+export function rewriteRoadmapShMarkdown(
+  markdown: string,
+  allowedSlugs?: ReadonlySet<string>,
+): string {
+  const withPaths = markdown.replace(
+    /\]\(https?:\/\/(?:www\.)?roadmap\.sh\/([a-z0-9-]+)[^)]*\)/gi,
+    (_match, slug: string) => {
+      const normalized = slug.toLowerCase()
+      if (allowedSlugs && !allowedSlugs.has(normalized)) {
+        return `](https://roadmap.sh/${normalized})`
+      }
+      return `](/roadmaps/${normalized})`
+    },
+  )
+  return withPaths.replace(/\]\(https?:\/\/(?:www\.)?roadmap\.sh\/?\)/gi, '](/roadmaps)')
 }

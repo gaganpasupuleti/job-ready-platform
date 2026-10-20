@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/common/Button'
@@ -14,7 +14,16 @@ import { CatalogSelect } from '@/features/jobs/CatalogSelect'
 import { JobCardView } from '@/features/jobs/JobCard'
 import { useAuth } from '@/hooks/useAuth'
 import { isPortalDate, portalAddedParams } from '@/lib/jobPortalDates'
-import { fetchJobFamilyCounts, fetchJobFilterOptions, fetchJobs, fetchJobsSummary } from '@/services/jobService'
+import {
+  fetchJobFamilyCounts,
+  fetchJobFilterOptions,
+  fetchJobs,
+  fetchJobsSummary,
+  saveJob,
+  unsaveJob,
+} from '@/services/jobService'
+
+const VISIBLE_ROLE_PILL_COUNT = 8
 
 const inputClass = 'jr-control px-3 py-2 text-sm text-[var(--color-text)]'
 
@@ -26,6 +35,7 @@ function param(searchParams: URLSearchParams, key: string) {
 export function JobsHubPage() {
   const { user } = useAuth()
   const uid = user?.id
+  const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
   const [skill, setSkill] = useState(searchParams.get('skill') ?? '')
@@ -118,6 +128,28 @@ export function JobsHubPage() {
     if (!family) return rows
     return [...rows].sort((left, right) => Number(right.id === family) - Number(left.id === family))
   }, [families.data, family])
+
+  const visiblePills = useMemo(() => {
+    if (showAllFamilies) return pills
+    const head = pills.slice(0, VISIBLE_ROLE_PILL_COUNT)
+    if (family && !head.some((item) => item.id === family)) {
+      const selected = pills.find((item) => item.id === family)
+      if (selected) return [...head, selected]
+    }
+    return head
+  }, [pills, showAllFamilies, family])
+
+  const saveMutation = useMutation({
+    mutationFn: async ({ jobId, isSaved }: { jobId: string; isSaved: boolean }) => {
+      if (isSaved) await unsaveJob(jobId)
+      else await saveJob(jobId)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      queryClient.invalidateQueries({ queryKey: ['jobs-summary'] })
+      queryClient.invalidateQueries({ queryKey: ['jobs-saved'] })
+    },
+  })
 
   const activeFilterCount = useMemo(() => {
     let count = 0
@@ -239,7 +271,7 @@ export function JobsHubPage() {
             Unable to load role counts
           </p>
         ) : (
-          <div className={showAllFamilies ? 'jobs-family-pills' : 'jobs-family-pills is-collapsed'}>
+          <div className="jobs-family-pills">
             <button
               type="button"
               className="jobs-family-pill"
@@ -249,7 +281,7 @@ export function JobsHubPage() {
               <span>All jobs</span>
               <span className="jobs-family-count">{families.data?.all ?? ''}</span>
             </button>
-            {pills.map((item) => (
+            {visiblePills.map((item) => (
               <button
                 key={item.id}
                 type="button"
@@ -263,14 +295,16 @@ export function JobsHubPage() {
             ))}
           </div>
         )}
-        {!families.isLoading && !families.isError && (
+        {!families.isLoading && !families.isError && pills.length > VISIBLE_ROLE_PILL_COUNT && (
           <button
             type="button"
             className="jobs-family-toggle"
             aria-expanded={showAllFamilies}
             onClick={() => setShowAllFamilies((current) => !current)}
           >
-            {showAllFamilies ? 'Show fewer' : 'Show all roles'}
+            {showAllFamilies
+              ? 'Show fewer roles'
+              : `More roles (${pills.length - VISIBLE_ROLE_PILL_COUNT} more)`}
           </button>
         )}
       </section>
@@ -394,7 +428,14 @@ export function JobsHubPage() {
           </p>
           <div className="jobs-results-list">
             {data.items.map((job) => (
-              <JobCardView key={job.id} job={job} />
+              <JobCardView
+                key={job.id}
+                job={job}
+                saving={saveMutation.isPending}
+                onToggleSave={() =>
+                  saveMutation.mutate({ jobId: job.id, isSaved: Boolean(job.is_saved) })
+                }
+              />
             ))}
           </div>
           {totalPages > 1 && (

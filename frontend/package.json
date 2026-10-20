@@ -8,7 +8,7 @@
     "dev:mock": "node scripts/dev-mock.mjs",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "test:unit": "node --experimental-strip-types --test scripts/frontend-checks.test.ts tests/powerBiWorkshop.test.ts",
+    "test:unit": "node --experimental-strip-types --test scripts/frontend-checks.test.ts tests/powerBiWorkshop.test.ts tests/roadmapOfficial.test.ts",
     "validate:power-bi-lab": "node scripts/validate-power-bi-lab.mjs",
     "regenerate:power-bi-lab": "powershell -ExecutionPolicy Bypass -File scripts/regenerate-power-bi-lab.ps1",
     "preview": "vite preview",

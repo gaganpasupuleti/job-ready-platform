@@ -50,24 +50,40 @@ export class RoadmapGraphError extends Error {
   }
 }
 
+export function normalizeOfficialGraph(data: OfficialRoadmapGraph, slug: string): OfficialRoadmapGraph {
+  if (!data || !Array.isArray(data.nodes) || data.nodes.length === 0) {
+    throw new RoadmapGraphError('Graph response was empty')
+  }
+  if (!Array.isArray(data.edges)) {
+    throw new RoadmapGraphError('Graph response was missing edges')
+  }
+  for (const node of data.nodes) {
+    if (!node?.id || !node.position) {
+      throw new RoadmapGraphError('Graph response had invalid nodes')
+    }
+  }
+  for (const edge of data.edges) {
+    if (!edge?.id || !edge.source || !edge.target) {
+      throw new RoadmapGraphError('Graph response had invalid edges')
+    }
+  }
+  return { ...data, slug: data.slug ?? slug }
+}
+
 async function fetchGraphDevProxy(slug: string): Promise<OfficialRoadmapGraph> {
   const response = await fetch(`/roadmap-graph/${encodeURIComponent(slug)}.json`)
   if (!response.ok) {
     throw new RoadmapGraphError(`Graph unavailable (${response.status})`, response.status)
   }
   const data = (await response.json()) as OfficialRoadmapGraph
-  if (!data?.nodes?.length) {
-    throw new RoadmapGraphError('Graph response was empty')
-  }
-  return { ...data, slug: data.slug ?? slug }
+  return normalizeOfficialGraph(data, slug)
 }
 
 /** Production graphs are served by the API; dev may use the Vite proxy when the API is down. */
 export async function fetchOfficialRoadmapGraph(slug: string): Promise<OfficialRoadmapGraph> {
   try {
     const { data } = await apiClient.get<OfficialRoadmapGraph>(apiEndpoints.roadmap.officialGraph(slug))
-    if (data?.nodes?.length) return { ...data, slug: data.slug ?? slug }
-    throw new RoadmapGraphError('Graph response was empty')
+    return normalizeOfficialGraph(data, slug)
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const status = error.response?.status

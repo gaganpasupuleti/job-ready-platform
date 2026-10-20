@@ -19,21 +19,22 @@ export interface RoadmapCatalogItem {
 export interface RoadmapCatalogResponse {
   roadmaps: RoadmapCatalogItem[]
   source: 'api' | 'bundle'
-  meta?: { total?: number; with_articles?: number }
+  meta?: { total?: number; with_articles?: number; has_bundled_catalog?: boolean }
 }
-
-const MIN_OFFICIAL_CATALOG_SIZE = 10
 
 function isUsableApiCatalog(data: {
   roadmaps?: RoadmapCatalogItem[]
   source?: string
+  meta?: RoadmapCatalogResponse['meta']
 }): boolean {
   const rows = data.roadmaps ?? []
-  if (rows.length < MIN_OFFICIAL_CATALOG_SIZE) return false
+  if (data.source === 'official' && data.meta?.has_bundled_catalog && rows.length > 0) {
+    return true
+  }
   if (data.source === 'legacy' && rows.length <= 1) return false
   const onlyDraft =
     rows.length === 1 && rows[0]?.family_slug === 'data-engineer' && rows[0]?.preview_only
-  return !onlyDraft
+  return rows.length > 0 && !onlyDraft
 }
 
 async function loadBundledCatalog(): Promise<RoadmapCatalogResponse> {
@@ -45,11 +46,11 @@ async function loadBundledCatalog(): Promise<RoadmapCatalogResponse> {
         return {
           roadmaps: data.roadmaps.map((row) => ({
             ...row,
-            graph_available: row.graph_available ?? true,
+            graph_available: row.graph_available ?? false,
             articles_available: row.articles_available ?? false,
           })),
           source: 'bundle',
-          meta: { total: data.roadmaps.length },
+          meta: { total: data.roadmaps.length, has_bundled_catalog: true },
         }
       }
     }
@@ -71,8 +72,11 @@ export async function fetchRoadmapCatalog(): Promise<RoadmapCatalogResponse> {
       return { roadmaps: data.roadmaps, source: 'api', meta: data.meta }
     }
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      throw error
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status
+      if (status === 401 || status === 403) {
+        throw error
+      }
     }
   }
   return loadBundledCatalog()

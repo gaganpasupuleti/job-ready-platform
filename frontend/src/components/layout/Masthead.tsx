@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ChevronDown, LogOut, Menu, Moon, Sun, X } from 'lucide-react'
+import { ChevronDown, Menu, Moon, Sun, X } from 'lucide-react'
 
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
@@ -287,18 +287,6 @@ export function Masthead({ compact = false }: MastheadProps) {
           >
             {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
-          {user ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="logout-desktop"
-              onClick={() => logout()}
-              aria-label="Logout"
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
-          ) : null}
         </div>
       </header>
       {mobileOpen ? (

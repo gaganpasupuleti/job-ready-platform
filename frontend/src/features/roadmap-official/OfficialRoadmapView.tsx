@@ -16,6 +16,7 @@ import { fetchRoadmapCatalog } from '@/services/roadmapService'
 
 import { buildFlowGraph } from './graph'
 import { RoadmapFlowCanvas } from './RoadmapFlowCanvas'
+import { RoadmapMobileTopicDialog } from './RoadmapMobileTopicDialog'
 import { RoadmapOutline } from './RoadmapOutline'
 import { RoadmapTopicPanel } from './RoadmapTopicPanel'
 import './official-roadmap.css'
@@ -23,14 +24,21 @@ import './official-roadmap.css'
 interface OfficialRoadmapViewProps {
   slug: string
   title?: string
+  description?: string
 }
 
-export function OfficialRoadmapView({ slug, title }: OfficialRoadmapViewProps) {
+function isMobileViewport() {
+  return window.matchMedia('(max-width: 900px)').matches
+}
+
+export function OfficialRoadmapView({ slug, title, description }: OfficialRoadmapViewProps) {
   const navigate = useNavigate()
   const [selected, setSelected] = useState<OfficialRoadmapNode | null>(null)
   const [editLayout, setEditLayout] = useState(false)
   const [outlineOpen, setOutlineOpen] = useState(true)
   const [mobileTopicOpen, setMobileTopicOpen] = useState(false)
+  const [outlineQuery, setOutlineQuery] = useState('')
+  const [cameraFocusId, setCameraFocusId] = useState<string | null>(null)
 
   const catalogQuery = useQuery({
     queryKey: ['roadmap-catalog'],
@@ -43,9 +51,16 @@ export function OfficialRoadmapView({ slug, title }: OfficialRoadmapViewProps) {
     [catalogQuery.data],
   )
 
+  const catalogRow = useMemo(
+    () => catalogQuery.data?.roadmaps.find((row) => row.family_slug === slug),
+    [catalogQuery.data, slug],
+  )
+
   useEffect(() => {
     setSelected(null)
     setMobileTopicOpen(false)
+    setOutlineQuery('')
+    setCameraFocusId(null)
   }, [slug])
 
   const graphQuery = useQuery({
@@ -67,29 +82,55 @@ export function OfficialRoadmapView({ slug, title }: OfficialRoadmapViewProps) {
     return buildFlowGraph(graphQuery.data.nodes, graphQuery.data.edges)
   }, [graphQuery.data])
 
-  const onTopicSelect = useCallback((raw: OfficialRoadmapNode) => {
+  const onTopicSelect = useCallback((raw: OfficialRoadmapNode, focusCamera = false) => {
     setSelected(raw)
-    setMobileTopicOpen(true)
+    if (focusCamera) setCameraFocusId(raw.id)
+    if (isMobileViewport()) setMobileTopicOpen(true)
   }, [])
+
+  const closeArticle = useCallback(() => {
+    setSelected(null)
+    setMobileTopicOpen(false)
+  }, [])
+
+  useEffect(() => {
+    if (!cameraFocusId) return
+    const timer = window.setTimeout(() => setCameraFocusId(null), 450)
+    return () => window.clearTimeout(timer)
+  }, [cameraFocusId])
 
   const pageTitle =
     title ??
+    catalogRow?.title ??
     graphQuery.data?.title?.page ??
     graphQuery.data?.title?.card ??
     slug.replace(/-/g, ' ')
+
+  const pageDescription =
+    description ??
+    catalogRow?.description ??
+    'Explore topics on the map. Select any topic to read notes when available.'
 
   const topicErrorKind = useMemo((): 'none' | 'missing' | 'network' | 'session' => {
     if (!selected || topicQuery.isLoading || topicQuery.data) return 'none'
     if (!topicQuery.isError) return 'none'
     if (axios.isAxiosError(topicQuery.error)) {
       if (topicQuery.error.response?.status === 401) return 'session'
+      if (topicQuery.error.response?.status === 403) return 'session'
       if (topicQuery.error.response?.status === 404) return 'missing'
     }
     return 'network'
   }, [selected, topicQuery.isLoading, topicQuery.data, topicQuery.isError, topicQuery.error])
 
+  const articleOpen = Boolean(selected)
+  const layoutClass = [
+    'ors-layout',
+    outlineOpen ? 'ors-layout--outline-open' : 'ors-layout--outline-closed',
+    articleOpen ? 'ors-layout--article-open' : 'ors-layout--article-closed',
+  ].join(' ')
+
   if (graphQuery.isLoading) {
-    return <p className="text-sm text-[var(--color-text-muted)] p-4">Loading roadmap…</p>
+    return <p className="ors-status">Loading roadmap…</p>
   }
 
   if (graphQuery.isError || !graphQuery.data) {
@@ -98,13 +139,13 @@ export function OfficialRoadmapView({ slug, title }: OfficialRoadmapViewProps) {
         ? graphQuery.error.message
         : 'Could not load this roadmap. Check your connection or try again.'
     return (
-      <div className="module-page space-y-3 p-4">
-        <p className="text-sm text-[var(--color-danger)]" role="alert">{message}</p>
-        <div className="flex flex-wrap gap-2">
+      <div className="ors-page ors-page--centered">
+        <p className="ors-alert" role="alert">{message}</p>
+        <div className="ors-inline-actions">
           <Button type="button" variant="secondary" onClick={() => graphQuery.refetch()}>
             Retry
           </Button>
-          <Link to="/roadmaps" className="text-sm text-[var(--color-accent)]">All roadmaps</Link>
+          <Link to="/roadmaps" className="ors-text-link">All roadmaps</Link>
         </div>
       </div>
     )
@@ -113,28 +154,16 @@ export function OfficialRoadmapView({ slug, title }: OfficialRoadmapViewProps) {
   return (
     <div className="ors-page">
       <header className="ors-header">
-        <div>
-          <p className="ors-kicker">JobReady career path</p>
-          <h1 className="ors-title">{pageTitle}</h1>
-          <p className="ors-sub">
-            Pan and zoom to explore. Pick a topic on the map or in the outline. Layout editing is
-            optional.
-          </p>
-        </div>
-        <div className="ors-header-actions">
-          <label className="ors-toggle">
-            <input
-              type="checkbox"
-              checked={editLayout}
-              onChange={(event) => setEditLayout(event.target.checked)}
-            />
-            Rearrange layout
-          </label>
-          <Link to="/roadmaps" className="ors-back">All roadmaps</Link>
-        </div>
+        <nav className="ors-breadcrumb" aria-label="Breadcrumb">
+          <Link to="/roadmaps">Roadmaps</Link>
+          <span aria-hidden="true">/</span>
+          <span>{pageTitle}</span>
+        </nav>
+        <h1 className="ors-title">{pageTitle}</h1>
+        <p className="ors-sub">{pageDescription}</p>
       </header>
 
-      <div className="ors-toolbar">
+      <div className="ors-toolbar" role="toolbar" aria-label="Roadmap tools">
         <button
           type="button"
           className="ors-toolbar-btn"
@@ -143,15 +172,32 @@ export function OfficialRoadmapView({ slug, title }: OfficialRoadmapViewProps) {
         >
           {outlineOpen ? 'Hide outline' : 'Show outline'}
         </button>
+        <input
+          type="search"
+          className="ors-toolbar-search"
+          placeholder="Find topic"
+          value={outlineQuery}
+          onChange={(event) => setOutlineQuery(event.target.value)}
+          aria-label="Find topic in outline"
+        />
+        <label className="ors-toggle">
+          <input
+            type="checkbox"
+            checked={editLayout}
+            onChange={(event) => setEditLayout(event.target.checked)}
+          />
+          Rearrange layout
+        </label>
       </div>
 
-      <div className="ors-layout">
+      <div className={layoutClass}>
         {outlineOpen ? (
           <aside className="ors-outline-panel" aria-label="Topic outline">
             <RoadmapOutline
               nodes={graphQuery.data.nodes}
               selectedId={selected?.id ?? null}
-              onSelect={onTopicSelect}
+              filter={outlineQuery}
+              onSelect={(raw) => onTopicSelect(raw, true)}
             />
           </aside>
         ) : null}
@@ -159,8 +205,10 @@ export function OfficialRoadmapView({ slug, title }: OfficialRoadmapViewProps) {
         <div className="ors-canvas">
           <ReactFlowProvider>
             <RoadmapFlowCanvas
+              graphKey={slug}
               initialNodes={flow.nodes}
               initialEdges={flow.edges}
+              focusNodeId={cameraFocusId}
               onTopicSelect={onTopicSelect}
               onRoadmapNavigate={(path) => navigate(path)}
               nodesDraggable={editLayout}
@@ -169,32 +217,39 @@ export function OfficialRoadmapView({ slug, title }: OfficialRoadmapViewProps) {
           </ReactFlowProvider>
         </div>
 
-        <aside className="ors-panel ors-panel--desktop" aria-label="Topic details">
-          <RoadmapTopicPanel
-            selected={selected}
-            topicMarkdown={topicQuery.data?.markdown}
-            topicAttribution={topicQuery.data?.attribution}
-            isLoading={topicQuery.isLoading}
-            errorKind={topicErrorKind}
-          />
-        </aside>
-      </div>
-
-      {mobileTopicOpen && selected ? (
-        <div className="ors-mobile-sheet" role="dialog" aria-modal="true" aria-label="Topic details">
-          <div className="ors-mobile-sheet-backdrop" onClick={() => setMobileTopicOpen(false)} />
-          <div className="ors-mobile-sheet-panel">
+        {articleOpen ? (
+          <aside className="ors-panel ors-panel--desktop" aria-label="Topic details">
             <RoadmapTopicPanel
               selected={selected}
               topicMarkdown={topicQuery.data?.markdown}
               topicAttribution={topicQuery.data?.attribution}
               isLoading={topicQuery.isLoading}
               errorKind={topicErrorKind}
-              onClose={() => setMobileTopicOpen(false)}
+              allowedSlugs={allowedSlugs}
+              onRetry={() => topicQuery.refetch()}
+              onClose={closeArticle}
             />
-          </div>
-        </div>
-      ) : null}
+          </aside>
+        ) : null}
+      </div>
+
+      <RoadmapMobileTopicDialog
+        open={mobileTopicOpen && Boolean(selected)}
+        onClose={() => setMobileTopicOpen(false)}
+        label="Topic details"
+      >
+        <RoadmapTopicPanel
+          selected={selected}
+          topicMarkdown={topicQuery.data?.markdown}
+          topicAttribution={topicQuery.data?.attribution}
+          isLoading={topicQuery.isLoading}
+          errorKind={topicErrorKind}
+          allowedSlugs={allowedSlugs}
+          onRetry={() => topicQuery.refetch()}
+          onClose={() => setMobileTopicOpen(false)}
+          closeButtonDataAttr
+        />
+      </RoadmapMobileTopicDialog>
     </div>
   )
 }

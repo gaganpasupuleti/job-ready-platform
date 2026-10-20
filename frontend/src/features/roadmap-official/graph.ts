@@ -20,7 +20,7 @@ export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
       data: { label: '', nodeType, raw },
       width: width ?? 20,
       height: height ?? 40,
-      draggable: true,
+      draggable: false,
       selectable: false,
       focusable: false,
       zIndex: 10,
@@ -36,7 +36,7 @@ export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
       data: { label: groupLabel, nodeType, raw },
       width: width ?? 280,
       height: height ?? 180,
-      draggable: true,
+      draggable: false,
       selectable: true,
     }
   }
@@ -49,7 +49,7 @@ export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
       data: { label: raw.data?.label ?? '', nodeType, raw },
       width: width ?? 200,
       height: height ?? 120,
-      draggable: true,
+      draggable: false,
       selectable: false,
       zIndex: -1,
     }
@@ -65,8 +65,39 @@ export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
     data: { label: label ?? '', nodeType, raw },
     width: width ?? undefined,
     height: height ?? undefined,
-    draggable: true,
+    draggable: false,
     selectable: true,
+  }
+}
+
+const LAYOUT_DRAG_TYPES = new Set([
+  'topic',
+  'subtopic',
+  'linksgroup',
+  'section',
+  'vertical',
+  'horizontal',
+  'roadmap',
+  'default',
+  'paragraph',
+])
+
+export function applyNodesDraggable(nodes: Node[], editing: boolean): Node[] {
+  if (!editing) {
+    return nodes.map((node) => ({ ...node, draggable: false }))
+  }
+  return nodes.map((node) => {
+    const nodeType = (node.data as NodeData).nodeType
+    return { ...node, draggable: LAYOUT_DRAG_TYPES.has(nodeType) }
+  })
+}
+
+export function assertFlowGraphShape(nodes: OfficialRoadmapNode[], edges: OfficialRoadmapEdge[]) {
+  if (!Array.isArray(nodes) || nodes.length === 0) {
+    throw new Error('Roadmap graph is missing nodes.')
+  }
+  if (!Array.isArray(edges)) {
+    throw new Error('Roadmap graph is missing edges.')
   }
 }
 

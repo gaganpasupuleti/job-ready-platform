@@ -3,6 +3,7 @@ import type { OfficialRoadmapNode } from '@/services/roadmapOfficialService'
 interface RoadmapOutlineProps {
   nodes: OfficialRoadmapNode[]
   selectedId: string | null
+  filter?: string
   onSelect: (node: OfficialRoadmapNode) => void
 }
 
@@ -21,8 +22,11 @@ function outlineEntries(nodes: OfficialRoadmapNode[]) {
     .filter((row) => row.label.length > 0)
 }
 
-export function RoadmapOutline({ nodes, selectedId, onSelect }: RoadmapOutlineProps) {
-  const entries = outlineEntries(nodes)
+export function RoadmapOutline({ nodes, selectedId, filter = '', onSelect }: RoadmapOutlineProps) {
+  const needle = filter.trim().toLowerCase()
+  const entries = outlineEntries(nodes).filter(
+    (entry) => !needle || entry.label.toLowerCase().includes(needle),
+  )
 
   if (entries.length === 0) {
     return <p className="ors-outline-empty">No topics listed for this roadmap.</p>

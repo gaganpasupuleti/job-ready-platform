@@ -1,7 +1,12 @@
 import json
 from pathlib import Path
 
-from app.services.official_roadmap_service import _load_catalog_file, list_official_roadmaps
+from app.core.exceptions import AppException
+from app.services.official_roadmap_service import (
+    _load_catalog_file,
+    _validate_graph_payload,
+    list_official_roadmaps,
+)
 
 
 def test_bundled_catalog_has_many_entries():
@@ -26,6 +31,14 @@ def test_official_data_engineer_not_legacy_draft_row():
     assert official_de.get("preview_only") is False
     assert official_de.get("student_eligible") is True
     assert not any(r.get("source") == "legacy-draft" for r in rows)
+
+
+def test_validate_graph_payload_requires_edges():
+    try:
+        _validate_graph_payload({"nodes": [{"id": "a", "position": {"x": 0, "y": 0}}]})
+        assert False, "expected AppException"
+    except AppException:
+        pass
 
 
 def test_catalog_file_matches_frontend_bundle():

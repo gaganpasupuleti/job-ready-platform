@@ -112,7 +112,7 @@ def list_official_roadmaps() -> list[dict]:
                 "preview_only": bool(raw.get("preview_only", False)),
                 "student_eligible": bool(raw.get("student_eligible", True)),
                 "source": raw.get("source") or "official",
-                "graph_available": True,
+                "graph_available": _graph_cache_path(slug).is_file(),
                 "articles_available": _slug_has_articles(slug, root),
             }
         )
@@ -139,11 +139,27 @@ def list_official_roadmaps() -> list[dict]:
                 "preview_only": False,
                 "student_eligible": True,
                 "source": "official",
-                "graph_available": True,
+                "graph_available": _graph_cache_path(slug).is_file(),
                 "articles_available": _slug_has_articles(slug, root),
             }
         )
     return rows
+
+
+def _validate_graph_payload(payload: dict) -> dict:
+    nodes = payload.get("nodes")
+    edges = payload.get("edges")
+    if not isinstance(nodes, list) or not nodes:
+        raise AppException("Roadmap graph response was invalid", status_code=502)
+    if not isinstance(edges, list):
+        raise AppException("Roadmap graph response was invalid", status_code=502)
+    for node in nodes:
+        if not isinstance(node, dict) or not node.get("id") or not node.get("position"):
+            raise AppException("Roadmap graph response was invalid", status_code=502)
+    for edge in edges:
+        if not isinstance(edge, dict) or not edge.get("source") or not edge.get("target"):
+            raise AppException("Roadmap graph response was invalid", status_code=502)
+    return payload
 
 
 def _read_graph_cache(slug: str) -> dict | None:
@@ -153,8 +169,14 @@ def _read_graph_cache(slug: str) -> dict | None:
     try:
         with path.open(encoding="utf-8") as handle:
             payload = json.load(handle)
-        if isinstance(payload, dict) and payload.get("nodes"):
-            return payload
+        if isinstance(payload, dict):
+            return _validate_graph_payload(payload)
+    except AppException:
+        logger.warning("Ignoring invalid roadmap graph cache for %s", slug)
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            pass
     except (OSError, json.JSONDecodeError) as exc:
         logger.warning("Ignoring corrupt roadmap graph cache for %s: %s", slug, exc)
     return None
@@ -200,10 +222,15 @@ async def fetch_official_graph(slug: str) -> dict:
     except (httpx.HTTPError, json.JSONDecodeError, ValueError) as exc:
         raise AppException("Could not download roadmap graph", status_code=502) from exc
 
-    if not isinstance(payload, dict) or not payload.get("nodes"):
+    if not isinstance(payload, dict):
         raise AppException("Roadmap graph response was invalid", status_code=502)
+    payload = _validate_graph_payload(payload)
 
-    _write_graph_cache(slug, payload)
+    try:
+        _write_graph_cache(slug, payload)
+    except OSError as exc:
+        logger.warning("Could not write roadmap graph cache for %s: %s", slug, exc)
+
     return payload
 
 
