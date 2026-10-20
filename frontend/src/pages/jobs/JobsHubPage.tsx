@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/common/Button'
+import { FilterDisclosure } from '@/components/layout/FilterDisclosure'
+import { PageIntro } from '@/components/layout/PageIntro'
 import {
   EmptyState,
   ErrorState,
@@ -14,8 +16,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { isPortalDate, portalAddedParams } from '@/lib/jobPortalDates'
 import { fetchJobFamilyCounts, fetchJobFilterOptions, fetchJobs, fetchJobsSummary } from '@/services/jobService'
 
-const inputClass =
-  'rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)]'
+const inputClass = 'jr-control px-3 py-2 text-sm text-[var(--color-text)]'
 
 function param(searchParams: URLSearchParams, key: string) {
   const value = searchParams.get(key)?.trim()
@@ -32,6 +33,7 @@ export function JobsHubPage() {
   const [companyQuery, setCompanyQuery] = useState('')
   const [showAllFamilies, setShowAllFamilies] = useState(false)
   const [customDates, setCustomDates] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const page = Number(searchParams.get('page') ?? '1') || 1
   const sort = searchParams.get('sort') ?? 'newest'
@@ -117,6 +119,24 @@ export function JobsHubPage() {
     return [...rows].sort((left, right) => Number(right.id === family) - Number(left.id === family))
   }, [families.data, family])
 
+  const activeFilterCount = useMemo(() => {
+    let count = 0
+    if (param(searchParams, 'q')) count += 1
+    if (param(searchParams, 'skill')) count += 1
+    if (location) count += 1
+    if (company) count += 1
+    if (experience) count += 1
+    if (role) count += 1
+    if (addedWithin || addedFrom || addedTo) count += 1
+    if (postedWithin) count += 1
+    if (sort && sort !== 'newest') count += 1
+    return count
+  }, [searchParams, location, company, experience, role, addedWithin, addedFrom, addedTo, postedWithin, sort])
+
+  useEffect(() => {
+    if (activeFilterCount > 0) setFiltersOpen(true)
+  }, [activeFilterCount])
+
   const writeParams = (patch: Record<string, string | undefined>, resetPage = true) => {
     const next = new URLSearchParams(searchParams)
     for (const [key, value] of Object.entries(patch)) {
@@ -150,14 +170,11 @@ export function JobsHubPage() {
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.limit)) : 1
 
   return (
-    <div className="module-page jobs-portal">
-      <header className="module-heading">
-        <div>
-          <p className="eyebrow">Careers</p>
-          <h1>Jobs</h1>
-          <p>Browse openings, save roles, and track applications — live listings only.</p>
-        </div>
-      </header>
+    <div className="module-page jobs-portal space-y-4">
+      <PageIntro
+        title="Jobs"
+        description="Browse openings, save roles, and track applications — live listings only."
+      />
 
       <nav className="jobs-tabs" aria-label="Jobs sections">
         <Link to="/jobs" className="active" aria-current="page">
@@ -248,7 +265,13 @@ export function JobsHubPage() {
         )}
       </section>
 
-      <div className="jobs-filter-bar">
+      <FilterDisclosure
+        title="Search & filters"
+        open={filtersOpen}
+        onOpenChange={setFiltersOpen}
+        activeCount={activeFilterCount}
+      >
+        <div className="jobs-filter-bar">
         <input
           className={inputClass}
           placeholder="Keywords"
@@ -366,7 +389,8 @@ export function JobsHubPage() {
         <Button type="button" variant="secondary" onClick={clearFilters}>
           Clear filters
         </Button>
-      </div>
+        </div>
+      </FilterDisclosure>
 
       {isLoading ? (
         <LoadingState label="Loading jobs" />

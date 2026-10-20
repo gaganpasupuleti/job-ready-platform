@@ -1,0 +1,469 @@
+{
+  "fixture_meta": {
+    "source_backend_branch": "feature/jobready-role-roadmap-engine-v1",
+    "source_commit": "850b79f",
+    "source_export_label": "DATA_ENGINEER_2_LINKED_DRAFT_FOR_FRONTEND",
+    "generated_at_source": "2026-09-15T10:42:26.033891+00:00",
+    "warning": "DRAFT / unpublished. Not student-eligible. proof_policy_unset. Platform content incomplete.",
+    "start_here": {
+      "node_key": "skill:sql",
+      "reason_codes": [
+        "hard_dependencies_satisfied",
+        "required_before_optional",
+        "importance=core",
+        "stable_tie_break_planned_index_sort_order_node_key"
+      ],
+      "intended_start_node_key": "skill:sql"
+    },
+    "seed_gaps": [
+      "proof_policy_unset",
+      "platform_resources_not_authored",
+      "activity_completion_criteria_unspecified",
+      "not_student_eligible_until_published_and_complete"
+    ]
+  },
+  "assembly": {
+    "family_slug": "data-engineer",
+    "config_version": "2-linked-draft",
+    "config_status": "draft",
+    "config_curriculum_complete": false,
+    "preview_only": true,
+    "student_eligible": false,
+    "algorithm_version": "1.0.0",
+    "gap_engine_version": "1.0.0",
+    "policy_version": "production_unset_v0",
+    "formula_version": "2.1.0",
+    "formula_label": "assessed_competence_v2.1",
+    "as_of": "2026-09-15T10:42:25.845269+00:00",
+    "phases": [
+      {
+        "phase_key": "applied",
+        "label": "applied",
+        "node_keys": [
+          "skill:data-warehousing"
+        ]
+      },
+      {
+        "phase_key": "foundations",
+        "label": "foundations",
+        "node_keys": [
+          "skill:sql",
+          "skill:python"
+        ]
+      },
+      {
+        "phase_key": "platforms-incomplete",
+        "label": "platforms-incomplete",
+        "node_keys": [
+          "skill:aws",
+          "skill:snowflake",
+          "skill:spark",
+          "skill:airflow"
+        ]
+      },
+      {
+        "phase_key": "python-practice",
+        "label": "python-practice",
+        "node_keys": [
+          "activity:python-practice"
+        ]
+      },
+      {
+        "phase_key": "sql-practice",
+        "label": "sql-practice",
+        "node_keys": [
+          "activity:sql-joins"
+        ]
+      }
+    ],
+    "planned_sequence": [
+      "skill:sql",
+      "skill:python",
+      "activity:sql-joins",
+      "activity:python-practice",
+      "skill:data-warehousing",
+      "skill:aws",
+      "skill:snowflake",
+      "skill:spark",
+      "skill:airflow"
+    ],
+    "nodes": [
+      {
+        "node_key": "skill:sql",
+        "title": "SQL foundations \u2014 Start here",
+        "phase_key": "foundations",
+        "sort_order": 10,
+        "skill_id": "242447be-f9c5-4758-92ec-d533f8841cdd",
+        "skill_slug": "sql",
+        "importance": "core",
+        "is_optional": false,
+        "planned_index": 0,
+        "hard_prerequisite_node_keys": [],
+        "unsatisfied_hard_prerequisite_node_keys": [],
+        "availability": "available",
+        "availability_reason_codes": [
+          "resources_available",
+          "hard_prerequisites_met"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": [
+          {
+            "type": "learning_material",
+            "ref": "da-sql-filter-agg",
+            "availability": "available",
+            "reason_codes": []
+          },
+          {
+            "type": "sql_problem",
+            "ref": "active-catalog-items",
+            "availability": "available",
+            "reason_codes": []
+          }
+        ]
+      },
+      {
+        "node_key": "skill:python",
+        "title": "Python foundations for data work",
+        "phase_key": "foundations",
+        "sort_order": 20,
+        "skill_id": "00e5d96f-a768-4a88-b06b-7b583c658fef",
+        "skill_slug": "python",
+        "importance": "core",
+        "is_optional": false,
+        "planned_index": 1,
+        "hard_prerequisite_node_keys": [],
+        "unsatisfied_hard_prerequisite_node_keys": [],
+        "availability": "available",
+        "availability_reason_codes": [
+          "resources_available",
+          "hard_prerequisites_met"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": [
+          {
+            "type": "learning_material",
+            "ref": "de-python-validation",
+            "availability": "available",
+            "reason_codes": []
+          },
+          {
+            "type": "learning_material",
+            "ref": "py-collections-flow",
+            "availability": "available",
+            "reason_codes": []
+          },
+          {
+            "type": "course",
+            "ref": "python-foundations",
+            "availability": "available",
+            "reason_codes": []
+          },
+          {
+            "type": "course_lesson",
+            "ref": "what-is-python",
+            "availability": "available",
+            "reason_codes": []
+          }
+        ]
+      },
+      {
+        "node_key": "activity:sql-joins",
+        "title": "SQL joins and NULL handling",
+        "phase_key": "sql-practice",
+        "sort_order": 30,
+        "skill_id": "242447be-f9c5-4758-92ec-d533f8841cdd",
+        "skill_slug": "sql",
+        "importance": "core",
+        "is_optional": false,
+        "planned_index": 2,
+        "hard_prerequisite_node_keys": [
+          "skill:sql"
+        ],
+        "unsatisfied_hard_prerequisite_node_keys": [
+          "skill:sql"
+        ],
+        "availability": "blocked_prerequisite",
+        "availability_reason_codes": [
+          "hard_prerequisites_unsatisfied",
+          "prerequisite_satisfaction_requires_proof_policy"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": [
+          {
+            "type": "learning_material",
+            "ref": "de-joins-nulls",
+            "availability": "available",
+            "reason_codes": []
+          },
+          {
+            "type": "sql_problem",
+            "ref": "customer-order-pairs",
+            "availability": "available",
+            "reason_codes": []
+          }
+        ]
+      },
+      {
+        "node_key": "activity:python-practice",
+        "title": "Python practice (theory + coding)",
+        "phase_key": "python-practice",
+        "sort_order": 40,
+        "skill_id": "00e5d96f-a768-4a88-b06b-7b583c658fef",
+        "skill_slug": "python",
+        "importance": "core",
+        "is_optional": false,
+        "planned_index": 3,
+        "hard_prerequisite_node_keys": [
+          "skill:python"
+        ],
+        "unsatisfied_hard_prerequisite_node_keys": [
+          "skill:python"
+        ],
+        "availability": "blocked_prerequisite",
+        "availability_reason_codes": [
+          "hard_prerequisites_unsatisfied",
+          "prerequisite_satisfaction_requires_proof_policy"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": [
+          {
+            "type": "learning_material",
+            "ref": "de-python-validation",
+            "availability": "available",
+            "reason_codes": []
+          },
+          {
+            "type": "coding_problem",
+            "ref": "echo-input",
+            "availability": "execution_unavailable",
+            "reason_codes": [
+              "judge0_disabled"
+            ]
+          }
+        ]
+      },
+      {
+        "node_key": "skill:data-warehousing",
+        "title": "Applied analytics warehouse project",
+        "phase_key": "applied",
+        "sort_order": 50,
+        "skill_id": "9233dd91-a900-4a43-a0b3-18d3de43f609",
+        "skill_slug": "data-warehousing",
+        "importance": "nice_to_have",
+        "is_optional": false,
+        "planned_index": 4,
+        "hard_prerequisite_node_keys": [
+          "activity:python-practice",
+          "activity:sql-joins"
+        ],
+        "unsatisfied_hard_prerequisite_node_keys": [
+          "activity:python-practice",
+          "activity:sql-joins"
+        ],
+        "availability": "blocked_prerequisite",
+        "availability_reason_codes": [
+          "hard_prerequisites_unsatisfied",
+          "prerequisite_satisfaction_requires_proof_policy"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": [
+          {
+            "type": "project",
+            "ref": "sql-ecommerce-analytics",
+            "availability": "available",
+            "reason_codes": []
+          }
+        ]
+      },
+      {
+        "node_key": "skill:aws",
+        "title": "AWS (content not linked yet)",
+        "phase_key": "platforms-incomplete",
+        "sort_order": 60,
+        "skill_id": "d2e95111-38d5-446b-9262-325dbea5fcc5",
+        "skill_slug": "aws",
+        "importance": "important",
+        "is_optional": false,
+        "planned_index": 5,
+        "hard_prerequisite_node_keys": [],
+        "unsatisfied_hard_prerequisite_node_keys": [],
+        "availability": "resource_missing",
+        "availability_reason_codes": [
+          "no_resource_refs"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": []
+      },
+      {
+        "node_key": "skill:snowflake",
+        "title": "Snowflake (content not linked yet)",
+        "phase_key": "platforms-incomplete",
+        "sort_order": 61,
+        "skill_id": "079725f8-3959-4b0a-8c92-ca3317608043",
+        "skill_slug": "snowflake",
+        "importance": "important",
+        "is_optional": false,
+        "planned_index": 6,
+        "hard_prerequisite_node_keys": [],
+        "unsatisfied_hard_prerequisite_node_keys": [],
+        "availability": "resource_missing",
+        "availability_reason_codes": [
+          "no_resource_refs"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": []
+      },
+      {
+        "node_key": "skill:spark",
+        "title": "Spark (content not linked yet)",
+        "phase_key": "platforms-incomplete",
+        "sort_order": 62,
+        "skill_id": "3fc702dd-8e88-49b8-9dd3-49e951917c81",
+        "skill_slug": "spark",
+        "importance": "important",
+        "is_optional": false,
+        "planned_index": 7,
+        "hard_prerequisite_node_keys": [],
+        "unsatisfied_hard_prerequisite_node_keys": [],
+        "availability": "resource_missing",
+        "availability_reason_codes": [
+          "no_resource_refs"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": []
+      },
+      {
+        "node_key": "skill:airflow",
+        "title": "Airflow (optional \u2014 content not linked yet)",
+        "phase_key": "platforms-incomplete",
+        "sort_order": 63,
+        "skill_id": "fde48cf3-30e0-4e69-b043-d8f61e46252b",
+        "skill_slug": "airflow",
+        "importance": "nice_to_have",
+        "is_optional": true,
+        "planned_index": 8,
+        "hard_prerequisite_node_keys": [],
+        "unsatisfied_hard_prerequisite_node_keys": [],
+        "availability": "resource_missing",
+        "availability_reason_codes": [
+          "no_resource_refs"
+        ],
+        "proof_status": "not_evaluated",
+        "readiness_status": "no_evidence",
+        "can_satisfy_as_prerequisite": false,
+        "resources": []
+      }
+    ],
+    "edges": [
+      {
+        "from_node_key": "skill:sql",
+        "to_node_key": "activity:sql-joins",
+        "relation_type": "prerequisite"
+      },
+      {
+        "from_node_key": "skill:python",
+        "to_node_key": "activity:python-practice",
+        "relation_type": "prerequisite"
+      },
+      {
+        "from_node_key": "activity:sql-joins",
+        "to_node_key": "skill:data-warehousing",
+        "relation_type": "prerequisite"
+      },
+      {
+        "from_node_key": "activity:python-practice",
+        "to_node_key": "skill:data-warehousing",
+        "relation_type": "prerequisite"
+      },
+      {
+        "from_node_key": "skill:data-warehousing",
+        "to_node_key": "skill:aws",
+        "relation_type": "recommended_before"
+      },
+      {
+        "from_node_key": "skill:data-warehousing",
+        "to_node_key": "skill:snowflake",
+        "relation_type": "recommended_before"
+      },
+      {
+        "from_node_key": "skill:data-warehousing",
+        "to_node_key": "skill:spark",
+        "relation_type": "recommended_before"
+      },
+      {
+        "from_node_key": "skill:data-warehousing",
+        "to_node_key": "skill:airflow",
+        "relation_type": "recommended_before"
+      },
+      {
+        "from_node_key": "skill:sql",
+        "to_node_key": "skill:python",
+        "relation_type": "recommended_before"
+      },
+      {
+        "from_node_key": "skill:sql",
+        "to_node_key": "activity:sql-joins",
+        "relation_type": "next"
+      },
+      {
+        "from_node_key": "skill:python",
+        "to_node_key": "activity:python-practice",
+        "relation_type": "next"
+      }
+    ],
+    "recommended_next_node_key": "skill:sql",
+    "recommended_next_reason_codes": [
+      "hard_dependencies_satisfied",
+      "required_before_optional",
+      "importance=core",
+      "stable_tie_break_planned_index_sort_order_node_key"
+    ],
+    "limitations": [
+      "Proof status is independent of readiness strong/developing buckets.",
+      "Production proof policy leaves criteria unset (not_evaluated / policy_missing).",
+      "Optional skills retain independent evidence and proof states.",
+      "Self-review alone cannot meet technical proof criteria under test policies.",
+      "Draft/incomplete configurations may be evaluated internally; student generation must still require eligible published configs (Phase 5+).",
+      "Historical score reconstruction is not supported; as_of filters future-dated source buckets on current aggregates only.",
+      "Configuration status is 'draft' \u2014 internal evaluation allowed; not eligible for student-facing generation.",
+      "Configuration curriculum_complete is false.",
+      "Exposes readiness formula 2.1.0 aggregates; does not classify PROVEN.",
+      "Mistake Book items are not counted as independent assessed attempts.",
+      "LearningMaterialRead / lesson-open events are not assessed mastery.",
+      "Coding playground runs and coding RUN submissions do not update assessed progress.",
+      "AssignmentReview grades are not included in formula 2.1.0.",
+      "Judge0 current availability does not erase historical CodingProblemProgress.",
+      "as_of stamps evaluation time and drops source buckets with last_activity_at > as_of. Aggregates come from current mutable progress summaries in SkillEvidenceService; historical point-in-time score reconstruction is not supported.",
+      "assembly_algorithm=1.0.0",
+      "Planned topological order is not completion state.",
+      "RELATED edges are excluded from the scheduling DAG.",
+      "RECOMMENDED_BEFORE is a soft preference only.",
+      "NEXT is navigation only and does not gate eligibility.",
+      "production_unset_v0: no PROVEN emission; readiness buckets do not unlock assessed progression; root nodes may still be available for learning resources.",
+      "PREVIEW ONLY: config status=draft, curriculum_complete=False."
+    ],
+    "missing_information": [
+      "curriculum_incomplete",
+      "proof_policy_unset",
+      "effort_estimates_missing",
+      "resource_links_missing_on_some_nodes"
+    ],
+    "experience_route_adaptation": "not_configured"
+  }
+}

@@ -1,0 +1,357 @@
+/* Uses global --jr-* tokens from jobready-retro.css */
+.ors-page {
+  --ors-paper: var(--jr-paper);
+  --ors-paper-dot: var(--jr-paper-dot);
+  --ors-ink: var(--jr-ink);
+  --ors-milestone: var(--jr-milestone);
+  --ors-subtopic: var(--jr-peach);
+  --ors-line: var(--jr-line);
+  --ors-panel-bg: var(--jr-surface);
+  --ors-accent: var(--jr-accent);
+
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: calc(100vh - 8rem);
+  background: linear-gradient(180deg, #faf6eb 0%, #f0e6cf 100%);
+}
+
+.ors-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem 1.25rem;
+  border-bottom: 3px solid var(--ors-ink);
+  background: #fffef8;
+}
+
+.ors-kicker {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ors-ink);
+  background: var(--ors-milestone);
+  border: 2px solid var(--ors-ink);
+}
+
+.ors-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ors-ink);
+}
+
+.ors-sub {
+  margin-top: 0.35rem;
+  max-width: 42rem;
+  font-size: 0.875rem;
+  color: #44403c;
+}
+
+.ors-back {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ors-ink);
+  text-decoration: none;
+  background: #fff;
+  border: 2px solid var(--ors-ink);
+  box-shadow: 2px 2px 0 var(--ors-ink);
+}
+
+.ors-back:hover {
+  background: var(--ors-milestone);
+}
+
+.ors-layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(300px, 380px);
+  gap: 0;
+  min-height: 70vh;
+}
+
+@media (max-width: 900px) {
+  .ors-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ors-canvas {
+  height: 82vh;
+  min-height: 520px;
+  background: var(--ors-paper);
+}
+
+.ors-canvas .react-flow__edge-path {
+  stroke: var(--ors-line);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.ors-canvas .react-flow__edge.animated .react-flow__edge-path {
+  animation: ors-edge-flow 0.95s linear infinite;
+}
+
+@keyframes ors-edge-flow {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+.react-flow__node.selected .ors-node {
+  box-shadow: 0 0 0 3px var(--ors-line), 3px 3px 0 var(--ors-ink);
+}
+
+.ors-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 0 12px 12px;
+  padding: 0;
+  border: 2px solid var(--ors-ink);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 3px 3px 0 var(--ors-ink);
+  background: #fffef8;
+}
+
+.ors-controls-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-bottom: 2px solid var(--ors-ink);
+  background: #fffef8;
+  color: var(--ors-ink);
+  cursor: pointer;
+}
+
+.ors-controls-btn:last-child {
+  border-bottom: none;
+}
+
+.ors-controls-btn:hover {
+  background: var(--ors-milestone);
+}
+
+.ors-minimap {
+  border: 2px solid var(--ors-ink);
+  border-radius: 2px;
+  box-shadow: 2px 2px 0 rgb(10 10 10 / 0.25);
+  background: #fffef8 !important;
+}
+
+.ors-panel {
+  border-left: 3px solid var(--ors-ink);
+  padding: 1.15rem 1.25rem;
+  overflow-y: auto;
+  max-height: 82vh;
+  background: var(--ors-panel-bg);
+}
+
+.ors-panel-empty {
+  font-size: 0.9rem;
+  color: #57534e;
+  padding: 0.5rem 0;
+}
+
+.ors-panel-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.5rem;
+  color: var(--ors-ink);
+  border-bottom: 3px solid var(--ors-milestone);
+}
+
+.ors-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.7rem;
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: center;
+  border-radius: 2px;
+  border: 2px solid var(--ors-ink);
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  color: var(--ors-ink);
+  box-shadow: 2px 2px 0 rgb(10 10 10 / 0.35);
+  transition: filter 0.12s ease, box-shadow 0.12s ease;
+}
+
+.ors-node-text {
+  pointer-events: none;
+}
+
+.ors-node:hover {
+  filter: brightness(1.04);
+}
+
+.ors-node:active {
+  cursor: grabbing;
+  box-shadow: 1px 1px 0 rgb(10 10 10 / 0.35);
+}
+
+.ors-node--subtopic {
+  background: var(--ors-subtopic);
+  font-weight: 600;
+}
+
+.ors-node--topic {
+  background: var(--ors-milestone);
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.ors-node--title {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  font-weight: 800;
+  font-size: 18px;
+  cursor: default;
+}
+
+.ors-node--paragraph {
+  background: #ffffff;
+  font-weight: 500;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.ors-node--label {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  font-weight: 800;
+  font-size: 16px;
+  justify-content: flex-start;
+  cursor: default;
+}
+
+.ors-node--linksgroup {
+  background: #fff7ed;
+  font-weight: 600;
+}
+
+.ors-node--other {
+  background: #e7e5e4;
+  font-size: 11px;
+}
+
+.ors-node--button {
+  background: #d6d3d1;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ors-node--button:hover {
+  background: #fcd34d;
+}
+
+.ors-markdown {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #1c1917;
+}
+
+.ors-markdown a {
+  color: var(--ors-accent);
+  font-weight: 600;
+}
+
+.ors-markdown h2,
+.ors-markdown h3 {
+  color: var(--ors-ink);
+}
+
+.ors-handle {
+  width: 6px;
+  height: 6px;
+  opacity: 0;
+  border: none;
+  background: transparent;
+}
+
+.ors-connector {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.ors-linksgroup {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 8px 10px;
+  background: #fffef8;
+  border: 2px solid var(--ors-ink);
+  box-shadow: 2px 2px 0 rgb(10 10 10 / 0.3);
+}
+
+.ors-linksgroup-title {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.ors-linksgroup-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ors-linksgroup-link {
+  display: block;
+  padding: 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ors-accent);
+  text-decoration: none;
+}
+
+.ors-linksgroup-link:hover {
+  text-decoration: underline;
+}
+
+.ors-connector--vertical {
+  border-left-style: solid;
+}
+
+.ors-connector--horizontal {
+  border-top-style: solid;
+}
+
+.ors-section {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--ors-ink);
+  border-radius: 2px;
+  pointer-events: none;
+  background: #fffef8;
+  box-shadow: inset 0 0 0 1px rgb(255 242 0 / 0.15);
+}
+
+.ors-section-label {
+  display: block;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 800;
+}

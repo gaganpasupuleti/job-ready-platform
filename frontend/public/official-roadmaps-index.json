@@ -1,0 +1,748 @@
+{
+  "roadmaps": [
+    {
+      "family_slug": "ai-agents",
+      "title": "Ai Agents",
+      "description": "Career path: ai-agents.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "ai-data-scientist",
+      "title": "Ai Data Scientist",
+      "description": "Career path: ai-data-scientist.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "ai-engineer",
+      "title": "Ai Engineer",
+      "description": "Career path: ai-engineer.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "ai-product-builder",
+      "title": "Ai Product Builder",
+      "description": "Career path: ai-product-builder.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "ai-red-teaming",
+      "title": "Ai Red Teaming",
+      "description": "Career path: ai-red-teaming.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "android",
+      "title": "Android",
+      "description": "Career path: android.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "angular",
+      "title": "Angular",
+      "description": "Career path: angular.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "api-design",
+      "title": "Api Design",
+      "description": "Career path: api-design.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "aspnet-core",
+      "title": "Aspnet Core",
+      "description": "Career path: aspnet-core.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "aws",
+      "title": "Aws",
+      "description": "Career path: aws.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "backend",
+      "title": "Backend",
+      "description": "Career path: backend.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "backend-beginner",
+      "title": "Backend Beginner",
+      "description": "Career path: backend-beginner.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "bi-analyst",
+      "title": "Bi Analyst",
+      "description": "Career path: bi-analyst.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "blockchain",
+      "title": "Blockchain",
+      "description": "Career path: blockchain.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "c",
+      "title": "C",
+      "description": "Career path: c.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "claude-code",
+      "title": "Claude Code",
+      "description": "Career path: claude-code.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "cloudflare",
+      "title": "Cloudflare",
+      "description": "Career path: cloudflare.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "code-review",
+      "title": "Code Review",
+      "description": "Career path: code-review.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "computer-science",
+      "title": "Computer Science",
+      "description": "Career path: computer-science.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "cpp",
+      "title": "Cpp",
+      "description": "Career path: cpp.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "css",
+      "title": "Css",
+      "description": "Career path: css.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "cyber-security",
+      "title": "Cyber Security",
+      "description": "Career path: cyber-security.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "data-analyst",
+      "title": "Data Analyst",
+      "description": "Career path: data-analyst.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "data-engineer",
+      "title": "Data Engineer",
+      "description": "Career path: data-engineer.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "datastructures-and-algorithms",
+      "title": "Datastructures And Algorithms",
+      "description": "Career path: datastructures-and-algorithms.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "design-system",
+      "title": "Design System",
+      "description": "Career path: design-system.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "devops",
+      "title": "Devops",
+      "description": "Career path: devops.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "devops-beginner",
+      "title": "Devops Beginner",
+      "description": "Career path: devops-beginner.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "devrel",
+      "title": "Devrel",
+      "description": "Career path: devrel.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "devsecops",
+      "title": "Devsecops",
+      "description": "Career path: devsecops.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "django",
+      "title": "Django",
+      "description": "Career path: django.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "docker",
+      "title": "Docker",
+      "description": "Career path: docker.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "elasticsearch",
+      "title": "Elasticsearch",
+      "description": "Career path: elasticsearch.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "engineering-manager",
+      "title": "Engineering Manager",
+      "description": "Career path: engineering-manager.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "flutter",
+      "title": "Flutter",
+      "description": "Career path: flutter.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "forward-deployed-engineer",
+      "title": "Forward Deployed Engineer",
+      "description": "Career path: forward-deployed-engineer.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "frontend",
+      "title": "Frontend",
+      "description": "Career path: frontend.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "frontend-beginner",
+      "title": "Frontend Beginner",
+      "description": "Career path: frontend-beginner.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "full-stack",
+      "title": "Full Stack",
+      "description": "Career path: full-stack.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "game-developer",
+      "title": "Game Developer",
+      "description": "Career path: game-developer.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "git-github",
+      "title": "Git Github",
+      "description": "Career path: git-github.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "git-github-beginner",
+      "title": "Git Github Beginner",
+      "description": "Career path: git-github-beginner.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "golang",
+      "title": "Golang",
+      "description": "Career path: golang.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "graphql",
+      "title": "Graphql",
+      "description": "Career path: graphql.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "html",
+      "title": "Html",
+      "description": "Career path: html.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "ios",
+      "title": "Ios",
+      "description": "Career path: ios.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "java",
+      "title": "Java",
+      "description": "Career path: java.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "javascript",
+      "title": "Javascript",
+      "description": "Career path: javascript.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "kotlin",
+      "title": "Kotlin",
+      "description": "Career path: kotlin.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "kubernetes",
+      "title": "Kubernetes",
+      "description": "Career path: kubernetes.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "laravel",
+      "title": "Laravel",
+      "description": "Career path: laravel.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "leetcode",
+      "title": "Leetcode",
+      "description": "Career path: leetcode.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "linux",
+      "title": "Linux",
+      "description": "Career path: linux.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "machine-learning",
+      "title": "Machine Learning",
+      "description": "Career path: machine-learning.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "mlops",
+      "title": "Mlops",
+      "description": "Career path: mlops.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "mongodb",
+      "title": "Mongodb",
+      "description": "Career path: mongodb.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "network-engineer",
+      "title": "Network Engineer",
+      "description": "Career path: network-engineer.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "nextjs",
+      "title": "Nextjs",
+      "description": "Career path: nextjs.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "nodejs",
+      "title": "Nodejs",
+      "description": "Career path: nodejs.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "openclaw",
+      "title": "Openclaw",
+      "description": "Career path: openclaw.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "php",
+      "title": "Php",
+      "description": "Career path: php.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "postgresql-dba",
+      "title": "Postgresql Dba",
+      "description": "Career path: postgresql-dba.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "power-bi",
+      "title": "Power Bi",
+      "description": "Career path: power-bi.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "product-design",
+      "title": "Product Design",
+      "description": "Career path: product-design.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "product-manager",
+      "title": "Product Manager",
+      "description": "Career path: product-manager.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "prompt-engineering",
+      "title": "Prompt Engineering",
+      "description": "Career path: prompt-engineering.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "python",
+      "title": "Python",
+      "description": "Career path: python.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "python-data-analysis",
+      "title": "Python Data Analysis",
+      "description": "Career path: python-data-analysis.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "qa",
+      "title": "Qa",
+      "description": "Career path: qa.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "r",
+      "title": "R",
+      "description": "Career path: r.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "r-programming",
+      "title": "R Programming",
+      "description": "Career path: r-programming.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "react",
+      "title": "React",
+      "description": "Career path: react.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "react-native",
+      "title": "React Native",
+      "description": "Career path: react-native.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "redis",
+      "title": "Redis",
+      "description": "Career path: redis.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "ruby",
+      "title": "Ruby",
+      "description": "Career path: ruby.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "ruby-on-rails",
+      "title": "Ruby On Rails",
+      "description": "Career path: ruby-on-rails.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "rust",
+      "title": "Rust",
+      "description": "Career path: rust.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "scala",
+      "title": "Scala",
+      "description": "Career path: scala.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "server-side-game-developer",
+      "title": "Server Side Game Developer",
+      "description": "Career path: server-side-game-developer.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "shell-bash",
+      "title": "Shell Bash",
+      "description": "Career path: shell-bash.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "software-architect",
+      "title": "Software Architect",
+      "description": "Career path: software-architect.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "software-design-architecture",
+      "title": "Software Design Architecture",
+      "description": "Career path: software-design-architecture.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "spring-boot",
+      "title": "Spring Boot",
+      "description": "Career path: spring-boot.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "sql",
+      "title": "Sql",
+      "description": "Career path: sql.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "swift-ui",
+      "title": "Swift Ui",
+      "description": "Career path: swift-ui.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "system-design",
+      "title": "System Design",
+      "description": "Career path: system-design.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "technical-writer",
+      "title": "Technical Writer",
+      "description": "Career path: technical-writer.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "terraform",
+      "title": "Terraform",
+      "description": "Career path: terraform.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "typescript",
+      "title": "Typescript",
+      "description": "Career path: typescript.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "ux-design",
+      "title": "Ux Design",
+      "description": "Career path: ux-design.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "vibe-coding",
+      "title": "Vibe Coding",
+      "description": "Career path: vibe-coding.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "vue",
+      "title": "Vue",
+      "description": "Career path: vue.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    },
+    {
+      "family_slug": "wordpress",
+      "title": "Wordpress",
+      "description": "Career path: wordpress.",
+      "preview_only": false,
+      "student_eligible": true,
+      "source": "official"
+    }
+  ]
+}

@@ -57,6 +57,7 @@ export const navigationConfig: NavSection[] = [
       { label: 'Playground', path: '/practice/playground', icon: 'Terminal' },
       { label: 'Assessments', path: '/practice/aptitude', icon: 'FileQuestion' },
       { label: 'Review', path: '/mistakes', icon: 'FileQuestion' },
+      { label: 'Career roadmap', path: '/roadmaps', icon: 'ListChecks' },
     ],
   },
   {
@@ -112,6 +113,7 @@ export const moreMenuGroups: { title: string; items: { label: string; path: stri
       { label: 'My requests', path: '/support/requests' },
       { label: 'Projects', path: '/practice/projects' },
       { label: 'Job Readiness', path: '/readiness' },
+      { label: 'Career roadmap', path: '/roadmaps' },
       { label: 'Interview Prep', path: '/interviews' },
       { label: 'Bookmarks', path: '/bookmarks' },
       { label: 'Recommended Jobs', path: '/jobs/recommended' },

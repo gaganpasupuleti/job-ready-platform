@@ -10,11 +10,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   primary:
-    'bg-[var(--color-accent)] text-[var(--color-surface)] hover:bg-[var(--color-accent-hover)] border border-transparent',
+    'bg-[var(--jr-line,#2b78e4)] text-white border-2 border-[var(--jr-ink,#0a0a0a)] shadow-[2px_2px_0_#0a0a0a] hover:bg-[var(--jr-accent,#1d4ed8)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#0a0a0a]',
   secondary:
-    'bg-[var(--color-surface-elevated)] text-[var(--color-text)] border border-[var(--color-border)] hover:bg-[var(--color-surface-muted)]',
+    'bg-[var(--jr-surface,#fffef8)] text-[var(--jr-ink,#0a0a0a)] border-2 border-[var(--jr-ink,#0a0a0a)] shadow-[2px_2px_0_#0a0a0a] hover:bg-[var(--jr-milestone,#fff200)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#0a0a0a]',
   ghost:
-    'bg-transparent text-[var(--color-text-muted)] border border-transparent hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]',
+    'bg-transparent text-[var(--color-text-muted)] border-2 border-transparent hover:border-[var(--jr-ink,#0a0a0a)] hover:bg-[var(--jr-peach,#ffdba8)] hover:text-[var(--jr-ink,#0a0a0a)]',
 }
 
 const sizes = {
@@ -32,7 +32,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-[var(--color-border)] disabled:bg-[var(--color-surface-muted)] disabled:text-[var(--color-text-subtle)] disabled:opacity-100',
+        'jr-retro-btn inline-flex items-center justify-center gap-1.5 rounded-[var(--jr-radius,2px)] font-bold transition-[background,transform,box-shadow] disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-[var(--color-border)] disabled:bg-[var(--color-surface-muted)] disabled:text-[var(--color-text-subtle)] disabled:opacity-100 disabled:shadow-none disabled:translate-none',
         variants[variant],
         sizes[size],
         className,

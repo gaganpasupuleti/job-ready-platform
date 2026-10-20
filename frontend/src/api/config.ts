@@ -37,6 +37,13 @@ export const apiEndpoints = {
     results: (sessionId: string) => `/api/v1/practice/sessions/${sessionId}/results`,
     tracker: '/api/v1/practice/tracker',
   },
+  roadmap: {
+    catalog: '/api/v1/roadmap/catalog',
+    assembly: '/api/v1/roadmap/assembly',
+    officialGraph: (slug: string) => `/api/v1/roadmap/official/${slug}/graph`,
+    officialTopic: (slug: string, nodeId: string) =>
+      `/api/v1/roadmap/official/${slug}/topics/${encodeURIComponent(nodeId)}`,
+  },
   admin: {
     questions: '/api/v1/admin/questions',
     question: (id: string) => `/api/v1/admin/questions/${id}`,
