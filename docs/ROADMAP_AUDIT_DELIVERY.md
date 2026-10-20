@@ -5,6 +5,7 @@
 | Item | Value |
 |------|--------|
 | Audited head (prior) | `b0dbff1051ba85611f0efdecfbb595b80acc03b0` |
+| Corrective pass head | `c6a72ff` (after push: `git rev-parse HEAD`) |
 | Branch | `feat/official-roadmaps-retro-ui` |
 | PR | https://github.com/gaganpasupuleti/job-ready-platform/pull/23 (unmerged) |
 | PR scope note | See `docs/PR23_SCOPE.md` — full PR vs `master` includes Power BI commits `6feebb7`–`e12b145`; roadmap audit commits start at `24ea439` / `962e657`. |
