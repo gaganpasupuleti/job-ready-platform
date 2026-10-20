@@ -1,0 +1,101 @@
+{
+  "contentVersion": "1.0.1",
+  "coordinateMethod": "parentGroupName chain from PBIX visual.json (validated sample 0 mismatches)",
+  "items": [
+    {
+      "path": "steps/01-full-canvas.png",
+      "role": "result",
+      "caption": "Full canvas reference",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 81857,
+      "width": 1270,
+      "height": 785
+    },
+    {
+      "path": "steps/02-slicers.png",
+      "role": "result",
+      "caption": "Slicer region crop",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 1071,
+      "width": 474,
+      "height": 88
+    },
+    {
+      "path": "steps/03-kpi-cards.png",
+      "role": "result",
+      "caption": "KPI card region crop",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 17169,
+      "width": 1213,
+      "height": 143
+    },
+    {
+      "path": "steps/04-profit-bar.png",
+      "role": "result",
+      "caption": "Cost/profit composition bar crop",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 5228,
+      "width": 698,
+      "height": 86
+    },
+    {
+      "path": "steps/05-trend-chart.png",
+      "role": "result",
+      "caption": "Trend line crop",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 34643,
+      "width": 1209,
+      "height": 325
+    },
+    {
+      "path": "steps/06-toast.png",
+      "role": "result",
+      "caption": "Toast region crop",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 1568,
+      "width": 347,
+      "height": 69
+    },
+    {
+      "path": "visuals/cd602ccaa356b4004e2b.png",
+      "role": "result",
+      "caption": "Store slicer",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 287,
+      "width": 153,
+      "height": 88
+    },
+    {
+      "path": "visuals/2ed267463a11685d300a.png",
+      "role": "result",
+      "caption": "Total Sales card",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 3448,
+      "width": 238,
+      "height": 143
+    },
+    {
+      "path": "visuals/d229beaccea875451039.png",
+      "role": "result",
+      "caption": "HTML Content toast visual",
+      "exists": true,
+      "verificationStatus": "verified_crop",
+      "bytes": 2256,
+      "width": 212,
+      "height": 86
+    }
+  ],
+  "limitations": [
+    "Power BI Desktop field-well configuration panes are not captured; students use workshop M/DAX text.",
+    "Bookmark/Data pane states require Desktop manual test (pending_desktop).",
+    "Toast animation cannot be validated from PNG alone."
+  ]
+}

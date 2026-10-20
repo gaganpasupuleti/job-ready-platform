@@ -1,0 +1,43 @@
+{
+  "source": "frontend/public/reports/executive-sales-toast-lab/data/Sales.csv",
+  "rowCount": 20000,
+  "formulas": {
+    "Total Sales": "SUM over rows of (Order qty \u00d7 unit price) using Decimal per row",
+    "Total Cost": "SUM over rows of (Order qty \u00d7 unit cost) using Decimal per row",
+    "Total Profit": "Total Sales \u2212 Total Cost at full precision (not a separate rolled-up import)",
+    "Total Orders_units": "SUM(Order qty)",
+    "Profit Margin %": "Total Profit / Total Sales at full precision"
+  },
+  "roundingPolicy": {
+    "perRow": "Decimal(str(qty)) * Decimal(str(price)) \u2014 avoids float drift in totals",
+    "displayCurrency": "ROUND_HALF_UP to 2 decimal places for dollar KPI checks",
+    "displayProfit": "money_round(Total Sales) \u2212 money_round(Total Cost) so cards reconcile",
+    "note": "Do not compare rounded Sales minus a differently rounded Cost copied from prose; use this file."
+  },
+  "fullPrecision": {
+    "Total Sales": "44365028.02269119041336",
+    "Total Cost": "31689305.73049370946779",
+    "Total Profit": "12675722.29219748094557",
+    "Total Orders_units": 110402,
+    "Profit Margin %": 0.28571428571428564
+  },
+  "displayCurrency": {
+    "Total Sales": 44365028.02,
+    "Total Cost": 31689305.73,
+    "Total Profit": 12675722.29,
+    "Total Orders_units": 110402,
+    "Profit Margin %": 0.2857
+  },
+  "unfiltered": {
+    "Total Sales": 44365028.02,
+    "Total Cost": 31689305.73,
+    "Total Profit": 12675722.29,
+    "Total Orders_units": 110402,
+    "Profit Margin %": 0.2857
+  },
+  "reconciliation": {
+    "displaySalesMinusDisplayCost": 12675722.29,
+    "matchesDisplayProfit": true
+  },
+  "notes": "Verify in Power BI Desktop after model build; DAX SUMX may differ slightly in last digit vs Decimal CSV walk."
+}

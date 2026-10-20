@@ -1,65 +1,5 @@
 [
   {
-    "id": "f62b86a11712469079d9",
-    "visualType": "card",
-    "title": "Profit Margin %",
-    "fields": [
-      "# Measures.Profit Margin %",
-      "Profit Margin %"
-    ],
-    "x": 0.0,
-    "y": 0.0,
-    "width": 231.4590895429219,
-    "height": 134.27554821339223,
-    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
-    "snip": "visuals/f62b86a11712469079d9.png"
-  },
-  {
-    "id": "2ed267463a11685d300a",
-    "visualType": "card",
-    "title": "Total Sales",
-    "fields": [
-      "# Measures.Total Sales",
-      "Total Sales"
-    ],
-    "x": 0.0,
-    "y": 0.0,
-    "width": 231.4590895429219,
-    "height": 134.27554821339223,
-    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
-    "snip": "visuals/2ed267463a11685d300a.png"
-  },
-  {
-    "id": "4bd08ae993b0e8332530",
-    "visualType": "card",
-    "title": "Total Orders",
-    "fields": [
-      "# Measures.Total Orders",
-      "Total Orders"
-    ],
-    "x": 0.0,
-    "y": 0.0,
-    "width": 231.4590895429219,
-    "height": 134.27554821339223,
-    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
-    "snip": "visuals/4bd08ae993b0e8332530.png"
-  },
-  {
-    "id": "cbe9a324a9d03737a60d",
-    "visualType": "card",
-    "title": "Target vs Previous month",
-    "fields": [
-      "# Measures.Target vs Previous month",
-      "of Target (monthly)"
-    ],
-    "x": 0.0,
-    "y": 0.0,
-    "width": 231.4590895429219,
-    "height": 134.27554821339223,
-    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
-    "snip": "visuals/cbe9a324a9d03737a60d.png"
-  },
-  {
     "id": "cd602ccaa356b4004e2b",
     "visualType": "slicer",
     "title": "Stores",
@@ -67,183 +7,12 @@
       "Stores",
       "storelocations.name"
     ],
-    "x": 0.0,
-    "y": 0.0,
+    "x": 631.8096485483519,
+    "y": 17.88888888888889,
     "width": 145.37470167064438,
     "height": 79.5223880597015,
     "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
     "snip": "visuals/cd602ccaa356b4004e2b.png"
-  },
-  {
-    "id": "7ecbc7d2ed5c02b5751e",
-    "visualType": "shape",
-    "title": "shape",
-    "fields": [],
-    "x": 0.0,
-    "y": 0.0,
-    "width": 230.0,
-    "height": 103.84615384615384,
-    "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
-    "snip": "visuals/7ecbc7d2ed5c02b5751e.png"
-  },
-  {
-    "id": "10bbb7597e6d50002e13",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 0.275125424825943,
-    "y": 0.0,
-    "width": 231.4590895429219,
-    "height": 212.7025272220413,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/10bbb7597e6d50002e13.png"
-  },
-  {
-    "id": "e37ec159adb83d09b8b0",
-    "visualType": "slicer",
-    "title": "Lower Percentile",
-    "fields": [
-      "Lower Percentile",
-      "Lower Percentile.Lower Percentile"
-    ],
-    "x": 3.5856559951047915,
-    "y": 0.0,
-    "width": 166.90844616376532,
-    "height": 94.96018804805715,
-    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
-    "snip": "visuals/e37ec159adb83d09b8b0.png"
-  },
-  {
-    "id": "6d3a10ae2450a874d219",
-    "visualType": "slicer",
-    "title": "Higher Percentile",
-    "fields": [
-      "Higher Percentile",
-      "Higher Percentile.Higher Percentile"
-    ],
-    "x": 4.593810444874243,
-    "y": 0.0,
-    "width": 166.90844616376532,
-    "height": 94.96018804805715,
-    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
-    "snip": "visuals/6d3a10ae2450a874d219.png"
-  },
-  {
-    "id": "e0747de125b6541da5e1",
-    "visualType": "shape",
-    "title": "shape",
-    "fields": [],
-    "x": 5.047123519077152,
-    "y": 0.0,
-    "width": 186.81495809155385,
-    "height": 238.20521747648237,
-    "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
-    "snip": "visuals/e0747de125b6541da5e1.png"
-  },
-  {
-    "id": "9059328cc197bb4d8522",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 245.529789841167,
-    "y": 0.0,
-    "width": 231.45908954292187,
-    "height": 211.68145247758304,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/9059328cc197bb4d8522.png"
-  },
-  {
-    "id": "af72ff7988718bc74ed8",
-    "visualType": "slicer",
-    "title": "Date M-W-D",
-    "fields": [
-      "Date M-W-D",
-      "Date M-W-D.Date M-W-D"
-    ],
-    "x": 305.28359382679633,
-    "y": 0.0,
-    "width": 181.80576034601398,
-    "height": 32.0,
-    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
-    "snip": "visuals/af72ff7988718bc74ed8.png"
-  },
-  {
-    "id": "101d6731d85d1e1681e0",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 490.78445425750806,
-    "y": 0.0,
-    "width": 231.4590895429219,
-    "height": 212.7025272220413,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/101d6731d85d1e1681e0.png"
-  },
-  {
-    "id": "255c6775a4586e095a61",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 598.0964854835189,
-    "y": 0.0,
-    "width": 470.0,
-    "height": 80.0,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/255c6775a4586e095a61.png"
-  },
-  {
-    "id": "3f44a2f53ab329a5e7ec",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 736.0391186738492,
-    "y": 0.0,
-    "width": 231.4590895429219,
-    "height": 211.681452477583,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/3f44a2f53ab329a5e7ec.png"
-  },
-  {
-    "id": "ffb537dc5e8ad26563b6",
-    "visualType": "card",
-    "title": "Average Daily Saeles",
-    "fields": [
-      "# Measures.Average Daily Saeles",
-      "Average Daily Saeles"
-    ],
-    "x": 982.8266247427923,
-    "y": 0.0,
-    "width": 231.4590895429219,
-    "height": 134.27554821339223,
-    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
-    "snip": "visuals/ffb537dc5e8ad26563b6.png"
-  },
-  {
-    "id": "1d09bc0587d0ea2913e7",
-    "visualType": "textbox",
-    "title": "textbox",
-    "fields": [],
-    "x": 0.0,
-    "y": 0.464509589882144,
-    "width": 242.1025863669627,
-    "height": 49.53549041011785,
-    "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
-    "snip": "visuals/1d09bc0587d0ea2913e7.png"
-  },
-  {
-    "id": "62e075780a858b010644",
-    "visualType": "slicer",
-    "title": "Date Table.Month Short",
-    "fields": [
-      "Date Table.Month Short",
-      "Month Short"
-    ],
-    "x": 487.77155214784244,
-    "y": 0.464509589882144,
-    "width": 328.13722599036674,
-    "height": 32.0,
-    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
-    "snip": "visuals/62e075780a858b010644.png"
   },
   {
     "id": "dcf82c065006a17d0db3",
@@ -253,8 +22,8 @@
       "Sales Team",
       "Salesteams.Sales Team"
     ],
-    "x": 161.53141308476066,
-    "y": 0.5583170383004488,
+    "x": 793.3410616331125,
+    "y": 18.447205927189337,
     "width": 145.37470167064438,
     "height": 79.5223880597015,
     "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
@@ -268,20 +37,134 @@
       "Products",
       "Products_Data.Product Name"
     ],
-    "x": 324.0723727089008,
-    "y": 0.5583170383004488,
+    "x": 955.8820212572527,
+    "y": 18.447205927189337,
     "width": 145.37470167064438,
     "height": 79.5223880597015,
     "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
     "snip": "visuals/c02419fb47b433e75304.png"
   },
   {
+    "id": "3bbff444446208650a0e",
+    "visualType": "textbox",
+    "title": "textbox",
+    "fields": [],
+    "x": 33.713163064833005,
+    "y": 36.31041257367387,
+    "width": 335.5992141453831,
+    "height": 61.29666011787819,
+    "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
+    "snip": "visuals/3bbff444446208650a0e.png"
+  },
+  {
+    "id": "7ecbc7d2ed5c02b5751e",
+    "visualType": "shape",
+    "title": "shape",
+    "fields": [],
+    "x": 1049.705304518664,
+    "y": 90.41257367387033,
+    "width": 230.0,
+    "height": 103.84615384615384,
+    "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
+    "snip": "visuals/7ecbc7d2ed5c02b5751e.png"
+  },
+  {
+    "id": "a232121689a09b980c00",
+    "visualType": "slicer",
+    "title": "Date",
+    "fields": [
+      "Date",
+      "Date Table.Date"
+    ],
+    "x": 1049.705304518664,
+    "y": 118.104881366178,
+    "width": 230.0,
+    "height": 76.15384615384615,
+    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
+    "snip": "visuals/a232121689a09b980c00.png"
+  },
+  {
+    "id": "2ed267463a11685d300a",
+    "visualType": "card",
+    "title": "Total Sales",
+    "fields": [
+      "# Measures.Total Sales",
+      "Total Sales"
+    ],
+    "x": 33.132268281968805,
+    "y": 134.2857142857143,
+    "width": 231.4590895429219,
+    "height": 134.27554821339223,
+    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
+    "snip": "visuals/2ed267463a11685d300a.png"
+  },
+  {
+    "id": "f62b86a11712469079d9",
+    "visualType": "card",
+    "title": "Profit Margin %",
+    "fields": [
+      "# Measures.Profit Margin %",
+      "Profit Margin %"
+    ],
+    "x": 278.38693269830986,
+    "y": 134.2857142857143,
+    "width": 231.4590895429219,
+    "height": 134.27554821339223,
+    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
+    "snip": "visuals/f62b86a11712469079d9.png"
+  },
+  {
+    "id": "4bd08ae993b0e8332530",
+    "visualType": "card",
+    "title": "Total Orders",
+    "fields": [
+      "# Measures.Total Orders",
+      "Total Orders"
+    ],
+    "x": 523.641597114651,
+    "y": 134.2857142857143,
+    "width": 231.4590895429219,
+    "height": 134.27554821339223,
+    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
+    "snip": "visuals/4bd08ae993b0e8332530.png"
+  },
+  {
+    "id": "cbe9a324a9d03737a60d",
+    "visualType": "card",
+    "title": "Target vs Previous month",
+    "fields": [
+      "# Measures.Target vs Previous month",
+      "of Target (monthly)"
+    ],
+    "x": 768.8962615309921,
+    "y": 134.2857142857143,
+    "width": 231.4590895429219,
+    "height": 134.27554821339223,
+    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
+    "snip": "visuals/cbe9a324a9d03737a60d.png"
+  },
+  {
+    "id": "ffb537dc5e8ad26563b6",
+    "visualType": "card",
+    "title": "Average Daily Saeles",
+    "fields": [
+      "# Measures.Average Daily Saeles",
+      "Average Daily Saeles"
+    ],
+    "x": 1015.6837675999352,
+    "y": 134.2857142857143,
+    "width": 231.4590895429219,
+    "height": 134.27554821339223,
+    "howTo": "Insert \u2192 Card. Drag the measure into the **Fields** well. Format font/size in Visual formatting.",
+    "snip": "visuals/ffb537dc5e8ad26563b6.png"
+  },
+  {
     "id": "a3ecb806122046aba5cc",
     "visualType": "shape",
     "title": "shape",
     "fields": [],
-    "x": 0.0,
-    "y": 0.5711267661565208,
+    "x": 32.85714285714286,
+    "y": 134.85684105187082,
     "width": 231.4590895429219,
     "height": 218.00030180527207,
     "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
@@ -292,8 +175,8 @@
     "visualType": "shape",
     "title": "shape",
     "fields": [],
-    "x": 245.25466441634106,
-    "y": 0.5711267661565208,
+    "x": 278.1118072734839,
+    "y": 134.85684105187082,
     "width": 231.4590895429219,
     "height": 218.00030180527207,
     "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
@@ -304,8 +187,8 @@
     "visualType": "shape",
     "title": "shape",
     "fields": [],
-    "x": 490.5093288326821,
-    "y": 0.5711267661565208,
+    "x": 523.366471689825,
+    "y": 134.85684105187082,
     "width": 231.4590895429219,
     "height": 218.00030180527207,
     "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
@@ -316,8 +199,8 @@
     "visualType": "shape",
     "title": "shape",
     "fields": [],
-    "x": 735.7639932490232,
-    "y": 0.5711267661565208,
+    "x": 768.6211361061661,
+    "y": 134.85684105187082,
     "width": 231.4590895429219,
     "height": 218.00030180527207,
     "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
@@ -328,88 +211,25 @@
     "visualType": "shape",
     "title": "shape",
     "fields": [],
-    "x": 982.5514993179664,
-    "y": 0.5711267661565208,
+    "x": 1015.4086421751093,
+    "y": 134.85684105187082,
     "width": 231.4590895429219,
     "height": 218.00030180527207,
     "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
     "snip": "visuals/1f3efb225e1645d58148.png"
   },
   {
-    "id": "222c1666242035e1e002",
-    "visualType": "textbox",
-    "title": "textbox",
-    "fields": [],
-    "x": 867.0,
-    "y": 2.3333333333333144,
-    "width": 247.0,
-    "height": 41.832460151772224,
-    "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
-    "snip": "visuals/222c1666242035e1e002.png"
-  },
-  {
-    "id": "cafd56e0e4e008d690db",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 33.713163064833005,
-    "y": 17.88888888888889,
-    "width": 1212.141453831041,
-    "height": 80.0,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/cafd56e0e4e008d690db.png"
-  },
-  {
-    "id": "3bbff444446208650a0e",
-    "visualType": "textbox",
-    "title": "textbox",
-    "fields": [],
-    "x": 0.0,
-    "y": 18.421523684784983,
-    "width": 335.5992141453831,
-    "height": 61.29666011787819,
-    "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
-    "snip": "visuals/3bbff444446208650a0e.png"
-  },
-  {
-    "id": "a232121689a09b980c00",
-    "visualType": "slicer",
-    "title": "Date",
-    "fields": [
-      "Date",
-      "Date Table.Date"
-    ],
-    "x": 0.0,
-    "y": 27.69230769230768,
-    "width": 230.0,
-    "height": 76.15384615384615,
-    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
-    "snip": "visuals/a232121689a09b980c00.png"
-  },
-  {
-    "id": "d26cb5540611e36ed004",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 12.717863890261436,
-    "y": 37.010844076713845,
-    "width": 171.5022566086396,
-    "height": 94.96018804805715,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/d26cb5540611e36ed004.png"
-  },
-  {
     "id": "d229beaccea875451039",
     "visualType": "hundredPercentStackedBarChart",
-    "title": "Total Profit",
+    "title": "Total Cost",
     "fields": [
       "# Measures.Total Cost",
       "# Measures.Total Profit",
       "Total Cost",
       "Total Profit"
     ],
-    "x": 12.262733220817083,
-    "y": 75.82619193226854,
+    "x": 290.64966591912696,
+    "y": 210.11190621798283,
     "width": 205.40078144868565,
     "height": 77.40590426419081,
     "howTo": "Insert \u2192 100% stacked bar chart. Use for cost vs profit composition.",
@@ -425,68 +245,20 @@
       "Target Diff",
       "Target vs Previous month"
     ],
-    "x": 12.262733220817083,
-    "y": 75.82619193226854,
+    "x": 781.1589947518091,
+    "y": 210.11190621798283,
     "width": 205.40078144868565,
     "height": 77.40590426419081,
     "howTo": "Insert \u2192 100% stacked bar chart. Use for cost vs profit composition.",
     "snip": "visuals/4e985900937cab812397.png"
   },
   {
-    "id": "eae31eced9d1734384be",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 1049.705304518664,
-    "y": 90.41257367387033,
-    "width": 229.8624754420432,
-    "height": 104.20432220039292,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/eae31eced9d1734384be.png"
-  },
-  {
-    "id": "9d2a746b915c64039ba5",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 16.86125817862345,
-    "y": 133.55488884829518,
-    "width": 208.72455860479815,
-    "height": 41.23454240761185,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/9d2a746b915c64039ba5.png"
-  },
-  {
-    "id": "f4464c8a218a16b01cb2",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 16.86125817862345,
-    "y": 133.55488884829518,
-    "width": 208.72455860479815,
-    "height": 41.23454240761185,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/f4464c8a218a16b01cb2.png"
-  },
-  {
-    "id": "7ac2d3c0c08409a55288",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 32.85714285714286,
-    "y": 134.2857142857143,
-    "width": 1214.2857142857144,
-    "height": 218.57142857142858,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/7ac2d3c0c08409a55288.png"
-  },
-  {
     "id": "5e13584087e05e680a11",
     "visualType": "textbox",
     "title": "textbox",
     "fields": [],
-    "x": 992.0236746584051,
-    "y": 135.34286667354996,
+    "x": 1024.880817515548,
+    "y": 269.62858095926424,
     "width": 212.05881672947544,
     "height": 80.4073576948431,
     "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
@@ -497,8 +269,8 @@
     "visualType": "textbox",
     "title": "textbox",
     "fields": [],
-    "x": 9.197049915612784,
-    "y": 135.8552605453145,
+    "x": 287.5839826139227,
+    "y": 270.1409748310288,
     "width": 211.53214805909417,
     "height": 75.82619193226854,
     "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
@@ -509,48 +281,12 @@
     "visualType": "textbox",
     "title": "textbox",
     "fields": [],
-    "x": 9.197049915612784,
-    "y": 135.8552605453145,
+    "x": 778.0933114466048,
+    "y": 270.1409748310288,
     "width": 211.53214805909417,
     "height": 75.82619193226854,
     "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
     "snip": "visuals/60e1b53b36dd96759bb6.png"
-  },
-  {
-    "id": "941ab3e1c23d406a1064",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 12.798375783649632,
-    "y": 137.15894137056955,
-    "width": 170.49410215887008,
-    "height": 94.96018804805712,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/941ab3e1c23d406a1064.png"
-  },
-  {
-    "id": "95f45e0d4c19ed8d7c2b",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 16.86125817862345,
-    "y": 171.46798481442946,
-    "width": 201.72261654297586,
-    "height": 41.23454240761185,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/95f45e0d4c19ed8d7c2b.png"
-  },
-  {
-    "id": "54e0e185c37d09b082e1",
-    "visualType": "unknown",
-    "title": "unknown",
-    "fields": [],
-    "x": 16.86125817862345,
-    "y": 171.46798481442946,
-    "width": 201.72261654297586,
-    "height": 41.23454240761185,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/54e0e185c37d09b082e1.png"
   },
   {
     "id": "c57964e0e560c049e96c",
@@ -565,16 +301,58 @@
     "snip": "visuals/c57964e0e560c049e96c.png"
   },
   {
-    "id": "6bb17197be72ca86666b",
-    "visualType": "unknown",
-    "title": "unknown",
+    "id": "af72ff7988718bc74ed8",
+    "visualType": "slicer",
+    "title": "Date M-W-D",
+    "fields": [
+      "Date M-W-D",
+      "Date M-W-D.Date M-W-D"
+    ],
+    "x": 355.28359382679633,
+    "y": 389.0,
+    "width": 181.80576034601398,
+    "height": 32.0,
+    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
+    "snip": "visuals/af72ff7988718bc74ed8.png"
+  },
+  {
+    "id": "1d09bc0587d0ea2913e7",
+    "visualType": "textbox",
+    "title": "textbox",
     "fields": [],
     "x": 50.0,
-    "y": 389.0,
-    "width": 1149.8018939021597,
-    "height": 49.99999999999999,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/6bb17197be72ca86666b.png"
+    "y": 389.46450958988214,
+    "width": 242.1025863669627,
+    "height": 49.53549041011785,
+    "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
+    "snip": "visuals/1d09bc0587d0ea2913e7.png"
+  },
+  {
+    "id": "62e075780a858b010644",
+    "visualType": "slicer",
+    "title": "Date Table.Month Short",
+    "fields": [
+      "Date Table.Month Short",
+      "Month Short"
+    ],
+    "x": 537.7715521478424,
+    "y": 389.46450958988214,
+    "width": 328.13722599036674,
+    "height": 32.0,
+    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
+    "snip": "visuals/62e075780a858b010644.png"
+  },
+  {
+    "id": "222c1666242035e1e002",
+    "visualType": "textbox",
+    "title": "textbox",
+    "fields": [],
+    "x": 917.0,
+    "y": 391.3333333333333,
+    "width": 247.0,
+    "height": 41.832460151772224,
+    "howTo": "Insert \u2192 Text box. Type title text or bind a measure for dynamic titles.",
+    "snip": "visuals/222c1666242035e1e002.png"
   },
   {
     "id": "63a3d9016ba0074454a5",
@@ -598,16 +376,46 @@
     "snip": "visuals/63a3d9016ba0074454a5.png"
   },
   {
-    "id": "463d0e5e7be4058e54e9",
-    "visualType": "unknown",
-    "title": "unknown",
+    "id": "e0747de125b6541da5e1",
+    "visualType": "shape",
+    "title": "shape",
     "fields": [],
-    "x": 1045.5053811436792,
+    "x": 1050.5525046627563,
     "y": 443.78376971003865,
-    "width": 191.40876853642814,
+    "width": 186.81495809155385,
     "height": 238.20521747648237,
-    "howTo": "Recreate this visual type in Power BI and bind the same fields.",
-    "snip": "visuals/463d0e5e7be4058e54e9.png"
+    "howTo": "Insert \u2192 Shape for layout chrome (lines, rectangles).",
+    "snip": "visuals/e0747de125b6541da5e1.png"
+  },
+  {
+    "id": "6d3a10ae2450a874d219",
+    "visualType": "slicer",
+    "title": "Higher Percentile",
+    "fields": [
+      "Higher Percentile",
+      "Higher Percentile.Higher Percentile"
+    ],
+    "x": 1062.8170554788148,
+    "y": 480.7946137867525,
+    "width": 166.90844616376532,
+    "height": 94.96018804805715,
+    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
+    "snip": "visuals/6d3a10ae2450a874d219.png"
+  },
+  {
+    "id": "e37ec159adb83d09b8b0",
+    "visualType": "slicer",
+    "title": "Lower Percentile",
+    "fields": [
+      "Lower Percentile",
+      "Lower Percentile.Lower Percentile"
+    ],
+    "x": 1061.8894129224336,
+    "y": 580.9427110806082,
+    "width": 166.90844616376532,
+    "height": 94.96018804805715,
+    "howTo": "Insert \u2192 Slicer. Drag the filter column. Set single-select or dropdown in slicer settings.",
+    "snip": "visuals/e37ec159adb83d09b8b0.png"
   },
   {
     "id": "3322e1f65b8d195b9cd7",

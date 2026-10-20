@@ -1,13 +1,23 @@
-"""Extract datasets, DAX, Power Query, relationships, and visual snips from a .pbix."""
+"""Extract datasets, DAX, Power Query, relationships, and visual snips from a .pbix.
+
+Does not modify workshop-content.json — run regenerate-power-bi-lab.ps1 for the full pipeline.
+"""
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
 import json
+import re
+import sys
 import zipfile
 from pathlib import Path
 from typing import Any
 
 from pbixray import PBIXRay
+
+EXTRACTOR_VERSION = "2.1.0"
+CONTENT_VERSION = "1.0.0"
 
 PAGE_WIDTH = 1280.0
 PAGE_HEIGHT = 780.0
@@ -43,6 +53,141 @@ def _collect_fields(node: Any, found: set[str]) -> None:
             _collect_fields(item, found)
 
 
+def _absolute_position(raw: dict[str, Any], by_name: dict[str, dict[str, Any]]) -> tuple[float, float]:
+    pos = raw.get("position") or {}
+    x, y = float(pos.get("x", 0)), float(pos.get("y", 0))
+    parent = raw.get("parentGroupName")
+    if parent and parent in by_name:
+        px, py = _absolute_position(by_name[parent], by_name)
+        return x + px, y + py
+    return x, y
+
+
+def _visual_title(vtype: str, fields: set[str]) -> str:
+    title = next(iter(sorted(fields)), vtype)
+    for ref in fields:
+        if "Measures." in ref or "[" in ref:
+            title = ref.split(".")[-1] if "." in ref else ref
+            break
+    return title
+
+
+def _parse_visuals_from_page_prefix(
+    zf: zipfile.ZipFile, prefix: str, page_w: float, page_h: float
+) -> list[dict[str, Any]]:
+    by_name: dict[str, dict[str, Any]] = {}
+    for name in zf.namelist():
+        if not name.startswith(f"{prefix}/visuals/") or not name.endswith("/visual.json"):
+            continue
+        raw = json.loads(zf.read(name))
+        by_name[str(raw.get("name", ""))] = raw
+
+    visuals: list[dict[str, Any]] = []
+    for raw in by_name.values():
+        pos = raw.get("position") or {}
+        w = float(pos.get("width", 0))
+        h = float(pos.get("height", 0))
+        if w < 72 or h < 32:
+            continue
+        visual = raw.get("visual") or {}
+        vtype = str(visual.get("visualType") or "unknown")
+        fields: set[str] = set()
+        _collect_fields(visual.get("query"), fields)
+        if vtype in ("unknown", "group") and not fields:
+            continue
+        ax, ay = _absolute_position(raw, by_name)
+        visuals.append(
+            {
+                "id": raw.get("name", ""),
+                "visualType": vtype,
+                "title": _visual_title(vtype, fields),
+                "fields": sorted(fields),
+                "x": ax,
+                "y": ay,
+                "width": w,
+                "height": h,
+                "howTo": VISUAL_HOW_TO.get(
+                    vtype, "Recreate this visual type in Power BI and bind the same fields."
+                ),
+                "snip": f"visuals/{raw.get('name', 'unknown')}.png",
+            }
+        )
+    return visuals
+
+
+def _parse_visuals_from_layout(zf: zipfile.ZipFile) -> tuple[list[dict[str, Any]], float, float]:
+    """Legacy PBIX stores a single compressed Report/Layout blob instead of per-page JSON."""
+    if "Report/Layout" not in zf.namelist():
+        return [], PAGE_WIDTH, PAGE_HEIGHT
+    try:
+        import zlib
+
+        raw = zf.read("Report/Layout")
+        if raw[:2] == b"\x1f\x8b":
+            raw = zlib.decompress(raw, zlib.MAX_WBITS | 16)
+        text = raw.decode("utf-16-le", errors="ignore")
+        layout = json.loads(text)
+    except (json.JSONDecodeError, OSError, UnicodeError):
+        return [], PAGE_WIDTH, PAGE_HEIGHT
+
+    page_w = float(layout.get("width", PAGE_WIDTH))
+    page_h = float(layout.get("height", PAGE_HEIGHT))
+    by_name: dict[str, dict[str, Any]] = {}
+    for section in layout.get("sections", []):
+        for visual_container in section.get("visualContainers", []):
+            config_raw = visual_container.get("config")
+            if not config_raw:
+                continue
+            try:
+                config = json.loads(config_raw) if isinstance(config_raw, str) else config_raw
+            except json.JSONDecodeError:
+                continue
+            name = str(config.get("name") or visual_container.get("id", ""))
+            by_name[name] = {
+                "name": name,
+                "position": {
+                    "x": visual_container.get("x", 0),
+                    "y": visual_container.get("y", 0),
+                    "width": visual_container.get("width", 0),
+                    "height": visual_container.get("height", 0),
+                },
+                "visual": config.get("singleVisual") or {},
+                "parentGroupName": config.get("parentGroupName"),
+            }
+
+    visuals: list[dict[str, Any]] = []
+    for raw in by_name.values():
+        pos = raw.get("position") or {}
+        w = float(pos.get("width", 0))
+        h = float(pos.get("height", 0))
+        if w < 72 or h < 32:
+            continue
+        visual = raw.get("visual") or {}
+        vtype = str(visual.get("visualType") or "unknown")
+        fields: set[str] = set()
+        _collect_fields(visual.get("query"), fields)
+        if vtype in ("unknown", "group") and not fields:
+            continue
+        ax, ay = _absolute_position(raw, by_name)
+        visuals.append(
+            {
+                "id": raw.get("name", ""),
+                "visualType": vtype,
+                "title": _visual_title(vtype, fields),
+                "fields": sorted(fields),
+                "x": ax,
+                "y": ay,
+                "width": w,
+                "height": h,
+                "howTo": VISUAL_HOW_TO.get(
+                    vtype, "Recreate this visual type in Power BI and bind the same fields."
+                ),
+                "snip": f"visuals/{raw.get('name', 'unknown')}.png",
+            }
+        )
+    return visuals, page_w, page_h
+
+
 def _parse_visuals_from_pbix(pbix: Path) -> tuple[list[dict[str, Any]], float, float]:
     visuals: list[dict[str, Any]] = []
     page_w, page_h = PAGE_WIDTH, PAGE_HEIGHT
@@ -53,38 +198,9 @@ def _parse_visuals_from_pbix(pbix: Path) -> tuple[list[dict[str, Any]], float, f
             page_w = float(page.get("width", PAGE_WIDTH))
             page_h = float(page.get("height", PAGE_HEIGHT))
             prefix = page_path.rsplit("/page.json", 1)[0]
-            for name in zf.namelist():
-                if not name.startswith(f"{prefix}/visuals/") or not name.endswith("/visual.json"):
-                    continue
-                raw = json.loads(zf.read(name))
-                pos = raw.get("position") or {}
-                w = float(pos.get("width", 0))
-                h = float(pos.get("height", 0))
-                if w < 72 or h < 32:
-                    continue
-                visual = raw.get("visual") or {}
-                vtype = str(visual.get("visualType", "unknown"))
-                fields: set[str] = set()
-                _collect_fields(visual.get("query"), fields)
-                title = next(iter(sorted(fields)), vtype)
-                for ref in fields:
-                    if "Measures." in ref or "[" in ref:
-                        title = ref.split(".")[-1] if "." in ref else ref
-                        break
-                visuals.append(
-                    {
-                        "id": raw.get("name", ""),
-                        "visualType": vtype,
-                        "title": title,
-                        "fields": sorted(fields),
-                        "x": float(pos.get("x", 0)),
-                        "y": float(pos.get("y", 0)),
-                        "width": w,
-                        "height": h,
-                        "howTo": VISUAL_HOW_TO.get(vtype, "Recreate this visual type in Power BI and bind the same fields."),
-                        "snip": f"visuals/{raw.get('name', 'unknown')}.png",
-                    }
-                )
+            visuals.extend(_parse_visuals_from_page_prefix(zf, prefix, page_w, page_h))
+        if not visuals:
+            visuals, page_w, page_h = _parse_visuals_from_layout(zf)
     visuals.sort(key=lambda v: (v["y"], v["x"]))
     return visuals, page_w, page_h
 
@@ -110,9 +226,11 @@ def _export_relationships(model: PBIXRay) -> list[dict[str, Any]]:
 def _mermaid_er(relationships: list[dict[str, Any]]) -> str:
     lines = ["```mermaid", "erDiagram"]
     for r in relationships:
-        ft, fc, tt, tc = r["fromTable"], r["fromColumn"], r["toTable"], r["toColumn"]
-        safe = lambda s: s.replace(" ", "_").replace("#", "")
-        lines.append(f'    {safe(ft)} ||--o{{ {safe(tt)} : "{fc} -> {tc}"')
+        # Dimension (one) on the left, fact Sales (many) on the right.
+        dim_table, dim_col = r["toTable"], r["toColumn"]
+        fact_table, fact_col = r["fromTable"], r["fromColumn"]
+        safe = lambda s: re.sub(r"[^A-Za-z0-9_]", "_", s)
+        lines.append(f'    {safe(dim_table)} ||--o{{ {safe(fact_table)} : "{dim_col} -> {fact_col}"')
     lines.append("```")
     return "\n".join(lines)
 
@@ -304,14 +422,29 @@ def _crop_snips(
         crop.save(out_vis / f"{v['id']}.png", "PNG")
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pbix", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--preview", type=Path, default=None, help="Full-page PNG for visual crops")
+    parser.add_argument(
+        "--canvas-rect",
+        type=str,
+        default=None,
+        help='JSON object {"left":8,"top":198,"width":1270,"height":785}',
+    )
     args = parser.parse_args()
 
     out = args.out
+    out.mkdir(parents=True, exist_ok=True)
     data_dir = out / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -350,11 +483,16 @@ def main() -> None:
 
     relationships = _export_relationships(model)
     visuals, page_w, page_h = _parse_visuals_from_pbix(args.pbix)
+    if not visuals:
+        print("No visuals parsed — unsupported layout or empty report.", file=sys.stderr)
+        sys.exit(2)
 
     preview = args.preview
     if preview is None:
         preview = args.pbix.parent / "executive-sales-toast.png"
     canvas = dict(DEFAULT_CANVAS_RECT)
+    if args.canvas_rect:
+        canvas.update(json.loads(args.canvas_rect))
     _save_canvas_reference(preview, canvas, out / "canvas-reference.png")
     build_steps = _build_steps(visuals, preview, canvas, page_w, page_h, out)
     (out / "build-steps.json").write_text(json.dumps(build_steps, indent=2), encoding="utf-8")
@@ -375,6 +513,15 @@ def main() -> None:
     (out / "relationships.md").write_text(rel_md, encoding="utf-8")
     (out / "visuals.json").write_text(json.dumps(visuals, indent=2), encoding="utf-8")
 
+    pbix_hash = _sha256_file(args.pbix)
+    preview_prov = (
+        {
+            "path": str(preview),
+            "sha256": _sha256_file(preview) if preview.is_file() else None,
+        }
+        if preview
+        else None
+    )
     manifest = {
         "tables": tables_meta,
         "measureCount": len(measure_blocks),
@@ -387,6 +534,14 @@ def main() -> None:
         "canvasRect": canvas,
         "previewImage": "../executive-sales-toast.png",
         "canvasReference": "canvas-reference.png",
+        "contentVersion": CONTENT_VERSION,
+        "extractorVersion": EXTRACTOR_VERSION,
+        "sourcePbixSha256": pbix_hash,
+        "screenshotProvenance": {
+            "preview": preview_prov,
+            "canvasRect": canvas,
+            "note": "Crops map report canvas coordinates through canvasRect; revalidate after Desktop theme or zoom changes.",
+        },
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     (out / "dax-measures.json").write_text(json.dumps(measure_blocks, indent=2), encoding="utf-8")

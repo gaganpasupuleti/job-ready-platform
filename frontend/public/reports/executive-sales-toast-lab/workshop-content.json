@@ -1,0 +1,1994 @@
+{
+  "contentVersion": "1.0.1",
+  "reportId": "executive-sales-toast",
+  "title": "Executive Sales Report \u2014 Toast Notification",
+  "learningOutcomes": [
+    "Import CSV star-schema data with Power Query",
+    "Model relationships and a marked date table",
+    "Author DAX for KPIs, targets, and toast alerts",
+    "Recreate the reference dashboard layout in Power BI Desktop"
+  ],
+  "prerequisites": [
+    "Basic Power BI Desktop familiarity"
+  ],
+  "testedDesktopVersion": "Power BI Desktop 2024\u20132025 (HTML Content 1.2.1.17)",
+  "canonicalPbixSha256": "6dad3a32cac39baaf4ea8ce998bc7dc09371b93a570a8092c2fb642bad6b8128",
+  "excludedMeasures": [
+    {
+      "name": "H Percentile Scetter",
+      "reason": "References missing disconnected table 'Higher Per (Store)'; not used on the main dashboard."
+    },
+    {
+      "name": "L Percentile Scetter",
+      "reason": "References missing disconnected table 'Lower Per (store)'; not used on the main dashboard."
+    },
+    {
+      "name": "Color Formatting Scatter Chart",
+      "reason": "Depends on excluded scatter percentile measures."
+    },
+    {
+      "name": "ranking_asc",
+      "reason": "References missing field parameter table 'Number of Rows'."
+    },
+    {
+      "name": "ranking_desc",
+      "reason": "References missing field parameter table 'Number of Rows'."
+    }
+  ],
+  "intentionalDifferences": [
+    {
+      "topic": "Toast CSS",
+      "detail": "Students use corrected box-shadow syntax; reference PBIX measure omits a closing parenthesis."
+    },
+    {
+      "topic": "Units Sold vs Total Orders",
+      "detail": "DAX measure remains Total Orders (= SUM of Order qty). Students should title the card Units Sold; reference PBIX label says Total Orders."
+    },
+    {
+      "topic": "CSV import path",
+      "detail": "Students use Csv.Document on packaged CSVs; author Excel M is reference-only."
+    }
+  ],
+  "stages": [
+    {
+      "id": "setup",
+      "order": 1,
+      "title": "Setup",
+      "summary": "Tools, downloads, blank PBIX"
+    },
+    {
+      "id": "import",
+      "order": 2,
+      "title": "Import data",
+      "summary": "CSV imports with exact table names"
+    },
+    {
+      "id": "validate-data",
+      "order": 3,
+      "title": "Validate data",
+      "summary": "Counts, keys, dates"
+    },
+    {
+      "id": "relationships",
+      "order": 4,
+      "title": "Model relationships",
+      "summary": "Four active M:1 relationships"
+    },
+    {
+      "id": "date-controls",
+      "order": 5,
+      "title": "Date controls",
+      "summary": "Date table, sort, D/W/M parameter"
+    },
+    {
+      "id": "measures",
+      "order": 6,
+      "title": "Measures",
+      "summary": "DAX in dependency order"
+    },
+    {
+      "id": "page-slicers",
+      "order": 7,
+      "title": "Page and slicers",
+      "summary": "Canvas and filters"
+    },
+    {
+      "id": "kpi-bars",
+      "order": 8,
+      "title": "KPI cards and bars",
+      "summary": "KPIs, cost/profit and target bars"
+    },
+    {
+      "id": "trend-settings",
+      "order": 9,
+      "title": "Trend and settings",
+      "summary": "Trend line and percentile controls"
+    },
+    {
+      "id": "toast",
+      "order": 10,
+      "title": "Toast",
+      "summary": "HTML Content notification"
+    },
+    {
+      "id": "interactions",
+      "order": 11,
+      "title": "Interactions",
+      "summary": "Bookmarks and buttons"
+    },
+    {
+      "id": "final-checks",
+      "order": 12,
+      "title": "Final checks",
+      "summary": "Validate, save, export"
+    }
+  ],
+  "steps": [
+    {
+      "id": "setup-01",
+      "stageId": "setup",
+      "order": 1,
+      "title": "Know the target report",
+      "objective": "Recognize the finished executive sales page you will rebuild from a blank PBIX.",
+      "prerequisites": [],
+      "actions": [
+        "Open the JobReady **Finished preview** (static PNG \u2014 interactions happen in Power BI Desktop).",
+        "Note canvas size 1280\u00d7780 and the KPI + trend + toast layout."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "You can describe where slicers, KPIs, bars, trend, settings, and toast sit on the page.",
+      "verificationChecklist": [
+        "Preview image loads",
+        "You understand this is a reference only"
+      ],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "steps/01-full-canvas.png",
+          "caption": "Finished report canvas (reference).",
+          "alt": "Executive sales dashboard with KPI cards, slicers, trend chart, and toast area",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "setup-02",
+      "stageId": "setup",
+      "order": 2,
+      "title": "Install tools",
+      "objective": "Use a Power BI Desktop build that supports HTML Content custom visuals.",
+      "prerequisites": [
+        "setup-01"
+      ],
+      "actions": [
+        "Install **Power BI Desktop** (tested with recent 2024\u20132025 builds).",
+        "From AppSource in Desktop, add custom visual **HTML Content** (package id htmlContent443BE3AD55E043BF878BED274D3A6855, version 1.2.1.17 in the reference file).",
+        "Create an empty folder for lab data, e.g. `C:\\JobReady\\executive-sales-data\\`."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Desktop opens, HTML Content visual is available in the visualizations pane.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "setup-03",
+      "stageId": "setup",
+      "order": 3,
+      "title": "Download the student kit",
+      "objective": "Get CSVs and guides from JobReady.",
+      "prerequisites": [
+        "setup-02"
+      ],
+      "actions": [
+        "Download **All datasets (.zip)** and extract into your data folder.",
+        "Optional: download the reference `.pbix` only to compare \u2014 do not start from it for the graded rebuild."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Eight CSV files present (3\u201320000 rows).",
+      "verificationChecklist": [
+        "datasets.zip extracts without errors",
+        "data folder path has no spaces issues in M"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "setup-04",
+      "stageId": "setup",
+      "order": 4,
+      "title": "Create a blank report",
+      "objective": "Start from File \u2192 New to mirror the workshop path.",
+      "prerequisites": [
+        "setup-03"
+      ],
+      "actions": [
+        "File \u2192 New \u2192 Blank report.",
+        "Save as `Executive-Sales-Toast.pbix` in your lab folder."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Empty report with one blank page.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-00",
+      "stageId": "import",
+      "order": 0,
+      "title": "Create DataFolder parameter",
+      "objective": "One path drives all CSV imports.",
+      "prerequisites": [
+        "setup-04"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 Manage Parameters \u2192 New.",
+        "Name: **DataFolder**, type Text, current value = folder containing the eight CSV files (trailing backslash optional)."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Parameter DataFolder appears under Parameters.",
+      "verificationChecklist": [
+        "Path opens without privacy errors on refresh"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-01",
+      "stageId": "import",
+      "order": 1,
+      "title": "Import Sales",
+      "objective": "Load `Sales.csv` as table **Sales** with explicit types.",
+      "prerequisites": [
+        "import-00"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 New Source \u2192 Blank Query.",
+        "Paste the M below (uses `DataFolder` parameter).",
+        "Rename query to **Sales** and ensure it loads to the model with table name **Sales**.",
+        "Close && Apply."
+      ],
+      "dax": null,
+      "powerQuery": [
+        {
+          "name": "Sales",
+          "parameter": "DataFolder",
+          "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Sales.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Sales Date\", type date},\n            {\"Order qty\", Int64.Type},\n            {\"unit price\", type number},\n            {\"unit cost\", type number},\n            {\"Productindex\", Int64.Type},\n            {\"Storeindex\", Int64.Type},\n            {\"Salesteamindex\", Int64.Type},\n            {\"Sales_Index\", Int64.Type},\n            {\"Order Number\", type text},\n            {\"Sales Channel\", type text}\n        })\nin\n    #\"Changed Type\" "
+        }
+      ],
+      "visual": null,
+      "expectedResult": "Table **Sales** appears in the Fields pane.",
+      "verificationChecklist": [
+        "Table name is exactly `Sales`",
+        "Refresh preview succeeds"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": " Author Excel M is in power-query.json (reference only).",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-02",
+      "stageId": "import",
+      "order": 2,
+      "title": "Import Date Table",
+      "objective": "Load `Date_Table.csv` as table **Date Table** with explicit types.",
+      "prerequisites": [
+        "import-01"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 New Source \u2192 Blank Query.",
+        "Paste the M below (uses `DataFolder` parameter).",
+        "Rename query to **Date Table** and ensure it loads to the model with table name **Date Table**.",
+        "Close && Apply."
+      ],
+      "dax": null,
+      "powerQuery": [
+        {
+          "name": "Date Table",
+          "parameter": "DataFolder",
+          "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Date_Table.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Date\", type date},\n            {\"Year\", Int64.Type},\n            {\"QuarterOfYear\", Int64.Type},\n            {\"Quarter & Year\", type text},\n            {\"QuarternYear\", Int64.Type},\n            {\"MonthOfYear\", Int64.Type},\n            {\"Month & Year\", type text},\n            {\"MonthnYear\", Int64.Type},\n            {\"Month Short\", type text},\n            {\"DayOfMonth\", Int64.Type},\n            {\"ISO Weeknumber\", Int64.Type},\n            {\"Week & Year\", type text},\n            {\"WeeknYear\", Int64.Type},\n            {\"DayOfWeekNum\", Int64.Type},\n            {\"DayOfWeek\", type text},\n            {\"DayOfWeek Initial\", type text},\n            {\"Day Type\", type text}\n        })\nin\n    #\"Changed Type\" "
+        }
+      ],
+      "visual": null,
+      "expectedResult": "Table **Date Table** appears in the Fields pane.",
+      "verificationChecklist": [
+        "Table name is exactly `Date Table`",
+        "Refresh preview succeeds"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": " Author Excel M is in power-query.json (reference only).",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-03",
+      "stageId": "import",
+      "order": 3,
+      "title": "Import Products_Data",
+      "objective": "Load `Products_Data.csv` as table **Products_Data** with explicit types.",
+      "prerequisites": [
+        "import-02"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 New Source \u2192 Blank Query.",
+        "Paste the M below (uses `DataFolder` parameter).",
+        "Rename query to **Products_Data** and ensure it loads to the model with table name **Products_Data**.",
+        "Close && Apply."
+      ],
+      "dax": null,
+      "powerQuery": [
+        {
+          "name": "Products_Data",
+          "parameter": "DataFolder",
+          "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Products_Data.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Productindex\", Int64.Type},\n            {\"Product Name\", type text}\n        })\nin\n    #\"Changed Type\" "
+        }
+      ],
+      "visual": null,
+      "expectedResult": "Table **Products_Data** appears in the Fields pane.",
+      "verificationChecklist": [
+        "Table name is exactly `Products_Data`",
+        "Refresh preview succeeds"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": " Author Excel M is in power-query.json (reference only).",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-04",
+      "stageId": "import",
+      "order": 4,
+      "title": "Import storelocations",
+      "objective": "Load `storelocations.csv` as table **storelocations** with explicit types.",
+      "prerequisites": [
+        "import-03"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 New Source \u2192 Blank Query.",
+        "Paste the M below (uses `DataFolder` parameter).",
+        "Rename query to **storelocations** and ensure it loads to the model with table name **storelocations**.",
+        "Close && Apply."
+      ],
+      "dax": null,
+      "powerQuery": [
+        {
+          "name": "storelocations",
+          "parameter": "DataFolder",
+          "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\storelocations.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Storeindex\", Int64.Type},\n            {\"name\", type text}\n        })\nin\n    #\"Changed Type\" "
+        }
+      ],
+      "visual": null,
+      "expectedResult": "Table **storelocations** appears in the Fields pane.",
+      "verificationChecklist": [
+        "Table name is exactly `storelocations`",
+        "Refresh preview succeeds"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": " Author Excel M is in power-query.json (reference only).",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-05",
+      "stageId": "import",
+      "order": 5,
+      "title": "Import Salesteams",
+      "objective": "Load `Salesteams.csv` as table **Salesteams** with explicit types.",
+      "prerequisites": [
+        "import-04"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 New Source \u2192 Blank Query.",
+        "Paste the M below (uses `DataFolder` parameter).",
+        "Rename query to **Salesteams** and ensure it loads to the model with table name **Salesteams**.",
+        "Close && Apply."
+      ],
+      "dax": null,
+      "powerQuery": [
+        {
+          "name": "Salesteams",
+          "parameter": "DataFolder",
+          "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Salesteams.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Salesteamindex\", Int64.Type},\n            {\"Sales Team\", type text}\n        })\nin\n    #\"Changed Type\" "
+        }
+      ],
+      "visual": null,
+      "expectedResult": "Table **Salesteams** appears in the Fields pane.",
+      "verificationChecklist": [
+        "Table name is exactly `Salesteams`",
+        "Refresh preview succeeds"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": " Author Excel M is in power-query.json (reference only).",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-06",
+      "stageId": "import",
+      "order": 6,
+      "title": "Import Higher Percentile",
+      "objective": "Load `Higher_Percentile.csv` as table **Higher Percentile** with explicit types.",
+      "prerequisites": [
+        "import-05"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 New Source \u2192 Blank Query.",
+        "Paste the M below (uses `DataFolder` parameter).",
+        "Rename query to **Higher Percentile** and ensure it loads to the model with table name **Higher Percentile**.",
+        "Close && Apply."
+      ],
+      "dax": null,
+      "powerQuery": [
+        {
+          "name": "Higher Percentile",
+          "parameter": "DataFolder",
+          "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Higher_Percentile.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Higher Percentile\", type number}\n        })\nin\n    #\"Changed Type\" "
+        }
+      ],
+      "visual": null,
+      "expectedResult": "Table **Higher Percentile** appears in the Fields pane.",
+      "verificationChecklist": [
+        "Table name is exactly `Higher Percentile`",
+        "Refresh preview succeeds"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": " Author Excel M is in power-query.json (reference only).",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-07",
+      "stageId": "import",
+      "order": 7,
+      "title": "Import Lower Percentile",
+      "objective": "Load `Lower_Percentile.csv` as table **Lower Percentile** with explicit types.",
+      "prerequisites": [
+        "import-06"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 New Source \u2192 Blank Query.",
+        "Paste the M below (uses `DataFolder` parameter).",
+        "Rename query to **Lower Percentile** and ensure it loads to the model with table name **Lower Percentile**.",
+        "Close && Apply."
+      ],
+      "dax": null,
+      "powerQuery": [
+        {
+          "name": "Lower Percentile",
+          "parameter": "DataFolder",
+          "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Lower_Percentile.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Lower Percentile\", type number}\n        })\nin\n    #\"Changed Type\" "
+        }
+      ],
+      "visual": null,
+      "expectedResult": "Table **Lower Percentile** appears in the Fields pane.",
+      "verificationChecklist": [
+        "Table name is exactly `Lower Percentile`",
+        "Refresh preview succeeds"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": " Author Excel M is in power-query.json (reference only).",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "import-08",
+      "stageId": "import",
+      "order": 8,
+      "title": "Import Date M-W-D",
+      "objective": "Load `Date_M-W-D.csv` as table **Date M-W-D** with explicit types.",
+      "prerequisites": [
+        "import-07"
+      ],
+      "actions": [
+        "Home \u2192 Transform data \u2192 New Source \u2192 Blank Query.",
+        "Paste the M below (uses `DataFolder` parameter).",
+        "Rename query to **Date M-W-D** and ensure it loads to the model with table name **Date M-W-D**.",
+        "Close && Apply."
+      ],
+      "dax": null,
+      "powerQuery": [
+        {
+          "name": "Date M-W-D",
+          "parameter": "DataFolder",
+          "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Date_M-W-D.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Date M-W-D\", type text},\n            {\"Date M-W-D Order\", Int64.Type}\n        })\nin\n    #\"Changed Type\" "
+        }
+      ],
+      "visual": null,
+      "expectedResult": "Table **Date M-W-D** appears in the Fields pane.",
+      "verificationChecklist": [
+        "Table name is exactly `Date M-W-D`",
+        "Refresh preview succeeds"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "Helper lookup only \u2014 recreate the real Fields parameter in Desktop (see workshop date-03). Author Excel M is in power-query.json (reference only).",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "validate-01",
+      "stageId": "validate-data",
+      "order": 1,
+      "title": "Row counts",
+      "objective": "Confirm CSV loads match the packaged data.",
+      "prerequisites": [
+        "import-08"
+      ],
+      "actions": [
+        "Model view \u2192 select each table \u2192 verify row counts against the data dictionary."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Sales 20,000 rows; Date Table 152; Products 47; stores 367; teams 28; percentile tables 10 each; Date M-W-D 3.",
+      "verificationChecklist": [
+        "Counts match manifest.json"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "validate-02",
+      "stageId": "validate-data",
+      "order": 2,
+      "title": "Sales keys",
+      "objective": "Ensure foreign keys exist in dimensions.",
+      "prerequisites": [
+        "validate-01"
+      ],
+      "actions": [
+        "In Power Query or DAX, verify every Sales[Productindex] exists in Products_Data[Productindex].",
+        "Repeat for Storeindex \u2192 storelocations and Salesteamindex \u2192 Salesteams."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "No unmatched keys (0 orphan rows).",
+      "verificationChecklist": [],
+      "commonMistakes": [
+        "Leading zeros stripped in CSV \u2014 keep Productindex as whole number"
+      ],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "validate-03",
+      "stageId": "validate-data",
+      "order": 3,
+      "title": "Date coverage",
+      "objective": "Understand the sample period.",
+      "prerequisites": [
+        "validate-02"
+      ],
+      "actions": [
+        "Date Table covers 2020-01-01 through 2020-05-31 (152 days).",
+        "Sales dates should fall inside this range."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "min(Sales[Sales Date]) \u2265 2020-01-01 and max \u2264 2020-05-31.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "validate-04",
+      "stageId": "validate-data",
+      "order": 4,
+      "title": "Unmatched sales check",
+      "objective": "Document blank keys.",
+      "prerequisites": [
+        "validate-03"
+      ],
+      "actions": [
+        "Sort Sales columns for null Productindex/Storeindex/Salesteamindex \u2014 expect none."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "No blank foreign keys in Sales.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "rel-01",
+      "stageId": "relationships",
+      "order": 1,
+      "title": "Sales.Salesteamindex \u2192 Salesteams.Salesteamindex",
+      "objective": "Create one active many-to-one relationship with single-direction filter from dimension to Sales.",
+      "prerequisites": [
+        "validate-04"
+      ],
+      "actions": [
+        "Model view \u2192 drag from Sales foreign key to dimension primary key.",
+        "From: **Sales**[Salesteamindex]",
+        "To: **Salesteams**[Salesteamindex]",
+        "Cardinality: Many-to-one (*:1).",
+        "Cross-filter direction: Single (dimension filters Sales).",
+        "Leave relationship **active**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Relationship line shows 1 on dimension side, * on Sales.",
+      "verificationChecklist": [
+        "Active",
+        "Single direction from dimension"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "rel-02",
+      "stageId": "relationships",
+      "order": 2,
+      "title": "Sales.Storeindex \u2192 storelocations.Storeindex",
+      "objective": "Create one active many-to-one relationship with single-direction filter from dimension to Sales.",
+      "prerequisites": [
+        "rel-01"
+      ],
+      "actions": [
+        "Model view \u2192 drag from Sales foreign key to dimension primary key.",
+        "From: **Sales**[Storeindex]",
+        "To: **storelocations**[Storeindex]",
+        "Cardinality: Many-to-one (*:1).",
+        "Cross-filter direction: Single (dimension filters Sales).",
+        "Leave relationship **active**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Relationship line shows 1 on dimension side, * on Sales.",
+      "verificationChecklist": [
+        "Active",
+        "Single direction from dimension"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "rel-03",
+      "stageId": "relationships",
+      "order": 3,
+      "title": "Sales.Productindex \u2192 Products_Data.Productindex",
+      "objective": "Create one active many-to-one relationship with single-direction filter from dimension to Sales.",
+      "prerequisites": [
+        "rel-02"
+      ],
+      "actions": [
+        "Model view \u2192 drag from Sales foreign key to dimension primary key.",
+        "From: **Sales**[Productindex]",
+        "To: **Products_Data**[Productindex]",
+        "Cardinality: Many-to-one (*:1).",
+        "Cross-filter direction: Single (dimension filters Sales).",
+        "Leave relationship **active**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Relationship line shows 1 on dimension side, * on Sales.",
+      "verificationChecklist": [
+        "Active",
+        "Single direction from dimension"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "rel-04",
+      "stageId": "relationships",
+      "order": 4,
+      "title": "Sales.Sales Date \u2192 Date Table.Date",
+      "objective": "Create one active many-to-one relationship with single-direction filter from dimension to Sales.",
+      "prerequisites": [
+        "rel-03"
+      ],
+      "actions": [
+        "Model view \u2192 drag from Sales foreign key to dimension primary key.",
+        "From: **Sales**[Sales Date]",
+        "To: **Date Table**[Date]",
+        "Cardinality: Many-to-one (*:1).",
+        "Cross-filter direction: Single (dimension filters Sales).",
+        "Leave relationship **active**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Relationship line shows 1 on dimension side, * on Sales.",
+      "verificationChecklist": [
+        "Active",
+        "Single direction from dimension"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "date-01",
+      "stageId": "date-controls",
+      "order": 1,
+      "title": "Mark the date table",
+      "objective": "Enable time intelligence on Date Table.",
+      "prerequisites": [
+        "rel-04"
+      ],
+      "actions": [
+        "Select **Date Table** in the Fields pane.",
+        "Table tools \u2192 Mark as date table \u2192 choose column **Date**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Date Table shows date table icon.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "date-02",
+      "stageId": "date-controls",
+      "order": 2,
+      "title": "Sort month labels",
+      "objective": "Chronological month order on visuals.",
+      "prerequisites": [
+        "date-01"
+      ],
+      "actions": [
+        "Select Date Table[Month Short].",
+        "Column tools \u2192 Sort by column \u2192 **Month Number**.",
+        "Repeat: Week label columns sorted by WeeknYear if used on axis."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Months order Jan\u2013May, not alphabetically.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "date-03",
+      "stageId": "date-controls",
+      "order": 3,
+      "title": "Create D/W/M field parameter",
+      "objective": "Match the reference slicer that drives axis grain.",
+      "prerequisites": [
+        "date-02"
+      ],
+      "actions": [
+        "Modeling \u2192 New parameter \u2192 Fields.",
+        "Add fields: Date Table[Date] (Day), Date Table[WeeknYear] (Week), Date Table[Month Short] (Month).",
+        "Name the parameter **Date M-W-D** (rename display column to `Date M-W-D` and order column `Date M-W-D Order`).",
+        "Do **not** import Date_M-W-D.csv expecting parameter metadata \u2014 that CSV is only a helper lookup."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Slicer parameter with three values orders Day < Week < Month.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "Reference binds charts to the field parameter, not bookmark-only grain switching.",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "date-04",
+      "stageId": "date-controls",
+      "order": 4,
+      "title": "Hide helper columns",
+      "objective": "Reduce clutter.",
+      "prerequisites": [
+        "date-03"
+      ],
+      "actions": [
+        "Hide technical columns on Date Table used only for sorting (Month Number, etc.) except those needed on visuals."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Students can still sort months correctly.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "pending_desktop"
+    },
+    {
+      "id": "measure-01",
+      "stageId": "measures",
+      "order": 1,
+      "title": "Measures: Total Sales, Average Daily Sales, Average Monthly Saeles\u2026",
+      "objective": "Create DAX measures in dependency order.",
+      "prerequisites": [
+        "date-03"
+      ],
+      "actions": [
+        "Modeling \u2192 New table \u2192 name it `# Measures` (hide later).",
+        "New measure for each formula below (home table `# Measures` unless noted).",
+        "Set format strings where specified in checklist."
+      ],
+      "dax": [
+        {
+          "table": "# Measures",
+          "name": "Total Sales",
+          "expression": "Total Sales =\nSUMX(\n    Sales, \n    Sales[Order qty] * Sales[unit price] \n    )"
+        },
+        {
+          "table": "# Measures",
+          "name": "Average Daily Sales",
+          "expression": "Average Daily Sales =\nVAR _table = ALLSELECTED('Date Table')\nVAR _Result = AVERAGEX( _table , [Total Sales] )\nRETURN _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Average Monthly Saeles",
+          "expression": "Average Monthly Saeles =\nVAR _table = VALUES('Date Table'[Month Short] )\nVAR _Result = AVERAGEX( _table , [Total Sales] )\nRETURN _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Average Weekly Saeles",
+          "expression": "Average Weekly Saeles =\nVAR _table = VALUES( 'Date Table'[WeeknYear] )\nVAR _Result = AVERAGEX( _table , [Total Sales] )\nRETURN _Result"
+        },
+        {
+          "table": "Higher Percentile",
+          "name": "Higher Percentile Value",
+          "expression": "Higher Percentile Value =\nSELECTEDVALUE('Higher Percentile'[Higher Percentile], 0.75)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Higher Percentile of Dates",
+          "expression": "Higher Percentile of Dates =\nVAR _highPth = 'Higher Percentile'[Higher Percentile Value]\nVAR _Result =\n    SWITCH (\n        TRUE (),\n        ISINSCOPE ( 'Date Table'[Date] ), PERCENTILEX.EXC ( ALL( 'Date Table'[Date] ), [Total Sales], _highPth ),\n        ISINSCOPE ( 'Date Table'[Month Short] ),\n            PERCENTILEX.EXC (\n                ALL( 'Date Table'[Month Short] ),\n                [Total Sales],\n                _highPth\n            ),\n        ISINSCOPE ( 'Date Table'[WeeknYear] ),\n            PERCENTILEX.EXC (\n                ALL( 'Date Table'[WeeknYear] ),\n                [Total Sales],\n                _highPth\n            )\n    )\nRETURN\n    _Result"
+        }
+      ],
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Measures compile without errors.",
+      "verificationChecklist": [
+        "`Total Sales` returns values",
+        "`Average Daily Sales` returns values",
+        "`Average Monthly Saeles` returns values",
+        "`Average Weekly Saeles` returns values",
+        "`Higher Percentile Value` returns values",
+        "`Higher Percentile of Dates` returns values"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "measure-02",
+      "stageId": "measures",
+      "order": 2,
+      "title": "Measures: Lower Percentile Value, Lower Percentile of Dates, Color Formatting Line Chart\u2026",
+      "objective": "Create DAX measures in dependency order.",
+      "prerequisites": [
+        "measure-01"
+      ],
+      "actions": [
+        "Modeling \u2192 New table \u2192 name it `# Measures` (hide later).",
+        "New measure for each formula below (home table `# Measures` unless noted).",
+        "Set format strings where specified in checklist."
+      ],
+      "dax": [
+        {
+          "table": "Lower Percentile",
+          "name": "Lower Percentile Value",
+          "expression": "Lower Percentile Value =\nSELECTEDVALUE('Lower Percentile'[Lower Percentile], 0.25)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Lower Percentile of Dates",
+          "expression": "Lower Percentile of Dates =\nVAR _LowerPth = 'Lower Percentile'[Lower Percentile Value]\nVAR _Result =\n    SWITCH (\n        TRUE (),\n        ISINSCOPE ( 'Date Table'[Date] ), PERCENTILEX.EXC ( ALL( 'Date Table'[Date] ), [Total Sales], _LowerPth ),\n        ISINSCOPE ( 'Date Table'[Month Short] ),\n            PERCENTILEX.EXC (\n                ALL( 'Date Table'[Month Short] ),\n                [Total Sales],\n                _LowerPth\n            ),\n        ISINSCOPE ( 'Date Table'[WeeknYear] ),\n            PERCENTILEX.EXC (\n                ALL( 'Date Table'[WeeknYear] ),\n                [Total Sales],\n                _LowerPth\n            )\n    )\nRETURN\n    _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Color Formatting Line Chart",
+          "expression": "Color Formatting Line Chart =\nVAR _BottumColors = \"#FA0C27\" \nVAR _TopColors = \"#1800ED\"\nVAR _MiddleColor = \"#B6B1AF\"\nVAR _Result = \nSWITCH(\n    TRUE(),\n    [Total Sales] > [Higher Percentile of Dates], _TopColors,\n    [Total Sales] < [Lower Percentile of Dates], _BottumColors,\n    _MiddleColor\n    )\nRETURN _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "TS PM Current",
+          "expression": "TS PM Current =\nVAR _datetable =\n DATESINPERIOD( \n    'Date Table'[Date], MAX(Sales[Sales Date]), -1, MONTH )\nVAR _result =\nCALCULATE(\n    [Total Sales],\n    _datetable\n    )\nRETURN _result"
+        },
+        {
+          "table": "# Measures",
+          "name": "TS PM Previous",
+          "expression": "TS PM Previous =\nVAR _datetable =\n DATESINPERIOD( \n    'Date Table'[Date], MAX(Sales[Sales Date]), -1, MONTH )\nVAR _result =\nCALCULATE(\n    [Total Sales],\n    PREVIOUSMONTH(_datetable)\n    )\nRETURN _result"
+        },
+        {
+          "table": "# Measures",
+          "name": "TS MOM diff %",
+          "expression": "TS MOM diff % =\nDIVIDE(\n    ([TS PM Current] - [TS PM Previous]),\n    [TS PM Previous]\n    )"
+        }
+      ],
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Measures compile without errors.",
+      "verificationChecklist": [
+        "`Lower Percentile Value` returns values",
+        "`Lower Percentile of Dates` returns values",
+        "`Color Formatting Line Chart` returns values",
+        "`TS PM Current` returns values",
+        "`TS PM Previous` returns values",
+        "`TS MOM diff %` returns values"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "measure-03",
+      "stageId": "measures",
+      "order": 3,
+      "title": "Measures: Formatted KPI % MOM, Total Sales Current Week, Total Sales Previous Week\u2026",
+      "objective": "Create DAX measures in dependency order.",
+      "prerequisites": [
+        "measure-02"
+      ],
+      "actions": [
+        "Modeling \u2192 New table \u2192 name it `# Measures` (hide later).",
+        "New measure for each formula below (home table `# Measures` unless noted).",
+        "Set format strings where specified in checklist."
+      ],
+      "dax": [
+        {
+          "table": "# Measures",
+          "name": "Formatted KPI % MOM",
+          "expression": "Formatted KPI % MOM =\nVAR _Result =\nSWITCH( \n    TRUE(),\n    [TS MOM diff %] >= 0 , \"\u25b2\",\n    [TS MOM diff %] < 0 , \"\u25bc\",\n    BLANK()\n)\nReturn _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Total Sales Current Week",
+          "expression": "Total Sales Current Week =\nCALCULATE(\n    [Total Sales],\n    KEEPFILTERS('Date Table'[WeeknYear] = MAX('Date Table'[WeeknYear]) )\n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Total Sales Previous Week",
+          "expression": "Total Sales Previous Week =\nCALCULATE(\n    [Total Sales],\n    KEEPFILTERS('Date Table'[WeeknYear] = MAX('Date Table'[WeeknYear]) - 1 )\n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "WOW diff %",
+          "expression": "WOW diff % =\nDIVIDE(\n    ([Total Sales Current Week] - [Total Sales Previous Week]),\n    [Total Sales Previous Week]\n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Formatted KPI % WoW",
+          "expression": "Formatted KPI % WoW =\nVAR _Result =\nSWITCH( \n    TRUE(),\n    [WOW diff %] >= 0 , \"\u25b2\",\n    [WOW diff %] < 0 , \"\u25bc\"\n)\nReturn _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "max date",
+          "expression": "max date =\nMAX( Sales[Sales Date] )"
+        }
+      ],
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Measures compile without errors.",
+      "verificationChecklist": [
+        "`Formatted KPI % MOM` returns values",
+        "`Total Sales Current Week` returns values",
+        "`Total Sales Previous Week` returns values",
+        "`WOW diff %` returns values",
+        "`Formatted KPI % WoW` returns values",
+        "`max date` returns values"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "measure-04",
+      "stageId": "measures",
+      "order": 4,
+      "title": "Measures: Median of Dates, Total Orders, Orders Current Week\u2026",
+      "objective": "Create DAX measures in dependency order.",
+      "prerequisites": [
+        "measure-03"
+      ],
+      "actions": [
+        "Modeling \u2192 New table \u2192 name it `# Measures` (hide later).",
+        "New measure for each formula below (home table `# Measures` unless noted).",
+        "Set format strings where specified in checklist."
+      ],
+      "dax": [
+        {
+          "table": "# Measures",
+          "name": "Median of Dates",
+          "expression": "Median of Dates =\nVAR _table = FILTER( ALLSELECTED('Date Table'), 'Date Table'[Date] <= [max date] )\nVAR _Result = MEDIANX( _table , [Total Sales] )\nRETURN _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Total Orders",
+          "expression": "Total Orders =\nSUM( Sales[Order qty] )"
+        },
+        {
+          "table": "# Measures",
+          "name": "Orders Current Week",
+          "expression": "Orders Current Week =\nCALCULATE(\n    [Total Orders],\n    KEEPFILTERS('Date Table'[WeeknYear] = MAX('Date Table'[WeeknYear]) )\n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Orders Current month",
+          "expression": "Orders Current month =\nVAR _datetable =\n DATESINPERIOD( \n    'Date Table'[Date], MAX(Sales[Sales Date]), -1, MONTH )\nVAR _result =\nCALCULATE(\n    [Total Orders],\n    _datetable\n    )\nRETURN _result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Orders Previous month",
+          "expression": "Orders Previous month =\nVAR _datetable =\n DATESINPERIOD( \n    'Date Table'[Date], MAX(Sales[Sales Date]), -1, MONTH )\nVAR _result =\nCALCULATE(\n    [Total Orders],\n    PREVIOUSMONTH(_datetable)\n    )\nRETURN _result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Orders MOM diff %",
+          "expression": "Orders MOM diff % =\nDIVIDE(\n    ([Orders Current month] - [Orders Previous month]),\n    [Orders Previous month]\n)"
+        }
+      ],
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Measures compile without errors.",
+      "verificationChecklist": [
+        "`Median of Dates` returns values",
+        "`Total Orders` returns values",
+        "`Orders Current Week` returns values",
+        "`Orders Current month` returns values",
+        "`Orders Previous month` returns values",
+        "`Orders MOM diff %` returns values"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "Total Orders sums Order qty (units sold), matching the reference label \u2014 not distinct order IDs.",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "measure-05",
+      "stageId": "measures",
+      "order": 5,
+      "title": "Measures: Orders KPI % MOM, Orders Previous Week, Orders WOW diff %\u2026",
+      "objective": "Create DAX measures in dependency order.",
+      "prerequisites": [
+        "measure-04"
+      ],
+      "actions": [
+        "Modeling \u2192 New table \u2192 name it `# Measures` (hide later).",
+        "New measure for each formula below (home table `# Measures` unless noted).",
+        "Set format strings where specified in checklist."
+      ],
+      "dax": [
+        {
+          "table": "# Measures",
+          "name": "Orders KPI % MOM",
+          "expression": "Orders KPI % MOM =\nVAR _Result =\nSWITCH( \n    TRUE(),\n    [Orders MOM diff %] >= 0 , \"\u25b2\",\n    [Orders MOM diff %] < 0 , \"\u25bc\"\n)\nReturn _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Orders Previous Week",
+          "expression": "Orders Previous Week =\nCALCULATE(\n    [Total Orders],\n    KEEPFILTERS('Date Table'[WeeknYear] = MAX('Date Table'[WeeknYear]) - 1 )\n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Orders WOW diff %",
+          "expression": "Orders WOW diff % =\nDIVIDE(\n    ([Orders Current Week] - [Orders Previous Week]),\n    [Orders Previous Week]\n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Orders KPI % WoW",
+          "expression": "Orders KPI % WoW =\nVAR _Result =\nSWITCH( \n    TRUE(),\n    [Orders WOW diff %] >= 0 , \"\u25b2\",\n    [Orders WOW diff %] < 0 , \"\u25bc\"\n)\nReturn _Result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Total Cost",
+          "expression": "Total Cost =\nSUMX(\n    Sales,\n    Sales[Order qty] * Sales[unit cost] \n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Total Profit",
+          "expression": "Total Profit =\n[Total Sales] - [Total Cost]"
+        }
+      ],
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Measures compile without errors.",
+      "verificationChecklist": [
+        "`Orders KPI % MOM` returns values",
+        "`Orders Previous Week` returns values",
+        "`Orders WOW diff %` returns values",
+        "`Orders KPI % WoW` returns values",
+        "`Total Cost` returns values",
+        "`Total Profit` returns values"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "measure-06",
+      "stageId": "measures",
+      "order": 6,
+      "title": "Measures: Profit Margin %, Target +0.2 of Previous month, Target vs Previous month\u2026",
+      "objective": "Create DAX measures in dependency order.",
+      "prerequisites": [
+        "measure-05"
+      ],
+      "actions": [
+        "Modeling \u2192 New table \u2192 name it `# Measures` (hide later).",
+        "New measure for each formula below (home table `# Measures` unless noted).",
+        "Set format strings where specified in checklist."
+      ],
+      "dax": [
+        {
+          "table": "# Measures",
+          "name": "Profit Margin %",
+          "expression": "Profit Margin % =\nDIVIDE(\n    [Total Profit],\n    [Total Sales]\n    )"
+        },
+        {
+          "table": "# Measures",
+          "name": "Target +0.2 of Previous month",
+          "expression": "Target +0.2 of Previous month =\n([TS PM Previous] + ([TS PM Previous] * 0.2 ) )"
+        },
+        {
+          "table": "# Measures",
+          "name": "Target vs Previous month",
+          "expression": "Target vs Previous month =\nDIVIDE( [TS PM Current],\n      [Target +0.2 of Previous month] )"
+        },
+        {
+          "table": "# Measures",
+          "name": "Target Diff",
+          "expression": "Target Diff =\nIF( [Target +0.2 of Previous month] >= [TS PM Current] ,\n    1 - [Target vs Previous month],\n    0\n    )"
+        },
+        {
+          "table": "# Measures",
+          "name": "Target Format",
+          "expression": "Target Format =\nFORMAT( [Target +0.2 of Previous month] / 1000000 , \"$#.00M\")"
+        },
+        {
+          "table": "# Measures",
+          "name": "This Month Sales",
+          "expression": "This Month Sales =\nFORMAT( [TS PM Current] / 1000000 , \"$#.00M\")"
+        }
+      ],
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Measures compile without errors.",
+      "verificationChecklist": [
+        "`Profit Margin %` returns values",
+        "`Target +0.2 of Previous month` returns values",
+        "`Target vs Previous month` returns values",
+        "`Target Diff` returns values",
+        "`Target Format` returns values",
+        "`This Month Sales` returns values"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "measure-07",
+      "stageId": "measures",
+      "order": 7,
+      "title": "Measures: Title dynamic, Toast CSS, Toast Notification\u2026",
+      "objective": "Create DAX measures in dependency order.",
+      "prerequisites": [
+        "measure-06"
+      ],
+      "actions": [
+        "Modeling \u2192 New table \u2192 name it `# Measures` (hide later).",
+        "New measure for each formula below (home table `# Measures` unless noted).",
+        "Set format strings where specified in checklist."
+      ],
+      "dax": [
+        {
+          "table": "# Measures",
+          "name": "Title dynamic",
+          "expression": "Title dynamic =\nVAR _selected = SELECTEDVALUE( 'Date M-W-D'[Date M-W-D Order] )\nVAR _result =\nSWITCH(\n    TRUE(),\n    _selected = 0, \"day\",\n    _selected = 1, \"week\",\n    _selected = 2, \"month\",\n    \"day\"\n)\nRETURN _result"
+        },
+        {
+          "table": "# Measures",
+          "name": "Toast CSS",
+          "expression": "Toast CSS =\n\"\n#toastBox {\n  display: flex;\n  align-items: center;\n  position: fixed;\n  top: 0;              /* stick to the very top */\n  left: 0;             /* align left edge */\n  bottom: 0;             /* align left edge */\n  width: 100vw;        /* full viewport width */\n  padding: 16px 16px;\n  background-color: #484848;\n  border: 1px solid grey;\n  border-radius: 8px 0px 0px 8px;\n  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2),\n  font-family: sans-serif;\n  font-size: 16px;\n  z-index: 9999;       /* sits on top of nearly everything */\n  opacity: 0;\n  animation: slideInOut 3.5s ease forwards;\n}\n\n.Category p {\n  margin: 0;\n  line-height: 1.4;\n  color: #fff;\n  font-weight: bold;\n}\n\n.textInfo {\n   font-size: 13px;\n   color: rgba(255, 255, 255, 0.75);\n   font-style: normal;\n}\n\n/* Slide from right \u2192 stay \u2192 slide to left */\n@keyframes slideInOut {\n  0% {\n    opacity: 0;\n    transform: translateX(100%);\n  }\n  10% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n  90% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateX(-100%);\n  }\n}\n\n\""
+        },
+        {
+          "table": "# Measures",
+          "name": "Toast Notification",
+          "expression": "Toast Notification =\nVAR _Filter =\nSWITCH(\n    TRUE(),\n    ISFILTERED(Products_Data) && COUNTX( VALUES(Products_Data[Product Name]),1)>1, \"Products:\" ,\n    ISFILTERED(Products_Data) && COUNTX( VALUES(Products_Data[Product Name]),1)=1, \"Product:\" , //product\n    ISFILTERED(storelocations) && COUNTX( VALUES( storelocations[name]),1)=1, \"Store:\",\n    ISFILTERED(storelocations) && COUNTX( VALUES( storelocations[name]),1)>1, \"Stores:\", // store\n    ISFILTERED(Salesteams)  && COUNTX( VALUES(Salesteams[Sales Team]),1)>1, \"Sales Teams:\",\n    ISFILTERED(Salesteams)  && COUNTX( VALUES(Salesteams[Sales Team]),1)=1, \"Sales Team:\" // sales team\n)\n\nVAR _Value =\nSWITCH(\n    TRUE(),\n    ISFILTERED(Products_Data), CONCATENATEX(Products_Data, Products_Data[Product Name], \" - \", Products_Data[Product Name],ASC ),\n    ISFILTERED(storelocations), CONCATENATEX( storelocations, storelocations[name], \" - \", storelocations[name],ASC ),\n    ISFILTERED(Salesteams), CONCATENATEX( Salesteams, Salesteams[Sales Team], \" - \", Salesteams[Sales Team],ASC )\n)\n\nRETURN\nIF( \n    NOT ISBLANK( _Filter) ,\n    \"<div id='toastBox'>\n        <div class='Category'> \n            <p> <span class='textInfo'>Dashboard is filtered! &ensp; \"&_Filter&\"</span> \"&_Value&\" </p>\n        </div>\n    </div>\"\n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "Total profit fx",
+          "expression": "Total profit fx =\n[Total Profit]"
+        },
+        {
+          "table": "# Measures",
+          "name": "another approach _ Total Sales PM",
+          "expression": "another approach _ Total Sales PM =\nIF( \n    [Total Sales] = BLANK(),\n    BLANK(),\n    CALCULATE(\n        [Total Sales],\n        PARALLELPERIOD('Date Table'[Date], -1, MONTH ) \n        )\n)"
+        },
+        {
+          "table": "# Measures",
+          "name": "avg monthly format",
+          "expression": "avg monthly format =\nFORMAT( [Average Monthly Saeles] / 1000000 , \"$#.000M\")"
+        }
+      ],
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Measures compile without errors.",
+      "verificationChecklist": [
+        "`Title dynamic` returns values",
+        "`Toast CSS` returns values",
+        "`Toast Notification` returns values",
+        "`Total profit fx` returns values",
+        "`another approach _ Total Sales PM` returns values",
+        "`avg monthly format` returns values"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "measure-08",
+      "stageId": "measures",
+      "order": 8,
+      "title": "Measures: avg weekly format, blank, cost formatted\u2026",
+      "objective": "Create DAX measures in dependency order.",
+      "prerequisites": [
+        "measure-07"
+      ],
+      "actions": [
+        "Modeling \u2192 New table \u2192 name it `# Measures` (hide later).",
+        "New measure for each formula below (home table `# Measures` unless noted).",
+        "Set format strings where specified in checklist."
+      ],
+      "dax": [
+        {
+          "table": "# Measures",
+          "name": "avg weekly format",
+          "expression": "avg weekly format =\nFORMAT( [Average Weekly Saeles] / 1000000 , \"$#.000M\")"
+        },
+        {
+          "table": "# Measures",
+          "name": "blank",
+          "expression": "blank =\nBLANK()"
+        },
+        {
+          "table": "# Measures",
+          "name": "cost formatted",
+          "expression": "cost formatted =\nFORMAT( [Total Cost]/1000000, \"$###.00M\" )"
+        },
+        {
+          "table": "# Measures",
+          "name": "profit formatted",
+          "expression": "profit formatted =\nFORMAT( [Total Profit]/1000000, \"$###.00M\" )"
+        },
+        {
+          "table": "# Measures",
+          "name": "rows_in_sales",
+          "expression": "rows_in_sales =\nCOUNTROWS(Sales)"
+        }
+      ],
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Measures compile without errors.",
+      "verificationChecklist": [
+        "`avg weekly format` returns values",
+        "`blank` returns values",
+        "`cost formatted` returns values",
+        "`profit formatted` returns values",
+        "`rows_in_sales` returns values"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "page-01",
+      "stageId": "page-slicers",
+      "order": 1,
+      "title": "Page size and header",
+      "objective": "Match 1280\u00d7780 canvas.",
+      "prerequisites": [
+        "measure-08"
+      ],
+      "actions": [
+        "View \u2192 Page view \u2192 16:9.",
+        "Format page \u2192 Page size \u2192 Custom 1280\u00d7780.",
+        "Add title text box: Executive Sales."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Match 1280\u00d7780 canvas.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "steps/02-slicers.png",
+          "caption": "Page layout reference",
+          "alt": "Page layout reference",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "page-02",
+      "stageId": "page-slicers",
+      "order": 2,
+      "title": "Store slicer",
+      "objective": "Filter by store name.",
+      "prerequisites": [
+        "page-01"
+      ],
+      "actions": [
+        "Insert \u2192 Slicer \u2192 Field **storelocations[name]**.",
+        "Rename header Stores; slicer style dropdown; position top-right."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "slicer",
+        "fields": [
+          "storelocations[name]"
+        ]
+      },
+      "expectedResult": "Filter by store name.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/cd602ccaa356b4004e2b.png",
+          "caption": "Store slicer",
+          "alt": "Store slicer",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "page-03",
+      "stageId": "page-slicers",
+      "order": 3,
+      "title": "Sales Team slicer",
+      "objective": "Filter by team.",
+      "prerequisites": [
+        "page-02"
+      ],
+      "actions": [
+        "Slicer on **Salesteams[Sales Team]**.",
+        "Place beside Stores slicer."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "slicer",
+        "fields": [
+          "Salesteams[Sales Team]"
+        ]
+      },
+      "expectedResult": "Filter by team.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/63a3d9016ba0074454a5.png",
+          "caption": "Sales Team slicer",
+          "alt": "Sales Team slicer",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "page-04",
+      "stageId": "page-slicers",
+      "order": 4,
+      "title": "Product slicer",
+      "objective": "Filter products.",
+      "prerequisites": [
+        "page-03"
+      ],
+      "actions": [
+        "Slicer on **Products_Data[Product Name]**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "slicer",
+        "fields": [
+          "Products_Data[Product Name]"
+        ]
+      },
+      "expectedResult": "Filter products.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/60e1b53b36dd96759bb6.png",
+          "caption": "Product slicer",
+          "alt": "Product slicer",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "kpi-01",
+      "stageId": "kpi-bars",
+      "order": 1,
+      "title": "Total Sales card",
+      "objective": "Primary revenue KPI.",
+      "prerequisites": [
+        "page-04"
+      ],
+      "actions": [
+        "Card visual \u2192 Field **Total Sales**.",
+        "Add adjacent card or callout with **Formatted KPI % WoW** for arrow comparison."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "card",
+        "fields": [
+          "Total Sales",
+          "Formatted KPI % WoW"
+        ]
+      },
+      "expectedResult": "Primary revenue KPI.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/2ed267463a11685d300a.png",
+          "caption": "Total Sales card",
+          "alt": "Total Sales card",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "kpi-02",
+      "stageId": "kpi-bars",
+      "order": 2,
+      "title": "Profit Margin % card",
+      "objective": "Margin KPI with comparisons.",
+      "prerequisites": [
+        "kpi-01"
+      ],
+      "actions": [
+        "Card \u2192 **Profit Margin %**.",
+        "Format as percentage."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "card",
+        "fields": [
+          "Profit Margin %"
+        ]
+      },
+      "expectedResult": "Margin KPI with comparisons.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/f62b86a11712469079d9.png",
+          "caption": "Profit Margin card",
+          "alt": "Profit Margin card",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "kpi-03",
+      "stageId": "kpi-bars",
+      "order": 3,
+      "title": "Units Sold card (measure: Total Orders)",
+      "objective": "Show units sold; reference PBIX titles this Total Orders.",
+      "prerequisites": [
+        "kpi-02"
+      ],
+      "actions": [
+        "Create measure **Total Orders** = `SUM(Sales[Order qty])` (already in measure steps).",
+        "Card \u2192 **Total Orders**; set visual title to **Units Sold** for clarity.",
+        "Reference report keeps the Total Orders label \u2014 both refer to the same units-sold logic."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "card",
+        "fields": [
+          "Total Orders"
+        ]
+      },
+      "expectedResult": "Show units sold; reference PBIX titles this Total Orders.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/4bd08ae993b0e8332530.png",
+          "caption": "Units sold card",
+          "alt": "Units sold card",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "kpi-04",
+      "stageId": "kpi-bars",
+      "order": 4,
+      "title": "Target achievement card",
+      "objective": "Monthly target %.",
+      "prerequisites": [
+        "kpi-03"
+      ],
+      "actions": [
+        "Card \u2192 **Target vs Previous month**; format as percentage.",
+        "Target basis: prior-month sales + 20% (see Target +0.2 of Previous month)."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "card",
+        "fields": [
+          "Target vs Previous month"
+        ]
+      },
+      "expectedResult": "Monthly target %.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/cbe9a324a9d03737a60d.png",
+          "caption": "Target card",
+          "alt": "Target card",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "kpi-05",
+      "stageId": "kpi-bars",
+      "order": 5,
+      "title": "Cost vs profit bar",
+      "objective": "100% stacked composition bar.",
+      "prerequisites": [
+        "kpi-04"
+      ],
+      "actions": [
+        "Insert \u2192 100% stacked bar chart.",
+        "Values: **Total Cost**, **Total Profit**.",
+        "Data labels: **cost formatted**, **profit formatted**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "hundredPercentStackedBarChart",
+        "fields": [
+          "Total Cost",
+          "Total Profit"
+        ]
+      },
+      "expectedResult": "100% stacked composition bar.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "steps/04-profit-bar.png",
+          "caption": "Cost vs profit bar",
+          "alt": "Cost vs profit bar",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "kpi-06",
+      "stageId": "kpi-bars",
+      "order": 6,
+      "title": "Target remainder bar",
+      "objective": "Achievement vs gap bar (not cost/profit).",
+      "prerequisites": [
+        "kpi-05"
+      ],
+      "actions": [
+        "Use **Target vs Previous month** and **Target Diff** in a separate bar visual.",
+        "Format colors to match reference achievement/remainder story."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "clusteredColumnChart",
+        "fields": [
+          "Target vs Previous month",
+          "Target Diff"
+        ]
+      },
+      "expectedResult": "Achievement vs gap bar (not cost/profit).",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/5e13584087e05e680a11.png",
+          "caption": "Target bar",
+          "alt": "Target bar",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "trend-01",
+      "stageId": "trend-settings",
+      "order": 1,
+      "title": "Sales trend line",
+      "objective": "Line chart with conditional color.",
+      "prerequisites": [
+        "kpi-06"
+      ],
+      "actions": [
+        "Line chart \u2192 Axis: **Date M-W-D** parameter.",
+        "Values: **Total Sales**.",
+        "Line color \u2192 fx \u2192 **Color Formatting Line Chart**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "lineChart",
+        "fields": [
+          "Total Sales",
+          "Color Formatting Line Chart"
+        ]
+      },
+      "expectedResult": "Line chart with conditional color.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "steps/05-trend-chart.png",
+          "caption": "Sales trend",
+          "alt": "Sales trend",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "trend-02",
+      "stageId": "trend-settings",
+      "order": 2,
+      "title": "Percentile slicers",
+      "objective": "Trend band thresholds.",
+      "prerequisites": [
+        "trend-01"
+      ],
+      "actions": [
+        "Slicers on **Higher Percentile[Higher Percentile]** and **Lower Percentile[Lower Percentile]**."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "slicer",
+        "fields": [
+          "Higher Percentile",
+          "Lower Percentile"
+        ]
+      },
+      "expectedResult": "Trend band thresholds.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/3322e1f65b8d195b9cd7.png",
+          "caption": "Percentile slicers",
+          "alt": "Percentile slicers",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "toast-01",
+      "stageId": "toast",
+      "order": 1,
+      "title": "Add HTML Content visual",
+      "objective": "Toast host visual.",
+      "prerequisites": [
+        "trend-02"
+      ],
+      "actions": [
+        "Insert \u2192 HTML Content.",
+        "Place full width near top; send to front."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "htmlContent443BE3AD55E043BF878BED274D3A6855",
+        "fields": []
+      },
+      "expectedResult": "Toast host visual.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "steps/06-toast.png",
+          "caption": "Toast placement",
+          "alt": "Toast placement",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "toast-02",
+      "stageId": "toast",
+      "order": 2,
+      "title": "Bind toast measures",
+      "objective": "HTML content + stylesheet.",
+      "prerequisites": [
+        "toast-01"
+      ],
+      "actions": [
+        "Values well \u2192 **Toast Notification**.",
+        "Format \u2192 Stylesheet \u2192 **Toast CSS** (fix box-shadow closing parenthesis)."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": {
+        "visualType": "htmlContent443BE3AD55E043BF878BED274D3A6855",
+        "fields": [
+          "Toast Notification",
+          "Toast CSS"
+        ]
+      },
+      "expectedResult": "HTML content + stylesheet.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "visuals/d229beaccea875451039.png",
+          "caption": "HTML Content bindings",
+          "alt": "HTML Content bindings",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "#toastBox {\n  display: flex;\n  align-items: center;\n  position: fixed;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  width: 100vw;\n  padding: 16px 16px;\n  background-color: #484848;\n  border: 1px solid grey;\n  border-radius: 8px 0px 0px 8px;\n  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);\n  font-family: sans-serif;\n  font-size: 16px;\n  z-index: 9999;\n  opacity: 0;\n  animation: slideInOut 3.5s ease forwards;\n}",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "toast-03",
+      "stageId": "toast",
+      "order": 3,
+      "title": "Filter trigger tests",
+      "objective": "Toast follows slicers, not targets.",
+      "prerequisites": [
+        "toast-02"
+      ],
+      "actions": [
+        "No filters \u2192 no toast.",
+        "Single product / store / team \u2192 singular label.",
+        "Multiple values \u2192 plural label; products take priority over store/team in _Filter DAX.",
+        "Replay animation by changing filters after toast hides (~3.5s)."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Toast follows slicers, not targets.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [
+        {
+          "src": "steps/06-toast.png",
+          "caption": "Toast visible state",
+          "alt": "Toast visible state",
+          "role": "result"
+        }
+      ],
+      "referenceNotes": "",
+      "verificationStatus": "pending_desktop"
+    },
+    {
+      "id": "interact-01",
+      "stageId": "interactions",
+      "order": 1,
+      "title": "Bookmarks and buttons",
+      "objective": "Panel states for settings/calendar/trend.",
+      "prerequisites": [
+        "toast-03"
+      ],
+      "actions": [
+        "View \u2192 Bookmarks \u2192 add bookmarks with these **display names** (reference PBIX):",
+        "**Top Selected**, **Bottom Selected**, **Show date**, **Hide date**, **--Show settings**, **--Hide settings**, **( pag2 show calender**, **( page2 close calende**.",
+        "For each bookmark, update **Data** \u2192 uncheck Data and capture **Selected visuals** visibility only where needed.",
+        "Assign action buttons (settings / calendar / trend PNG assets) to **Bookmark** actions pointing to the matching bookmark."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Panel states for settings/calendar/trend.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "Bookmark internal ids: Bookmark84783c888e83915b339c (Top Selected), Bookmarkbd3388c53d8a33925955 (Bottom Selected), Bookmark6f74f6ce42b922585c0c (Show date), Bookmarka7b70c0ebc10c14b0289 (Hide date), Bookmarkbdcb9f803a97139d28d8 (--Show settings), Bookmarkc3839291ca6ed7324c15 (--Hide settings), Bookmark42a06dc2030c00a0eb6c (calendar show), Bookmark22388b10992648900480 (calendar close).",
+      "verificationStatus": "pending_desktop"
+    },
+    {
+      "id": "final-01",
+      "stageId": "final-checks",
+      "order": 1,
+      "title": "Unfiltered KPI baseline",
+      "objective": "Match documented aggregates.",
+      "prerequisites": [
+        "interact-01"
+      ],
+      "actions": [
+        "Clear slicers.",
+        "Compare measures to `expected-results.json` \u2192 `displayCurrency` (2dp, reconciled profit)."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "See expected-results.json displayCurrency block.",
+      "verificationChecklist": [
+        "Measures compile",
+        "Refresh succeeds",
+        "Profit = Sales \u2212 Cost at display precision"
+      ],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "verified"
+    },
+    {
+      "id": "final-02",
+      "stageId": "final-checks",
+      "order": 2,
+      "title": "Save and reopen",
+      "objective": "Persistence check.",
+      "prerequisites": [
+        "final-01"
+      ],
+      "actions": [
+        "Save PBIX, close Desktop, reopen and refresh."
+      ],
+      "dax": null,
+      "powerQuery": null,
+      "visual": null,
+      "expectedResult": "Persistence check.",
+      "verificationChecklist": [],
+      "commonMistakes": [],
+      "images": [],
+      "referenceNotes": "",
+      "verificationStatus": "pending_desktop"
+    }
+  ],
+  "expectedResults": {
+    "source": "frontend/public/reports/executive-sales-toast-lab/data/Sales.csv",
+    "rowCount": 20000,
+    "formulas": {
+      "Total Sales": "SUM over rows of (Order qty \u00d7 unit price) using Decimal per row",
+      "Total Cost": "SUM over rows of (Order qty \u00d7 unit cost) using Decimal per row",
+      "Total Profit": "Total Sales \u2212 Total Cost at full precision (not a separate rolled-up import)",
+      "Total Orders_units": "SUM(Order qty)",
+      "Profit Margin %": "Total Profit / Total Sales at full precision"
+    },
+    "roundingPolicy": {
+      "perRow": "Decimal(str(qty)) * Decimal(str(price)) \u2014 avoids float drift in totals",
+      "displayCurrency": "ROUND_HALF_UP to 2 decimal places for dollar KPI checks",
+      "displayProfit": "money_round(Total Sales) \u2212 money_round(Total Cost) so cards reconcile",
+      "note": "Do not compare rounded Sales minus a differently rounded Cost copied from prose; use this file."
+    },
+    "fullPrecision": {
+      "Total Sales": "44365028.02269119041336",
+      "Total Cost": "31689305.73049370946779",
+      "Total Profit": "12675722.29219748094557",
+      "Total Orders_units": 110402,
+      "Profit Margin %": 0.28571428571428564
+    },
+    "displayCurrency": {
+      "Total Sales": 44365028.02,
+      "Total Cost": 31689305.73,
+      "Total Profit": 12675722.29,
+      "Total Orders_units": 110402,
+      "Profit Margin %": 0.2857
+    },
+    "unfiltered": {
+      "Total Sales": 44365028.02,
+      "Total Cost": 31689305.73,
+      "Total Profit": 12675722.29,
+      "Total Orders_units": 110402,
+      "Profit Margin %": 0.2857
+    },
+    "reconciliation": {
+      "displaySalesMinusDisplayCost": 12675722.29,
+      "matchesDisplayProfit": true
+    },
+    "notes": "Verify in Power BI Desktop after model build; DAX SUMX may differ slightly in last digit vs Decimal CSV walk.",
+    "dateRange": [
+      "2020-01-01",
+      "2020-05-31"
+    ],
+    "desktopVerification": "pending"
+  },
+  "downloads": [
+    {
+      "label": "Datasets (CSV)",
+      "path": "datasets.zip"
+    },
+    {
+      "label": "Student kit",
+      "path": "student-kit.zip"
+    },
+    {
+      "label": "Build guide (Markdown)",
+      "path": "build-guide.md"
+    },
+    {
+      "label": "Data dictionary",
+      "path": "data-dictionary.md"
+    },
+    {
+      "label": "CSV import (M)",
+      "path": "csv-import.md"
+    }
+  ]
+}

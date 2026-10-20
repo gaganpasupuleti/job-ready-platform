@@ -1,0 +1,51 @@
+[
+  {
+    "table": "Sales",
+    "file": "Sales.csv",
+    "loadName": "Sales",
+    "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Sales.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Sales Date\", type date},\n            {\"Order qty\", Int64.Type},\n            {\"unit price\", type number},\n            {\"unit cost\", type number},\n            {\"Productindex\", Int64.Type},\n            {\"Storeindex\", Int64.Type},\n            {\"Salesteamindex\", Int64.Type},\n            {\"Sales_Index\", Int64.Type},\n            {\"Order Number\", type text},\n            {\"Sales Channel\", type text}\n        })\nin\n    #\"Changed Type\" "
+  },
+  {
+    "table": "Date Table",
+    "file": "Date_Table.csv",
+    "loadName": "Date Table",
+    "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Date_Table.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Date\", type date},\n            {\"Year\", Int64.Type},\n            {\"QuarterOfYear\", Int64.Type},\n            {\"Quarter & Year\", type text},\n            {\"QuarternYear\", Int64.Type},\n            {\"MonthOfYear\", Int64.Type},\n            {\"Month & Year\", type text},\n            {\"MonthnYear\", Int64.Type},\n            {\"Month Short\", type text},\n            {\"DayOfMonth\", Int64.Type},\n            {\"ISO Weeknumber\", Int64.Type},\n            {\"Week & Year\", type text},\n            {\"WeeknYear\", Int64.Type},\n            {\"DayOfWeekNum\", Int64.Type},\n            {\"DayOfWeek\", type text},\n            {\"DayOfWeek Initial\", type text},\n            {\"Day Type\", type text}\n        })\nin\n    #\"Changed Type\" "
+  },
+  {
+    "table": "Products_Data",
+    "file": "Products_Data.csv",
+    "loadName": "Products_Data",
+    "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Products_Data.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Productindex\", Int64.Type},\n            {\"Product Name\", type text}\n        })\nin\n    #\"Changed Type\" "
+  },
+  {
+    "table": "storelocations",
+    "file": "storelocations.csv",
+    "loadName": "storelocations",
+    "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\storelocations.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Storeindex\", Int64.Type},\n            {\"name\", type text}\n        })\nin\n    #\"Changed Type\" "
+  },
+  {
+    "table": "Salesteams",
+    "file": "Salesteams.csv",
+    "loadName": "Salesteams",
+    "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Salesteams.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Salesteamindex\", Int64.Type},\n            {\"Sales Team\", type text}\n        })\nin\n    #\"Changed Type\" "
+  },
+  {
+    "table": "Higher Percentile",
+    "file": "Higher_Percentile.csv",
+    "loadName": "Higher Percentile",
+    "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Higher_Percentile.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Higher Percentile\", type number}\n        })\nin\n    #\"Changed Type\" "
+  },
+  {
+    "table": "Lower Percentile",
+    "file": "Lower_Percentile.csv",
+    "loadName": "Lower Percentile",
+    "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Lower_Percentile.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Lower Percentile\", type number}\n        })\nin\n    #\"Changed Type\" "
+  },
+  {
+    "table": "Date M-W-D",
+    "file": "Date_M-W-D.csv",
+    "loadName": "Date M-W-D",
+    "expression": "let\n    Source = Csv.Document(\n        File.Contents(DataFolder & \"\\Date_M-W-D.csv\"),\n        [Delimiter = \",\", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]\n    ),\n    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {\n            {\"Date M-W-D\", type text},\n            {\"Date M-W-D Order\", Int64.Type}\n        })\nin\n    #\"Changed Type\" ",
+    "note": "Helper lookup only \u2014 recreate the real Fields parameter in Desktop (see workshop date-03)."
+  }
+]

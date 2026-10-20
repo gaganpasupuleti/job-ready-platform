@@ -64,10 +64,29 @@ Optional: static **preview** image; optional live embed via env var (not require
 1. **No production deploy** in this PR — verify Railway frontend build size (~4MB `public/reports`).
 2. **No PDF** — preview uses PNG unless user exports PDF.
 3. **No embed URL** — live page shows setup unless env set.
-4. **M queries** still point at author Excel paths; students should import **CSVs**.
-5. **No backend** — no auth-gated downloads, analytics, or R2 like Library.
-6. **No progress UI** — lab is static; no checklist persistence.
+4. **M queries** in `power-query.json` remain author Excel reference; students use **csv-import.md** / workshop steps.
+5. **No backend** — progress is browser `localStorage` only.
+6. **Desktop E2E** — toast animation, bookmarks, and field parameter need Power BI Desktop confirmation (see `docs/power-bi-workshop-fix-register.md`).
 7. **CORS** — `backend/app/core/config.py` adds 5174 for alternate Vite port (dev only).
+
+## Workshop assets (post-implementation)
+
+| File | Role |
+|------|------|
+| `workshop-content.json` | Canonical 12-stage curriculum |
+| `student-kit.zip` | CSVs + docs + JSON (no PNG crops) |
+| `expected-results.json` | Unfiltered KPI baselines from CSV math |
+| `manifest.json` | `sourcePbixSha256`, `extractorVersion` 2.1.0 |
+
+**Scripts (from repo root):**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File frontend/scripts/regenerate-power-bi-lab.ps1
+```
+
+Or `cd frontend` → `npm run regenerate:power-bi-lab`. Do **not** use `../public/reports/` from `frontend` (that is the wrong directory).
+
+Individual steps: `extract-pbix-lab.py` (assets only), `compute-expected-results.py`, `generate-csv-import-queries.py`, `build-executive-sales-workshop.py`, `npm run validate:power-bi-lab`.
 
 ## Suggested audit checks
 

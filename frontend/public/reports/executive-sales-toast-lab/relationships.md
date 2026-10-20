@@ -11,8 +11,8 @@ Create these in **Model view** → **Manage relationships** (or drag columns bet
 
 ```mermaid
 erDiagram
-    Sales ||--o{ Salesteams : "Salesteamindex -> Salesteamindex"
-    Sales ||--o{ storelocations : "Storeindex -> Storeindex"
-    Sales ||--o{ Products_Data : "Productindex -> Productindex"
-    Sales ||--o{ Date_Table : "Sales Date -> Date"
+    Salesteams ||--o{ Sales : "Salesteamindex -> Salesteamindex"
+    storelocations ||--o{ Sales : "Storeindex -> Storeindex"
+    Products_Data ||--o{ Sales : "Productindex -> Productindex"
+    Date_Table ||--o{ Sales : "Date -> Sales Date"
 ```
