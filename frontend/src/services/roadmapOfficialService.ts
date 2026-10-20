@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 import { apiClient } from '@/api/client'
 import { apiEndpoints } from '@/api/config'
 
@@ -38,35 +40,61 @@ export interface OfficialRoadmapEdge {
   style?: Record<string, unknown>
 }
 
-async function fetchGraphFromRoadmapSh(slug: string): Promise<OfficialRoadmapGraph> {
+export class RoadmapGraphError extends Error {
+  readonly status?: number
+
+  constructor(message: string, status?: number) {
+    super(message)
+    this.name = 'RoadmapGraphError'
+    this.status = status
+  }
+}
+
+async function fetchGraphDevProxy(slug: string): Promise<OfficialRoadmapGraph> {
   const response = await fetch(`/roadmap-graph/${encodeURIComponent(slug)}.json`)
   if (!response.ok) {
-    throw new Error(`roadmap.sh returned ${response.status}`)
+    throw new RoadmapGraphError(`Graph unavailable (${response.status})`, response.status)
   }
   const data = (await response.json()) as OfficialRoadmapGraph
   if (!data?.nodes?.length) {
-    throw new Error('Empty roadmap graph')
+    throw new RoadmapGraphError('Graph response was empty')
   }
   return { ...data, slug: data.slug ?? slug }
 }
 
-/** API when backend is up; dev proxy to roadmap.sh otherwise. */
+/** Production graphs are served by the API; dev may use the Vite proxy when the API is down. */
 export async function fetchOfficialRoadmapGraph(slug: string): Promise<OfficialRoadmapGraph> {
   try {
     const { data } = await apiClient.get<OfficialRoadmapGraph>(apiEndpoints.roadmap.officialGraph(slug))
-    if (data?.nodes?.length) return data
-  } catch {
-    // Old or offline backend — load graph without it.
+    if (data?.nodes?.length) return { ...data, slug: data.slug ?? slug }
+    throw new RoadmapGraphError('Graph response was empty')
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status
+      if (status === 401 || status === 403) {
+        throw error
+      }
+      if (import.meta.env.DEV) {
+        return fetchGraphDevProxy(slug)
+      }
+      throw new RoadmapGraphError(
+        status === 404 ? 'This roadmap could not be found.' : 'Could not load roadmap graph.',
+        status,
+      )
+    }
+    if (import.meta.env.DEV) {
+      return fetchGraphDevProxy(slug)
+    }
+    throw error
   }
-  return fetchGraphFromRoadmapSh(slug)
 }
 
 export async function fetchOfficialTopic(
   slug: string,
   nodeId: string,
   oldId?: string,
-): Promise<{ title: string; markdown: string }> {
-  const { data } = await apiClient.get<{ title: string; markdown: string }>(
+): Promise<{ title: string; markdown: string; attribution?: string }> {
+  const { data } = await apiClient.get<{ title: string; markdown: string; attribution?: string }>(
     apiEndpoints.roadmap.officialTopic(slug, nodeId),
     { params: oldId ? { old_id: oldId } : {} },
   )

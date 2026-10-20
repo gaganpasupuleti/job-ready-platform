@@ -47,8 +47,17 @@ async def list_roadmaps(
 ) -> dict:
     official = list_official_roadmaps()
     if official:
-        return {"roadmaps": official, "source": "official"}
-    return {"roadmaps": _CATALOG, "source": "legacy"}
+        with_articles = sum(1 for row in official if row.get("articles_available"))
+        return {
+            "roadmaps": official,
+            "source": "official",
+            "meta": {
+                "total": len(official),
+                "with_articles": with_articles,
+                "has_bundled_catalog": True,
+            },
+        }
+    return {"roadmaps": _CATALOG, "source": "legacy", "meta": {"total": len(_CATALOG)}}
 
 
 @router.get("/official/{slug}/graph")
@@ -56,7 +65,7 @@ async def get_official_graph(
     slug: str,
     _user: User = Depends(get_current_user),
 ) -> dict:
-    return fetch_official_graph(slug)
+    return await fetch_official_graph(slug)
 
 
 @router.get("/official/{slug}/topics/{node_id}")

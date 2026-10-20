@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 import { apiClient } from '@/api/client'
 import { apiEndpoints } from '@/api/config'
 import type { RoadmapFixturePayload } from '@/features/roadmap/types'
@@ -10,11 +12,28 @@ export interface RoadmapCatalogItem {
   preview_only: boolean
   student_eligible: boolean
   source?: string
+  graph_available?: boolean
+  articles_available?: boolean
 }
 
 export interface RoadmapCatalogResponse {
   roadmaps: RoadmapCatalogItem[]
   source: 'api' | 'bundle'
+  meta?: { total?: number; with_articles?: number }
+}
+
+const MIN_OFFICIAL_CATALOG_SIZE = 10
+
+function isUsableApiCatalog(data: {
+  roadmaps?: RoadmapCatalogItem[]
+  source?: string
+}): boolean {
+  const rows = data.roadmaps ?? []
+  if (rows.length < MIN_OFFICIAL_CATALOG_SIZE) return false
+  if (data.source === 'legacy' && rows.length <= 1) return false
+  const onlyDraft =
+    rows.length === 1 && rows[0]?.family_slug === 'data-engineer' && rows[0]?.preview_only
+  return !onlyDraft
 }
 
 async function loadBundledCatalog(): Promise<RoadmapCatalogResponse> {
@@ -23,37 +42,38 @@ async function loadBundledCatalog(): Promise<RoadmapCatalogResponse> {
     if (response.ok) {
       const data = (await response.json()) as { roadmaps: RoadmapCatalogItem[] }
       if (data.roadmaps?.length) {
-        return { roadmaps: data.roadmaps, source: 'bundle' }
+        return {
+          roadmaps: data.roadmaps.map((row) => ({
+            ...row,
+            graph_available: row.graph_available ?? true,
+            articles_available: row.articles_available ?? false,
+          })),
+          source: 'bundle',
+          meta: { total: data.roadmaps.length },
+        }
       }
     }
   } catch {
     // ignore
   }
-  return {
-    roadmaps: [
-      {
-        family_slug: 'python',
-        title: 'Python',
-        description: 'Interactive Python developer career path.',
-        preview_only: false,
-        student_eligible: true,
-        source: 'official',
-      },
-    ],
-    source: 'bundle',
-  }
+  return { roadmaps: [], source: 'bundle', meta: { total: 0 } }
 }
 
 export async function fetchRoadmapCatalog(): Promise<RoadmapCatalogResponse> {
   try {
-    const { data } = await apiClient.get<{ roadmaps: RoadmapCatalogItem[]; source?: string }>(
-      apiEndpoints.roadmap.catalog,
-    )
-    if (data.roadmaps?.length) {
-      return { roadmaps: data.roadmaps, source: 'api' }
+    const { data } = await apiClient.get<{
+      roadmaps: RoadmapCatalogItem[]
+      source?: string
+      meta?: RoadmapCatalogResponse['meta']
+    }>(apiEndpoints.roadmap.catalog)
+
+    if (isUsableApiCatalog(data)) {
+      return { roadmaps: data.roadmaps, source: 'api', meta: data.meta }
     }
-  } catch {
-    // Backend old or offline.
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      throw error
+    }
   }
   return loadBundledCatalog()
 }

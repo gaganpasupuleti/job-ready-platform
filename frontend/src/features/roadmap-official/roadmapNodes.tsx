@@ -6,6 +6,10 @@ import type { OfficialRoadmapNode } from '@/services/roadmapOfficialService'
 
 import type { NodeData } from './graph'
 import { RoadmapHandles } from './roadmapHandles'
+import { useQuery } from '@tanstack/react-query'
+
+import { fetchRoadmapCatalog } from '@/services/roadmapService'
+
 import { internalRoadmapPath } from './roadmapShLinks'
 
 function inlineFromRaw(raw: OfficialRoadmapNode, kind: string): CSSProperties {
@@ -129,6 +133,14 @@ function LinksGroupNode({ data }: NodeProps) {
   const raw = (data as NodeData).raw
   const title = raw.data?.label?.trim() ?? 'Related paths'
   const links = raw.data?.links ?? []
+  const catalogQuery = useQuery({
+    queryKey: ['roadmap-catalog'],
+    queryFn: fetchRoadmapCatalog,
+    staleTime: 60_000,
+  })
+  const allowedSlugs = new Set(
+    (catalogQuery.data?.roadmaps ?? []).map((row) => row.family_slug),
+  )
 
   return (
     <div className="ors-linksgroup">
@@ -136,7 +148,10 @@ function LinksGroupNode({ data }: NodeProps) {
       <p className="ors-linksgroup-title">{title}</p>
       <ul className="ors-linksgroup-list">
         {links.map((link) => {
-          const target = internalRoadmapPath(link.url ?? link.href ?? '')
+          const target = internalRoadmapPath(
+            link.url ?? link.href ?? '',
+            allowedSlugs.size ? allowedSlugs : undefined,
+          )
           if (!target) return null
           return (
             <li key={link.id ?? link.label}>

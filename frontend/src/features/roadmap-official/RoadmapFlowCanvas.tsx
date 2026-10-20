@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react'
 import {
   Background,
@@ -54,6 +54,8 @@ interface RoadmapFlowCanvasProps {
   initialEdges: Edge[]
   onTopicSelect: (raw: import('@/services/roadmapOfficialService').OfficialRoadmapNode) => void
   onRoadmapNavigate: (path: string) => void
+  nodesDraggable?: boolean
+  allowedSlugs?: ReadonlySet<string>
 }
 
 export function RoadmapFlowCanvas({
@@ -61,7 +63,18 @@ export function RoadmapFlowCanvas({
   initialEdges,
   onTopicSelect,
   onRoadmapNavigate,
+  nodesDraggable = false,
+  allowedSlugs,
 }: RoadmapFlowCanvasProps) {
+  const [reduceMotion, setReduceMotion] = useState(false)
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setReduceMotion(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
   const snapshotRef = useRef(cloneGraph(initialNodes, initialEdges))
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
@@ -83,6 +96,15 @@ export function RoadmapFlowCanvas({
     window.setTimeout(() => fitView({ padding: 0.12, duration: 300 }), 40)
   }, [setNodes, setEdges, fitView])
 
+  const displayEdges = useMemo(
+    () =>
+      edges.map((edge) => ({
+        ...edge,
+        animated: reduceMotion ? false : edge.animated,
+      })),
+    [edges, reduceMotion],
+  )
+
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
       const raw = (node.data as { raw?: import('@/services/roadmapOfficialService').OfficialRoadmapNode })
@@ -91,7 +113,7 @@ export function RoadmapFlowCanvas({
       const t = raw.type
       if (t === 'button') {
         const href = raw.data?.href ?? ''
-        const path = internalRoadmapPath(href)
+        const path = internalRoadmapPath(href, allowedSlugs)
         if (path) {
           onRoadmapNavigate(path)
           return
@@ -112,12 +134,14 @@ export function RoadmapFlowCanvas({
     <>
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={displayEdges}
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
-        nodesDraggable
+        nodesDraggable={nodesDraggable}
+        panOnDrag
+        zoomOnScroll
         nodesConnectable={false}
         elementsSelectable
         minZoom={0.12}

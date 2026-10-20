@@ -15,9 +15,14 @@ export function slugFromRoadmapShUrl(url: string): string | null {
   }
 }
 
-export function internalRoadmapPath(url: string): string | null {
+export function internalRoadmapPath(
+  url: string,
+  allowedSlugs?: ReadonlySet<string>,
+): string | null {
   const slug = slugFromRoadmapShUrl(url)
-  return slug ? `/roadmaps/${slug}` : null
+  if (!slug) return null
+  if (allowedSlugs && !allowedSlugs.has(slug)) return null
+  return `/roadmaps/${slug}`
 }
 
 export function shouldHideOfficialNode(
