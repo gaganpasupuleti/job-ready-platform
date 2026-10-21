@@ -110,8 +110,8 @@ export function toFlowEdge(raw: OfficialRoadmapEdge): Edge {
     id: raw.id,
     source: raw.source,
     target: raw.target,
-    sourceHandle: raw.sourceHandle,
-    targetHandle: raw.targetHandle,
+    sourceHandle: raw.sourceHandle ? `${raw.sourceHandle}-s` : undefined,
+    targetHandle: raw.targetHandle ? `${raw.targetHandle}-t` : undefined,
     type: 'smoothstep',
     animated: isDashed,
     style: {

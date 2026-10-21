@@ -1,12 +1,25 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
+import { toFlowEdge } from '../src/features/roadmap-official/graph.ts'
 import { assertValidGraphShape } from '../src/features/roadmap-official/graphValidation.ts'
 import { flowDuration } from '../src/features/roadmap-official/roadmapMotion.ts'
 import {
   internalRoadmapPath,
   rewriteRoadmapShMarkdown,
 } from '../src/features/roadmap-official/roadmapShLinks.ts'
+test('toFlowEdge maps roadmap.sh handle ids to unique React Flow handles', () => {
+  const edge = toFlowEdge({
+    id: 'e1',
+    source: 'a',
+    target: 'b',
+    sourceHandle: 'x2',
+    targetHandle: 'w1',
+  })
+  assert.equal(edge.sourceHandle, 'x2-s')
+  assert.equal(edge.targetHandle, 'w1-t')
+})
+
 test('assertValidGraphShape rejects bad edge references', () => {
   assert.throws(() =>
     assertValidGraphShape(

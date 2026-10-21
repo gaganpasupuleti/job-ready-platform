@@ -35,7 +35,7 @@ export function RoadmapHandles() {
       {Object.entries(HANDLE_SIDES).flatMap(([id, { position, side }]) => [
         <Handle
           key={`${id}-s`}
-          id={id}
+          id={`${id}-s`}
           type="source"
           position={position}
           className="ors-handle"
@@ -43,7 +43,7 @@ export function RoadmapHandles() {
         />,
         <Handle
           key={`${id}-t`}
-          id={id}
+          id={`${id}-t`}
           type="target"
           position={position}
           className="ors-handle"

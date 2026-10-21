@@ -156,43 +156,48 @@ export function Masthead({ compact = false }: MastheadProps) {
             {moreOpen ? (
               <div className="more-nav-panel" aria-label="More destinations">
                 {user ? (
-                  <button
-                    type="button"
-                    className="more-menu-item feedback-entry-menu"
-                    onClick={() => {
-                      setFeedbackOpen(true)
-                      closeMore()
-                      closeMobile()
-                    }}
-                  >
-                    Feedback
-                  </button>
+                  <div className="more-nav-panel-top">
+                    <button
+                      type="button"
+                      className="more-menu-item more-menu-item--feedback"
+                      onClick={() => {
+                        setFeedbackOpen(true)
+                        closeMore()
+                        closeMobile()
+                      }}
+                    >
+                      Feedback
+                    </button>
+                  </div>
                 ) : null}
                 {moreMenuGroups.map((group) => (
                   <section key={group.title} className="more-menu-section">
                     <p className="menu-section-title">{group.title}</p>
-                    {group.items.map((item) => {
-                      const active = isMoreItemActive(location.pathname, item.path)
-                      return (
-                        <Link
-                          key={item.path}
-                          to={item.path}
-                          className={cn('more-menu-item', active && 'active')}
-                          aria-current={active ? 'page' : undefined}
-                          onClick={() => {
-                            closeMore()
-                            closeMobile()
-                          }}
-                        >
-                          {item.label}
-                        </Link>
-                      )
-                    })}
+                    <div className="more-menu-grid">
+                      {group.items.map((item) => {
+                        const active = isMoreItemActive(location.pathname, item.path)
+                        return (
+                          <Link
+                            key={item.path}
+                            to={item.path}
+                            className={cn('more-menu-item', active && 'active')}
+                            aria-current={active ? 'page' : undefined}
+                            onClick={() => {
+                              closeMore()
+                              closeMobile()
+                            }}
+                          >
+                            {item.label}
+                          </Link>
+                        )
+                      })}
+                    </div>
                   </section>
                 ))}
                 {isAdmin ? (
-                  <>
+                  <section className="more-menu-section more-menu-section--admin">
                     <p className="menu-section-title">Admin</p>
+                    <div className="more-menu-grid more-menu-grid--single">
                     <Link
                       to="/admin/questions"
                       className={cn(
@@ -232,7 +237,8 @@ export function Masthead({ compact = false }: MastheadProps) {
                     >
                       Student Feedback
                     </Link>
-                  </>
+                    </div>
+                  </section>
                 ) : null}
               </div>
             ) : null}
