@@ -75,6 +75,12 @@ class Settings(BaseSettings):
 
     default_exam_duration_minutes: int = 30
 
+    # Official career roadmaps — graphs fetched server-side; syllabus optional on disk.
+    roadmap_content_root: str = ""
+    roadmap_graph_cache_dir: str = ""
+    roadmap_graph_fetch_url: str = "https://roadmap.sh/{slug}.json"
+    roadmap_graph_cache_ttl_hours: int = 168
+
     # SQL practice sandbox (isolated from application DB)
     # Admin: schema create/seed/drop only. Runner: read-only student queries only.
     sql_sandbox_admin_database_url: str = (
@@ -157,6 +163,8 @@ class Settings(BaseSettings):
     cors_origins: list[str] = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
         "http://localhost:5180",
         "http://127.0.0.1:5180",
     ]

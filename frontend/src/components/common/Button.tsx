@@ -8,18 +8,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
 }
 
-const variants = {
-  primary:
-    'bg-[var(--color-accent)] text-[var(--color-surface)] hover:bg-[var(--color-accent-hover)] border border-transparent',
-  secondary:
-    'bg-[var(--color-surface-elevated)] text-[var(--color-text)] border border-[var(--color-border)] hover:bg-[var(--color-surface-muted)]',
-  ghost:
-    'bg-transparent text-[var(--color-text-muted)] border border-transparent hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]',
-}
-
 const sizes = {
-  sm: 'h-7 px-2.5 text-xs',
-  md: 'h-8 px-3 text-sm',
+  sm: 'jr-btn--sm',
+  md: 'jr-btn--md',
 }
 
 export function Button({
@@ -31,12 +22,9 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={cn(
-        'inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-[var(--color-border)] disabled:bg-[var(--color-surface-muted)] disabled:text-[var(--color-text-subtle)] disabled:opacity-100',
-        variants[variant],
-        sizes[size],
-        className,
-      )}
+      type="button"
+      data-variant={variant}
+      className={cn('jr-btn', sizes[size], className)}
       {...props}
     >
       {children}

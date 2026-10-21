@@ -1,0 +1,29 @@
+{
+  "recordedAt": "2026-10-20T12:56:21.225176+00:00",
+  "path": "frontend\\public\\reports\\Exceutive Sales Report - Toast Notifictaion.pbix",
+  "head": {
+    "sha256": "6dad3a32cac39baaf4ea8ce998bc7dc09371b93a570a8092c2fb642bad6b8128",
+    "sizeBytes": 1084993,
+    "evidenceCopy": "docs\\evidence\\executive-sales-toast.pbix.at-HEAD.pbix"
+  },
+  "workingTree": {
+    "sha256": "6dad3a32cac39baaf4ea8ce998bc7dc09371b93a570a8092c2fb642bad6b8128",
+    "sizeBytes": 1084993
+  },
+  "semanticComparison": {
+    "tablesEqual": true,
+    "measureCountHead": 52,
+    "measureCountWorkingTree": 52,
+    "measuresOnlyInHead": [],
+    "measuresOnlyInWorkingTree": [],
+    "visualJsonHashHead": "b7a6714ff48e2d1048329872c26520dd1de4fb49f4837a1a12e2a80104a45fa7",
+    "visualJsonHashWorkingTree": "b7a6714ff48e2d1048329872c26520dd1de4fb49f4837a1a12e2a80104a45fa7",
+    "visualJsonCount": 69,
+    "visualJsonMatch": true
+  },
+  "canonicalChoice": {
+    "file": "HEAD commit blob",
+    "reason": "Semantically identical to working tree (same measures/visual JSON); HEAD is the audited git source of truth. Manifest sourcePbixSha256 should match HEAD after regeneration.",
+    "action": "Use HEAD copy for extraction; working-tree copy archived under docs/evidence/ when hashes differ."
+  }
+}

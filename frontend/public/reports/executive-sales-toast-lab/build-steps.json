@@ -1,0 +1,50 @@
+[
+  {
+    "step": 1,
+    "id": "01-full-canvas",
+    "title": "See the finished page",
+    "instructions": "Use this as your target layout (1280\u00d7780). Match spacing before fine-tuning formats.",
+    "snip": "steps/01-full-canvas.png",
+    "visualCount": 31
+  },
+  {
+    "step": 2,
+    "id": "02-slicers",
+    "title": "Step 1 \u2014 Slicers",
+    "instructions": "Insert \u2192 Slicer. Add **Stores** (storelocations.name), **Sales Team** (Salesteams), **Products** (Products_Data). Place top-right; set dropdown style.",
+    "snip": "steps/02-slicers.png",
+    "visualCount": 3
+  },
+  {
+    "step": 3,
+    "id": "03-kpi-cards",
+    "title": "Step 2 \u2014 KPI cards",
+    "instructions": "Insert \u2192 Card for each measure: Total Sales, Profit Margin %, Total Orders, % of Target (monthly), Average Daily Sales. Use the DAX block list for formulas.",
+    "snip": "steps/03-kpi-cards.png",
+    "visualCount": 5
+  },
+  {
+    "step": 4,
+    "id": "04-profit-bar",
+    "title": "Step 3 \u2014 Profit composition",
+    "instructions": "Insert \u2192 100% stacked bar. Values: Total Cost & Total Profit measures (see DAX). Place under Profit Margin card.",
+    "snip": "steps/04-profit-bar.png",
+    "visualCount": 2
+  },
+  {
+    "step": 5,
+    "id": "05-trend-chart",
+    "title": "Step 4 \u2014 Sales trend",
+    "instructions": "Insert \u2192 Line chart. Axis: Date Table[Date]. Values: Total Sales. Add month buttons + D/W/M bookmarks (optional).",
+    "snip": "steps/05-trend-chart.png",
+    "visualCount": 1
+  },
+  {
+    "step": 6,
+    "id": "06-toast",
+    "title": "Step 5 \u2014 Toast notification",
+    "instructions": "Add HTML Content custom visual. Bind **Toast Notification** and **Toast CSS** measures from the DAX list.",
+    "snip": "steps/06-toast.png",
+    "visualCount": 1
+  }
+]

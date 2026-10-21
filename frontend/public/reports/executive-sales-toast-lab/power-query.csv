@@ -1,0 +1,51 @@
+TableName,Expression
+Sales,"let
+    Source = Excel.Workbook(File.Contents(""E:\Experiment\E - DNA\E - DNA Builds\Executive Sales Report\Exceutive Sales Report.xlsx""), null, true),
+    Sales_Table = Source{[Item=""Sales"",Kind=""Table""]}[Data],
+    #""Changed Type"" = Table.TransformColumnTypes(Sales_Table,{{""Order Number"", type text}, {""Sales Date"", type date}, {""Sales Channel"", type text}, {""Currency"", type text}, {""Salesteamindex"", Int64.Type}, {""Storeindex"", Int64.Type}, {""Productindex"", Int64.Type}, {""Order qty"", Int64.Type}, {""unit price"", type number}, {""unit cost"", type number}}),
+    #""Added Index"" = Table.AddIndexColumn(#""Changed Type"", ""Index"", 1, 1, Int64.Type),
+    #""Reordered Columns"" = Table.ReorderColumns(#""Added Index"",{""Index"", ""Order Number"", ""Sales Date"", ""Sales Channel"", ""Currency"", ""Salesteamindex"", ""Storeindex"", ""Productindex"", ""Order qty"", ""unit price"", ""unit cost""}),
+    #""Renamed Columns"" = Table.RenameColumns(#""Reordered Columns"",{{""Index"", ""Sales_Index""}}),
+    #""Removed Columns"" = Table.RemoveColumns(#""Renamed Columns"",{""Currency""}),
+    #""Filtered Rows"" = Table.SelectRows(#""Removed Columns"", each [Productindex] <> null and [Productindex] <> """")
+in
+    #""Filtered Rows"""
+Products_Data,"let
+    Source = Excel.Workbook(File.Contents(""E:\Experiment\E - DNA\E - DNA Builds\Executive Sales Report\Exceutive Sales Report.xlsx""), null, true),
+    Products_Data_Table = Source{[Item=""Products_Data"",Kind=""Table""]}[Data],
+    #""Changed Type"" = Table.TransformColumnTypes(Products_Data_Table,{{""Index"", Int64.Type}, {""Product Name"", type text}}),
+    #""Renamed Columns"" = Table.RenameColumns(#""Changed Type"",{{""Index"", ""Productindex""}})
+in
+    #""Renamed Columns"""
+Salesteams,"let
+    Source = Excel.Workbook(File.Contents(""E:\Experiment\E - DNA\E - DNA Builds\Executive Sales Report\Exceutive Sales Report.xlsx""), null, true),
+    Salesteams_Table = Source{[Item=""Salesteams"",Kind=""Table""]}[Data],
+    #""Changed Type"" = Table.TransformColumnTypes(Salesteams_Table,{{""Index"", Int64.Type}, {""Sales Team"", type text}, {""Region"", type text}}),
+    #""Filtered Rows"" = Table.SelectRows(#""Changed Type"", each true),
+    #""Renamed Columns"" = Table.RenameColumns(#""Filtered Rows"",{{""Index"", ""Salesteamindex""}}),
+    #""Replaced Value"" = Table.ReplaceValue(#""Renamed Columns"",null,""No Name"",Replacer.ReplaceValue,{""Sales Team""})
+in
+    #""Replaced Value"""
+storelocations,"let
+    Source = Excel.Workbook(File.Contents(""E:\Experiment\E - DNA\E - DNA Builds\Executive Sales Report\Exceutive Sales Report.xlsx""), null, true),
+    storelocations_Table = Source{[Item=""storelocations"",Kind=""Table""]}[Data],
+    #""Changed Type"" = Table.TransformColumnTypes(storelocations_Table,{{""id"", Int64.Type}, {""name"", type text}, {""county"", type text}, {""state_code"", type text}, {""state"", type text}, {""type"", type text}, {""latitude"", type number}, {""longitude"", type number}, {""area_code"", Int64.Type}, {""population"", Int64.Type}, {""households"", Int64.Type}, {""median_income"", Int64.Type}, {""land_area"", Int64.Type}, {""water_area"", Int64.Type}, {""time_zone"", type text}}),
+    #""Merged Queries"" = Table.NestedJoin(#""Changed Type"", {""state_code""}, State_Regions, {""State Code""}, ""State_Regions"", JoinKind.LeftOuter),
+    #""Expanded State_Regions"" = Table.ExpandTableColumn(#""Merged Queries"", ""State_Regions"", {""State"", ""Region""}, {""State.1"", ""Region""}),
+    #""Removed Columns"" = Table.RemoveColumns(#""Expanded State_Regions"",{""state_code"", ""state""}),
+    #""Renamed Columns"" = Table.RenameColumns(#""Removed Columns"",{{""State.1"", ""State""}}),
+    #""Reordered Columns"" = Table.ReorderColumns(#""Renamed Columns"",{""id"", ""name"", ""Region"", ""State"", ""type"", ""county"", ""latitude"", ""longitude"", ""area_code"", ""population"", ""households"", ""median_income"", ""land_area"", ""water_area"", ""time_zone""}),
+    #""Renamed Columns1"" = Table.RenameColumns(#""Reordered Columns"",{{""id"", ""Storeindex""}})
+in
+    #""Renamed Columns1"""
+# Measures,"let
+    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(""i44FAA=="", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+    #""Changed Type"" = Table.TransformColumnTypes(Source,{{""Column1"", type text}}),
+    #""Removed Columns"" = Table.RemoveColumns(#""Changed Type"",{""Column1""})
+in
+    #""Removed Columns"""
+Date Table,"let
+    Source = Query1(#date(2020, 1, 1), #date(2020, 5, 31), null, null, null),
+    #""Removed Columns"" = Table.RemoveColumns(Source,{""YearOffset"", ""YearCompleted"", ""Start of Quarter"", ""End of Quarter"", ""QuarterOffset"", ""QuarterCompleted"", ""Start of Month"", ""End of Month"", ""MonthOffset"", ""MonthCompleted"", ""Month Name"", ""Month Initial"", ""Start of Week"", ""End of Week"", ""WeekOffset"", ""WeekCompleted"", ""DateInt"", ""DayOffset"", ""IsAfterToday"", ""IsWeekDay"", ""IsHoliday"", ""IsBusinessDay"", ""ISO Year"", ""ISO YearOffset"", ""ISO Quarter"", ""ISO Quarter & Year"", ""ISO QuarternYear"", ""ISO QuarterOffset"", ""IsCurrentFY"", ""IsPYTD"", ""IsPFYTD""})
+in
+    #""Removed Columns"""

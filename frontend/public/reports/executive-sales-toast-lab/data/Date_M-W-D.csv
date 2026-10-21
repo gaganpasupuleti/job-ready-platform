@@ -1,0 +1,4 @@
+Date M-W-D,Date M-W-D Fields,Date M-W-D Order
+M,'Date Table'[Month Short],2
+W,'Date Table'[WeeknYear],1
+D,'Date Table'[Date],0

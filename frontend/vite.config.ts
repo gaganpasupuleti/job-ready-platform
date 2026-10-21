@@ -31,6 +31,11 @@ export default defineConfig({
         target: process.env.DEV_API_PROXY || 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
+      '/roadmap-graph': {
+        target: 'https://roadmap.sh',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/roadmap-graph/, ''),
+      },
     },
   },
 })

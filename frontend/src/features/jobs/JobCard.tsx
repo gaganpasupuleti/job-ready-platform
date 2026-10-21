@@ -4,7 +4,6 @@ import { Bookmark } from 'lucide-react'
 
 import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
-import { Card } from '@/components/common/Card'
 import { addedToJobReadyLabel, employerPostedLabel } from '@/lib/jobPortalDates'
 import { humanLabel } from '@/lib/studentLabels'
 import type { JobCard } from '@/types/job'
@@ -27,28 +26,81 @@ export function JobCardView({
   action,
   onToggleSave,
   saving,
+  compact = true,
 }: {
   job: JobCard
   action?: ReactNode
   onToggleSave?: () => void
   saving?: boolean
+  compact?: boolean
 }) {
   const experience = formatExperience(job.experience_min_years, job.experience_max_years)
   const workMode = formatToken(job.work_mode)
+  const badges = [
+    job.location_text,
+    job.experience_bucket,
+    job.is_remote ? 'Remote' : null,
+    workMode,
+    experience,
+    formatToken(job.employment_type),
+  ].filter(Boolean) as string[]
+
+  if (compact) {
+    return (
+      <article className="job-card-wrap job-card-wrap--compact">
+        <div className="job-card-compact-head">
+          <div className="job-card-compact-main min-w-0">
+            <Link to={`/jobs/${job.slug}`} className="job-card-compact-title">
+              {job.title}
+            </Link>
+            <p className="job-card-compact-company">{job.company_name}</p>
+          </div>
+          {onToggleSave ? (
+            <Button
+              type="button"
+              size="sm"
+              variant={job.is_saved ? 'primary' : 'ghost'}
+              onClick={onToggleSave}
+              disabled={saving}
+              aria-label={job.is_saved ? 'Remove from saved' : 'Save job'}
+              className="job-card-save-btn"
+            >
+              <Bookmark className="h-3.5 w-3.5" fill={job.is_saved ? 'currentColor' : 'none'} />
+            </Button>
+          ) : null}
+        </div>
+        {badges.length > 0 ? (
+          <div className="job-card-compact-badges">
+            {badges.slice(0, 4).map((label) => (
+              <Badge key={label}>{label}</Badge>
+            ))}
+          </div>
+        ) : null}
+        <p className="job-card-compact-dates">
+          {addedToJobReadyLabel(job.first_seen_at)}
+          <span aria-hidden="true"> · </span>
+          {employerPostedLabel(job.posted_at)}
+        </p>
+        <div className="job-card-compact-foot">
+          <Link to={`/jobs/${job.slug}`} className="job-card-details-link job-card-details-link--compact">
+            View details
+          </Link>
+          {action}
+        </div>
+      </article>
+    )
+  }
 
   return (
-    <Card padding="md" className="flex flex-col gap-3">
+    <article className="job-card-wrap">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <Link
-            to={`/jobs/${job.slug}`}
-            className="text-[15px] font-semibold leading-snug text-[var(--color-text)] hover:underline"
-          >
+          <Link to={`/jobs/${job.slug}`} className="text-[15px] font-semibold leading-snug text-[var(--color-text)] hover:underline">
             {job.title}
           </Link>
           <p className="mt-0.5 text-[13px] text-[var(--color-text-muted)]">{job.company_name}</p>
         </div>
-        {onToggleSave && (
+        {onToggleSave ? (
           <Button
             type="button"
             size="sm"
@@ -59,41 +111,20 @@ export function JobCardView({
           >
             <Bookmark className="h-3.5 w-3.5" fill={job.is_saved ? 'currentColor' : 'none'} />
           </Button>
-        )}
+        ) : null}
       </div>
-
       <div className="flex flex-wrap gap-1">
-        {job.location_text && <Badge>{job.location_text}</Badge>}
-        {job.experience_bucket && <Badge>{job.experience_bucket}</Badge>}
-        {job.is_remote && <Badge variant="accent">Remote</Badge>}
-        {workMode && <Badge>{workMode}</Badge>}
-        {experience && <Badge>{experience}</Badge>}
-        {formatToken(job.employment_type) && <Badge>{formatToken(job.employment_type)}</Badge>}
+        {badges.map((label) => (
+          <Badge key={label}>{label}</Badge>
+        ))}
       </div>
-
-      {job.requirement_coverage != null && (
-        <p className="text-sm font-medium text-[var(--color-accent)]">
-          {Math.round(job.requirement_coverage)}% requirement coverage
-          {job.missing_skill_count != null && job.missing_skill_count > 0
-            ? ` · ${job.missing_skill_count} skills to develop`
-            : ''}
-        </p>
-      )}
-      {job.has_sufficient_mapping === false && (
-        <p className="text-xs text-[var(--color-text-muted)]">Not enough mapped requirements</p>
-      )}
-
-      <p className="text-xs text-[var(--color-text-muted)]">{addedToJobReadyLabel(job.first_seen_at)}</p>
-      <p className="text-xs text-[var(--color-text-muted)]">{employerPostedLabel(job.posted_at)}</p>
-      {job.top_skills.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {job.top_skills.slice(0, 5).map((skill) => (
-            <Badge key={skill} variant="default">{skill}</Badge>
-          ))}
-        </div>
-      )}
-
-      {action}
-    </Card>
+      <p className="text-xs text-[var(--color-text-muted)]">
+        {addedToJobReadyLabel(job.first_seen_at)} · {employerPostedLabel(job.posted_at)}
+      </p>
+      <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
+        <Link to={`/jobs/${job.slug}`} className="job-card-details-link">View details</Link>
+        {action}
+      </div>
+    </article>
   )
 }

@@ -74,9 +74,10 @@ export function AppLayout() {
         <div className="jr-subheader">
           <p className="jr-breadcrumb">
             <span>Workspace</span>
-            <span aria-hidden="true">/</span>
-            <strong>{title}</strong>
+            <span className="jr-breadcrumb-sep" aria-hidden="true">/</span>
+            <span>{title}</span>
           </p>
+          <h1 className="jr-page-title">{title}</h1>
         </div>
       ) : null}
       <main id="main-content" className="flex-1" tabIndex={-1}>
