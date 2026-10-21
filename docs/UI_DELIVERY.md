@@ -4,7 +4,7 @@
 **Frontend worktree:** `jobready-roadmap-ui-clean`  
 **Backend used for proxy/audit:** `New folder (5)/backend` @ `56ba9a676603fcbce6183523306098742ad422d6` (uvicorn `:8000` when running)
 
-**Final SHA:** see git log on `feat/roadmap-ui-clean` after push.
+**Final SHA:** `6d886716f6aedc05d900c2c9d990acf89b059a3b`
 
 ## Screenshot evidence (mocked auth)
 
