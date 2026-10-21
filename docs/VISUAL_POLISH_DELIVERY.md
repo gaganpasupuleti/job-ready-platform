@@ -7,7 +7,7 @@
 | Branch | `feat/roadmap-ui-clean` |
 | Base (PR #24) | `master` |
 | Prior audit head | `d9709ea6e0cae1a185e60747391623a88a545e00` |
-| Polish head | *(see `git rev-parse HEAD` after push)* |
+| Polish head | `8a6e251080b112d9873824f6304c00717964570f` |
 | PR | [#24](https://github.com/gaganpasupuleti/job-ready-platform/pull/24) — **not merged** |
 
 ## Screenshot vs runtime discrepancy (resolved for evaluation)
