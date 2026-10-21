@@ -119,6 +119,11 @@ export function SyllabusLessonPage() {
             <p className="text-xs text-[var(--color-text-muted)]">
               Explanations appear after you answer. This is reading practice, not assessed competence.
             </p>
+            {data.practice.length === 0 ? (
+              <p role="status" className="mt-2 text-sm">
+                No published practice is linked to this lesson yet.
+              </p>
+            ) : null}
             <div className="mt-3 space-y-4">
               {data.practice.map((question) => {
                 const selected = answers[question.key] ?? []

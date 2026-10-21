@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400">
+  <title>Two pointers reverse an array from both ends</title>
+  <rect width="720" height="400" fill="#fffcf8"/>
+  <text x="32" y="42" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="600">Reverse with two pointers</text>
+  <text x="32" y="84" fill="#5e5952" font-family="Segoe UI, Arial, sans-serif" font-size="16">Start. Indexes are 1-based, matching the trace table.</text>
+  <rect x="48" y="104" width="88" height="72" rx="6" fill="#e7edf1" stroke="#3f5564" stroke-width="2"/>
+  <rect x="152" y="104" width="88" height="72" rx="6" fill="#f3f0ea" stroke="#3f5564" stroke-width="2"/>
+  <rect x="256" y="104" width="88" height="72" rx="6" fill="#f3f0ea" stroke="#3f5564" stroke-width="2"/>
+  <rect x="360" y="104" width="88" height="72" rx="6" fill="#e7edf1" stroke="#3f5564" stroke-width="2"/>
+  <text x="78" y="150" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="32">a</text>
+  <text x="182" y="150" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="32">b</text>
+  <text x="286" y="150" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="32">c</text>
+  <text x="390" y="150" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="32">d</text>
+  <text x="84" y="196" fill="#5e5952" font-family="Segoe UI, Arial, sans-serif" font-size="14">1</text>
+  <text x="188" y="196" fill="#5e5952" font-family="Segoe UI, Arial, sans-serif" font-size="14">2</text>
+  <text x="292" y="196" fill="#5e5952" font-family="Segoe UI, Arial, sans-serif" font-size="14">3</text>
+  <text x="396" y="196" fill="#5e5952" font-family="Segoe UI, Arial, sans-serif" font-size="14">4</text>
+  <text x="56" y="228" fill="#3f5564" font-family="Segoe UI, Arial, sans-serif" font-size="16">left</text>
+  <text x="356" y="228" fill="#3f5564" font-family="Segoe UI, Arial, sans-serif" font-size="16">right</text>
+  <text x="480" y="150" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="18">swap ends,</text>
+  <text x="480" y="174" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="18">then move inward</text>
+  <text x="32" y="276" fill="#5e5952" font-family="Segoe UI, Arial, sans-serif" font-size="16">After both swaps, left meets right and the loop stops.</text>
+  <rect x="48" y="296" width="88" height="72" rx="6" fill="#f3f0ea" stroke="#3f5564" stroke-width="2"/>
+  <rect x="152" y="296" width="88" height="72" rx="6" fill="#f3f0ea" stroke="#3f5564" stroke-width="2"/>
+  <rect x="256" y="296" width="88" height="72" rx="6" fill="#f3f0ea" stroke="#3f5564" stroke-width="2"/>
+  <rect x="360" y="296" width="88" height="72" rx="6" fill="#f3f0ea" stroke="#3f5564" stroke-width="2"/>
+  <text x="78" y="342" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="32">d</text>
+  <text x="182" y="342" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="32">c</text>
+  <text x="286" y="342" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="32">b</text>
+  <text x="390" y="342" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="32">a</text>
+</svg>

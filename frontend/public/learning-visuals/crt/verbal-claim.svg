@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460">
+  <title>Keep the claim and reject new facts</title>
+  <rect width="720" height="460" fill="#fffcf8"/>
+  <text x="36" y="44" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="600">Claim, then eliminate</text>
+  <rect x="36" y="68" width="648" height="78" rx="6" fill="#f3f0ea" stroke="#d3cdc3"/>
+  <text x="52" y="100" fill="#5e5952" font-family="Segoe UI, Arial, sans-serif" font-size="16">1. Read the sentence</text>
+  <text x="52" y="128" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="18">The team postponed the demo because the dataset was incomplete.</text>
+  <polyline points="360,152 360,174" fill="none" stroke="#3f5564" stroke-width="3"/>
+  <polyline points="352,166 360,176 368,166" fill="none" stroke="#3f5564" stroke-width="3"/>
+  <rect x="36" y="178" width="648" height="78" rx="6" fill="#e7edf1" stroke="#3f5564" stroke-width="2"/>
+  <text x="52" y="210" fill="#5e5952" font-family="Segoe UI, Arial, sans-serif" font-size="16">2. Mark the claim</text>
+  <text x="52" y="238" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="18">Postponed. Reason stated: the dataset was incomplete.</text>
+  <polyline points="360,262 360,284" fill="none" stroke="#3f5564" stroke-width="3"/>
+  <polyline points="352,276 360,286 368,276" fill="none" stroke="#3f5564" stroke-width="3"/>
+  <rect x="36" y="292" width="312" height="112" rx="6" fill="#f3f0ea" stroke="#2f5d45" stroke-width="2"/>
+  <rect x="372" y="292" width="312" height="112" rx="6" fill="#fffcf8" stroke="#8d3d3d" stroke-width="2"/>
+  <text x="52" y="324" fill="#2f5d45" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">Keep</text>
+  <text x="52" y="354" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="16">Demo moved later.</text>
+  <text x="52" y="378" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="16">Dataset was not ready.</text>
+  <text x="388" y="324" fill="#8d3d3d" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">Reject</text>
+  <text x="388" y="354" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="16">Cancelled forever.</text>
+  <text x="388" y="378" fill="#2a2825" font-family="Segoe UI, Arial, sans-serif" font-size="16">Dataset was deleted.</text>
+</svg>
