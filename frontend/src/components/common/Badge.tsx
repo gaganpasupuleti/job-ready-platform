@@ -9,18 +9,18 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variants = {
-  default: 'border border-[var(--jr-ink,#0a0a0a)] bg-[var(--jr-peach,#ffdba8)] text-[var(--jr-ink,#0a0a0a)]',
-  accent: 'border border-[var(--jr-ink,#0a0a0a)] bg-[var(--color-accent-muted)] text-[var(--color-accent)]',
-  success:
-    'border border-[var(--jr-ink,#0a0a0a)] bg-[var(--jr-milestone,#fff200)] text-[var(--jr-ink,#0a0a0a)] font-bold',
-  warning: 'bg-[#f3eee4] text-[var(--color-warning)] dark:bg-[#322c22] dark:text-[#e4d3b0]',
+  default:
+    'border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-text-muted)]',
+  accent: 'border border-transparent bg-[var(--color-accent-muted)] text-[var(--color-accent)]',
+  success: 'border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-success)]',
+  warning: 'border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-warning)]',
 }
 
 export function Badge({ children, variant = 'default', className, ...rest }: BadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-[var(--jr-radius,2px)] px-1.5 py-0.5 text-[11px] font-semibold leading-4',
+        'inline-flex items-center rounded-[var(--radius-control)] px-1.5 py-0.5 text-[11px] font-medium leading-4',
         variants[variant],
         className,
       )}

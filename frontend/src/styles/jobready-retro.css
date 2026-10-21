@@ -1,55 +1,28 @@
 /**
  * Warm JobReady shell accents — restrained borders, no block shadows on cards.
  */
+/* Tokens live in index.css — jr-* aliases only, no accent overrides. */
 :root {
-  --jr-paper: #f5f0e8;
   --jr-paper-dot: color-mix(in srgb, var(--color-text) 8%, transparent);
-  --jr-paper-top: #faf8f4;
-  --jr-paper-bottom: #f3efe8;
-  --jr-ink: #2a2825;
-  --jr-milestone: #f3e6a8;
-  --jr-peach: #f5dcc4;
-  --jr-line: #4a6274;
-  --jr-accent: #3f5564;
-  --jr-surface: #fffcf8;
+  --jr-paper-top: var(--color-surface);
+  --jr-paper-bottom: var(--color-surface-muted);
+  --jr-line: var(--color-accent);
+  --jr-surface: var(--color-surface);
+  --jr-paper: var(--color-surface-muted);
+  --jr-ink: var(--color-text);
+  --jr-accent: var(--color-accent);
+  --jr-milestone: color-mix(in srgb, var(--color-warning) 35%, var(--color-surface));
+  --jr-peach: color-mix(in srgb, var(--color-surface-muted) 80%, var(--color-surface));
   --jr-block-shadow: 0 1px 2px rgb(42 40 37 / 0.06);
-  --jr-radius: 6px;
-  --jr-selection-bg: color-mix(in srgb, var(--jr-milestone) 55%, var(--jr-surface));
+  --jr-radius: var(--radius-md);
+  --jr-selection-bg: color-mix(in srgb, var(--color-accent-muted) 70%, var(--color-surface));
 }
 
-:root {
-  --color-surface: var(--jr-surface);
-  --color-surface-elevated: var(--jr-surface);
-  --color-surface-muted: var(--jr-paper);
-  --color-border: color-mix(in srgb, var(--jr-ink) 22%, transparent);
-  --color-border-strong: color-mix(in srgb, var(--jr-ink) 35%, transparent);
-  --color-text: var(--jr-ink);
-  --color-text-muted: #44403c;
-  --color-text-subtle: #57534e;
-  --color-accent: var(--jr-accent);
-  --color-accent-hover: #1e40af;
-  --color-accent-muted: #dbeafe;
-  --color-brand: var(--jr-ink);
-  --radius-control: var(--jr-radius);
-  --radius-lg: var(--jr-radius);
-  --radius-md: var(--jr-radius);
-  --shadow-sm: var(--jr-block-shadow);
-}
-
-body {
-  background: linear-gradient(180deg, var(--jr-paper-top) 0%, var(--jr-paper-bottom) 100%);
-  background-attachment: fixed;
-  color: var(--jr-ink);
-}
-
-h1,
-h2,
-h3,
 .module-heading h1,
 .ors-title {
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  color: var(--jr-ink);
+  color: var(--color-text);
 }
 
 .jr-kicker,
@@ -58,13 +31,13 @@ h3,
   margin: 0 0 0.35rem;
   padding: 0.2rem 0.55rem;
   font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--jr-ink);
-  background: var(--jr-milestone);
-  border: 2px solid var(--jr-ink);
-  border-radius: var(--jr-radius);
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
 }
 
 .masthead {
@@ -73,8 +46,8 @@ h3,
 }
 
 .jr-subheader {
-  border-bottom: 2px solid color-mix(in srgb, var(--jr-ink) 15%, transparent);
-  background: color-mix(in srgb, var(--jr-surface) 92%, var(--jr-paper));
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
 .jr-breadcrumb strong {
@@ -474,13 +447,7 @@ h3,
 }
 
 .page-intro-title {
-  font-size: clamp(1.35rem, 2vw, 1.55rem);
-  font-weight: 800;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 600;
   letter-spacing: -0.02em;
-}
-
-html.jr-retro h1,
-html.jr-retro h2,
-html.jr-retro .font-bold {
-  font-weight: 800;
 }

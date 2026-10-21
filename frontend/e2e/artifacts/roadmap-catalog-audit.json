@@ -1,0 +1,944 @@
+{
+  "apiBase": "http://127.0.0.1:8000",
+  "at": "2026-10-21T05:29:26.935Z",
+  "totals": {
+    "pass": 0,
+    "fail": 93,
+    "auth": 0,
+    "unverified": 0,
+    "rows": [
+      {
+        "status": "fail",
+        "slug": "ai-agents",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "ai-data-scientist",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "ai-engineer",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "ai-product-builder",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "ai-red-teaming",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "android",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "angular",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "api-design",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "aspnet-core",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "aws",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "backend",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "backend-beginner",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "bi-analyst",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "blockchain",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "c",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "claude-code",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "cloudflare",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "code-review",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "computer-science",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "cpp",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "css",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "cyber-security",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "data-analyst",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "data-engineer",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "datastructures-and-algorithms",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "design-system",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "devops",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "devops-beginner",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "devrel",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "devsecops",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "django",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "docker",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "elasticsearch",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "engineering-manager",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "flutter",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "forward-deployed-engineer",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "frontend",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "frontend-beginner",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "full-stack",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "game-developer",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "git-github",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "git-github-beginner",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "golang",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "graphql",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "html",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "ios",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "java",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "javascript",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "kotlin",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "kubernetes",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "laravel",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "leetcode",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "linux",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "machine-learning",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "mlops",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "mongodb",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "network-engineer",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "nextjs",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "nodejs",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "openclaw",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "php",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "postgresql-dba",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "power-bi",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "product-design",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "product-manager",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "prompt-engineering",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "python",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "python-data-analysis",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "qa",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "r",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "r-programming",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "react",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "react-native",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "redis",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "ruby",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "ruby-on-rails",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "rust",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "scala",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "server-side-game-developer",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "shell-bash",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "software-architect",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "software-design-architecture",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "spring-boot",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "sql",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "swift-ui",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "system-design",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "technical-writer",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "terraform",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "typescript",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "ux-design",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "vibe-coding",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "vue",
+        "code": 404
+      },
+      {
+        "status": "fail",
+        "slug": "wordpress",
+        "code": 404
+      }
+    ]
+  },
+  "rows": [
+    {
+      "status": "fail",
+      "slug": "ai-agents",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "ai-data-scientist",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "ai-engineer",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "ai-product-builder",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "ai-red-teaming",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "android",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "angular",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "api-design",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "aspnet-core",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "aws",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "backend",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "backend-beginner",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "bi-analyst",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "blockchain",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "c",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "claude-code",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "cloudflare",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "code-review",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "computer-science",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "cpp",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "css",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "cyber-security",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "data-analyst",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "data-engineer",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "datastructures-and-algorithms",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "design-system",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "devops",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "devops-beginner",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "devrel",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "devsecops",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "django",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "docker",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "elasticsearch",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "engineering-manager",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "flutter",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "forward-deployed-engineer",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "frontend",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "frontend-beginner",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "full-stack",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "game-developer",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "git-github",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "git-github-beginner",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "golang",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "graphql",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "html",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "ios",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "java",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "javascript",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "kotlin",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "kubernetes",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "laravel",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "leetcode",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "linux",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "machine-learning",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "mlops",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "mongodb",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "network-engineer",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "nextjs",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "nodejs",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "openclaw",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "php",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "postgresql-dba",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "power-bi",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "product-design",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "product-manager",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "prompt-engineering",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "python",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "python-data-analysis",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "qa",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "r",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "r-programming",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "react",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "react-native",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "redis",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "ruby",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "ruby-on-rails",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "rust",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "scala",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "server-side-game-developer",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "shell-bash",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "software-architect",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "software-design-architecture",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "spring-boot",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "sql",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "swift-ui",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "system-design",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "technical-writer",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "terraform",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "typescript",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "ux-design",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "vibe-coding",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "vue",
+      "code": 404
+    },
+    {
+      "status": "fail",
+      "slug": "wordpress",
+      "code": 404
+    }
+  ]
+}

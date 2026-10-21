@@ -2,7 +2,7 @@ import type { Edge, Node } from '@xyflow/react'
 
 import type { OfficialRoadmapEdge, OfficialRoadmapNode } from '@/services/roadmapOfficialService'
 
-import { shouldHideOfficialNode } from './roadmapShLinks'
+import { shouldHideOfficialNode } from './roadmapShLinks.ts'
 
 export type NodeData = { label: string; nodeType: string; raw: OfficialRoadmapNode }
 
