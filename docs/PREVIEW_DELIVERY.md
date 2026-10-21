@@ -2,7 +2,7 @@
 
 | Surface | URL | Checkout path | Branch | SHA |
 |---------|-----|---------------|--------|-----|
-| **Delivery frontend** | http://127.0.0.1:5175/ | `c:\Users\Admin\OneDrive\Documents\cursor\jobready-roadmap-ui-clean\frontend` | `feat/roadmap-ui-clean` | `055b228` + local commits (run `git rev-parse HEAD`) |
+| **Delivery frontend** | http://127.0.0.1:5175/ | `c:\Users\Admin\OneDrive\Documents\cursor\jobready-roadmap-ui-clean\frontend` | `feat/roadmap-ui-clean` | `ca28b41c9317e3ae8332be6132c9ac545a30cf67` |
 | **Shared API (dev)** | http://127.0.0.1:8000/ | `c:\Users\Admin\OneDrive\Documents\cursor\New folder (5)\backend` | `feat/official-roadmaps-retro-ui` | `56ba9a6` |
 | **Local retro UI (not delivery)** | http://127.0.0.1:5173/ | `New folder (5)\frontend` | `feat/official-roadmaps-retro-ui` | `56ba9a6` + uncommitted WIP |
 
