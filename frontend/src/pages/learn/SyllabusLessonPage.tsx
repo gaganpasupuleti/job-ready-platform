@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Button } from '@/components/common/Button'
+import { StructuredExplanation } from '@/features/practice/StructuredExplanation'
 import { LearnSubnav } from '@/components/learn/LearnSubnav'
 import { SafeMarkdown } from '@/components/learn/SafeMarkdown'
 import {
@@ -156,7 +157,9 @@ export function SyllabusLessonPage() {
                     {result && (
                       <div className="mt-2 text-sm">
                         <p role="status">{result.correct ? 'Correct' : 'Not quite'}</p>
-                        <p className="mt-1">{result.explanation}</p>
+                        <div className="mt-1">
+                          <StructuredExplanation text={result.explanation} />
+                        </div>
                         <p className="mt-1 text-xs text-[var(--color-text-muted)]">{result.note}</p>
                       </div>
                     )}

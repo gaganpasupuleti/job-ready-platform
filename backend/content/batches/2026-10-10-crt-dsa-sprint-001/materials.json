@@ -1,0 +1,305 @@
+{
+  "version": 1,
+  "materials": [
+    {
+      "key": "crt-sprint-profit-loss",
+      "title": "Profit and loss on cost price",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 8,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "quantitative",
+        "crt"
+      ],
+      "objectives": [
+        "Compute profit from cost and selling price",
+        "Use cost price as the percentage base"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Profit and loss on cost price. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/crt-sprint-profit-loss.md",
+      "version": 1
+    },
+    {
+      "key": "crt-sprint-time-work",
+      "title": "Time and work rates",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 8,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "quantitative",
+        "crt"
+      ],
+      "objectives": [
+        "Write a one-day work rate",
+        "Multiply the rate by days worked"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Time and work rates. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/crt-sprint-time-work.md",
+      "version": 1
+    },
+    {
+      "key": "crt-sprint-probability",
+      "title": "Equally likely outcomes",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 6,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "quantitative",
+        "crt"
+      ],
+      "objectives": [
+        "List a sample space",
+        "Divide favorable outcomes by total outcomes"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Equally likely outcomes. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/crt-sprint-probability.md",
+      "version": 1
+    },
+    {
+      "key": "crt-sprint-syllogisms",
+      "title": "What a syllogism forces",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 10,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "logical-reasoning",
+        "crt"
+      ],
+      "objectives": [
+        "Separate forced conclusions from possible ones",
+        "Keep some, all, and none distinct"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "What a syllogism forces. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/crt-sprint-syllogisms.md",
+      "version": 1
+    },
+    {
+      "key": "crt-sprint-grammar",
+      "title": "Error spotting in short sentences",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 8,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "verbal",
+        "crt"
+      ],
+      "objectives": [
+        "Check verb form, comma placement, and articles",
+        "Agree neither-nor with the nearer subject"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Error spotting in short sentences. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/crt-sprint-grammar.md",
+      "version": 1
+    },
+    {
+      "key": "crt-sprint-vocabulary",
+      "title": "Synonyms and antonyms in context",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 8,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "verbal",
+        "crt"
+      ],
+      "objectives": [
+        "Match a word to the sentence",
+        "Separate synonyms from antonyms"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Synonyms and antonyms in context. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/crt-sprint-vocabulary.md",
+      "version": 1
+    },
+    {
+      "key": "crt-sprint-charts",
+      "title": "Bar charts and pie shares",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 8,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "data-interpretation",
+        "crt"
+      ],
+      "objectives": [
+        "Choose difference, maximum, angle, or percentage",
+        "Use 360 degrees for a full pie"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Bar charts and pie shares. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/crt-sprint-charts.md",
+      "version": 1
+    },
+    {
+      "key": "dsa-sprint-strings",
+      "title": "Scanning a string",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 12,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "strings",
+        "dsa"
+      ],
+      "objectives": [
+        "Reverse and scan with explicit edge cases",
+        "State time and extra memory"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Scanning a string. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/dsa-sprint-strings.md",
+      "version": 1
+    },
+    {
+      "key": "dsa-sprint-searching",
+      "title": "Linear and binary search",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 12,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "searching",
+        "dsa"
+      ],
+      "objectives": [
+        "Trace linear and binary search",
+        "Require sorted order before binary search"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Linear and binary search. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/dsa-sprint-searching.md",
+      "version": 1
+    },
+    {
+      "key": "dsa-sprint-complexity",
+      "title": "Checking a big-O claim",
+      "kind": "article",
+      "level": "beginner",
+      "audience": "Fresher",
+      "minutes": 10,
+      "families": [
+        "business-analyst"
+      ],
+      "skills": [
+        "complexity",
+        "dsa"
+      ],
+      "objectives": [
+        "Multiply nested loops",
+        "Drop constants and lower-order terms"
+      ],
+      "prerequisites": [],
+      "examples": [
+        "See the worked example in the article."
+      ],
+      "exercises": [
+        "Answer the practice questions linked from this lesson after reading the article."
+      ],
+      "summary": "Checking a big-O claim. The practice questions on the lesson use this article.",
+      "sources": [],
+      "body_file": "articles/dsa-sprint-complexity.md",
+      "version": 1
+    }
+  ]
+}

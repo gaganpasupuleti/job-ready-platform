@@ -1,0 +1,251 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "key": "syl-sprint-profit",
+      "track": "crt",
+      "track_title": "CRT / Aptitude",
+      "unit": "quantitative",
+      "unit_title": "Quantitative Aptitude",
+      "unit_position": 1,
+      "title": "Profit and loss on cost price",
+      "position": 3,
+      "status": "published",
+      "material_key": "crt-sprint-profit-loss",
+      "question_keys": [
+        "sprint1-pl-01",
+        "sprint1-pl-02",
+        "sprint1-pl-03"
+      ],
+      "prerequisites": [
+        "syl-crt-quant-percentages"
+      ],
+      "minutes": 8,
+      "video": null,
+      "version": 1
+    },
+    {
+      "key": "syl-sprint-time-work",
+      "track": "crt",
+      "track_title": "CRT / Aptitude",
+      "unit": "quantitative",
+      "unit_title": "Quantitative Aptitude",
+      "unit_position": 1,
+      "title": "Time and work rates",
+      "position": 4,
+      "status": "published",
+      "material_key": "crt-sprint-time-work",
+      "question_keys": [
+        "sprint1-tw-01",
+        "sprint1-tw-02"
+      ],
+      "prerequisites": [
+        "syl-sprint-profit"
+      ],
+      "minutes": 8,
+      "video": null,
+      "version": 1
+    },
+    {
+      "key": "syl-sprint-probability",
+      "track": "crt",
+      "track_title": "CRT / Aptitude",
+      "unit": "quantitative",
+      "unit_title": "Quantitative Aptitude",
+      "unit_position": 1,
+      "title": "Equally likely outcomes",
+      "position": 5,
+      "status": "published",
+      "material_key": "crt-sprint-probability",
+      "question_keys": [
+        "sprint1-pr-01"
+      ],
+      "prerequisites": [
+        "syl-sprint-time-work"
+      ],
+      "minutes": 6,
+      "video": null,
+      "version": 1
+    },
+    {
+      "key": "syl-crt-logical-syllogisms",
+      "track": "crt",
+      "track_title": "CRT / Aptitude",
+      "unit": "logical",
+      "unit_title": "Logical Reasoning",
+      "unit_position": 2,
+      "title": "Syllogisms",
+      "position": 2,
+      "status": "published",
+      "material_key": "crt-sprint-syllogisms",
+      "question_keys": [
+        "sprint1-syl-01",
+        "sprint1-syl-02",
+        "sprint1-syl-03",
+        "sprint1-syl-04",
+        "sprint1-syl-05"
+      ],
+      "prerequisites": [
+        "syl-crt-logical-patterns"
+      ],
+      "minutes": 10,
+      "video": null,
+      "version": 2
+    },
+    {
+      "key": "syl-crt-verbal-grammar",
+      "track": "crt",
+      "track_title": "CRT / Aptitude",
+      "unit": "verbal",
+      "unit_title": "Verbal Ability",
+      "unit_position": 3,
+      "title": "Error spotting",
+      "position": 2,
+      "status": "published",
+      "material_key": "crt-sprint-grammar",
+      "question_keys": [
+        "sprint1-gr-01",
+        "sprint1-gr-02",
+        "sprint1-gr-03",
+        "sprint1-gr-04",
+        "sprint1-gr-05"
+      ],
+      "prerequisites": [
+        "syl-crt-verbal-meaning"
+      ],
+      "minutes": 8,
+      "video": null,
+      "version": 2
+    },
+    {
+      "key": "syl-sprint-vocabulary",
+      "track": "crt",
+      "track_title": "CRT / Aptitude",
+      "unit": "verbal",
+      "unit_title": "Verbal Ability",
+      "unit_position": 3,
+      "title": "Synonyms and antonyms in context",
+      "position": 3,
+      "status": "published",
+      "material_key": "crt-sprint-vocabulary",
+      "question_keys": [
+        "sprint1-voc-01",
+        "sprint1-voc-02",
+        "sprint1-voc-03",
+        "sprint1-voc-04",
+        "sprint1-voc-05"
+      ],
+      "prerequisites": [
+        "syl-crt-verbal-grammar"
+      ],
+      "minutes": 8,
+      "video": null,
+      "version": 1
+    },
+    {
+      "key": "syl-crt-di-charts",
+      "track": "crt",
+      "track_title": "CRT / Aptitude",
+      "unit": "data-interpretation",
+      "unit_title": "Data Interpretation",
+      "unit_position": 4,
+      "title": "Bar charts and pie shares",
+      "position": 2,
+      "status": "published",
+      "material_key": "crt-sprint-charts",
+      "question_keys": [
+        "sprint1-ch-01",
+        "sprint1-ch-02",
+        "sprint1-ch-03",
+        "sprint1-ch-04",
+        "sprint1-ch-05"
+      ],
+      "prerequisites": [
+        "syl-crt-di-tables"
+      ],
+      "minutes": 8,
+      "video": null,
+      "version": 2
+    },
+    {
+      "key": "syl-sprint-complexity",
+      "track": "dsa",
+      "track_title": "DSA Foundations",
+      "unit": "complexity",
+      "unit_title": "Complexity",
+      "unit_position": 1,
+      "title": "Checking a big-O claim",
+      "position": 2,
+      "status": "published",
+      "material_key": "dsa-sprint-complexity",
+      "question_keys": [
+        "sprint1-cx-01",
+        "sprint1-cx-02",
+        "sprint1-cx-03",
+        "sprint1-cx-04",
+        "sprint1-cx-05"
+      ],
+      "prerequisites": [
+        "syl-dsa-complexity"
+      ],
+      "minutes": 10,
+      "video": null,
+      "version": 1
+    },
+    {
+      "key": "syl-sprint-strings",
+      "track": "dsa",
+      "track_title": "DSA Foundations",
+      "unit": "arrays-strings",
+      "unit_title": "Arrays and Strings",
+      "unit_position": 2,
+      "title": "Scanning a string",
+      "position": 2,
+      "status": "published",
+      "material_key": "dsa-sprint-strings",
+      "question_keys": [
+        "sprint1-str-01",
+        "sprint1-str-02",
+        "sprint1-str-03",
+        "sprint1-str-04",
+        "sprint1-str-05",
+        "sprint1-str-06",
+        "sprint1-str-07",
+        "sprint1-str-08",
+        "sprint1-str-09",
+        "sprint1-str-10"
+      ],
+      "prerequisites": [
+        "syl-dsa-arrays-strings"
+      ],
+      "minutes": 12,
+      "video": null,
+      "version": 1
+    },
+    {
+      "key": "syl-sprint-searching",
+      "track": "dsa",
+      "track_title": "DSA Foundations",
+      "unit": "searching-sorting",
+      "unit_title": "Searching and Sorting",
+      "unit_position": 3,
+      "title": "Linear and binary search",
+      "position": 2,
+      "status": "published",
+      "material_key": "dsa-sprint-searching",
+      "question_keys": [
+        "sprint1-sea-01",
+        "sprint1-sea-02",
+        "sprint1-sea-03",
+        "sprint1-sea-04",
+        "sprint1-sea-05"
+      ],
+      "prerequisites": [
+        "syl-dsa-arrays-strings"
+      ],
+      "minutes": 12,
+      "video": null,
+      "version": 1
+    }
+  ]
+}

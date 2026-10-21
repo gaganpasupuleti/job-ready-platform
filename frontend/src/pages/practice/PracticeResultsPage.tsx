@@ -5,6 +5,7 @@ import { Badge } from '@/components/common/Badge'
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
 import { CatalogMetrics } from '@/components/practice/CatalogMetrics'
+import { StructuredExplanation } from '@/features/practice/StructuredExplanation'
 import { fetchResults } from '@/services/practiceService'
 import { formatPercent } from '@/utils/cn'
 
@@ -89,7 +90,12 @@ export function PracticeResultsPage() {
                   Correct answer: {item.correct_option_texts.join(', ')}
                 </p>
                 {item.explanation && (
-                  <p className="mt-3 text-[var(--color-text)]">{item.explanation}</p>
+                  <div className="mt-3">
+                    <StructuredExplanation
+                      text={item.explanation}
+                      className="whitespace-pre-wrap text-sm text-[var(--color-text)]"
+                    />
+                  </div>
                 )}
               </div>
             </div>
