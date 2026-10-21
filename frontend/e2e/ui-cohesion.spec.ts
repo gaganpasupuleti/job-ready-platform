@@ -5,7 +5,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { execSync } from 'node:child_process'
+
 import { expect, test, type Page, type Route } from '@playwright/test'
+
+import { expectRenderedDarkTheme, setAppTheme } from './helpers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const graphFixture = JSON.parse(
@@ -135,13 +139,33 @@ async function installMocks(page: Page) {
 const viewports = [
   { name: '390', width: 390, height: 844 },
   { name: '768', width: 768, height: 900 },
+  { name: '1280', width: 1280, height: 800 },
   { name: '1366', width: 1366, height: 768 },
   { name: '1920', width: 1920, height: 900 },
 ] as const
 
+function captureMeta() {
+  let sha = process.env.UI_COHESION_SHA?.trim()
+  if (!sha) {
+    try {
+      sha = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim()
+    } catch {
+      sha = 'unknown'
+    }
+  }
+  return {
+    sha,
+    theme: 'mocked light + persisted dark (jrp-theme)',
+    data: 'mocked API',
+    viewports: viewports.map((vp) => ({ name: vp.name, width: vp.width, height: vp.height })),
+    capturedAt: new Date().toISOString(),
+  }
+}
+
 test.beforeAll(() => {
   fs.mkdirSync(AFTER, { recursive: true })
   if (fs.existsSync(BEFORE)) fs.mkdirSync(BEFORE, { recursive: true })
+  fs.writeFileSync(path.join(AFTER, 'meta.json'), JSON.stringify(captureMeta(), null, 2))
 })
 
 test.describe('UI cohesion (mocked)', () => {
@@ -181,8 +205,9 @@ test.describe('UI cohesion (mocked)', () => {
     await page.screenshot({ path: path.join(AFTER, 'roadmap-article-1366.png') })
 
     await page.emulateMedia({ colorScheme: 'dark' })
-    await page.evaluate(() => document.documentElement.classList.add('dark'))
+    await setAppTheme(page, 'dark')
     await page.goto('/jobs')
+    await expectRenderedDarkTheme(page)
     await page.screenshot({ path: path.join(AFTER, 'jobs-dark-1366.png') })
 
     await page.setViewportSize({ width: 390, height: 844 })

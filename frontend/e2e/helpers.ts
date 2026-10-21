@@ -488,3 +488,27 @@ export async function fillPromptEditor(page: Page, text: string) {
   await expect(area).toBeVisible({ timeout: 20_000 })
   await area.fill(text)
 }
+
+export function jobHubCard(page: Page, slug: string) {
+  return page.locator(`article.job-card-wrap[data-job-slug="${slug}"]`)
+}
+
+export function jobDetailRoot(page: Page, slug: string) {
+  return page.locator(`[data-job-detail-slug="${slug}"]`)
+}
+
+/** Persist theme the same way useTheme does (localStorage + html.dark). */
+export async function setAppTheme(page: Page, theme: 'light' | 'dark') {
+  await page.evaluate((mode) => {
+    localStorage.setItem('jrp-theme', mode)
+    document.documentElement.classList.toggle('dark', mode === 'dark')
+  }, theme)
+}
+
+export async function expectRenderedDarkTheme(page: Page) {
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  const onAccent = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue('--color-on-accent').trim(),
+  )
+  expect(onAccent.length).toBeGreaterThan(0)
+}

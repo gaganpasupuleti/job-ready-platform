@@ -47,7 +47,11 @@ export function JobCardView({
 
   if (compact) {
     return (
-      <article className="job-card-wrap job-card-wrap--compact">
+      <article
+        className="job-card-wrap job-card-wrap--compact"
+        data-job-id={job.id}
+        data-job-slug={job.slug}
+      >
         <div className="job-card-compact-head">
           <div className="job-card-compact-main min-w-0">
             <Link to={`/jobs/${job.slug}`} className="job-card-compact-title">
@@ -92,7 +96,7 @@ export function JobCardView({
   }
 
   return (
-    <article className="job-card-wrap">
+    <article className="job-card-wrap" data-job-id={job.id} data-job-slug={job.slug}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <Link to={`/jobs/${job.slug}`} className="text-[15px] font-semibold leading-snug text-[var(--color-text)] hover:underline">

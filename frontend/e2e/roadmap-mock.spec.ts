@@ -194,16 +194,60 @@ test.describe('roadmap mock UI', () => {
 
   test('jobs save failure surfaces (mocked)', async ({ page }) => {
     await installMocks(page)
-    await page.route('**/api/v1/jobs/*/save', (route) =>
-      route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ detail: 'fail' }) }),
-    )
+    let saveAttempts = 0
+    let hubSaved = false
+    await page.route('**/api/v1/jobs', async (route) => {
+      const url = new URL(route.request().url())
+      if (route.request().method() !== 'GET' || url.pathname !== '/api/v1/jobs') {
+        await route.fallback()
+        return
+      }
+      return json(route, 200, {
+        total: 1,
+        limit: 20,
+        page: 1,
+        items: [
+          {
+            id: 'job-1',
+            slug: 'role',
+            title: 'Python Developer',
+            company_name: 'Acme',
+            location_text: 'Remote',
+            experience_bucket: 'Mid',
+            work_mode: 'remote',
+            is_remote: true,
+            is_saved: hubSaved,
+            first_seen_at: '2026-10-01T00:00:00Z',
+            posted_at: '2026-10-01T00:00:00Z',
+            top_skills: ['Python'],
+            experience_min_years: 1,
+            experience_max_years: 3,
+            employment_type: 'full_time',
+          },
+        ],
+      })
+    })
+    await page.route('**/api/v1/jobs/*/save', (route) => {
+      saveAttempts += 1
+      if (saveAttempts === 1) {
+        return route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({ detail: 'fail' }),
+        })
+      }
+      hubSaved = true
+      return route.fulfill({ status: 204, body: '' })
+    })
     await page.setViewportSize({ width: 1366, height: 900 })
     await page.goto('/jobs')
-    const firstCard = page.locator('.job-card-wrap').first()
-    const saveBtn = firstCard.getByRole('button', { name: 'Save job' })
+    const card = page.locator('article.job-card-wrap[data-job-slug="role"]')
+    const saveBtn = card.getByRole('button', { name: 'Save job' })
     await expect(saveBtn).toBeVisible()
     await saveBtn.click()
     await expect(page.getByText(/could not update this saved job/i)).toBeVisible()
+    await page.getByRole('button', { name: /retry save/i }).click()
+    await expect(card.getByRole('button', { name: 'Remove from saved' })).toBeVisible()
     await page.screenshot({ path: path.join(SHOTS, 'jobs-save-error-1366.png'), fullPage: true })
   })
 })

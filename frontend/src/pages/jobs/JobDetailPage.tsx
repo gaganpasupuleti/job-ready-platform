@@ -99,7 +99,7 @@ export function JobDetailPage() {
     !data.application_status || data.application_status === 'preparing' || data.application_status === 'saved'
 
   return (
-    <div className="jobs-detail space-y-5">
+    <div className="jobs-detail space-y-5" data-job-detail-slug={data.slug} data-job-id={data.id}>
       <PracticeHeader backTo="/jobs" backLabel="Jobs" title={data.title} size="page">
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">{data.company_name}</p>
         <div className="mt-2 flex flex-wrap gap-2">

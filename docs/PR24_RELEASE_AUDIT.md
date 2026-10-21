@@ -1,66 +1,89 @@
 # PR #24 release audit — roadmap / UI only
 
 **Branch:** `feat/roadmap-ui-clean`  
-**Do not merge** until this checklist is green on the release SHA.  
+**Do not merge** until CI is green on the release SHA.  
 **Do not merge PR #23** into this release without explicit combined-scope sign-off.
 
-## #23 vs #24 (reconcile)
+## Runtime
 
-| Area | PR #23 (`feat/official-roadmaps-retro-ui`) | PR #24 (`feat/roadmap-ui-clean`) |
-|------|--------------------------------------------|----------------------------------|
-| Scope | Roadmaps + retro UI + **Power BI workshop** commits in branch history | Roadmap viewer + Jobs hub + nav cohesion **without** Power BI WIP |
-| `graphValidation.ts` | Present | Present (kept) |
-| More menu | Dropdown, no Explore sheet | Same (release target) |
-| Deploy env | Documented `VITE_API_BASE_URL` | Same (not `VITE_API_URL`) |
+- **Node.js 22+** (see `frontend/.nvmrc`, `package.json` `engines`, CI `node-version: "22"`).
+- Unit tests use `node --experimental-strip-types` (Node 22+ only).
 
-**Release vehicle:** #24 for roadmap/UI. Power BI stays on #23 / local WIP only.
+## #23 vs #24
 
-## Audit items (this pass)
+| Area | PR #23 | PR #24 |
+|------|--------|--------|
+| Scope | Roadmaps + retro UI + Power BI WIP | Roadmap viewer + Jobs hub + nav cohesion (no Power BI test file) |
+| Unit tests | Includes Power BI workshop tests when present | `roadmapOfficial`, `roadmapCatalogAudit`, `frontend-checks` only |
 
-| # | Item | Status |
-|---|------|--------|
-| 1 | AUTH-01 register link (`Create one`) + same-document switch | Code fix in `e2e/helpers.ts` |
-| 2 | Jobs save error + retry banner | `JobsHubPage` |
-| 3 | Jobs save E2E scoped to first card | `roadmap-mock.spec.ts` |
-| 4 | More menu focus + ui-cohesion More panel | `ExploreLauncher`, `ui-cohesion.spec.ts` |
-| 5 | Roadmap pan/zoom preserved on article/panel toggle | Removed layout resize refit |
-| 6 | Catalog auditor endpoint + auth + schema + pass rules | `audit-roadmap-catalog.mjs` → `/api/v1/roadmap/official/{slug}/graph` |
-| 7 | Dark theme action-link / ghost button contrast | `jobready-retro.css` |
-| 8 | Frontend unit tests in CI | `.github/workflows/ci.yml` |
-| 9 | `VITE_API_BASE_URL` in build/CI | Already in workflow; see `frontend/.env.example` |
-| 10 | Reconcile #23 / #24 | This doc |
-
-## Commands (release SHA)
+## Clean checkout verification
 
 ```powershell
 cd jobready-roadmap-ui-clean\frontend
+npm ci
 npm run lint
 npm run test:unit
-npm run build
-
-# Catalog (backend on :8000, seeded user):
-$env:ROADMAP_AUDIT_EMAIL="e2e.student@jobready.dev"
-$env:ROADMAP_AUDIT_PASSWORD="<from e2e manifest>"
-node scripts/audit-roadmap-catalog.mjs --api http://127.0.0.1:8000
-
-# Production build smoke (local):
-npm run build
 $env:VITE_API_BASE_URL="http://127.0.0.1:8000"
-npm run preview
+npm run build
+```
+
+## Catalog audit (authenticated)
+
+Endpoint: `GET /api/v1/roadmap/official/{slug}/graph`
+
+```powershell
+$env:ROADMAP_AUDIT_EMAIL="e2e.student@jobready.dev"
+$env:ROADMAP_AUDIT_PASSWORD="<from frontend/e2e/fixtures/seed-manifest.json>"
+node scripts/audit-roadmap-catalog.mjs --api http://127.0.0.1:8000
+```
+
+- Exit **2** if credentials are missing.
+- Exit **3** if the token is rejected or login fails.
+- Exit **1** if any slug fails graph validation or HTTP errors.
+- Report: `frontend/e2e/artifacts/roadmap-catalog-audit.json` (graph vs article per slug).
+
+## Production build smoke (not CI)
+
+Build must see production API URL **before** `vite build`. Serve `dist` with `vite preview` on a fixed port; point Playwright at that URL and skip the dev webserver.
+
+```powershell
+cd frontend
+$env:VITE_API_BASE_URL="http://127.0.0.1:8000"
+$env:VITE_ENABLE_DEV_LOGIN="false"
+npm run build
+npm run preview -- --host 127.0.0.1 --port 4173
+# separate shell:
+$env:E2E_BASE_URL="http://127.0.0.1:4173"
+$env:E2E_SKIP_WEBSERVER="1"
+$env:E2E_API_URL="http://127.0.0.1:8000"
 npx playwright test e2e/auth.spec.ts -g "AUTH-01" --project=desktop
-npx playwright test e2e/phase5-mock.spec.ts -g "More menu" --project=desktop
-npx playwright test e2e/roadmap-mock.spec.ts --project=desktop
+```
+
+Or: `powershell -File scripts/run-release-smoke.ps1`
+
+**Do not** run smoke with only the default `5173` dev server unless `E2E_BASE_URL` explicitly targets it.
+
+## UI cohesion screenshots
+
+```powershell
 npx playwright test e2e/ui-cohesion.spec.ts --project=desktop
 ```
 
-## Roadmap cache + articles (deploy)
+- Output: `frontend/e2e/artifacts/ui-cohesion/after/` (+ `meta.json` with SHA, viewports, mocked data).
+- Dark theme: `localStorage` key `jrp-theme` (not `classList.add('dark')` alone).
+- Viewports: 390, 768, 1280 (laptop), 1366, 1920.
 
-1. `alembic upgrade head` on target DB.
-2. `python backend/scripts/warm_roadmap_graph_cache.py` (or equivalent official graph warm).
-3. Confirm topic markdown/content paths for official slugs on that environment.
+## Blockers (update on each release SHA)
 
-## Remaining blockers (honest)
+- Full green **GitHub Actions CI** on the candidate commit.
+- **Authenticated catalog** pass/fail totals recorded below.
+- **Production preview smoke** with real backend when available.
 
-- **Full catalog pass** requires authenticated backend with warmed graphs; expect some slugs to fail validation until cache/content is complete.
-- **Full Playwright desktop suite** must be green on CI for the release SHA (not waived).
-- **Production smoke** is not automated in CI yet; run manually on `vite preview` build before deploy.
+### Evidence log (fill after run)
+
+| Check | SHA / link | Result |
+|-------|------------|--------|
+| CI | | |
+| Catalog `graphPass` / `graphFail` | | |
+| Preview smoke | | |
+| Screenshots | `e2e/artifacts/ui-cohesion/after/meta.json` | |

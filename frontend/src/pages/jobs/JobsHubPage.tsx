@@ -44,7 +44,7 @@ export function JobsHubPage() {
   const [showAllFamilies, setShowAllFamilies] = useState(false)
   const [customDates, setCustomDates] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
-  const [saveErrorJobId, setSaveErrorJobId] = useState<string | null>(null)
+  const [saveErrorOp, setSaveErrorOp] = useState<{ jobId: string; isSaved: boolean } | null>(null)
 
   const page = Number(searchParams.get('page') ?? '1') || 1
   const sort = searchParams.get('sort') ?? 'added'
@@ -143,13 +143,13 @@ export function JobsHubPage() {
       else await saveJob(jobId)
     },
     onSuccess: () => {
-      setSaveErrorJobId(null)
+      setSaveErrorOp(null)
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
       queryClient.invalidateQueries({ queryKey: ['jobs-summary'] })
       queryClient.invalidateQueries({ queryKey: ['jobs-saved'] })
     },
     onError: (_error, variables) => {
-      setSaveErrorJobId(variables.jobId)
+      setSaveErrorOp({ jobId: variables.jobId, isSaved: variables.isSaved })
     },
   })
 
@@ -436,7 +436,7 @@ export function JobsHubPage() {
         </div>
       </FilterDisclosure>
 
-      {saveErrorJobId ? (
+      {saveErrorOp ? (
         <div className="jobs-save-error" role="alert">
           <p>Could not update this saved job. Try again.</p>
           <Button
@@ -444,17 +444,15 @@ export function JobsHubPage() {
             size="sm"
             variant="secondary"
             onClick={() => {
-              const job = data?.items.find((row) => row.id === saveErrorJobId)
-              if (!job) {
-                setSaveErrorJobId(null)
-                return
-              }
-              saveMutation.mutate({ jobId: job.id, isSaved: Boolean(job.is_saved) })
+              saveMutation.mutate({
+                jobId: saveErrorOp.jobId,
+                isSaved: saveErrorOp.isSaved,
+              })
             }}
           >
             Retry save
           </Button>
-          <Button type="button" size="sm" variant="ghost" onClick={() => setSaveErrorJobId(null)}>
+          <Button type="button" size="sm" variant="ghost" onClick={() => setSaveErrorOp(null)}>
             Dismiss
           </Button>
         </div>

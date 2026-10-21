@@ -34,7 +34,7 @@ export default defineConfig({
     : {
         command: 'npm run dev -- --host 127.0.0.1 --port 5173',
         url: baseURL,
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: !process.env.CI && !process.env.E2E_FORCE_FRESH_WEBSERVER,
         timeout: 120_000,
       },
 })
