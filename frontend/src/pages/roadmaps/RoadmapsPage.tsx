@@ -52,7 +52,7 @@ export function RoadmapsPage() {
           <h1>Career roadmaps</h1>
           <p className="mt-1 max-w-2xl text-sm text-[var(--color-text-muted)]">
             {data?.meta?.total
-              ? `${data.meta.total} paths in catalog. Maps load from JobReady; articles appear when syllabus content is provisioned.`
+              ? `${data.meta.total} paths in catalog. ${data.meta.with_graph_cache ?? '—'} cached on server; others fetch from roadmap.sh on first open. Articles need local syllabus content.`
               : 'Interactive career paths with map and topic notes.'}
           </p>
         </div>
@@ -107,19 +107,21 @@ export function RoadmapsPage() {
           <li key={item.family_slug}>
             <Link
               to={`/roadmaps/${item.family_slug}`}
-              className="roadmap-catalog-card block h-full rounded-[var(--jr-radius,2px)] border-2 border-[var(--jr-ink,#0a0a0a)] bg-[var(--jr-surface,#fffef8)] p-4 shadow-[2px_2px_0_#0a0a0a] no-underline transition-transform hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#0a0a0a]"
+              className="roadmap-catalog-card block h-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 no-underline transition-colors hover:border-[var(--color-border-strong)]"
             >
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-base font-extrabold text-[var(--color-text)]">{item.title}</h2>
+                <h2 className="text-base font-semibold text-[var(--color-text)]">{item.title}</h2>
                 {item.preview_only ? <Badge variant="warning">Preview</Badge> : null}
                 {!item.student_eligible ? <Badge variant="default">Staff</Badge> : null}
-                {item.source === 'official' || item.source === 'roadmap.sh' ? (
-                  <Badge variant="success">Map</Badge>
+                {item.graph_available === false ? (
+                  <Badge variant="warning">Fetch on open</Badge>
+                ) : item.source === 'official' || item.source === 'roadmap.sh' ? (
+                  <Badge variant="success">Cached map</Badge>
                 ) : null}
               </div>
               <p className="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">{item.description}</p>
               <p className="mt-3 text-xs text-[var(--color-text-subtle)]">
-                {item.articles_available ? 'Map + articles' : 'Map only'}
+                {item.articles_available ? 'Map + articles' : 'Map only (articles not provisioned)'}
               </p>
               <span className="mt-3 inline-block text-sm font-semibold text-[var(--color-accent)]">
                 Open roadmap →

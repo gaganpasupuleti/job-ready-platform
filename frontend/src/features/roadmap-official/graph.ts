@@ -6,6 +6,27 @@ import { shouldHideOfficialNode } from './roadmapShLinks.ts'
 
 export type NodeData = { label: string; nodeType: string; raw: OfficialRoadmapNode }
 
+function nodeDimensions(
+  raw: OfficialRoadmapNode,
+  nodeType: string,
+  label: string,
+): { width?: number; height?: number } {
+  const width = raw.width ?? raw.measured?.width
+  const height = raw.height ?? raw.measured?.height
+  if (width && height) return { width, height }
+  if (nodeType !== 'topic' && nodeType !== 'subtopic' && nodeType !== 'button') {
+    return { width: width ?? undefined, height: height ?? undefined }
+  }
+  const chars = Math.max(label.length, 8)
+  const estWidth = Math.min(280, Math.max(120, Math.ceil(chars * 7.2)))
+  const lines = Math.ceil((chars * 7.2) / estWidth)
+  const estHeight = Math.max(36, 28 + lines * 16)
+  return {
+    width: width ?? estWidth,
+    height: height ?? estHeight,
+  }
+}
+
 export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
   if (!raw.position) return null
   const nodeType = raw.type ?? 'default'
@@ -58,13 +79,15 @@ export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
   const label = raw.data?.label?.trim()
   if (!label && nodeType !== 'paragraph') return null
 
+  const size = nodeDimensions(raw, nodeType, label ?? '')
+
   return {
     id: raw.id,
     type: 'roadmap',
     position: { ...raw.position },
     data: { label: label ?? '', nodeType, raw },
-    width: width ?? undefined,
-    height: height ?? undefined,
+    width: size.width,
+    height: size.height,
     draggable: false,
     selectable: true,
   }

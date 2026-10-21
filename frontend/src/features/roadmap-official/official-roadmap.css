@@ -126,6 +126,8 @@
 }
 
 .ors-outline-panel {
+  position: relative;
+  z-index: 1;
   min-height: 0;
   overflow: auto;
   padding: 0.5rem 0.65rem;
@@ -134,12 +136,16 @@
 }
 
 .ors-canvas {
+  position: relative;
+  z-index: 0;
   min-height: min(52vh, 520px);
   min-width: 0;
   flex: 1;
   height: 100%;
+  overflow: hidden;
   background: var(--ors-paper);
   cursor: grab;
+  contain: layout paint;
 }
 
 .ors-flow-host,
@@ -272,6 +278,17 @@
   color: var(--ors-ink);
 }
 
+.ors-canvas .react-flow__node {
+  overflow: visible;
+}
+
+.ors-node-text {
+  display: block;
+  width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .ors-node {
   display: flex;
   align-items: center;
@@ -285,6 +302,7 @@
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  min-width: 0;
   cursor: pointer;
   color: var(--ors-ink);
   background: var(--color-surface);

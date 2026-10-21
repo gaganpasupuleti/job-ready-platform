@@ -111,7 +111,7 @@ export function RoadmapFlowCanvas({
   const snapshotRef = useRef(cloneGraph(initialNodes, initialEdges))
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const { fitView } = useReactFlow()
+  const { fitView, getNodes, getEdges } = useReactFlow()
   const fittedGraphKeyRef = useRef<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const dragMovedRef = useRef(false)
@@ -140,15 +140,24 @@ export function RoadmapFlowCanvas({
     setNodes(applyNodesDraggable(base.nodes, layoutLocked))
     setEdges(base.edges.map((edge) => ({ ...edge })))
     fittedGraphKeyRef.current = null
-  }, [graphKey, initialNodes, initialEdges, setNodes, setEdges, layoutLocked])
+  }, [graphKey, initialNodes, initialEdges, setNodes, setEdges])
 
   useEffect(() => {
     setNodes((current) => applyNodesDraggable(current, layoutLocked))
   }, [layoutLocked, setNodes])
 
-  const persistLayout = useCallback(() => {
-    layoutSessions.set(graphKey, cloneGraph(nodes, edges))
-  }, [graphKey, nodes, edges])
+  useEffect(() => {
+    if (!selectedNodeId) {
+      setNodes((current) => current.map((node) => (node.selected ? { ...node, selected: false } : node)))
+      return
+    }
+    setNodes((current) =>
+      current.map((node) => ({
+        ...node,
+        selected: node.id === selectedNodeId,
+      })),
+    )
+  }, [selectedNodeId, setNodes])
 
   useEffect(() => {
     const el = containerRef.current
@@ -199,15 +208,6 @@ export function RoadmapFlowCanvas({
     [edges, reduceMotion],
   )
 
-  const displayNodes = useMemo(
-    () =>
-      nodes.map((node) => ({
-        ...node,
-        selected: selectedNodeId ? node.id === selectedNodeId : node.selected,
-      })),
-    [nodes, selectedNodeId],
-  )
-
   const onNodeDragStart = useCallback(() => {
     dragMovedRef.current = false
   }, [])
@@ -217,11 +217,11 @@ export function RoadmapFlowCanvas({
   }, [])
 
   const onNodeDragStop = useCallback(() => {
-    persistLayout()
+    layoutSessions.set(graphKey, cloneGraph(getNodes(), getEdges()))
     window.setTimeout(() => {
       dragMovedRef.current = false
     }, 0)
-  }, [persistLayout])
+  }, [graphKey, getNodes, getEdges])
 
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
@@ -259,7 +259,7 @@ export function RoadmapFlowCanvas({
   return (
     <div ref={containerRef} className="ors-flow-host">
       <ReactFlow
-        nodes={displayNodes}
+        nodes={nodes}
         edges={displayEdges}
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChangeWrapped}
@@ -269,11 +269,14 @@ export function RoadmapFlowCanvas({
         onNodeDrag={onNodeDrag}
         onNodeDragStop={onNodeDragStop}
         nodesDraggable={!layoutLocked}
-        nodeDragThreshold={6}
+        nodeDragThreshold={10}
+        autoPanOnNodeDrag={false}
+        onlyRenderVisibleElements
         panOnDrag
         panOnScroll
         selectNodesOnDrag={false}
         zoomOnScroll
+        zoomOnPinch
         nodesConnectable={false}
         elementsSelectable
         deleteKeyCode={null}
