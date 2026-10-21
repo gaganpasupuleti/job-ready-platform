@@ -103,6 +103,7 @@ export function JobsHubPage() {
     queryKey: ['job-family-counts', uid, countFilters],
     queryFn: () => fetchJobFamilyCounts(countFilters),
     enabled: Boolean(uid),
+    placeholderData: (previous) => previous,
   })
 
   const options = useQuery({
@@ -123,11 +124,7 @@ export function JobsHubPage() {
     enabled: Boolean(uid),
   })
 
-  const pills = useMemo(() => {
-    const rows = families.data?.families ?? []
-    if (!family) return rows
-    return [...rows].sort((left, right) => Number(right.id === family) - Number(left.id === family))
-  }, [families.data, family])
+  const pills = useMemo(() => families.data?.families ?? [], [families.data])
 
   const visiblePills = useMemo(() => {
     if (showAllFamilies) return pills
@@ -139,21 +136,15 @@ export function JobsHubPage() {
     return head
   }, [pills, showAllFamilies, family])
 
-  const [saveError, setSaveError] = useState<string | null>(null)
-
   const saveMutation = useMutation({
     mutationFn: async ({ jobId, isSaved }: { jobId: string; isSaved: boolean }) => {
       if (isSaved) await unsaveJob(jobId)
       else await saveJob(jobId)
     },
-    onMutate: () => setSaveError(null),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
       queryClient.invalidateQueries({ queryKey: ['jobs-summary'] })
       queryClient.invalidateQueries({ queryKey: ['jobs-saved'] })
-    },
-    onError: () => {
-      setSaveError('Could not update this saved job. Please try again.')
     },
   })
 
@@ -211,9 +202,11 @@ export function JobsHubPage() {
     <div className="module-page jobs-portal space-y-4">
       <PageIntro
         title="Jobs"
+        titleInSubheader
         description="Browse openings, save roles, and track applications — live listings only."
       />
 
+      <div className="jobs-portal-surface">
       <nav className="jobs-tabs" aria-label="Jobs sections">
         <Link to="/jobs" className="active" aria-current="page">
           Browse
@@ -268,7 +261,7 @@ export function JobsHubPage() {
       </section>
 
       <section className="jobs-family-panel" aria-label="Job families">
-        {families.isLoading ? (
+        {families.isLoading && !families.data ? (
           <p className="jobs-family-status" role="status">
             Loading role counts
           </p>
@@ -314,6 +307,7 @@ export function JobsHubPage() {
           </button>
         )}
       </section>
+      </div>
 
       <FilterDisclosure
         title="Search & filters"
@@ -432,18 +426,6 @@ export function JobsHubPage() {
           <p className="text-sm text-[var(--color-text-muted)]">
             {data.total} job{data.total !== 1 ? 's' : ''} found
           </p>
-          {saveError || saveMutation.isError ? (
-            <p className="text-sm text-[var(--color-danger)]" role="alert">
-              {saveError ?? 'Could not update this saved job. Please try again.'}{' '}
-              <button
-                type="button"
-                className="font-semibold underline"
-                onClick={() => setSaveError(null)}
-              >
-                Dismiss
-              </button>
-            </p>
-          ) : null}
           <div className="jobs-results-list">
             {data.items.map((job) => (
               <JobCardView
