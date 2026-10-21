@@ -154,6 +154,14 @@
   min-height: inherit;
 }
 
+.ors-canvas .react-flow__node.draggable {
+  cursor: grab;
+}
+
+.ors-canvas .react-flow__node.draggable:active {
+  cursor: grabbing;
+}
+
 .ors-canvas .react-flow__pane:active {
   cursor: grabbing;
 }

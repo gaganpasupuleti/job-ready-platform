@@ -272,6 +272,7 @@ export function RoadmapFlowCanvas({
         nodeDragThreshold={6}
         panOnDrag
         panOnScroll
+        selectNodesOnDrag={false}
         zoomOnScroll
         nodesConnectable={false}
         elementsSelectable
