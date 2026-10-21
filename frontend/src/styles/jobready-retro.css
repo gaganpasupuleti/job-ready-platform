@@ -384,6 +384,44 @@ h3,
   background: linear-gradient(180deg, var(--jr-paper-top), var(--jr-paper-bottom));
 }
 
+.dark .jr-action-link {
+  color: #1a1814;
+}
+
+.dark .jr-action-link--secondary {
+  color: var(--jr-ink);
+  border-color: color-mix(in srgb, var(--jr-ink) 28%, transparent);
+  background: var(--jr-surface);
+}
+
+.dark .jr-btn[data-variant='ghost'] {
+  color: var(--jr-ink);
+}
+
+.dark .jr-btn[data-variant='secondary'] {
+  color: var(--jr-ink);
+  border-color: color-mix(in srgb, var(--jr-ink) 28%, transparent);
+}
+
+.jobs-save-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--color-danger) 45%, transparent);
+  border-radius: var(--jr-radius);
+  background: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+  font-size: 0.8125rem;
+  color: var(--color-text);
+}
+
+.jobs-save-error p {
+  margin: 0;
+  flex: 1 1 12rem;
+}
+
 .job-card-details-link {
   display: inline-flex;
   align-items: center;

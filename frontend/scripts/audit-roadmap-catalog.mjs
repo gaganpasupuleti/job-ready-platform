@@ -1,6 +1,10 @@
 /**
- * Catalog-wide graph audit (Node). Requires backend on DEV_API or fetches bundled JSON only.
- * Usage: node scripts/audit-roadmap-catalog.mjs [--api http://127.0.0.1:8000]
+ * Catalog-wide official roadmap graph audit.
+ *
+ * Usage:
+ *   node scripts/audit-roadmap-catalog.mjs --api http://127.0.0.1:8000
+ *   ROADMAP_AUDIT_TOKEN=<jwt> node scripts/audit-roadmap-catalog.mjs
+ *   ROADMAP_AUDIT_EMAIL=... ROADMAP_AUDIT_PASSWORD=... node scripts/audit-roadmap-catalog.mjs
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -68,19 +72,49 @@ function auditGraph(slug, payload) {
   }
 }
 
-async function fetchGraph(slug) {
-  const res = await fetch(`${apiBase}/api/v1/roadmaps/${slug}/graph`, {
-    headers: { Accept: 'application/json' },
+async function resolveAuthHeaders() {
+  const token = process.env.ROADMAP_AUDIT_TOKEN?.trim()
+  if (token) return { Authorization: `Bearer ${token}` }
+
+  const email = process.env.ROADMAP_AUDIT_EMAIL?.trim()
+  const password = process.env.ROADMAP_AUDIT_PASSWORD
+  if (!email || !password) return {}
+
+  const res = await fetch(`${apiBase}/api/v1/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ email, password }),
   })
-  if (res.status === 401 || res.status === 403) return { status: 'auth', slug }
+  if (!res.ok) {
+    throw new Error(`audit login failed: HTTP ${res.status}`)
+  }
+  const body = await res.json()
+  if (!body?.access_token) throw new Error('audit login missing access_token')
+  return { Authorization: `Bearer ${body.access_token}` }
+}
+
+async function fetchGraph(slug, authHeaders) {
+  const url = `${apiBase}/api/v1/roadmap/official/${encodeURIComponent(slug)}/graph`
+  const res = await fetch(url, {
+    headers: { Accept: 'application/json', ...authHeaders },
+  })
+  if (res.status === 401 || res.status === 403) return { status: 'auth', slug, code: res.status }
   if (!res.ok) return { status: 'fail', slug, code: res.status }
   const data = await res.json()
-  return { status: 'ok', slug, audit: auditGraph(slug, data) }
+  if (!data || !Array.isArray(data.nodes) || !Array.isArray(data.edges)) {
+    return { status: 'fail', slug, code: 'schema', detail: 'nodes/edges must be arrays' }
+  }
+  const audit = auditGraph(slug, data)
+  const ok = audit.nodeCount > 0 && audit.issueCount === 0
+  return { status: ok ? 'pass' : 'fail', slug, audit }
 }
 
 async function main() {
   const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'))
-  const slugs = (catalog.roadmaps ?? catalog.items ?? []).map((r) => r.family_slug ?? r.slug).filter(Boolean)
+  const slugs = (catalog.roadmaps ?? catalog.items ?? [])
+    .map((r) => r.family_slug ?? r.slug)
+    .filter(Boolean)
+  const authHeaders = await resolveAuthHeaders()
   const results = { pass: 0, fail: 0, auth: 0, unverified: 0, rows: [] }
 
   const concurrency = 4
@@ -89,14 +123,14 @@ async function main() {
     while (i < slugs.length) {
       const slug = slugs[i++]
       try {
-        const row = await fetchGraph(slug)
+        const row = await fetchGraph(slug, authHeaders)
         results.rows.push(row)
-        if (row.status === 'ok') results.pass++
+        if (row.status === 'pass') results.pass++
         else if (row.status === 'auth') results.auth++
         else results.fail++
-      } catch {
+      } catch (err) {
         results.unverified++
-        results.rows.push({ status: 'error', slug })
+        results.rows.push({ status: 'error', slug, detail: String(err) })
       }
     }
   }
@@ -104,8 +138,43 @@ async function main() {
 
   const outPath = path.resolve(__dirname, '../e2e/artifacts/roadmap-catalog-audit.json')
   fs.mkdirSync(path.dirname(outPath), { recursive: true })
-  fs.writeFileSync(outPath, JSON.stringify({ apiBase, at: new Date().toISOString(), totals: results, rows: results.rows }, null, 2))
-  console.log(JSON.stringify({ totals: { pass: results.pass, fail: results.fail, auth: results.auth, unverified: results.unverified }, outPath }))
+  fs.writeFileSync(
+    outPath,
+    JSON.stringify(
+      {
+        apiBase,
+        authenticated: Boolean(authHeaders.Authorization),
+        at: new Date().toISOString(),
+        totals: {
+          pass: results.pass,
+          fail: results.fail,
+          auth: results.auth,
+          unverified: results.unverified,
+          slugs: slugs.length,
+        },
+        rows: results.rows,
+      },
+      null,
+      2,
+    ),
+  )
+  console.log(
+    JSON.stringify({
+      totals: {
+        pass: results.pass,
+        fail: results.fail,
+        auth: results.auth,
+        unverified: results.unverified,
+        slugs: slugs.length,
+      },
+      outPath,
+    }),
+  )
+  if (results.auth > 0 && !authHeaders.Authorization) {
+    console.error('Set ROADMAP_AUDIT_TOKEN or ROADMAP_AUDIT_EMAIL/PASSWORD for authenticated audit.')
+    process.exit(2)
+  }
+  if (results.fail > 0 || results.unverified > 0) process.exit(1)
 }
 
 main().catch((err) => {

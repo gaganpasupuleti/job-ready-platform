@@ -39,18 +39,14 @@ function roadmapOverviewFitOptions(reduceMotion: boolean, durationMs = 220): Fit
 
 function RoadmapViewportFit({
   graphKey,
-  viewportLayoutKey,
   focusNodeId,
   reduceMotion,
   resetToken,
-  hostRef,
 }: {
   graphKey: string
-  viewportLayoutKey: string
   focusNodeId?: string | null
   reduceMotion: boolean
   resetToken: number
-  hostRef: React.RefObject<HTMLDivElement | null>
 }) {
   const { fitView, getNodes } = useReactFlow()
   const nodesInitialized = useNodesInitialized()
@@ -67,35 +63,16 @@ function RoadmapViewportFit({
 
   useEffect(() => {
     if (!nodesInitialized) return
-    const scope = `${graphKey}:${viewportLayoutKey}`
-    if (fitScopeRef.current === scope) return
-    fitScopeRef.current = scope
+    if (fitScopeRef.current === graphKey) return
+    fitScopeRef.current = graphKey
     const run = () => fitOverview()
     requestAnimationFrame(() => requestAnimationFrame(run))
-  }, [graphKey, viewportLayoutKey, nodesInitialized, fitOverview])
+  }, [graphKey, nodesInitialized, fitOverview])
 
   useEffect(() => {
     if (!nodesInitialized || resetToken === 0) return
     requestAnimationFrame(() => fitOverview())
   }, [resetToken, nodesInitialized, fitOverview])
-
-  useEffect(() => {
-    const el = hostRef.current
-    if (!el || !nodesInitialized) return
-    let timer: number | undefined
-    const observer = new ResizeObserver(() => {
-      window.clearTimeout(timer)
-      timer = window.setTimeout(() => {
-        if (focusNodeId) return
-        fitOverview()
-      }, 120)
-    })
-    observer.observe(el)
-    return () => {
-      observer.disconnect()
-      window.clearTimeout(timer)
-    }
-  }, [hostRef, nodesInitialized, fitOverview, focusNodeId])
 
   useEffect(() => {
     if (!focusNodeId || !nodesInitialized) return
@@ -190,8 +167,6 @@ interface RoadmapFlowCanvasProps {
   onRoadmapNavigate: (path: string) => void
   layoutLocked?: boolean
   allowedSlugs?: ReadonlySet<string>
-  /** Changes when side panels open/close so the map can re-fit the canvas. */
-  viewportLayoutKey?: string
 }
 
 export function RoadmapFlowCanvas({
@@ -204,7 +179,6 @@ export function RoadmapFlowCanvas({
   onRoadmapNavigate,
   layoutLocked = false,
   allowedSlugs,
-  viewportLayoutKey = 'default',
 }: RoadmapFlowCanvasProps) {
   const [reduceMotion, setReduceMotion] = useState(false)
   const [minimapOpen, setMinimapOpen] = useState(false)
@@ -360,11 +334,9 @@ export function RoadmapFlowCanvas({
         />
         <RoadmapViewportFit
           graphKey={graphKey}
-          viewportLayoutKey={viewportLayoutKey}
           focusNodeId={focusNodeId}
           reduceMotion={reduceMotion}
           resetToken={resetToken}
-          hostRef={containerRef}
         />
         <RoadmapControls
           onReset={resetLayout}

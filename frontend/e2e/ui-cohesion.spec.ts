@@ -161,9 +161,10 @@ test.describe('UI cohesion (mocked)', () => {
 
     await page.setViewportSize({ width: 1366, height: 768 })
     await page.goto('/jobs')
-    await page.getByRole('button', { name: 'Explore' }).first().click()
-    await expect(page.locator('.explore-nav:not([hidden]) .explore-search')).toBeVisible()
-    await page.screenshot({ path: path.join(AFTER, 'explore-open-1366.png') })
+    await page.getByRole('button', { name: 'More' }).click()
+    await expect(page.locator('#more-mega-panel')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'SQL' }).first()).toBeVisible()
+    await page.screenshot({ path: path.join(AFTER, 'more-open-1366.png') })
     await page.keyboard.press('Escape')
 
     await page.getByRole('button', { name: /Account menu/i }).click()

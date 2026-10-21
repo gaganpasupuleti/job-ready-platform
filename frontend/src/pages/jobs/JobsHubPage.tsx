@@ -44,6 +44,7 @@ export function JobsHubPage() {
   const [showAllFamilies, setShowAllFamilies] = useState(false)
   const [customDates, setCustomDates] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const [saveErrorJobId, setSaveErrorJobId] = useState<string | null>(null)
 
   const page = Number(searchParams.get('page') ?? '1') || 1
   const sort = searchParams.get('sort') ?? 'added'
@@ -142,9 +143,13 @@ export function JobsHubPage() {
       else await saveJob(jobId)
     },
     onSuccess: () => {
+      setSaveErrorJobId(null)
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
       queryClient.invalidateQueries({ queryKey: ['jobs-summary'] })
       queryClient.invalidateQueries({ queryKey: ['jobs-saved'] })
+    },
+    onError: (_error, variables) => {
+      setSaveErrorJobId(variables.jobId)
     },
   })
 
@@ -431,6 +436,30 @@ export function JobsHubPage() {
         </div>
       </FilterDisclosure>
 
+      {saveErrorJobId ? (
+        <div className="jobs-save-error" role="alert">
+          <p>Could not update this saved job. Try again.</p>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() => {
+              const job = data?.items.find((row) => row.id === saveErrorJobId)
+              if (!job) {
+                setSaveErrorJobId(null)
+                return
+              }
+              saveMutation.mutate({ jobId: job.id, isSaved: Boolean(job.is_saved) })
+            }}
+          >
+            Retry save
+          </Button>
+          <Button type="button" size="sm" variant="ghost" onClick={() => setSaveErrorJobId(null)}>
+            Dismiss
+          </Button>
+        </div>
+      ) : null}
+
       {isLoading ? (
         <LoadingState label="Loading jobs" />
       ) : error ? (
@@ -445,7 +474,7 @@ export function JobsHubPage() {
               <JobCardView
                 key={job.id}
                 job={job}
-                saving={saveMutation.isPending}
+                saving={saveMutation.isPending && saveMutation.variables?.jobId === job.id}
                 onToggleSave={() =>
                   saveMutation.mutate({ jobId: job.id, isSaved: Boolean(job.is_saved) })
                 }

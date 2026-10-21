@@ -41,7 +41,7 @@
    cd backend
    python scripts/warm_roadmap_graph_cache.py
    ```
-4. Deploy backend + frontend; set `VITE_API_URL` / Google client ID per existing runbook.
+4. Deploy backend + frontend; set `VITE_API_BASE_URL` (and Google client ID) per existing runbook.
 5. Smoke: `/jobs` (browse + family pills), `/roadmaps` (catalog), `/roadmaps/api-design` (fit view + topic click), **More** menu destinations.
 
 ## Post-merge

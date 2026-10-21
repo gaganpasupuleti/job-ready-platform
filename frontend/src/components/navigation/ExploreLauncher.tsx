@@ -70,7 +70,14 @@ export function MoreMenu({
 }: MoreMenuProps) {
   const location = useLocation()
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
   const moreActive = isExploreRouteActive(location.pathname, isAdmin)
+
+  useEffect(() => {
+    if (!open || mobileInline) return
+    const firstLink = panelRef.current?.querySelector<HTMLAnchorElement>('a.more-pill')
+    firstLink?.focus()
+  }, [open, mobileInline])
 
   useEffect(() => {
     if (!open || mobileInline) return
@@ -112,7 +119,7 @@ export function MoreMenu({
         <ChevronDown className="more-chevron" aria-hidden />
       </button>
       {open ? (
-        <div id="more-mega-panel" className="more-mega-popover">
+        <div id="more-mega-panel" ref={panelRef} className="more-mega-popover">
           <MoreDestinationsPanel isAdmin={isAdmin} onNavigate={close} />
         </div>
       ) : null}
