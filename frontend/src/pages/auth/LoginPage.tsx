@@ -63,68 +63,81 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-[var(--color-surface-muted)] px-4 py-10">
-      <div className="w-full max-w-md">
-        <div className="new-brand mb-8 justify-center sm:justify-start">
-          <Logo />
-        </div>
-        <section className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 sm:p-8">
-          <h1 className="text-xl font-semibold tracking-tight text-[var(--color-text)]">Sign in</h1>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-            Access your learning desk, practice, and jobs workspace.
-          </p>
-          {DEV_AUTO_LOGIN && (
-            <p className="mt-3 rounded-[var(--radius-control)] border border-dashed border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-xs text-[var(--color-text-subtle)]">
-              Dev mode: credentials pre-filled — click Sign in to auto-login.
-            </p>
-          )}
-          <div className="mt-6">
-            <GoogleSignInButton disabled={loading} onCredential={handleGoogle} />
+    <div className="auth-shell">
+      <div className="auth-shell-inner">
+        <aside className="auth-shell-aside" aria-hidden={false}>
+          <Link to="/" className="auth-shell-brand">
+            <Logo />
+          </Link>
+          <h1>Your job prep workspace</h1>
+          <p>Practice, roadmaps, library resources, and live job listings in one place—built for students and career switchers.</p>
+          <ul className="auth-shell-points">
+            <li>Track applications and saved roles</li>
+            <li>SQL, coding, and aptitude practice</li>
+            <li>Official career roadmaps and reading lists</li>
+          </ul>
+        </aside>
+
+        <div>
+          <div className="auth-shell-mobile-brand">
+            <Link to="/" className="auth-shell-brand" aria-label="JobReady home">
+              <Logo />
+            </Link>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <FieldLabel htmlFor="login-email">Email</FieldLabel>
-              <Input
-                id="login-email"
-                type="email"
-                required
-                autoComplete="username"
-                placeholder="you@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                aria-invalid={Boolean(error)}
-              />
-            </div>
-            <div>
-              <FieldLabel htmlFor="login-password">Password</FieldLabel>
-              <Input
-                id="login-password"
-                type="password"
-                required
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                aria-invalid={Boolean(error)}
-              />
-            </div>
-            {error && (
-              <p className="text-xs text-[var(--color-danger)]" role="alert">
-                {error}
+          <section className="auth-shell-card" aria-labelledby="login-heading">
+            <h2 id="login-heading">Sign in</h2>
+            <p className="auth-lead">Use your school or work email to continue.</p>
+            {DEV_AUTO_LOGIN ? (
+              <p className="auth-dev-banner" role="status">
+                Dev mode: credentials pre-filled — click Sign in to auto-login.
               </p>
-            )}
-            <Button type="submit" variant="primary" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign in'}
-            </Button>
-          </form>
-          {registration.open && (
-            <p className="mt-5 text-center text-xs text-[var(--color-text-muted)]">
-              No account?{' '}
-              <Link to="/register" className="font-medium text-[var(--color-accent)] hover:underline">
-                Register
-              </Link>
-            </p>
-          )}
-        </section>
+            ) : null}
+            <div className="mt-5">
+              <GoogleSignInButton disabled={loading} onCredential={handleGoogle} />
+            </div>
+            <p className="auth-divider" aria-hidden>or email</p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <FieldLabel htmlFor="login-email">Email</FieldLabel>
+                <Input
+                  id="login-email"
+                  type="email"
+                  required
+                  autoComplete="username"
+                  placeholder="you@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  aria-invalid={Boolean(error)}
+                />
+              </div>
+              <div>
+                <FieldLabel htmlFor="login-password">Password</FieldLabel>
+                <Input
+                  id="login-password"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  aria-invalid={Boolean(error)}
+                />
+              </div>
+              {error ? (
+                <p className="text-xs text-[var(--color-danger)]" role="alert">
+                  {error}
+                </p>
+              ) : null}
+              <Button type="submit" variant="primary" className="w-full" disabled={loading}>
+                {loading ? 'Signing in…' : 'Sign in'}
+              </Button>
+            </form>
+            {registration.open ? (
+              <p className="auth-footer-link">
+                No account? <Link to="/register">Create one</Link>
+              </p>
+            ) : null}
+          </section>
+        </div>
       </div>
     </div>
   )

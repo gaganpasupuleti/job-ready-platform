@@ -1,27 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ChevronDown, Menu, Moon, Sun, X } from 'lucide-react'
+import { Menu, Moon, Sun, X } from 'lucide-react'
 
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
+import { MoreMenu } from '@/components/navigation/ExploreLauncher'
+import { isPrimaryNavActive, primaryNavItems } from '@/components/navigation/navConfig'
 import { NotificationBell } from '@/features/notifications/NotificationBell'
 import { FeedbackPanel } from '@/features/support/FeedbackPanel'
-import {
-  isPrimaryNavActive,
-  moreMenuGroups,
-  primaryNavItems,
-} from '@/components/navigation/navConfig'
 import { useAuth } from '@/hooks/useAuth'
 import { useTheme } from '@/hooks/useTheme'
 import { cn } from '@/utils/cn'
-
-function isMoreItemActive(pathname: string, path: string) {
-  const paths = moreMenuGroups.flatMap((group) => group.items.map((item) => item.path))
-  const matches = paths.filter((candidate) => pathname === candidate || pathname.startsWith(`${candidate}/`))
-  if (!matches.includes(path)) return false
-  const best = matches.reduce((longest, candidate) => (candidate.length > longest.length ? candidate : longest))
-  return best === path
-}
 
 interface MastheadProps {
   compact?: boolean
@@ -32,7 +21,6 @@ export function Masthead({ compact = false }: MastheadProps) {
   const [moreOpen, setMoreOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
-  const moreRef = useRef<HTMLDivElement>(null)
   const accountRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const { user, logout } = useAuth()
@@ -49,23 +37,32 @@ export function Masthead({ compact = false }: MastheadProps) {
   }, [user])
 
   const closeMobile = () => setMobileOpen(false)
-  const closeMore = () => setMoreOpen(false)
 
   useEffect(() => {
-    if (!moreOpen && !accountOpen) return
+    setMoreOpen(false)
+    setAccountOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!moreOpen) return
     const onPointer = (event: MouseEvent) => {
-      if (moreOpen && !moreRef.current?.contains(event.target as Node)) closeMore()
-      if (accountOpen && !accountRef.current?.contains(event.target as Node)) setAccountOpen(false)
+      const target = event.target as HTMLElement
+      if (target.closest('.more-nav')) return
+      setMoreOpen(false)
+    }
+    document.addEventListener('mousedown', onPointer)
+    return () => document.removeEventListener('mousedown', onPointer)
+  }, [moreOpen])
+
+  useEffect(() => {
+    if (!accountOpen) return
+    const onPointer = (event: MouseEvent) => {
+      if (!accountRef.current?.contains(event.target as Node)) setAccountOpen(false)
     }
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
-      if (accountOpen) {
-        setAccountOpen(false)
-        accountRef.current?.querySelector('button')?.focus()
-        return
-      }
-      closeMore()
-      moreRef.current?.querySelector('button')?.focus()
+      setAccountOpen(false)
+      accountRef.current?.querySelector('button')?.focus()
     }
     document.addEventListener('mousedown', onPointer)
     document.addEventListener('keydown', onKey)
@@ -73,7 +70,7 @@ export function Masthead({ compact = false }: MastheadProps) {
       document.removeEventListener('mousedown', onPointer)
       document.removeEventListener('keydown', onKey)
     }
-  }, [accountOpen, moreOpen])
+  }, [accountOpen])
 
   useEffect(() => {
     if (!feedbackOpen) return
@@ -112,103 +109,26 @@ export function Masthead({ compact = false }: MastheadProps) {
               </Link>
             )
           })}
-          <div className="more-nav" ref={moreRef}>
-            <button
-              type="button"
-              className={cn('more-nav-trigger nav-item', moreOpen && 'open')}
-              aria-expanded={moreOpen}
-              aria-haspopup="true"
-              onClick={() => {
-                setAccountOpen(false)
-                setMoreOpen((open) => {
-                  const next = !open
-                  if (next) queueMicrotask(() => moreRef.current?.querySelector('a')?.focus())
-                  return next
-                })
+          <div className="more-nav-desktop">
+            <MoreMenu
+              isAdmin={isAdmin}
+              open={moreOpen}
+              onOpenChange={(next) => {
+                if (next) setAccountOpen(false)
+                setMoreOpen(next)
               }}
-            >
-              More
-              <ChevronDown className="more-chevron" aria-hidden />
-            </button>
-            {moreOpen ? (
-              <div className="more-nav-panel" aria-label="More destinations">
-                {user ? (
-                  <button
-                    type="button"
-                    className="more-menu-item feedback-entry-menu"
-                    onClick={() => {
-                      setFeedbackOpen(true)
-                      closeMore()
-                      closeMobile()
-                    }}
-                  >
-                    Feedback
-                  </button>
-                ) : null}
-                {moreMenuGroups.map((group) => (
-                  <section key={group.title} className="more-menu-section">
-                    <p className="menu-section-title">{group.title}</p>
-                    {group.items.map((item) => {
-                      const active = isMoreItemActive(location.pathname, item.path)
-                      return (
-                        <Link
-                          key={item.path}
-                          to={item.path}
-                          className={cn('more-menu-item', active && 'active')}
-                          aria-current={active ? 'page' : undefined}
-                          onClick={() => {
-                            closeMore()
-                            closeMobile()
-                          }}
-                        >
-                          {item.label}
-                        </Link>
-                      )
-                    })}
-                  </section>
-                ))}
-                {isAdmin ? (
-                  <>
-                    <p className="menu-section-title">Admin</p>
-                    <Link
-                      to="/admin/questions"
-                      className={cn(
-                        'more-menu-item more-menu-admin',
-                        (location.pathname === '/admin/questions' || location.pathname.startsWith('/admin/')) && 'active',
-                      )}
-                      aria-current={location.pathname.startsWith('/admin') ? 'page' : undefined}
-                      onClick={() => {
-                        closeMore()
-                        closeMobile()
-                      }}
-                    >
-                      Admin
-                    </Link>
-                    <Link
-                      to="/admin/library"
-                      className={cn('more-menu-item more-menu-admin', location.pathname.startsWith('/admin/library') && 'active')}
-                      onClick={() => {
-                        closeMore()
-                        closeMobile()
-                      }}
-                    >
-                      Library
-                    </Link>
-                    <Link
-                      to="/admin/feedback"
-                      className={cn('more-menu-item more-menu-admin', location.pathname.startsWith('/admin/feedback') && 'active')}
-                      onClick={() => {
-                        closeMore()
-                        closeMobile()
-                      }}
-                    >
-                      Student Feedback
-                    </Link>
-                  </>
-                ) : null}
-              </div>
-            ) : null}
+              onCloseMobileNav={closeMobile}
+            />
           </div>
+          {mobileOpen ? (
+            <MoreMenu
+              isAdmin={isAdmin}
+              open={moreOpen}
+              onOpenChange={setMoreOpen}
+              onCloseMobileNav={closeMobile}
+              mobileInline
+            />
+          ) : null}
         </nav>
 
         <div className="masthead-tools">
@@ -243,6 +163,7 @@ export function Masthead({ compact = false }: MastheadProps) {
                 aria-expanded={accountOpen}
                 aria-controls="account-menu"
                 onClick={() => {
+                  setMoreOpen(false)
                   setAccountOpen((open) => {
                     const next = !open
                     if (next) {

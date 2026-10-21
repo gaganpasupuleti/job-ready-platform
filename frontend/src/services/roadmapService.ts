@@ -19,7 +19,12 @@ export interface RoadmapCatalogItem {
 export interface RoadmapCatalogResponse {
   roadmaps: RoadmapCatalogItem[]
   source: 'api' | 'bundle'
-  meta?: { total?: number; with_articles?: number; has_bundled_catalog?: boolean }
+  meta?: {
+    total?: number
+    with_articles?: number
+    with_graph_cache?: number
+    has_bundled_catalog?: boolean
+  }
 }
 
 function isUsableApiCatalog(data: {

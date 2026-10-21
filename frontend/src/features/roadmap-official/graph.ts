@@ -2,9 +2,30 @@ import type { Edge, Node } from '@xyflow/react'
 
 import type { OfficialRoadmapEdge, OfficialRoadmapNode } from '@/services/roadmapOfficialService'
 
-import { shouldHideOfficialNode } from './roadmapShLinks'
+import { shouldHideOfficialNode } from './roadmapShLinks.ts'
 
 export type NodeData = { label: string; nodeType: string; raw: OfficialRoadmapNode }
+
+function nodeDimensions(
+  raw: OfficialRoadmapNode,
+  nodeType: string,
+  label: string,
+): { width?: number; height?: number } {
+  const width = raw.width ?? raw.measured?.width
+  const height = raw.height ?? raw.measured?.height
+  if (width && height) return { width, height }
+  if (nodeType !== 'topic' && nodeType !== 'subtopic' && nodeType !== 'button') {
+    return { width: width ?? undefined, height: height ?? undefined }
+  }
+  const chars = Math.max(label.length, 8)
+  const estWidth = Math.min(280, Math.max(120, Math.ceil(chars * 7.2)))
+  const lines = Math.ceil((chars * 7.2) / estWidth)
+  const estHeight = Math.max(36, 28 + lines * 16)
+  return {
+    width: width ?? estWidth,
+    height: height ?? estHeight,
+  }
+}
 
 export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
   if (!raw.position) return null
@@ -58,37 +79,28 @@ export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
   const label = raw.data?.label?.trim()
   if (!label && nodeType !== 'paragraph') return null
 
+  const size = nodeDimensions(raw, nodeType, label ?? '')
+
   return {
     id: raw.id,
     type: 'roadmap',
     position: { ...raw.position },
     data: { label: label ?? '', nodeType, raw },
-    width: width ?? undefined,
-    height: height ?? undefined,
+    width: size.width,
+    height: size.height,
     draggable: false,
     selectable: true,
   }
 }
 
-const LAYOUT_DRAG_TYPES = new Set([
-  'topic',
-  'subtopic',
-  'linksgroup',
-  'section',
-  'vertical',
-  'horizontal',
-  'roadmap',
-  'default',
-  'paragraph',
-])
+const TOPIC_DRAG_TYPES = new Set(['topic', 'subtopic'])
 
-export function applyNodesDraggable(nodes: Node[], editing: boolean): Node[] {
-  if (!editing) {
-    return nodes.map((node) => ({ ...node, draggable: false }))
-  }
+/** When layout is locked, topic pills cannot move. */
+export function applyNodesDraggable(nodes: Node[], layoutLocked: boolean): Node[] {
   return nodes.map((node) => {
     const nodeType = (node.data as NodeData).nodeType
-    return { ...node, draggable: LAYOUT_DRAG_TYPES.has(nodeType) }
+    const draggable = !layoutLocked && TOPIC_DRAG_TYPES.has(nodeType)
+    return { ...node, draggable }
   })
 }
 
@@ -110,13 +122,13 @@ export function toFlowEdge(raw: OfficialRoadmapEdge): Edge {
     id: raw.id,
     source: raw.source,
     target: raw.target,
-    sourceHandle: raw.sourceHandle,
-    targetHandle: raw.targetHandle,
+    sourceHandle: raw.sourceHandle ? `${raw.sourceHandle}-s` : undefined,
+    targetHandle: raw.targetHandle ? `${raw.targetHandle}-t` : undefined,
     type: 'smoothstep',
     animated: isDashed,
     style: {
-      stroke: (style.stroke as string) ?? '#2B78E4',
-      strokeWidth: Number(style.strokeWidth ?? 3.5),
+      stroke: (style.stroke as string) ?? '#5a6f7f',
+      strokeWidth: Number(style.strokeWidth ?? 2),
       strokeDasharray: isDashed ? dash : undefined,
       strokeLinecap: (style.strokeLinecap as 'round' | 'butt') ?? 'round',
       strokeLinejoin: 'round',

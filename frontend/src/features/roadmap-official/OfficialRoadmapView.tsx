@@ -15,6 +15,7 @@ import {
 import { fetchRoadmapCatalog } from '@/services/roadmapService'
 
 import { buildFlowGraph } from './graph'
+import { filterOutlineNodes } from './graphValidation'
 import { RoadmapFlowCanvas } from './RoadmapFlowCanvas'
 import { RoadmapMobileTopicDialog } from './RoadmapMobileTopicDialog'
 import { RoadmapOutline } from './RoadmapOutline'
@@ -34,7 +35,7 @@ function isMobileViewport() {
 export function OfficialRoadmapView({ slug, title, description }: OfficialRoadmapViewProps) {
   const navigate = useNavigate()
   const [selected, setSelected] = useState<OfficialRoadmapNode | null>(null)
-  const [editLayout, setEditLayout] = useState(false)
+  const [layoutLocked, setLayoutLocked] = useState(false)
   const [outlineOpen, setOutlineOpen] = useState(true)
   const [mobileTopicOpen, setMobileTopicOpen] = useState(false)
   const [outlineQuery, setOutlineQuery] = useState('')
@@ -122,6 +123,11 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
     return 'network'
   }, [selected, topicQuery.isLoading, topicQuery.data, topicQuery.isError, topicQuery.error])
 
+  const searchMatches = useMemo(
+    () => filterOutlineNodes(graphQuery.data?.nodes ?? [], outlineQuery),
+    [graphQuery.data, outlineQuery],
+  )
+
   const articleOpen = Boolean(selected)
   const layoutClass = [
     'ors-layout',
@@ -183,12 +189,34 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
         <label className="ors-toggle">
           <input
             type="checkbox"
-            checked={editLayout}
-            onChange={(event) => setEditLayout(event.target.checked)}
+            checked={layoutLocked}
+            onChange={(event) => setLayoutLocked(event.target.checked)}
           />
-          Rearrange layout
+          Lock layout
         </label>
       </div>
+
+      {outlineQuery.trim() ? (
+        <div className="ors-topic-search-results" role="region" aria-label="Topic search results">
+          {searchMatches.length === 0 ? (
+            <p className="ors-muted">No topics match your search.</p>
+          ) : (
+            <ul className="ors-topic-search-list">
+              {searchMatches.slice(0, 15).map((node) => (
+                <li key={node.id}>
+                  <button
+                    type="button"
+                    className="ors-topic-search-item"
+                    onClick={() => onTopicSelect(node, true)}
+                  >
+                    {node.data?.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ) : null}
 
       <div className={layoutClass}>
         {outlineOpen ? (
@@ -202,17 +230,19 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
           </aside>
         ) : null}
 
-        <div className="ors-canvas">
+        <div className={layoutLocked ? 'ors-canvas ors-canvas--locked' : 'ors-canvas ors-canvas--explore'}>
           <ReactFlowProvider>
             <RoadmapFlowCanvas
               graphKey={slug}
               initialNodes={flow.nodes}
               initialEdges={flow.edges}
               focusNodeId={cameraFocusId}
+              selectedNodeId={selected?.id ?? null}
               onTopicSelect={onTopicSelect}
               onRoadmapNavigate={(path) => navigate(path)}
-              nodesDraggable={editLayout}
+              layoutLocked={layoutLocked}
               allowedSlugs={allowedSlugs}
+              viewportLayoutKey={`${outlineOpen ? 'outline' : 'no-outline'}-${articleOpen ? 'article' : 'no-article'}`}
             />
           </ReactFlowProvider>
         </div>

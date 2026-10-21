@@ -1,6 +1,6 @@
 .ors-page {
   --ors-paper: var(--color-surface-muted, #f5f0e8);
-  --ors-paper-dot: color-mix(in srgb, var(--color-text) 12%, transparent);
+  --ors-paper-dot: color-mix(in srgb, var(--color-text) 5%, transparent);
   --ors-ink: var(--color-text);
   --ors-milestone: var(--jr-milestone, #e8c547);
   --ors-subtopic: color-mix(in srgb, var(--jr-peach, #ffdba8) 85%, var(--color-surface));
@@ -108,7 +108,8 @@
 .ors-layout {
   flex: 1;
   display: grid;
-  min-height: 0;
+  min-height: 420px;
+  grid-template-rows: minmax(420px, 1fr);
   grid-template-columns: minmax(0, 1fr);
 }
 
@@ -125,6 +126,8 @@
 }
 
 .ors-outline-panel {
+  position: relative;
+  z-index: 1;
   min-height: 0;
   overflow: auto;
   padding: 0.5rem 0.65rem;
@@ -133,11 +136,36 @@
 }
 
 .ors-canvas {
-  min-height: 0;
+  position: relative;
+  z-index: 0;
+  min-height: min(52vh, 520px);
   min-width: 0;
+  flex: 1;
   height: 100%;
+  overflow: hidden;
   background: var(--ors-paper);
   cursor: grab;
+  contain: layout paint;
+}
+
+.ors-flow-host,
+.ors-canvas .react-flow {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+}
+
+.ors-flow-host {
+  flex: 1;
+  min-height: inherit;
+}
+
+.ors-canvas .react-flow__node.draggable {
+  cursor: grab;
+}
+
+.ors-canvas .react-flow__node.draggable:active {
+  cursor: grabbing;
 }
 
 .ors-canvas .react-flow__pane:active {
@@ -191,6 +219,7 @@
 
 .ors-canvas .react-flow__edge-path {
   stroke: var(--ors-line);
+  stroke-width: 2;
 }
 
 .ors-canvas .react-flow__edge.animated .react-flow__edge-path {
@@ -249,6 +278,17 @@
   color: var(--ors-ink);
 }
 
+.ors-canvas .react-flow__node {
+  overflow: visible;
+}
+
+.ors-node-text {
+  display: block;
+  width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .ors-node {
   display: flex;
   align-items: center;
@@ -262,6 +302,7 @@
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  min-width: 0;
   cursor: pointer;
   color: var(--ors-ink);
   background: var(--color-surface);
@@ -410,4 +451,133 @@
   .ors-canvas .react-flow__edge.animated .react-flow__edge-path {
     animation: none;
   }
+}
+
+.ors-topic-search-results {
+  flex-shrink: 0;
+  padding: 0.35rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--ors-border);
+  background: var(--color-surface);
+}
+
+.ors-topic-search-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.ors-topic-search-item {
+  border: 1px solid var(--ors-border);
+  border-radius: var(--radius-md, 6px);
+  background: var(--color-surface-muted);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  color: var(--ors-ink);
+}
+
+.ors-topic-search-item:hover {
+  background: color-mix(in srgb, var(--ors-milestone) 30%, var(--color-surface-muted));
+}
+
+.react-flow__node.selected .ors-node,
+.react-flow__node.selected .ors-linksgroup {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.ors-canvas--explore .react-flow__handle,
+.ors-canvas--explore .ors-handle {
+  opacity: 0 !important;
+  width: 8px !important;
+  height: 8px !important;
+  min-width: 8px !important;
+  min-height: 8px !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.ors-canvas--editing .react-flow__handle.ors-handle {
+  opacity: 1;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--color-accent);
+  background: var(--color-surface);
+}
+
+.ors-connector {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.ors-linksgroup {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 8px 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--ors-border);
+  border-radius: var(--radius-md, 6px);
+}
+
+.ors-linksgroup-title {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ors-ink);
+}
+
+.ors-linksgroup-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ors-linksgroup-link {
+  display: block;
+  padding: 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ors-accent);
+  text-decoration: none;
+}
+
+.ors-linksgroup-link:hover {
+  text-decoration: underline;
+}
+
+.ors-section {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 1px dashed var(--ors-border);
+  border-radius: var(--radius-md, 6px);
+  pointer-events: none;
+  background: color-mix(in srgb, var(--color-surface) 92%, var(--ors-paper));
+}
+
+.ors-section-label {
+  display: block;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ors-ink);
+}
+
+.ors-node--button {
+  background: var(--color-surface-muted);
+  font-weight: 600;
+}
+
+.ors-node--paragraph {
+  justify-content: flex-start;
+  text-align: left;
 }
