@@ -75,8 +75,8 @@ export function JobCardView({
         </div>
         {badges.length > 0 ? (
           <div className="job-card-compact-badges">
-            {badges.slice(0, 4).map((label) => (
-              <Badge key={label}>{label}</Badge>
+            {badges.slice(0, 4).map((label, index) => (
+              <Badge key={`${label}-${index}`}>{label}</Badge>
             ))}
           </div>
         ) : null}
@@ -118,8 +118,8 @@ export function JobCardView({
         ) : null}
       </div>
       <div className="flex flex-wrap gap-1">
-        {badges.map((label) => (
-          <Badge key={label}>{label}</Badge>
+        {badges.map((label, index) => (
+          <Badge key={`${label}-${index}`}>{label}</Badge>
         ))}
       </div>
       <p className="text-xs text-[var(--color-text-muted)]">

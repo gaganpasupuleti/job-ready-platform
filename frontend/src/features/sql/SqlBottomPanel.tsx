@@ -202,8 +202,8 @@ export function SqlBottomPanel({
             )}
             {expectedColumns.length > 0 && sampleExpectedRows.length === 0 && (
               <div className="flex flex-wrap gap-1">
-                {expectedColumns.map((col) => (
-                  <Badge key={col}>{col}</Badge>
+                {expectedColumns.map((col, index) => (
+                  <Badge key={`${col}-${index}`}>{col}</Badge>
                 ))}
               </div>
             )}
