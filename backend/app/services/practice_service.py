@@ -1,3 +1,4 @@
+import random
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
@@ -20,6 +21,7 @@ class _SnapOption:
 class _SnapQuestion:
     def __init__(self, question, snapshot: dict) -> None:
         self.id = question.id
+        self.content_key = question.content_key
         self.question_type = question.question_type
         self.title = snapshot.get("title")
         self.question_text = snapshot["question_text"]
@@ -32,22 +34,32 @@ class _SnapQuestion:
         self.options = [_SnapOption(item) for item in snapshot.get("options", [])]
 
 
+_presentation_rng = random.SystemRandom()
+
+
 def question_snapshot(question) -> dict:
+    """Freeze a question for one session, in the order this student will see it.
+
+    Authored content often lists the correct option first, so the presentation order is
+    shuffled once here and persisted. Reads never reshuffle; scoring uses option ids.
+    """
+    options = [
+        {
+            "id": str(opt.id),
+            "option_text": opt.option_text,
+            "is_correct": opt.is_correct,
+            "sort_order": opt.sort_order,
+        }
+        for opt in question.options
+    ]
+    _presentation_rng.shuffle(options)
     return {
         "title": question.title,
         "question_text": question.question_text,
         "explanation": question.explanation,
         "marks": question.marks,
         "negative_marks": question.negative_marks,
-        "options": [
-            {
-                "id": str(opt.id),
-                "option_text": opt.option_text,
-                "is_correct": opt.is_correct,
-                "sort_order": opt.sort_order,
-            }
-            for opt in question.options
-        ],
+        "options": options,
     }
 
 
@@ -352,6 +364,12 @@ class PracticeService:
                     if str(opt.id) in answer.selected_option_ids
                 ]
             correct_texts = [opt.option_text for opt in question.options if opt.is_correct]
+            explanation = question.explanation
+            revealed = session.status == SessionStatus.COMPLETED or (
+                answer is not None and answer.answered_at is not None
+            )
+            if not revealed:
+                correct_ids, correct_texts, explanation = [], [], None
             topic_name = await self.question_repo.get_topic_name(question.topic_id) or "General"
             stats = topic_stats.setdefault(topic_name, {"total": 0, "correct": 0})
             stats["total"] += 1
@@ -370,7 +388,7 @@ class PracticeService:
                     correct_option_ids=correct_ids,
                     selected_option_texts=selected_texts,
                     correct_option_texts=correct_texts,
-                    explanation=question.explanation,
+                    explanation=explanation,
                     is_correct=is_correct,
                     marks_awarded=answer.marks_awarded if answer else 0.0,
                 )
@@ -459,7 +477,8 @@ class PracticeService:
         return QuestionPublic(
             id=question.id,
             question_type=question.question_type,
-            title=question.title,
+            # Batch-imported rows store their internal content key as the title.
+            title=None if question.title == question.content_key else question.title,
             question_text=question.question_text,
             difficulty=question.difficulty,
             marks=question.marks,
@@ -469,9 +488,9 @@ class PracticeService:
                 QuestionOptionPublic(
                     id=opt.id,
                     option_text=opt.option_text,
-                    sort_order=opt.sort_order,
+                    sort_order=position,
                 )
-                for opt in question.options
+                for position, opt in enumerate(question.options)
             ],
             topic_name=topic_name,
             skills=skills,
