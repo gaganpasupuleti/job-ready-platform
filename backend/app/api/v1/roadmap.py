@@ -48,12 +48,14 @@ async def list_roadmaps(
     official = list_official_roadmaps()
     if official:
         with_articles = sum(1 for row in official if row.get("articles_available"))
+        with_graph_cache = sum(1 for row in official if row.get("graph_available"))
         return {
             "roadmaps": official,
             "source": "official",
             "meta": {
                 "total": len(official),
                 "with_articles": with_articles,
+                "with_graph_cache": with_graph_cache,
                 "has_bundled_catalog": True,
             },
         }

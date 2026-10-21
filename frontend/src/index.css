@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/jobready-v4-shell.css";
+@import "./styles/explore-nav.css";
 @import "./styles/jobready-retro.css";
 @import "./styles/auth-shell.css";
 

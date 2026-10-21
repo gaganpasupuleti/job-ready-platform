@@ -25,7 +25,7 @@ import {
 
 const VISIBLE_ROLE_PILL_COUNT = 8
 
-const inputClass = 'jr-control px-3 py-2 text-sm text-[var(--color-text)]'
+const inputClass = 'jr-control jobs-control-compact text-sm text-[var(--color-text)]'
 
 function param(searchParams: URLSearchParams, key: string) {
   const value = searchParams.get(key)?.trim()
@@ -46,7 +46,7 @@ export function JobsHubPage() {
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   const page = Number(searchParams.get('page') ?? '1') || 1
-  const sort = searchParams.get('sort') ?? 'newest'
+  const sort = searchParams.get('sort') ?? 'added'
   const family = param(searchParams, 'role_family')
   const location = param(searchParams, 'location')
   const company = param(searchParams, 'company')
@@ -158,13 +158,9 @@ export function JobsHubPage() {
     if (role) count += 1
     if (addedWithin || addedFrom || addedTo) count += 1
     if (postedWithin) count += 1
-    if (sort && sort !== 'newest') count += 1
+    if (sort && sort !== 'added') count += 1
     return count
   }, [searchParams, location, company, experience, role, addedWithin, addedFrom, addedTo, postedWithin, sort])
-
-  useEffect(() => {
-    if (activeFilterCount > 0) setFiltersOpen(true)
-  }, [activeFilterCount])
 
   const writeParams = (patch: Record<string, string | undefined>, resetPage = true) => {
     const next = new URLSearchParams(searchParams)
@@ -173,7 +169,7 @@ export function JobsHubPage() {
       else next.delete(key)
     }
     if (resetPage) next.set('page', '1')
-    if ((next.get('sort') ?? 'newest') === 'newest') next.delete('sort')
+    if ((next.get('sort') ?? 'added') === 'added') next.delete('sort')
     setSearchParams(next)
   }
 
@@ -191,7 +187,7 @@ export function JobsHubPage() {
     setCompanyQuery('')
     setCustomDates(false)
     const next = new URLSearchParams()
-    if (sort !== 'newest') next.set('sort', sort)
+    if (sort !== 'added') next.set('sort', sort)
     next.set('page', '1')
     setSearchParams(next)
   }
@@ -255,7 +251,35 @@ export function JobsHubPage() {
           onQueryChange={setLocationQuery}
           onChange={(next) => writeParams({ location: next || undefined })}
         />
-        <Button type="button" variant="primary" onClick={applyFilters}>
+        <select
+          className={inputClass}
+          value={addedSelection}
+          aria-label="Added to JobReady"
+          onChange={(event) => {
+            const value = event.target.value
+            setCustomDates(value === 'custom')
+            writeParams(portalAddedParams(value, addedFrom, addedTo))
+          }}
+        >
+          <option value="">JobReady: any time</option>
+          <option value="today">JobReady: today</option>
+          <option value="3d">JobReady: 3 days</option>
+          <option value="7d">JobReady: 7 days</option>
+          <option value="30d">JobReady: 30 days</option>
+          <option value="custom">JobReady: custom</option>
+        </select>
+        <select
+          className={inputClass}
+          value={sort}
+          aria-label="Sort jobs"
+          onChange={(event) => writeParams({ sort: event.target.value }, false)}
+        >
+          <option value="added">Latest added (JobReady)</option>
+          <option value="posted">Latest employer post</option>
+          <option value="oldest">Oldest added</option>
+          <option value="company">Company A–Z</option>
+        </select>
+        <Button type="button" variant="primary" size="sm" onClick={applyFilters}>
           Search
         </Button>
       </section>
@@ -398,18 +422,8 @@ export function JobsHubPage() {
           <option value="7">Employer posted: last 7 days</option>
           <option value="30">Employer posted: last 30 days</option>
         </select>
-        <select
-          className={inputClass}
-          value={sort}
-          aria-label="Sort jobs"
-          onChange={(event) => writeParams({ sort: event.target.value }, false)}
-        >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="company">Company</option>
-        </select>
-        <Button type="button" variant="primary" onClick={applyFilters}>
-          Search
+        <Button type="button" variant="primary" size="sm" onClick={applyFilters}>
+          Apply
         </Button>
         <Button type="button" variant="secondary" onClick={clearFilters}>
           Clear filters

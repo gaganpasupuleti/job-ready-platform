@@ -7,9 +7,11 @@ import {
   Panel,
   ReactFlow,
   useEdgesState,
+  useNodesInitialized,
   useNodesState,
   useReactFlow,
   type Edge,
+  type FitViewOptions,
   type Node,
 } from '@xyflow/react'
 
@@ -19,6 +21,95 @@ import { nodeTypes } from './roadmapNodes'
 import { internalRoadmapPath } from './roadmapShLinks'
 
 const layoutSessions = new Map<string, { nodes: Node[]; edges: Edge[] }>()
+
+const LAYOUT_SPACER_TYPES = new Set(['vertical', 'horizontal'])
+
+function contentNodesForFit(nodes: Node[]) {
+  return nodes.filter((node) => !LAYOUT_SPACER_TYPES.has((node.data as NodeData).nodeType))
+}
+
+function roadmapOverviewFitOptions(reduceMotion: boolean, durationMs = 220): FitViewOptions {
+  return {
+    padding: 0.22,
+    duration: flowDuration(reduceMotion, durationMs),
+    minZoom: 0.55,
+    maxZoom: 1,
+  }
+}
+
+function RoadmapViewportFit({
+  graphKey,
+  viewportLayoutKey,
+  focusNodeId,
+  reduceMotion,
+  resetToken,
+  hostRef,
+}: {
+  graphKey: string
+  viewportLayoutKey: string
+  focusNodeId?: string | null
+  reduceMotion: boolean
+  resetToken: number
+  hostRef: React.RefObject<HTMLDivElement | null>
+}) {
+  const { fitView, getNodes } = useReactFlow()
+  const nodesInitialized = useNodesInitialized()
+  const fitScopeRef = useRef('')
+
+  const fitOverview = useCallback(() => {
+    const content = contentNodesForFit(getNodes())
+    if (content.length === 0) return
+    fitView({
+      nodes: content.map((node) => ({ id: node.id })),
+      ...roadmapOverviewFitOptions(reduceMotion),
+    })
+  }, [fitView, getNodes, reduceMotion])
+
+  useEffect(() => {
+    if (!nodesInitialized) return
+    const scope = `${graphKey}:${viewportLayoutKey}`
+    if (fitScopeRef.current === scope) return
+    fitScopeRef.current = scope
+    const run = () => fitOverview()
+    requestAnimationFrame(() => requestAnimationFrame(run))
+  }, [graphKey, viewportLayoutKey, nodesInitialized, fitOverview])
+
+  useEffect(() => {
+    if (!nodesInitialized || resetToken === 0) return
+    requestAnimationFrame(() => fitOverview())
+  }, [resetToken, nodesInitialized, fitOverview])
+
+  useEffect(() => {
+    const el = hostRef.current
+    if (!el || !nodesInitialized) return
+    let timer: number | undefined
+    const observer = new ResizeObserver(() => {
+      window.clearTimeout(timer)
+      timer = window.setTimeout(() => {
+        if (focusNodeId) return
+        fitOverview()
+      }, 120)
+    })
+    observer.observe(el)
+    return () => {
+      observer.disconnect()
+      window.clearTimeout(timer)
+    }
+  }, [hostRef, nodesInitialized, fitOverview, focusNodeId])
+
+  useEffect(() => {
+    if (!focusNodeId || !nodesInitialized) return
+    fitView({
+      nodes: [{ id: focusNodeId }],
+      padding: 0.3,
+      duration: flowDuration(reduceMotion, 280),
+      minZoom: 0.65,
+      maxZoom: 1.15,
+    })
+  }, [focusNodeId, fitView, reduceMotion, nodesInitialized])
+
+  return null
+}
 
 function RoadmapControls({
   onReset,
@@ -31,7 +122,7 @@ function RoadmapControls({
   minimapOpen: boolean
   onToggleMinimap: () => void
 }) {
-  const { zoomIn, zoomOut, fitView } = useReactFlow()
+  const { zoomIn, zoomOut, fitView, getNodes } = useReactFlow()
   const duration = (ms: number) => flowDuration(reduceMotion, ms)
 
   return (
@@ -64,7 +155,13 @@ function RoadmapControls({
       <button
         type="button"
         className="ors-controls-btn"
-        onClick={() => fitView({ padding: 0.12, duration: duration(280) })}
+        onClick={() => {
+          const content = contentNodesForFit(getNodes())
+          fitView({
+            nodes: content.map((node) => ({ id: node.id })),
+            ...roadmapOverviewFitOptions(reduceMotion, 280),
+          })
+        }}
         aria-label="Fit overview"
         title="Fit overview"
       >
@@ -93,6 +190,8 @@ interface RoadmapFlowCanvasProps {
   onRoadmapNavigate: (path: string) => void
   layoutLocked?: boolean
   allowedSlugs?: ReadonlySet<string>
+  /** Changes when side panels open/close so the map can re-fit the canvas. */
+  viewportLayoutKey?: string
 }
 
 export function RoadmapFlowCanvas({
@@ -105,14 +204,15 @@ export function RoadmapFlowCanvas({
   onRoadmapNavigate,
   layoutLocked = false,
   allowedSlugs,
+  viewportLayoutKey = 'default',
 }: RoadmapFlowCanvasProps) {
   const [reduceMotion, setReduceMotion] = useState(false)
   const [minimapOpen, setMinimapOpen] = useState(false)
+  const [resetToken, setResetToken] = useState(0)
   const snapshotRef = useRef(cloneGraph(initialNodes, initialEdges))
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const { fitView, getNodes, getEdges } = useReactFlow()
-  const fittedGraphKeyRef = useRef<string | null>(null)
+  const { getNodes, getEdges } = useReactFlow()
   const containerRef = useRef<HTMLDivElement>(null)
   const dragMovedRef = useRef(false)
   const loadedKeyRef = useRef<string | null>(null)
@@ -139,8 +239,7 @@ export function RoadmapFlowCanvas({
     }
     setNodes(applyNodesDraggable(base.nodes, layoutLocked))
     setEdges(base.edges.map((edge) => ({ ...edge })))
-    fittedGraphKeyRef.current = null
-  }, [graphKey, initialNodes, initialEdges, setNodes, setEdges])
+  }, [graphKey, initialNodes, initialEdges, layoutLocked, setNodes, setEdges])
 
   useEffect(() => {
     setNodes((current) => applyNodesDraggable(current, layoutLocked))
@@ -159,45 +258,13 @@ export function RoadmapFlowCanvas({
     )
   }, [selectedNodeId, setNodes])
 
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    const runFitIfReady = () => {
-      const { width, height } = el.getBoundingClientRect()
-      if (width < 8 || height < 8) return false
-      if (fittedGraphKeyRef.current === graphKey) return true
-      if (nodes.length === 0) return false
-      fittedGraphKeyRef.current = graphKey
-      fitView({ padding: 0.14, duration: flowDuration(reduceMotion, 220), maxZoom: 1.05 })
-      return true
-    }
-    if (runFitIfReady()) return
-    const observer = new ResizeObserver(() => {
-      runFitIfReady()
-    })
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [graphKey, nodes.length, fitView, reduceMotion])
-
-  useEffect(() => {
-    if (!focusNodeId) return
-    fitView({
-      nodes: [{ id: focusNodeId }],
-      padding: 0.35,
-      duration: flowDuration(reduceMotion, 280),
-      maxZoom: 1.25,
-    })
-  }, [focusNodeId, fitView, reduceMotion])
-
   const resetLayout = useCallback(() => {
     const snap = cloneGraph(snapshotRef.current.nodes, snapshotRef.current.edges)
     layoutSessions.set(graphKey, snap)
     setNodes(applyNodesDraggable(snap.nodes, layoutLocked))
     setEdges(snap.edges)
-    requestAnimationFrame(() =>
-      fitView({ padding: 0.12, duration: flowDuration(reduceMotion, 300) }),
-    )
-  }, [setNodes, setEdges, fitView, layoutLocked, reduceMotion, graphKey])
+    setResetToken((token) => token + 1)
+  }, [setNodes, setEdges, layoutLocked, graphKey])
 
   const displayEdges = useMemo(
     () =>
@@ -280,8 +347,8 @@ export function RoadmapFlowCanvas({
         nodesConnectable={false}
         elementsSelectable
         deleteKeyCode={null}
-        minZoom={0.15}
-        maxZoom={2}
+        minZoom={0.35}
+        maxZoom={1.75}
         proOptions={{ hideAttribution: true }}
         defaultEdgeOptions={{ type: 'smoothstep' }}
       >
@@ -290,6 +357,14 @@ export function RoadmapFlowCanvas({
           gap={20}
           size={1}
           color="var(--ors-paper-dot)"
+        />
+        <RoadmapViewportFit
+          graphKey={graphKey}
+          viewportLayoutKey={viewportLayoutKey}
+          focusNodeId={focusNodeId}
+          reduceMotion={reduceMotion}
+          resetToken={resetToken}
+          hostRef={containerRef}
         />
         <RoadmapControls
           onReset={resetLayout}

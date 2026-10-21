@@ -242,6 +242,7 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
               onRoadmapNavigate={(path) => navigate(path)}
               layoutLocked={layoutLocked}
               allowedSlugs={allowedSlugs}
+              viewportLayoutKey={`${outlineOpen ? 'outline' : 'no-outline'}-${articleOpen ? 'article' : 'no-article'}`}
             />
           </ReactFlowProvider>
         </div>

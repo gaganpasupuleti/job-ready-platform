@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { BookMarked, Library } from 'lucide-react'
+import { BookMarked } from 'lucide-react'
 
 import { Button } from '@/components/common/Button'
 import { Card, CardHeader } from '@/components/common/Card'
+import { FilterDisclosure } from '@/components/layout/FilterDisclosure'
+import { PageIntro } from '@/components/layout/PageIntro'
 import { EmptyState, ErrorState } from '@/components/practice-workspace/PracticeWorkspace'
 import { LibraryBookCard } from '@/features/library/LibraryBookCard'
 import { dedupeLibraryBooks } from '@/features/library/libraryPresentation'
@@ -20,6 +22,7 @@ export function LibraryPage() {
   const [query, setQuery] = useState('')
   const [submitted, setSubmitted] = useState('')
   const [category, setCategory] = useState('')
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const books = useQuery({
     queryKey: ['library-books', user?.id, submitted, category],
     queryFn: () => loadLibraryBooks(user?.id ?? '', submitted, category),
@@ -41,34 +44,37 @@ export function LibraryPage() {
   const catalogTotal = books.data?.total_published ?? books.data?.total ?? rawCount
   const filteredTotal = books.data?.total ?? rawCount
   const hasFilters = Boolean(submitted || category)
+  const activeFilterCount = (submitted ? 1 : 0) + (category ? 1 : 0)
+
+  useEffect(() => {
+    if (activeFilterCount > 0) setFiltersOpen(true)
+  }, [activeFilterCount])
+
+  const catalogAside =
+    books.data ? (
+      <div className="rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-center sm:min-w-[10rem] sm:text-right">
+        <p className="text-xl font-semibold tabular-nums leading-none text-[var(--color-text)]">{catalogTotal}</p>
+        <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+          Published books
+        </p>
+        {hiddenDupes > 0 ? (
+          <p className="mt-1.5 text-xs text-[var(--color-text-muted)]">
+            {published.length} unique titles · {hiddenDupes} duplicates hidden in list
+          </p>
+        ) : null}
+        {hasFilters && filteredTotal !== catalogTotal ? (
+          <p className="mt-1 text-xs text-[var(--color-accent)]">{filteredTotal} match your filters</p>
+        ) : null}
+      </div>
+    ) : null
 
   return (
     <div className="min-w-0 space-y-6">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="flex items-center gap-2 text-lg font-semibold text-[var(--color-text)]">
-            <Library size={20} className="text-[var(--color-accent)]" aria-hidden />
-            Library
-          </h1>
-          <p className="mt-1 max-w-2xl text-sm text-[var(--color-text-muted)]">
-            Browse published books and PDFs. Open a title to read in-app or save your reading status.
-          </p>
-        </div>
-        {books.data ? (
-          <div className="shrink-0 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-center sm:min-w-[10rem] sm:text-right">
-            <p className="text-2xl font-semibold tabular-nums leading-none text-[var(--color-text)]">{catalogTotal}</p>
-            <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">Published books</p>
-            {hiddenDupes > 0 ? (
-              <p className="mt-1.5 text-xs text-[var(--color-text-muted)]">
-                {published.length} unique titles · {hiddenDupes} duplicates hidden in list
-              </p>
-            ) : null}
-            {hasFilters && filteredTotal !== catalogTotal ? (
-              <p className="mt-1 text-xs text-[var(--color-accent)]">{filteredTotal} match your filters</p>
-            ) : null}
-          </div>
-        ) : null}
-      </header>
+      <PageIntro
+        title="Library"
+        description="Browse published books and PDFs. Open a title to read in-app or save your reading status."
+        aside={catalogAside}
+      />
 
       {saved.data && saved.data.length > 0 ? (
         <Card className="min-w-0">
@@ -113,8 +119,15 @@ export function LibraryPage() {
 
       <Card className="min-w-0">
         <CardHeader title="Published resources" description="Search by title or author, or filter by category." />
+        <FilterDisclosure
+          title="Search catalog"
+          open={filtersOpen}
+          onOpenChange={setFiltersOpen}
+          activeCount={activeFilterCount}
+          className="mb-5"
+        >
         <form
-          className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,14rem)_auto] sm:items-end"
+          className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,14rem)_auto] sm:items-end"
           onSubmit={(event) => {
             event.preventDefault()
             setSubmitted(query.trim())
@@ -164,6 +177,7 @@ export function LibraryPage() {
             ) : null}
           </div>
         </form>
+        </FilterDisclosure>
         {books.isPending && books.isFetching && books.data == null ? (
           <p className="text-sm text-[var(--color-text-muted)]">Loading published resources…</p>
         ) : null}

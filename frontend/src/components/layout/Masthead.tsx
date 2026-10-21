@@ -4,7 +4,7 @@ import { Menu, Moon, Sun, X } from 'lucide-react'
 
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/common/Button'
-import { ExploreLauncher, ExploreMobileTrigger } from '@/components/navigation/ExploreLauncher'
+import { MoreMenu } from '@/components/navigation/ExploreLauncher'
 import { isPrimaryNavActive, primaryNavItems } from '@/components/navigation/navConfig'
 import { NotificationBell } from '@/features/notifications/NotificationBell'
 import { FeedbackPanel } from '@/features/support/FeedbackPanel'
@@ -18,7 +18,7 @@ interface MastheadProps {
 
 export function Masthead({ compact = false }: MastheadProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [exploreOpen, setExploreOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const accountRef = useRef<HTMLDivElement>(null)
@@ -39,9 +39,20 @@ export function Masthead({ compact = false }: MastheadProps) {
   const closeMobile = () => setMobileOpen(false)
 
   useEffect(() => {
-    setExploreOpen(false)
+    setMoreOpen(false)
     setAccountOpen(false)
   }, [location.pathname])
+
+  useEffect(() => {
+    if (!moreOpen) return
+    const onPointer = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (target.closest('.more-nav')) return
+      setMoreOpen(false)
+    }
+    document.addEventListener('mousedown', onPointer)
+    return () => document.removeEventListener('mousedown', onPointer)
+  }, [moreOpen])
 
   useEffect(() => {
     if (!accountOpen) return
@@ -60,18 +71,6 @@ export function Masthead({ compact = false }: MastheadProps) {
       document.removeEventListener('keydown', onKey)
     }
   }, [accountOpen])
-
-  useEffect(() => {
-    if (!exploreOpen) return
-    const onPointer = (event: MouseEvent) => {
-      const target = event.target as HTMLElement
-      if (target.closest('.explore-nav') || target.closest('.explore-sheet')) return
-      if (target.closest('.explore-mobile-trigger')) return
-      setExploreOpen(false)
-    }
-    document.addEventListener('mousedown', onPointer)
-    return () => document.removeEventListener('mousedown', onPointer)
-  }, [exploreOpen])
 
   useEffect(() => {
     if (!feedbackOpen) return
@@ -110,26 +109,29 @@ export function Masthead({ compact = false }: MastheadProps) {
               </Link>
             )
           })}
-          <ExploreLauncher
-            isAdmin={isAdmin}
-            open={exploreOpen}
-            onOpenChange={(next) => {
-              if (next) setAccountOpen(false)
-              setExploreOpen(next)
-            }}
-            onCloseMobileNav={closeMobile}
-          />
+          <div className="more-nav-desktop">
+            <MoreMenu
+              isAdmin={isAdmin}
+              open={moreOpen}
+              onOpenChange={(next) => {
+                if (next) setAccountOpen(false)
+                setMoreOpen(next)
+              }}
+              onCloseMobileNav={closeMobile}
+            />
+          </div>
+          {mobileOpen ? (
+            <MoreMenu
+              isAdmin={isAdmin}
+              open={moreOpen}
+              onOpenChange={setMoreOpen}
+              onCloseMobileNav={closeMobile}
+              mobileInline
+            />
+          ) : null}
         </nav>
 
         <div className="masthead-tools">
-          <ExploreMobileTrigger
-            isAdmin={isAdmin}
-            open={exploreOpen}
-            onOpenChange={(next) => {
-              if (next) setAccountOpen(false)
-              setExploreOpen(next)
-            }}
-          />
           {user ? (
             <Button
               variant="ghost"
@@ -161,7 +163,7 @@ export function Masthead({ compact = false }: MastheadProps) {
                 aria-expanded={accountOpen}
                 aria-controls="account-menu"
                 onClick={() => {
-                  setExploreOpen(false)
+                  setMoreOpen(false)
                   setAccountOpen((open) => {
                     const next = !open
                     if (next) {
