@@ -35,7 +35,7 @@ function isMobileViewport() {
 export function OfficialRoadmapView({ slug, title, description }: OfficialRoadmapViewProps) {
   const navigate = useNavigate()
   const [selected, setSelected] = useState<OfficialRoadmapNode | null>(null)
-  const [editLayout, setEditLayout] = useState(false)
+  const [layoutLocked, setLayoutLocked] = useState(false)
   const [outlineOpen, setOutlineOpen] = useState(true)
   const [mobileTopicOpen, setMobileTopicOpen] = useState(false)
   const [outlineQuery, setOutlineQuery] = useState('')
@@ -189,10 +189,10 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
         <label className="ors-toggle">
           <input
             type="checkbox"
-            checked={editLayout}
-            onChange={(event) => setEditLayout(event.target.checked)}
+            checked={layoutLocked}
+            onChange={(event) => setLayoutLocked(event.target.checked)}
           />
-          Rearrange layout
+          Lock layout
         </label>
       </div>
 
@@ -230,7 +230,7 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
           </aside>
         ) : null}
 
-        <div className={editLayout ? 'ors-canvas ors-canvas--editing' : 'ors-canvas ors-canvas--explore'}>
+        <div className={layoutLocked ? 'ors-canvas ors-canvas--locked' : 'ors-canvas ors-canvas--explore'}>
           <ReactFlowProvider>
             <RoadmapFlowCanvas
               graphKey={slug}
@@ -240,7 +240,7 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
               selectedNodeId={selected?.id ?? null}
               onTopicSelect={onTopicSelect}
               onRoadmapNavigate={(path) => navigate(path)}
-              nodesDraggable={editLayout}
+              layoutLocked={layoutLocked}
               allowedSlugs={allowedSlugs}
             />
           </ReactFlowProvider>

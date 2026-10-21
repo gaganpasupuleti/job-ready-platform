@@ -70,25 +70,14 @@ export function toFlowNode(raw: OfficialRoadmapNode): Node | null {
   }
 }
 
-const LAYOUT_DRAG_TYPES = new Set([
-  'topic',
-  'subtopic',
-  'linksgroup',
-  'section',
-  'vertical',
-  'horizontal',
-  'roadmap',
-  'default',
-  'paragraph',
-])
+const TOPIC_DRAG_TYPES = new Set(['topic', 'subtopic'])
 
-export function applyNodesDraggable(nodes: Node[], editing: boolean): Node[] {
-  if (!editing) {
-    return nodes.map((node) => ({ ...node, draggable: false }))
-  }
+/** When layout is locked, topic pills cannot move. */
+export function applyNodesDraggable(nodes: Node[], layoutLocked: boolean): Node[] {
   return nodes.map((node) => {
     const nodeType = (node.data as NodeData).nodeType
-    return { ...node, draggable: LAYOUT_DRAG_TYPES.has(nodeType) }
+    const draggable = !layoutLocked && TOPIC_DRAG_TYPES.has(nodeType)
+    return { ...node, draggable }
   })
 }
 
