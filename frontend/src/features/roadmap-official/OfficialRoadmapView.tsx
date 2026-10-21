@@ -230,7 +230,7 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
           </aside>
         ) : null}
 
-        <div className="ors-canvas">
+        <div className={editLayout ? 'ors-canvas ors-canvas--editing' : 'ors-canvas ors-canvas--explore'}>
           <ReactFlowProvider>
             <RoadmapFlowCanvas
               graphKey={slug}

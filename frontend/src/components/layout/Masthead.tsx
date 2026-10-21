@@ -23,6 +23,22 @@ function isMoreItemActive(pathname: string, path: string) {
   return best === path
 }
 
+function isMoreNavRouteActive(pathname: string, isAdmin: boolean) {
+  const inMore = moreMenuGroups.some((group) =>
+    group.items.some((item) => isMoreItemActive(pathname, item.path)),
+  )
+  if (inMore) return true
+  if (!isAdmin) return false
+  return (
+    pathname.startsWith('/admin/library') ||
+    pathname.startsWith('/admin/feedback') ||
+    pathname === '/admin/questions' ||
+    (pathname.startsWith('/admin/') &&
+      !pathname.startsWith('/admin/library') &&
+      !pathname.startsWith('/admin/feedback'))
+  )
+}
+
 interface MastheadProps {
   compact?: boolean
 }
@@ -50,6 +66,12 @@ export function Masthead({ compact = false }: MastheadProps) {
 
   const closeMobile = () => setMobileOpen(false)
   const closeMore = () => setMoreOpen(false)
+  const moreRouteActive = isMoreNavRouteActive(location.pathname, isAdmin)
+
+  useEffect(() => {
+    setMoreOpen(false)
+    setAccountOpen(false)
+  }, [location.pathname])
 
   useEffect(() => {
     if (!moreOpen && !accountOpen) return
@@ -115,9 +137,10 @@ export function Masthead({ compact = false }: MastheadProps) {
           <div className="more-nav" ref={moreRef}>
             <button
               type="button"
-              className={cn('more-nav-trigger nav-item', moreOpen && 'open')}
+              className={cn('more-nav-trigger nav-item', moreOpen && 'open', moreRouteActive && 'is-route-active')}
               aria-expanded={moreOpen}
               aria-haspopup="true"
+              aria-current={moreRouteActive ? 'page' : undefined}
               onClick={() => {
                 setAccountOpen(false)
                 setMoreOpen((open) => {
@@ -174,9 +197,14 @@ export function Masthead({ compact = false }: MastheadProps) {
                       to="/admin/questions"
                       className={cn(
                         'more-menu-item more-menu-admin',
-                        (location.pathname === '/admin/questions' || location.pathname.startsWith('/admin/')) && 'active',
+                        (location.pathname === '/admin/questions' || location.pathname.startsWith('/admin/questions/')) &&
+                          'active',
                       )}
-                      aria-current={location.pathname.startsWith('/admin') ? 'page' : undefined}
+                      aria-current={
+                        location.pathname === '/admin/questions' || location.pathname.startsWith('/admin/questions/')
+                          ? 'page'
+                          : undefined
+                      }
                       onClick={() => {
                         closeMore()
                         closeMobile()
@@ -243,6 +271,7 @@ export function Masthead({ compact = false }: MastheadProps) {
                 aria-expanded={accountOpen}
                 aria-controls="account-menu"
                 onClick={() => {
+                  setMoreOpen(false)
                   setAccountOpen((open) => {
                     const next = !open
                     if (next) {

@@ -102,8 +102,8 @@
 .queue-row:hover,
 .course-tile:hover,
 .jobs-summary-strip article:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-text) 6%, transparent);
+  transform: none;
+  box-shadow: none;
 }
 
 .practice-track-link.is-active,
@@ -155,11 +155,13 @@
   flex-shrink: 0;
 }
 .main-navigation a[aria-current='page'],
+.more-nav-trigger.is-route-active,
 .more-nav-trigger.open {
   color: var(--color-text);
   font-weight: 500;
 }
-.main-navigation a[aria-current='page']::after {
+.main-navigation a[aria-current='page']::after,
+.more-nav-trigger.is-route-active::after {
   content: "";
   position: absolute;
   height: 2px;
@@ -183,9 +185,10 @@
   top: calc(100% + 6px);
   right: 0;
   z-index: 50;
-  width: 440px;
-  max-height: none;
-  overflow: visible;
+  width: min(440px, calc(100vw - 24px));
+  max-height: min(70vh, 520px);
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 12px;
   border: 1px solid var(--color-border);
   border-radius: 10px;

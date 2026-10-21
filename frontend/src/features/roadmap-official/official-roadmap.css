@@ -1,6 +1,6 @@
 .ors-page {
   --ors-paper: var(--color-surface-muted, #f5f0e8);
-  --ors-paper-dot: color-mix(in srgb, var(--color-text) 12%, transparent);
+  --ors-paper-dot: color-mix(in srgb, var(--color-text) 5%, transparent);
   --ors-ink: var(--color-text);
   --ors-milestone: var(--jr-milestone, #e8c547);
   --ors-subtopic: color-mix(in srgb, var(--jr-peach, #ffdba8) 85%, var(--color-surface));
@@ -108,7 +108,8 @@
 .ors-layout {
   flex: 1;
   display: grid;
-  min-height: 0;
+  min-height: 420px;
+  grid-template-rows: minmax(420px, 1fr);
   grid-template-columns: minmax(0, 1fr);
 }
 
@@ -133,11 +134,18 @@
 }
 
 .ors-canvas {
-  min-height: 0;
+  min-height: min(52vh, 520px);
   min-width: 0;
+  flex: 1;
   height: 100%;
   background: var(--ors-paper);
   cursor: grab;
+}
+
+.ors-canvas .react-flow {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
 }
 
 .ors-canvas .react-flow__pane:active {
@@ -191,6 +199,7 @@
 
 .ors-canvas .react-flow__edge-path {
   stroke: var(--ors-line);
+  stroke-width: 2;
 }
 
 .ors-canvas .react-flow__edge.animated .react-flow__edge-path {
@@ -448,12 +457,24 @@
   outline-offset: 2px;
 }
 
-.ors-handle {
-  width: 6px;
-  height: 6px;
-  opacity: 0;
-  border: none;
-  background: transparent;
+.ors-canvas--explore .react-flow__handle,
+.ors-canvas--explore .ors-handle {
+  opacity: 0 !important;
+  width: 8px !important;
+  height: 8px !important;
+  min-width: 8px !important;
+  min-height: 8px !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.ors-canvas--editing .react-flow__handle.ors-handle {
+  opacity: 1;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--color-accent);
+  background: var(--color-surface);
 }
 
 .ors-connector {

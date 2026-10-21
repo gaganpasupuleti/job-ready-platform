@@ -115,8 +115,8 @@ export function toFlowEdge(raw: OfficialRoadmapEdge): Edge {
     type: 'smoothstep',
     animated: isDashed,
     style: {
-      stroke: (style.stroke as string) ?? '#2B78E4',
-      strokeWidth: Number(style.strokeWidth ?? 3.5),
+      stroke: (style.stroke as string) ?? '#5a6f7f',
+      strokeWidth: Number(style.strokeWidth ?? 2),
       strokeDasharray: isDashed ? dash : undefined,
       strokeLinecap: (style.strokeLinecap as 'round' | 'butt') ?? 'round',
       strokeLinejoin: 'round',
