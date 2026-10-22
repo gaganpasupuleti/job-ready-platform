@@ -33,8 +33,7 @@ export function ProjectsPage() {
         <Link to="/practice" className="text-xs text-[var(--color-accent)] hover:underline">
           ← Practice Hub
         </Link>
-        <h1 className="mt-1 text-lg font-semibold text-[var(--color-text)]">Projects</h1>
-        <p className="text-sm text-[var(--color-text-muted)]">
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">
           Guided builds that reuse coding, SQL, and MCQ engines. Original Job Ready content.
         </p>
       </div>

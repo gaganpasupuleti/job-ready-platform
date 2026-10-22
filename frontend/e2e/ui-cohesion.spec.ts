@@ -197,8 +197,8 @@ test.describe('UI cohesion (mocked)', () => {
         await page.screenshot({ path: path.join(AFTER, `library-book-${theme}-${vp.name}.png`) })
 
         await page.goto('/practice/projects')
-        await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible({ timeout: 15_000 })
-        await expect(page.locator('#main-content')).toBeVisible()
+        await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 })
+        await expect(page.locator('.jr-page-title', { hasText: 'Projects' })).toBeVisible()
         await page.screenshot({ path: path.join(AFTER, `projects-${theme}-${vp.name}.png`) })
       }
     }

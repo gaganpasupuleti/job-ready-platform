@@ -22,7 +22,7 @@ test.describe('Release preview smoke (live API)', () => {
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 20_000 })
 
     await page.goto('/practice/projects')
-    await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible({ timeout: 20_000 })
+    await expect(page.locator('.jr-page-title', { hasText: 'Projects' })).toBeVisible({ timeout: 20_000 })
     await expect(page.locator('#main-content')).toBeVisible()
 
     await page.goto('/roadmaps')
