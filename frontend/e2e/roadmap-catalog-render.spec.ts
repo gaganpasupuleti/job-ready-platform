@@ -7,7 +7,13 @@ import { fileURLToPath } from 'node:url'
 
 import { expect, test } from '@playwright/test'
 
-import { apiBaseUrl, attachConsoleGuard, loadManifest, loginAs } from './helpers'
+import {
+  apiBaseUrl,
+  attachConsoleGuard,
+  loadManifest,
+  loginAccessToken,
+  loginAs,
+} from './helpers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const catalogPath = path.resolve(
@@ -69,8 +75,11 @@ test.describe('Roadmap catalog render (live)', () => {
   })
 
   test('live catalog matches bundled slug inventory', async ({ request }) => {
-    const res = await request.get(`${apiBaseUrl()}/roadmap/catalog`)
-    expect(res.ok()).toBeTruthy()
+    const token = await loginAccessToken(request, fixtures.users.student)
+    const res = await request.get(`${apiBaseUrl()}/roadmap/catalog`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    expect(res.ok(), `catalog HTTP ${res.status()}`).toBeTruthy()
     const body = await res.json()
     const liveSlugs = (body.roadmaps ?? [])
       .map((r: { family_slug: string }) => r.family_slug)
@@ -93,9 +102,22 @@ test.describe('Roadmap catalog render (live)', () => {
         })
         const flow = page.locator('.ors-canvas .react-flow')
         await expect(flow).toBeVisible({ timeout: 60_000 })
-        const nodeCount = await page.locator('.ors-canvas .react-flow__node').count()
-        if (nodeCount <= 0) {
-          rows.push({ slug, status: 'fail', nodeCount, error: 'zero react-flow nodes' })
+        let nodeCount = 0
+        try {
+          await expect
+            .poll(async () => page.locator('.ors-canvas .react-flow__node').count(), {
+              timeout: 90_000,
+            })
+            .toBeGreaterThan(0)
+          nodeCount = await page.locator('.ors-canvas .react-flow__node').count()
+        } catch {
+          nodeCount = await page.locator('.ors-canvas .react-flow__node').count()
+          rows.push({
+            slug,
+            status: 'fail',
+            nodeCount,
+            error: 'no visible react-flow nodes after mount (graph empty or onlyRenderVisibleElements)',
+          })
           continue
         }
         rows.push({ slug, status: 'pass', nodeCount })

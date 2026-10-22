@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 import { ReactFlowProvider } from '@xyflow/react'
@@ -40,6 +40,7 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
   const [mobileTopicOpen, setMobileTopicOpen] = useState(false)
   const [outlineQuery, setOutlineQuery] = useState('')
   const [cameraFocusId, setCameraFocusId] = useState<string | null>(null)
+  const freezeRoadmapViewportRef = useRef<(() => void) | null>(null)
 
   const catalogQuery = useQuery({
     queryKey: ['roadmap-catalog'],
@@ -84,6 +85,9 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
   }, [graphQuery.data])
 
   const onTopicSelect = useCallback((raw: OfficialRoadmapNode, focusCamera = false) => {
+    if (!focusCamera) {
+      freezeRoadmapViewportRef.current?.()
+    }
     setSelected(raw)
     if (focusCamera) setCameraFocusId(raw.id)
     if (isMobileViewport()) setMobileTopicOpen(true)
@@ -238,6 +242,8 @@ export function OfficialRoadmapView({ slug, title, description }: OfficialRoadma
               initialEdges={flow.edges}
               focusNodeId={cameraFocusId}
               selectedNodeId={selected?.id ?? null}
+              articlePanelOpen={articleOpen}
+              freezeViewportRef={freezeRoadmapViewportRef}
               onTopicSelect={onTopicSelect}
               onRoadmapNavigate={(path) => navigate(path)}
               layoutLocked={layoutLocked}

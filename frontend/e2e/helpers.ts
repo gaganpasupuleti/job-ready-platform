@@ -120,7 +120,7 @@ export function loadManifest(): E2EManifest {
   return fallbackManifest
 }
 
-async function loginAccessToken(
+export async function loginAccessToken(
   request: APIRequestContext,
   user: { email: string; password: string },
 ): Promise<string> {
@@ -551,35 +551,6 @@ function blendOver(bg: Rgb, fg: Rgb, alpha: number): Rgb {
     g: fg.g * alpha + bg.g * (1 - alpha),
     b: fg.b * alpha + bg.b * (1 - alpha),
   }
-}
-
-function effectiveBackgroundRgb(el: Element): Rgb {
-  let base: Rgb = { r: 255, g: 255, b: 255 }
-  const chain: Element[] = []
-  let node: Element | null = el
-  while (node && node !== document.documentElement) {
-    chain.push(node)
-    node = node.parentElement
-  }
-  chain.push(document.documentElement)
-  for (const current of chain.reverse()) {
-    const style = getComputedStyle(current)
-    const bg = parseCssColorToRgb(style.backgroundColor)
-    if (!bg) continue
-    const alpha = Number.parseFloat(style.opacity)
-    const a = Number.isFinite(alpha) ? Math.min(1, Math.max(0, alpha)) : 1
-    if (style.backgroundColor.includes('rgba')) {
-      const m = style.backgroundColor.match(/rgba\([^)]+,\s*([\d.]+)\s*\)/)
-      const ca = m ? Number.parseFloat(m[1]) : 1
-      if (ca < 1) {
-        base = blendOver(base, bg, ca)
-        continue
-      }
-    }
-    base = bg
-    if (a < 1) base = blendOver({ r: 255, g: 255, b: 255 }, base, a)
-  }
-  return base
 }
 
 export type ContrastProbeResult = {

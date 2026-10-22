@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
 import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react'
 import {
   Background,
@@ -13,6 +13,7 @@ import {
   type Edge,
   type FitViewOptions,
   type Node,
+  type Viewport,
 } from '@xyflow/react'
 
 import { applyNodesDraggable, cloneGraph, type NodeData } from './graph'
@@ -42,24 +43,27 @@ function RoadmapViewportFit({
   focusNodeId,
   reduceMotion,
   resetToken,
+  articlePanelOpen,
 }: {
   graphKey: string
   focusNodeId?: string | null
   reduceMotion: boolean
   resetToken: number
+  articlePanelOpen: boolean
 }) {
   const { fitView, getNodes } = useReactFlow()
   const nodesInitialized = useNodesInitialized()
   const fitScopeRef = useRef('')
 
   const fitOverview = useCallback(() => {
+    if (articlePanelOpen) return
     const content = contentNodesForFit(getNodes())
     if (content.length === 0) return
     fitView({
       nodes: content.map((node) => ({ id: node.id })),
       ...roadmapOverviewFitOptions(reduceMotion),
     })
-  }, [fitView, getNodes, reduceMotion])
+  }, [articlePanelOpen, fitView, getNodes, reduceMotion])
 
   useEffect(() => {
     if (!nodesInitialized) return
@@ -163,6 +167,8 @@ interface RoadmapFlowCanvasProps {
   initialEdges: Edge[]
   focusNodeId?: string | null
   selectedNodeId?: string | null
+  articlePanelOpen?: boolean
+  freezeViewportRef?: MutableRefObject<(() => void) | null>
   onTopicSelect: (raw: import('@/services/roadmapOfficialService').OfficialRoadmapNode) => void
   onRoadmapNavigate: (path: string) => void
   layoutLocked?: boolean
@@ -175,6 +181,8 @@ export function RoadmapFlowCanvas({
   initialEdges,
   focusNodeId,
   selectedNodeId,
+  articlePanelOpen = false,
+  freezeViewportRef,
   onTopicSelect,
   onRoadmapNavigate,
   layoutLocked = false,
@@ -186,10 +194,43 @@ export function RoadmapFlowCanvas({
   const snapshotRef = useRef(cloneGraph(initialNodes, initialEdges))
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const { getNodes, getEdges } = useReactFlow()
+  const { getNodes, getEdges, getViewport, setViewport } = useReactFlow()
   const containerRef = useRef<HTMLDivElement>(null)
   const dragMovedRef = useRef(false)
   const loadedKeyRef = useRef<string | null>(null)
+  const frozenViewportRef = useRef<Viewport | null>(null)
+  const preserveViewportRef = useRef(false)
+
+  useEffect(() => {
+    if (!freezeViewportRef) return
+    freezeViewportRef.current = () => {
+      frozenViewportRef.current = getViewport()
+      preserveViewportRef.current = true
+    }
+    return () => {
+      freezeViewportRef.current = null
+    }
+  }, [freezeViewportRef, getViewport])
+
+  useEffect(() => {
+    if (articlePanelOpen) return
+    preserveViewportRef.current = false
+    if (!frozenViewportRef.current) return
+    const restore = frozenViewportRef.current
+    frozenViewportRef.current = null
+    requestAnimationFrame(() => setViewport(restore))
+  }, [articlePanelOpen, setViewport])
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const observer = new ResizeObserver(() => {
+      if (!preserveViewportRef.current || !frozenViewportRef.current) return
+      setViewport(frozenViewportRef.current)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [setViewport])
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -337,6 +378,7 @@ export function RoadmapFlowCanvas({
           focusNodeId={focusNodeId}
           reduceMotion={reduceMotion}
           resetToken={resetToken}
+          articlePanelOpen={articlePanelOpen}
         />
         <RoadmapControls
           onReset={resetLayout}

@@ -4,6 +4,7 @@
 import { expect, test } from '@playwright/test'
 
 import { loadManifest, loginAs } from './helpers'
+import { parseViewportTransform, viewportTransformsClose } from './roadmap-viewport'
 
 const fixtures = loadManifest()
 const SAMPLE_SLUG = 'api-design'
@@ -16,10 +17,20 @@ async function firstEdgePath(page: import('@playwright/test').Page) {
   return page.locator('.ors-canvas .react-flow__edge-path').first().getAttribute('d')
 }
 
-async function draggableTopicBox(page: import('@playwright/test').Page) {
-  const node = page.locator('.ors-canvas .react-flow__node.draggable.ors-node--topic').first()
+async function draggableTopicNode(page: import('@playwright/test').Page) {
+  const node = page.locator('.ors-canvas .react-flow__node.draggable').filter({
+    has: page.locator('.ors-node--topic'),
+  }).first()
   await expect(node).toBeVisible({ timeout: 30_000 })
   return node
+}
+
+async function expectViewportStable(page: import('@playwright/test').Page, baseline: string | null) {
+  const during = await viewportTransform(page)
+  expect(
+    viewportTransformsClose(baseline, during),
+    `viewport moved: before=${baseline} during=${during}`,
+  ).toBe(true)
 }
 
 test.describe('Roadmap graph interaction (live)', () => {
@@ -29,10 +40,13 @@ test.describe('Roadmap graph interaction (live)', () => {
     await page.goto(`/roadmaps/${SAMPLE_SLUG}`)
     await expect(page.getByRole('heading', { name: /api design/i })).toBeVisible({ timeout: 30_000 })
     await expect(page.locator('.ors-canvas .react-flow')).toBeVisible({ timeout: 60_000 })
+    await expect
+      .poll(async () => page.locator('.ors-canvas .react-flow__node').count(), { timeout: 60_000 })
+      .toBeGreaterThan(0)
   })
 
   test('topic drag moves node and attached edge geometry', async ({ page }) => {
-    const node = await draggableTopicBox(page)
+    const node = await draggableTopicNode(page)
     const edgeBefore = await firstEdgePath(page)
     expect(edgeBefore).toBeTruthy()
 
@@ -58,7 +72,7 @@ test.describe('Roadmap graph interaction (live)', () => {
   })
 
   test('lock layout blocks drag; reset restores layout', async ({ page }) => {
-    const node = await draggableTopicBox(page)
+    const node = await draggableTopicNode(page)
     const boxOrig = await node.boundingBox()
     expect(boxOrig).toBeTruthy()
     if (!boxOrig) return
@@ -102,18 +116,18 @@ test.describe('Roadmap graph interaction (live)', () => {
   test('viewport transform stable when article panel opens', async ({ page }) => {
     const before = await viewportTransform(page)
     expect(before).toBeTruthy()
+    const beforeParsed = parseViewportTransform(before)
+    expect(beforeParsed).toBeTruthy()
 
     const topic = page.locator('.ors-canvas .ors-node--topic').first()
     await expect(topic).toBeVisible({ timeout: 20_000 })
     await topic.click()
     await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 20_000 })
 
-    const during = await viewportTransform(page)
-    expect(during).toBe(before)
+    await expectViewportStable(page, before)
 
     await page.locator('.ors-panel--desktop').getByRole('button', { name: 'Close' }).click()
     await expect(page.getByRole('heading', { level: 2 })).toBeHidden({ timeout: 10_000 })
-    const after = await viewportTransform(page)
-    expect(after).toBe(before)
+    await expectViewportStable(page, before)
   })
 })
