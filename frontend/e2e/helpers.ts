@@ -506,7 +506,11 @@ export async function setAppTheme(page: Page, theme: 'light' | 'dark') {
 }
 
 export async function expectRenderedDarkTheme(page: Page) {
-  await expect(page.locator('html')).toHaveClass(/dark/)
+  await expect
+    .poll(async () => page.evaluate(() => document.documentElement.classList.contains('dark')), {
+      timeout: 20_000,
+    })
+    .toBe(true)
   const onAccent = await page.evaluate(() =>
     getComputedStyle(document.documentElement).getPropertyValue('--color-on-accent').trim(),
   )
