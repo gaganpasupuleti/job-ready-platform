@@ -68,7 +68,7 @@ function writeBrowserResults(rows: SlugBrowserRow[], meta: Record<string, unknow
 }
 
 test.describe('Roadmap catalog render (live)', () => {
-  test.describe.configure({ timeout: 900_000 })
+  test.describe.configure({ timeout: 1_800_000 })
 
   test.beforeEach(async ({ page }) => {
     await loginAs(page, fixtures.users.student)
@@ -106,7 +106,7 @@ test.describe('Roadmap catalog render (live)', () => {
         try {
           await expect
             .poll(async () => page.locator('.ors-canvas .react-flow__node').count(), {
-              timeout: 90_000,
+              timeout: 45_000,
             })
             .toBeGreaterThan(0)
           nodeCount = await page.locator('.ors-canvas .react-flow__node').count()

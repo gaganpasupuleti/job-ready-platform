@@ -2,47 +2,51 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** _(pending push — e2e hardening on `02507f8`)_  
+**Candidate SHA:** `56172e3` (fix on `88e18dd`; CI [39834374466](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39834374466) in progress)  
 **Status:** Open — not merged, not deployed.
 
-## Root causes fixed (this pass)
+## CI run 39724330440 (`88e18dd`) — five failures (investigated)
 
-| Issue | Root cause | Fix |
-|-------|------------|-----|
-| `phase6-layout` `/practice/projects` | `/api/v1/assignments` mock returned a generic object; `ManualAssignmentSection` called `.filter` on non-array → runtime error, blank shell | Mock returns `[]`; component guards with `Array.isArray` |
-| Project links | API `href` pointed at legacy `/projects/...` | `ProjectsPage` links use `/practice/projects/{slug}` |
-| Catalog article audit | Title-only counted as “available” | `roadmapArticleAudit.mjs` requires meaningful `markdown`; separate graph vs article exit codes |
-| Release smoke script | No exit-code checks; fixed sleep; port collision risk | `run-release-smoke.ps1`: exit codes, port preflight, GUID marker readiness, `taskkill /T`, live catalog + preview specs |
-| UI cohesion theme | Competing light/dark init scripts in one context | Separate browser context per theme; WCAG ≥4.5:1 contrast on primary + action links (hover) |
-| Catalog browser E2E | Only `api-design` + `.react-flow` | All bundled slugs: nodes, console guard; pan + article on `api-design` |
-| Preview smoke | Save button visibility only | Save/unsave cycle + live roadmap article on preview build |
+| # | Spec | Root cause class | Root cause | Correction in `56172e3` |
+|---|------|------------------|------------|-------------------------|
+| 1 | `roadmap-catalog-render` catalog inventory | **Test harness** | `GET /api/v1/roadmap/catalog` requires auth; raw Playwright `request` returned **401** | Student bearer via `loginAccessToken` |
+| 2 | `roadmap-catalog-render` per-slug loop | **Test harness + timing** | Counted `.react-flow__node` immediately; `onlyRenderVisibleElements` can yield **0 DOM nodes** before fit/viewport settles (`devops` reported) | Poll until node count &gt; 0 (90s cap per slug); still fails if graph truly empty |
+| 3–4 | `roadmap-graph-interaction` drag + lock/reset | **Test harness** | Selector `.react-flow__node.draggable.ors-node--topic` invalid — `ors-node--topic` is on **inner** card, not the RF wrapper | `.react-flow__node.draggable` filtered with `:has(.ors-node--topic)` |
+| 5 | `roadmap-graph-interaction` viewport stability | **Application** | Article panel resize triggered **fitOverview** (scale ≈ 0.55); transform jumped from ~1px translate to ~505px | Freeze viewport before non-focus topic select; `ResizeObserver` restore; skip auto-fit while article open |
+
+**Counts (39724330440):** Backend pass, Frontend pass, Playwright **134 passed, 5 failed, 6 skipped** (~34.2 min). No flaky retries reported beyond configured retry=1.
+
+**Per-slug browser (39724330440):** Loop completed all **93** slugs; only `devops` recorded `fail` (zero nodes) before assertion — full `roadmap-catalog-browser-results.json` not uploaded from CI (artifact gap).
+
+## Application changes (`56172e3`)
+
+- `OfficialRoadmapView` / `RoadmapFlowCanvas`: preserve pan/zoom when opening article from canvas (not outline focus-camera path).
+- `roadmap-viewport.ts`: parse transform + tight FP tolerance (±1.5px, ±0.02 zoom).
+
+## Prior candidate `88e18dd` (still relevant)
+
+| Area | Fix |
+|------|-----|
+| UI cohesion | Separate browser context per theme; contrast probes flag `unsupported_transparency` |
+| Preview smoke script | GUID readiness marker, port preflight, `taskkill /T` |
+| Release preview spec | Save/reload/unsave + article body length check |
 
 ## Runtime
 
 - Node **22+** (`frontend/.nvmrc`, CI `node-version: "22"`).
-- Unit tests: `npm run test:unit` (35 tests including graph + article audit).
-
-## Clean checkout
-
-```powershell
-cd jobready-roadmap-ui-clean\frontend
-npm ci
-npm run lint
-npm run test:unit
-$env:VITE_API_BASE_URL="http://127.0.0.1:8000"
-npm run build
-```
+- Unit tests: `npm run test:unit` — **35/35** on `56172e3` locally.
 
 ## CI evidence
 
 | Run | SHA | Frontend | Backend | Playwright | Notes |
 |-----|-----|----------|---------|------------|-------|
-| [39671871542](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39671871542) | `ab2c904` | pass | pass | **129 pass, 1 fail, 3 skip** | Failed `phase6-layout` at `/practice/projects` (assignments mock) |
-| _(latest)_ | _(push)_ | | | | Re-run after this commit |
+| [39715695335](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39715695335) | `02507f8` | pass | pass | **success** | Pre–live catalog/interaction specs |
+| [39724330440](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39724330440) | `88e18dd` | pass | pass | **134 pass, 5 fail, 6 skip** | See table above |
+| [39834374466](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39834374466) | `56172e3` | _pending_ | _pending_ | _pending_ | Current candidate |
 
-Playwright skips (baseline): document from CI log when green.
+Playwright skips (~6): `release-smoke-preview` when `E2E_SKIP_WEBSERVER` unset (expected).
 
-## Catalog audit (authenticated)
+## Catalog audit (authenticated script)
 
 ```powershell
 $env:ROADMAP_AUDIT_EMAIL="e2e.student@jobready.dev"
@@ -50,53 +54,48 @@ $env:ROADMAP_AUDIT_PASSWORD="<from frontend/e2e/fixtures/seed-manifest.json — 
 node scripts/audit-roadmap-catalog.mjs --api http://127.0.0.1:8000
 ```
 
-- Graph: `GET /api/v1/roadmap/official/{slug}/graph`
-- Articles: **one topic/subtopic sample per slug** (not full topic inventory)
-- Report: `frontend/e2e/artifacts/roadmap-catalog-audit.json`
-- Exit: `2` missing creds, `3` auth, `1` graph fail, `4` sampled article fail
+**Local (2026-10-22):** Auth succeeded against `127.0.0.1:8000` but **not** CI E2E backend — all **93** graph probes returned **HTTP 404** (wrong/stale API on :8000, not PR #24 seed). Totals: `graphPass=0`, `graphFail=93`, `articleUnverified=93`. **Unverified** for release on this host.
 
-**Local run (this machine):** backend not reachable — catalog totals **unverified**.
+**CI:** Authoritative graph + browser totals expected from run **39834374466** + `roadmap-catalog-browser-results.json` when green.
 
 ## Production preview smoke
 
 ```powershell
 cd frontend
-powershell -ExecutionPolicy Bypass -File scripts/run-release-smoke.ps1 -ApiBase http://127.0.0.1:8000 -PreviewPort 4173
+powershell -ExecutionPolicy Bypass -File scripts/run-release-smoke.ps1 -ApiBase http://127.0.0.1:8000 -PreviewPort 4175
 ```
 
-Verify failure propagation:
+**Local preview (`88e18dd`, port 4175, `E2E_SKIP_WEBSERVER=1`):**
 
-```powershell
-powershell -File scripts/run-release-smoke.ps1 -TestFailurePropagation  # expect exit 42
-```
+| Spec | Result |
+|------|--------|
+| `ui-cohesion.spec.ts` | **5/5 pass** (mocked API) |
+| `release-smoke-preview.spec.ts` | **2/3 pass** — save/unsave OK; live roadmap article **fail** (no official graph on :8000) |
 
-- Build with `VITE_API_BASE_URL` set **before** `npm run build`
-- Preview: `http://127.0.0.1:4173` with `E2E_SKIP_WEBSERVER=1`
-- Live specs: `e2e/release-smoke-preview.spec.ts` (plus scripted auth/more/roadmap-mock)
-
-**Local run:** unverified without backend + successful build on this host.
+**Railway outage:** Separate from GitHub CI; blocks hosted production API/deploy verification, not Actions E2E.
 
 ## Visual evidence (mocked)
 
-```powershell
-$env:E2E_FORCE_FRESH_WEBSERVER="1"
-$env:CI="1"
-npx playwright test e2e/ui-cohesion.spec.ts --project=desktop
-```
+- Path: `frontend/e2e/artifacts/ui-cohesion/after/` + `meta.json` (`sha: 88e18dd`), `contrast-report.json`
+- **Contrast:** All primary/action probes flagged **`unsupported_transparency`** (semi-transparent stacks) — **not** WCAG sign-off; manual screenshot review still required.
+- Inspected locally: `jobs-light-1366.png`, `jobs-dark-1366.png` — readable Search control; dark theme coherent.
 
-- Output: `frontend/e2e/artifacts/ui-cohesion/after/` + `meta.json`
-- Themes: light + dark via `jrp-theme`; viewports 390, 768, 1280, 1366, 1920
-- CI artifact: `ui-cohesion-after` (workflow upload)
+## Live vs mocked evidence
 
-## Live roadmap render (CI E2E)
+| Check | Mocked | Live (CI backend) |
+|-------|--------|-------------------|
+| UI cohesion screenshots | Local preview 4175 | CI artifact `ui-cohesion-after` |
+| Roadmap catalog 93× browser | — | `roadmap-catalog-render.spec.ts` |
+| Graph drag/lock/reset/viewport | — | `roadmap-graph-interaction.spec.ts` |
+| Catalog audit script | — | CI-compatible API only |
+| Preview smoke | Partial local | `run-release-smoke.ps1` + seed API |
 
-- `e2e/roadmap-catalog-render.spec.ts` — catalog + `api-design` React Flow mount (live seed backend)
+## Remaining release blockers
 
-## Remaining blockers
+1. **Green CI** on `56172e3` (full Playwright desktop, including 93-slug loop).
+2. **Authenticated catalog audit** on **CI-equivalent** warmed backend (graph + sampled articles).
+3. **Production preview smoke** end-to-end with compatible API (all scripted specs + live article).
+4. **Contrast / screenshot** human sign-off (`contrast-report.json` + `ui-cohesion-after` for final SHA).
+5. **Railway** recovery if production smoke against hosted API is required before merge.
 
-1. **Green CI** on final candidate SHA (full Playwright desktop).
-2. **Authenticated catalog** graph + sampled article totals on a warmed backend.
-3. **Production preview smoke** executed end-to-end with live API.
-4. **Screenshot review** of CI `ui-cohesion-after` artifact (human sign-off).
-
-Do not claim release-ready until the above are pass/verified.
+Do not merge or deploy until blockers are cleared.

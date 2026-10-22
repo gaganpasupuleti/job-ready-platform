@@ -43,6 +43,9 @@ test.describe('Roadmap graph interaction (live)', () => {
     await expect
       .poll(async () => page.locator('.ors-canvas .react-flow__node').count(), { timeout: 60_000 })
       .toBeGreaterThan(0)
+    await expect(page.locator('.ors-canvas .react-flow__edge-path').first()).toBeVisible({
+      timeout: 30_000,
+    })
   })
 
   test('topic drag moves node and attached edge geometry', async ({ page }) => {
@@ -119,9 +122,11 @@ test.describe('Roadmap graph interaction (live)', () => {
     const beforeParsed = parseViewportTransform(before)
     expect(beforeParsed).toBeTruthy()
 
-    const topic = page.locator('.ors-canvas .ors-node--topic').first()
-    await expect(topic).toBeVisible({ timeout: 20_000 })
-    await topic.click()
+    const topicNode = page.locator('.ors-canvas .react-flow__node.draggable').filter({
+      has: page.locator('.ors-node--topic'),
+    }).first()
+    await expect(topicNode).toBeVisible({ timeout: 20_000 })
+    await topicNode.click()
     await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 20_000 })
 
     await expectViewportStable(page, before)

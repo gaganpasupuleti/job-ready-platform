@@ -74,9 +74,9 @@ function RoadmapViewportFit({
   }, [graphKey, nodesInitialized, fitOverview])
 
   useEffect(() => {
-    if (!nodesInitialized || resetToken === 0) return
+    if (!nodesInitialized || resetToken === 0 || articlePanelOpen) return
     requestAnimationFrame(() => fitOverview())
-  }, [resetToken, nodesInitialized, fitOverview])
+  }, [resetToken, nodesInitialized, fitOverview, articlePanelOpen])
 
   useEffect(() => {
     if (!focusNodeId || !nodesInitialized) return
@@ -325,6 +325,8 @@ export function RoadmapFlowCanvas({
         }
       }
       if (t === 'subtopic' || t === 'topic') {
+        frozenViewportRef.current = getViewport()
+        preserveViewportRef.current = true
         onTopicSelect(raw)
       }
     },
@@ -338,6 +340,21 @@ export function RoadmapFlowCanvas({
     [onNodesChange],
   )
 
+  const onViewportChange = useCallback(
+    (next: Viewport) => {
+      if (!preserveViewportRef.current || !frozenViewportRef.current) return
+      const frozen = frozenViewportRef.current
+      const moved =
+        Math.abs(next.x - frozen.x) > 1.5 ||
+        Math.abs(next.y - frozen.y) > 1.5 ||
+        Math.abs(next.zoom - frozen.zoom) > 0.02
+      if (moved) {
+        setViewport(frozen)
+      }
+    },
+    [setViewport],
+  )
+
   return (
     <div ref={containerRef} className="ors-flow-host">
       <ReactFlow
@@ -346,6 +363,7 @@ export function RoadmapFlowCanvas({
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChangeWrapped}
         onEdgesChange={onEdgesChange}
+        onViewportChange={onViewportChange}
         onNodeClick={onNodeClick}
         onNodeDragStart={onNodeDragStart}
         onNodeDrag={onNodeDrag}
