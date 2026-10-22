@@ -39,7 +39,8 @@ export function ManualAssignmentSection({ projectId }: { projectId?: string }) {
     },
   })
 
-  const mine = (data ?? []).filter((item) => !projectId || item.project_id === projectId)
+  const assignments = Array.isArray(data) ? data : []
+  const mine = assignments.filter((item) => !projectId || item.project_id === projectId)
 
   useEffect(() => {
     const id = location.hash.replace(/^#/, '')

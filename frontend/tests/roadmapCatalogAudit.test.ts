@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
+import {
+  classifyArticleHttpResponse,
+  classifyArticlePayload,
+} from '../scripts/lib/roadmapArticleAudit.mjs'
 import { verifyAuthHeaders } from '../scripts/lib/roadmapAuditAuth.mjs'
 import { validateOfficialGraph } from '../scripts/lib/roadmapGraphAudit.mjs'
 
@@ -34,6 +38,26 @@ test('verifyAuthHeaders rejects invalid bearer tokens', async () => {
   assert.equal(result.ok, false)
   assert.equal(result.status, 401)
   globalThis.fetch = originalFetch
+})
+
+test('classifyArticlePayload rejects title-only stubs', () => {
+  const titleOnly = classifyArticlePayload({ title: 'REST', markdown: '' })
+  assert.equal(titleOnly.status, 'empty_content')
+
+  const short = classifyArticlePayload({ title: 'REST', markdown: '# Hi\n\nshort' })
+  assert.equal(short.status, 'empty_content')
+
+  const ok = classifyArticlePayload({
+    title: 'REST',
+    markdown: '# REST\n\n'.padEnd(60, 'x'),
+  })
+  assert.equal(ok.status, 'ok')
+})
+
+test('classifyArticleHttpResponse maps auth and server errors', () => {
+  assert.equal(classifyArticleHttpResponse(401, null).articleStatus, 'auth')
+  assert.equal(classifyArticleHttpResponse(404, null).articleStatus, 'missing')
+  assert.equal(classifyArticleHttpResponse(500, null).articleStatus, 'server_error')
 })
 
 test('validateOfficialGraph accepts minimal valid graph', () => {

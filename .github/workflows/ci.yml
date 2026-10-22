@@ -253,3 +253,11 @@ jobs:
             frontend/playwright-report
             frontend/test-results
           retention-days: 7
+      - name: Upload UI cohesion screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-cohesion-after
+          path: frontend/e2e/artifacts/ui-cohesion/after/
+          if-no-files-found: ignore
+          retention-days: 14

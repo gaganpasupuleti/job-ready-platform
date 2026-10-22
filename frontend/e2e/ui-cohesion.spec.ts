@@ -155,7 +155,7 @@ function captureMeta() {
   }
   return {
     sha,
-    theme: 'mocked light + persisted dark (jrp-theme)',
+    theme: 'light and dark via jrp-theme + emulateMedia',
     data: 'mocked API',
     viewports: viewports.map((vp) => ({ name: vp.name, width: vp.width, height: vp.height })),
     capturedAt: new Date().toISOString(),
@@ -172,15 +172,34 @@ test.describe('UI cohesion (mocked)', () => {
   test('capture jobs, library, explore, roadmap, dark', async ({ page }) => {
     await installMocks(page)
 
-    for (const vp of viewports) {
-      await page.setViewportSize({ width: vp.width, height: vp.height })
-      await page.goto('/jobs')
-      await expect(page.getByRole('heading', { name: 'Jobs' })).toBeVisible()
-      await page.screenshot({ path: path.join(AFTER, `jobs-${vp.name}.png`) })
+    for (const theme of ['light', 'dark'] as const) {
+      await page.emulateMedia({ colorScheme: theme })
+      await setAppTheme(page, theme)
+      for (const vp of viewports) {
+        await page.setViewportSize({ width: vp.width, height: vp.height })
+        await page.goto('/jobs')
+        await expect(page.getByRole('heading', { name: 'Jobs' })).toBeVisible()
+        if (theme === 'dark') await expectRenderedDarkTheme(page)
+        const primaryFg = await page.evaluate(() => {
+          const btn = document.querySelector<HTMLElement>('.jr-btn[data-variant="primary"]')
+          if (!btn) return ''
+          const style = getComputedStyle(btn)
+          return `${style.backgroundColor}|${style.color}`
+        })
+        expect(primaryFg.length).toBeGreaterThan(3)
+        await page.screenshot({ path: path.join(AFTER, `jobs-${theme}-${vp.name}.png`) })
 
-      await page.goto('/library/book-1')
-      await expect(page.getByRole('heading', { name: /CODING FOR BEGINNERS/i })).toBeVisible({ timeout: 15000 })
-      await page.screenshot({ path: path.join(AFTER, `library-book-${vp.name}.png`) })
+        await page.goto('/library/book-1')
+        await expect(page.getByRole('heading', { name: /CODING FOR BEGINNERS/i })).toBeVisible({
+          timeout: 15_000,
+        })
+        await page.screenshot({ path: path.join(AFTER, `library-book-${theme}-${vp.name}.png`) })
+
+        await page.goto('/practice/projects')
+        await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible({ timeout: 15_000 })
+        await expect(page.locator('#main-content')).toBeVisible()
+        await page.screenshot({ path: path.join(AFTER, `projects-${theme}-${vp.name}.png`) })
+      }
     }
 
     await page.setViewportSize({ width: 1366, height: 768 })

@@ -72,7 +72,7 @@ export function ProjectsPage() {
           {visible.map((project) => {
             const soon = project.availability === 'coming_soon'
             const open = !soon && Boolean(project.href || project.slug)
-            const href = project.href || `/projects/${project.slug}`
+            const href = `/practice/projects/${project.slug}`
             const body = (
               <Card className="h-full">
                 <div className="mb-2 flex flex-wrap gap-2">

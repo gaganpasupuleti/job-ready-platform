@@ -1,5 +1,5 @@
 /**
- * Catalog-wide official roadmap graph audit.
+ * Catalog-wide official roadmap graph + sampled article audit.
  *
  * Usage:
  *   node scripts/audit-roadmap-catalog.mjs --api http://127.0.0.1:8000
@@ -10,6 +10,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import {
+  classifyArticleHttpResponse,
+  listReadableTopicNodeIds,
+  pickSampleTopicNodeId,
+} from './lib/roadmapArticleAudit.mjs'
 import { resolveAuthHeaders } from './lib/roadmapAuditAuth.mjs'
 import { validateOfficialGraph } from './lib/roadmapGraphAudit.mjs'
 
@@ -19,37 +24,55 @@ const apiBase = process.argv.includes('--api')
   ? process.argv[process.argv.indexOf('--api') + 1]
   : process.env.DEV_API ?? 'http://127.0.0.1:8000'
 
-function pickTopicNodeId(nodes) {
-  for (const node of nodes) {
-    const t = node?.type
-    if (t === 'topic' || t === 'subtopic') return node.id
-  }
-  return null
-}
-
 async function probeArticle(slug, nodeId, authHeaders) {
-  const url = `${apiBase}/api/v1/roadmap/official/${encodeURIComponent(slug)}/topics/${encodeURIComponent(nodeId)}`
-  const res = await fetch(url, { headers: { Accept: 'application/json', ...authHeaders } })
-  if (res.status === 401 || res.status === 403) {
-    return { articleStatus: 'auth', httpStatus: res.status, articleUrl: url }
-  }
-  if (!res.ok) {
-    return { articleStatus: 'missing', httpStatus: res.status, articleUrl: url }
-  }
-  const body = await res.json()
-  const hasBody = Boolean(body?.markdown?.trim() || body?.title?.trim())
-  return {
-    articleStatus: hasBody ? 'ok' : 'empty',
-    httpStatus: res.status,
-    articleUrl: url,
+  const articleUrl = `${apiBase}/api/v1/roadmap/official/${encodeURIComponent(slug)}/topics/${encodeURIComponent(nodeId)}`
+  try {
+    const res = await fetch(articleUrl, { headers: { Accept: 'application/json', ...authHeaders } })
+    let body = null
+    const text = await res.text()
+    if (text) {
+      try {
+        body = JSON.parse(text)
+      } catch {
+        body = null
+      }
+    }
+    const classified = classifyArticleHttpResponse(res.status, body)
+    return {
+      ...classified,
+      articleUrl,
+      sampledNodeId: nodeId,
+      sampling: 'one_topic_per_slug',
+    }
+  } catch (err) {
+    return {
+      articleStatus: 'transport_error',
+      httpStatus: 0,
+      articleUrl,
+      sampledNodeId: nodeId,
+      sampling: 'one_topic_per_slug',
+      reason: String(err),
+    }
   }
 }
 
 async function fetchGraphRow(slug, authHeaders) {
   const graphUrl = `${apiBase}/api/v1/roadmap/official/${encodeURIComponent(slug)}/graph`
-  const res = await fetch(graphUrl, {
-    headers: { Accept: 'application/json', ...authHeaders },
-  })
+  let res
+  try {
+    res = await fetch(graphUrl, {
+      headers: { Accept: 'application/json', ...authHeaders },
+    })
+  } catch (err) {
+    return {
+      slug,
+      graphUrl,
+      graphStatus: 'transport_error',
+      graphAvailable: false,
+      errors: [String(err)],
+      article: { articleStatus: 'unverified', reason: 'graph transport failed' },
+    }
+  }
 
   if (res.status === 401 || res.status === 403) {
     return {
@@ -59,6 +82,7 @@ async function fetchGraphRow(slug, authHeaders) {
       httpStatus: res.status,
       graphAvailable: false,
       errors: [`HTTP ${res.status} on graph`],
+      article: { articleStatus: 'unverified', reason: 'graph auth failure' },
     }
   }
   if (!res.ok) {
@@ -69,6 +93,7 @@ async function fetchGraphRow(slug, authHeaders) {
       httpStatus: res.status,
       graphAvailable: false,
       errors: [`HTTP ${res.status} on graph`],
+      article: { articleStatus: 'unverified', reason: 'graph unavailable' },
     }
   }
 
@@ -83,13 +108,28 @@ async function fetchGraphRow(slug, authHeaders) {
       httpStatus: res.status,
       graphAvailable: false,
       errors: ['graph response was not JSON'],
+      article: { articleStatus: 'unverified', reason: 'graph JSON invalid' },
     }
   }
 
   const validation = validateOfficialGraph(payload)
-  const topicId = pickTopicNodeId(payload?.nodes ?? [])
+  const readableIds = listReadableTopicNodeIds(payload?.nodes ?? [])
+  const sampleId = pickSampleTopicNodeId(payload?.nodes ?? [])
+  const articleInventory = {
+    readableTopicNodes: readableIds.length,
+    sampledNodes: sampleId ? 1 : 0,
+    uncheckedReadableNodes: sampleId ? Math.max(0, readableIds.length - 1) : readableIds.length,
+    note: 'Article audit samples one readable node per slug; full topic coverage is not claimed.',
+  }
+
   const article =
-    topicId != null ? await probeArticle(slug, topicId, authHeaders) : { articleStatus: 'no_topic_node' }
+    sampleId != null
+      ? await probeArticle(slug, sampleId, authHeaders)
+      : {
+          articleStatus: 'no_readable_topic',
+          sampling: 'one_topic_per_slug',
+          reason: 'no topic/subtopic nodes in graph',
+        }
 
   const errors = [...validation.issues]
   if (!validation.ok) {
@@ -104,6 +144,7 @@ async function fetchGraphRow(slug, authHeaders) {
     graphAvailable: validation.ok,
     nodeCount: validation.nodeCount,
     edgeCount: validation.edgeCount,
+    articleInventory,
     article,
     errors,
   }
@@ -137,6 +178,9 @@ async function main() {
   let graphPass = 0
   let graphFail = 0
   let graphAuth = 0
+  let articleSampleOk = 0
+  let articleSampleFail = 0
+  let articleUnverified = 0
 
   const concurrency = 4
   let i = 0
@@ -149,13 +193,20 @@ async function main() {
         if (row.graphStatus === 'ok') graphPass++
         else if (row.graphStatus === 'auth') graphAuth++
         else graphFail++
+
+        const aStatus = row.article?.articleStatus
+        if (aStatus === 'ok') articleSampleOk++
+        else if (aStatus === 'unverified' || aStatus === 'no_readable_topic') articleUnverified++
+        else articleSampleFail++
       } catch (err) {
         graphFail++
+        articleSampleFail++
         rows.push({
           slug,
           graphStatus: 'error',
           graphAvailable: false,
           errors: [String(err)],
+          article: { articleStatus: 'transport_error', reason: String(err) },
         })
       }
     }
@@ -173,6 +224,9 @@ async function main() {
       graphPass,
       graphFail,
       graphAuth,
+      articleSampleOk,
+      articleSampleFail,
+      articleUnverified,
     },
     rows,
   }
@@ -182,6 +236,7 @@ async function main() {
 
   if (graphAuth > 0) process.exit(3)
   if (graphFail > 0) process.exit(1)
+  if (articleSampleFail > 0) process.exit(4)
 }
 
 main().catch((err) => {

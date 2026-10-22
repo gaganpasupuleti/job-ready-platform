@@ -67,6 +67,9 @@ async function install(page: Page) {
         roles: [{ slug: 'data-analyst', name: 'Data Analyst' }],
       })
     }
+    if (path === '/api/v1/assignments') {
+      return json(route, 200, [])
+    }
     if (path === '/api/v1/applications') {
       return json(route, 200, [
         {
@@ -130,7 +133,7 @@ async function install(page: Page) {
           estimated_minutes: 40,
           task_count: 3,
           progress_percent: 0,
-          href: '/projects/bookstore',
+          href: '/practice/projects/bookstore',
         },
       ])
     }
