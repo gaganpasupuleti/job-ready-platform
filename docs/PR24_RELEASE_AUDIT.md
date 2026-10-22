@@ -2,7 +2,7 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** `298a377` (release fixes on `00da745`)  
+**Candidate SHA:** _(pending push — e2e hardening on `02507f8`)_  
 **Status:** Open — not merged, not deployed.
 
 ## Root causes fixed (this pass)
@@ -12,7 +12,10 @@
 | `phase6-layout` `/practice/projects` | `/api/v1/assignments` mock returned a generic object; `ManualAssignmentSection` called `.filter` on non-array → runtime error, blank shell | Mock returns `[]`; component guards with `Array.isArray` |
 | Project links | API `href` pointed at legacy `/projects/...` | `ProjectsPage` links use `/practice/projects/{slug}` |
 | Catalog article audit | Title-only counted as “available” | `roadmapArticleAudit.mjs` requires meaningful `markdown`; separate graph vs article exit codes |
-| Release smoke script | No exit-code checks; fixed sleep; port collision risk | `run-release-smoke.ps1` checks `$LASTEXITCODE`, `--strictPort`, readiness poll, preview-only process cleanup |
+| Release smoke script | No exit-code checks; fixed sleep; port collision risk | `run-release-smoke.ps1`: exit codes, port preflight, GUID marker readiness, `taskkill /T`, live catalog + preview specs |
+| UI cohesion theme | Competing light/dark init scripts in one context | Separate browser context per theme; WCAG ≥4.5:1 contrast on primary + action links (hover) |
+| Catalog browser E2E | Only `api-design` + `.react-flow` | All bundled slugs: nodes, console guard; pan + article on `api-design` |
+| Preview smoke | Save button visibility only | Save/unsave cycle + live roadmap article on preview build |
 
 ## Runtime
 

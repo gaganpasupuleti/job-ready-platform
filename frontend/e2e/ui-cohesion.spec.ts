@@ -7,9 +7,15 @@ import { fileURLToPath } from 'node:url'
 
 import { execSync } from 'node:child_process'
 
-import { expect, test, type Page, type Route } from '@playwright/test'
+import { expect, test, type Browser, type Page, type Route } from '@playwright/test'
 
-import { expectRenderedDarkTheme, setAppTheme } from './helpers'
+import {
+  expectAppTheme,
+  expectControlContrast,
+  expectRenderedDarkTheme,
+  probeControlContrast,
+  type ContrastProbeResult,
+} from './helpers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const graphFixture = JSON.parse(
@@ -49,10 +55,7 @@ function json(route: Route, status: number, body: unknown) {
   return route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) })
 }
 
-async function installMocks(page: Page) {
-  await page.addInitScript(() => {
-    localStorage.setItem('jrp_access_token', 'ui-cohesion-mock')
-  })
+async function installRouteMocks(page: Page) {
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url())
     if (!['127.0.0.1', 'localhost'].includes(url.hostname) || !url.pathname.startsWith('/api/')) {
@@ -136,6 +139,33 @@ async function installMocks(page: Page) {
   })
 }
 
+async function openThemedCohesionPage(browser: Browser, theme: 'light' | 'dark') {
+  const context = await browser.newContext({ colorScheme: theme })
+  await context.addInitScript((mode: 'light' | 'dark') => {
+    localStorage.setItem('jrp-theme', mode)
+    localStorage.setItem('jrp_access_token', 'ui-cohesion-mock')
+  }, theme)
+  const page = await context.newPage()
+  await installRouteMocks(page)
+  return { context, page }
+}
+
+const contrastReport: Array<ContrastProbeResult & { selector: string; surface: string }> = []
+
+async function recordContrast(page: Page, selector: string, surface: string, hover = false) {
+  const result = await probeControlContrast(page, selector, hover ? { hover: true } : {})
+  contrastReport.push({ ...result, selector, surface: hover ? `${surface} (hover)` : surface })
+  if (result.status === 'pass') return
+  if (result.status === 'unsupported_transparency') return
+  await expectControlContrast(page, selector, hover ? { hover: true } : {})
+}
+
+async function assertJobsPrimaryContrast(page: Page) {
+  const primary = '.jr-btn[data-variant="primary"]'
+  await recordContrast(page, primary, 'jobs-primary')
+  await recordContrast(page, primary, 'jobs-primary', true)
+}
+
 const viewports = [
   { name: '390', width: 390, height: 844 },
   { name: '768', width: 768, height: 900 },
@@ -155,7 +185,7 @@ function captureMeta() {
   }
   return {
     sha,
-    theme: 'light and dark via jrp-theme + emulateMedia',
+    theme: 'separate browser contexts per theme (single jrp-theme init each)',
     data: 'mocked API',
     viewports: viewports.map((vp) => ({ name: vp.name, width: vp.width, height: vp.height })),
     capturedAt: new Date().toISOString(),
@@ -168,80 +198,105 @@ test.beforeAll(() => {
   fs.writeFileSync(path.join(AFTER, 'meta.json'), JSON.stringify(captureMeta(), null, 2))
 })
 
+test.afterAll(() => {
+  fs.writeFileSync(path.join(AFTER, 'contrast-report.json'), JSON.stringify(contrastReport, null, 2))
+})
+
 test.describe('UI cohesion (mocked)', () => {
-  test('capture jobs, library, explore, roadmap, dark', async ({ page }) => {
-    await installMocks(page)
+  for (const theme of ['light', 'dark'] as const) {
+    test(`viewport captures (${theme})`, async ({ browser }) => {
+      const { context, page } = await openThemedCohesionPage(browser, theme)
+      try {
+        for (const vp of viewports) {
+          await page.setViewportSize({ width: vp.width, height: vp.height })
+          await page.goto('/jobs')
+          await expectAppTheme(page, theme)
+          await expect(page.getByRole('heading', { name: 'Jobs' })).toBeVisible()
+          await assertJobsPrimaryContrast(page)
+          await page.screenshot({ path: path.join(AFTER, `jobs-${theme}-${vp.name}.png`) })
 
-    for (const theme of ['light', 'dark'] as const) {
-      await page.emulateMedia({ colorScheme: theme })
-      await page.context().addInitScript((mode: 'light' | 'dark') => {
-        localStorage.setItem('jrp-theme', mode)
-      }, theme)
-      for (const vp of viewports) {
-        await page.setViewportSize({ width: vp.width, height: vp.height })
-        await page.goto('/jobs')
-        await expect(page.getByRole('heading', { name: 'Jobs' })).toBeVisible()
-        if (theme === 'dark') await expectRenderedDarkTheme(page)
-        const primaryFg = await page.evaluate(() => {
-          const btn = document.querySelector<HTMLElement>('.jr-btn[data-variant="primary"]')
-          if (!btn) return ''
-          const style = getComputedStyle(btn)
-          return `${style.backgroundColor}|${style.color}`
-        })
-        expect(primaryFg.length).toBeGreaterThan(3)
-        await page.screenshot({ path: path.join(AFTER, `jobs-${theme}-${vp.name}.png`) })
+          await page.goto('/library/book-1')
+          await expectAppTheme(page, theme)
+          await expect(page.getByRole('heading', { name: /CODING FOR BEGINNERS/i })).toBeVisible({
+            timeout: 15_000,
+          })
+          await recordContrast(page, '.jr-action-link', 'library-action-link')
+          await recordContrast(page, '.jr-action-link', 'library-action-link', true)
+          await page.screenshot({ path: path.join(AFTER, `library-book-${theme}-${vp.name}.png`) })
 
-        await page.goto('/library/book-1')
-        await expect(page.getByRole('heading', { name: /CODING FOR BEGINNERS/i })).toBeVisible({
-          timeout: 15_000,
-        })
-        await page.screenshot({ path: path.join(AFTER, `library-book-${theme}-${vp.name}.png`) })
-
-        await page.goto('/practice/projects')
-        await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 })
-        await expect(page.locator('.jr-page-title', { hasText: 'Projects' })).toBeVisible()
-        await page.screenshot({ path: path.join(AFTER, `projects-${theme}-${vp.name}.png`) })
+          await page.goto('/practice/projects')
+          await expectAppTheme(page, theme)
+          await expect(page.locator('#main-content')).toBeVisible({ timeout: 15_000 })
+          await expect(page.locator('.jr-page-title', { hasText: 'Projects' })).toBeVisible()
+          await page.screenshot({ path: path.join(AFTER, `projects-${theme}-${vp.name}.png`) })
+        }
+      } finally {
+        await context.close()
       }
-    }
-
-    await page.setViewportSize({ width: 1366, height: 768 })
-    await page.goto('/jobs')
-    await page.getByRole('button', { name: 'More' }).click()
-    await expect(page.locator('#more-mega-panel')).toBeVisible()
-    await expect(page.getByRole('link', { name: 'SQL' }).first()).toBeVisible()
-    await page.screenshot({ path: path.join(AFTER, 'more-open-1366.png') })
-    await page.keyboard.press('Escape')
-
-    await page.getByRole('button', { name: /Account menu/i }).click()
-    await expect(page.getByRole('menu', { name: 'Account' })).toBeVisible()
-    await page.screenshot({ path: path.join(AFTER, 'account-open-1366.png') })
-
-    await page.goto('/roadmaps')
-    await page.screenshot({ path: path.join(AFTER, 'roadmap-catalog-1366.png') })
-
-    await page.goto('/roadmaps/api-design')
-    await expect(page.getByRole('heading', { name: 'API Design' })).toBeVisible()
-    await page.getByRole('button', { name: 'REST principles' }).first().click()
-    await expect(page.getByRole('heading', { name: 'REST principles', level: 2 })).toBeVisible()
-    await page.screenshot({ path: path.join(AFTER, 'roadmap-article-1366.png') })
-
-    await page.emulateMedia({ colorScheme: 'dark' })
-    await page.context().addInitScript(() => {
-      localStorage.setItem('jrp-theme', 'dark')
     })
-    await page.goto('/jobs')
-    await expectRenderedDarkTheme(page)
-    await page.screenshot({ path: path.join(AFTER, 'jobs-dark-1366.png') })
+  }
 
-    await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto('/jobs')
-    await page.getByRole('button', { name: 'Open navigation' }).click()
-    await expect(page.locator('.main-navigation.mobile-open')).toBeVisible()
-    await page.screenshot({ path: path.join(AFTER, 'mobile-nav-390.png') })
+  test('desktop chrome and roadmap (light)', async ({ browser }) => {
+    const { context, page } = await openThemedCohesionPage(browser, 'light')
+    try {
+      await page.setViewportSize({ width: 1366, height: 768 })
+      await page.goto('/jobs')
+      await expectAppTheme(page, 'light')
+      await page.getByRole('button', { name: 'More' }).click()
+      await expect(page.locator('#more-mega-panel')).toBeVisible()
+      await expect(page.getByRole('link', { name: 'SQL' }).first()).toBeVisible()
+      await page.screenshot({ path: path.join(AFTER, 'more-open-1366.png') })
+      await page.keyboard.press('Escape')
 
-    await page.goto('/roadmaps/api-design')
-    await page.getByRole('button', { name: 'REST principles' }).first().click()
-    await expect(page.getByRole('dialog', { name: 'Topic details' })).toBeVisible()
-    await page.screenshot({ path: path.join(AFTER, 'roadmap-mobile-article-390.png') })
+      await page.getByRole('button', { name: /Account menu/i }).click()
+      await expect(page.getByRole('menu', { name: 'Account' })).toBeVisible()
+      await page.screenshot({ path: path.join(AFTER, 'account-open-1366.png') })
+
+      await page.goto('/roadmaps')
+      await expectAppTheme(page, 'light')
+      await page.screenshot({ path: path.join(AFTER, 'roadmap-catalog-1366.png') })
+
+      await page.goto('/roadmaps/api-design')
+      await expectAppTheme(page, 'light')
+      await expect(page.getByRole('heading', { name: 'API Design' })).toBeVisible()
+      await page.getByRole('button', { name: 'REST principles' }).first().click()
+      await expect(page.getByRole('heading', { name: 'REST principles', level: 2 })).toBeVisible()
+      await page.screenshot({ path: path.join(AFTER, 'roadmap-article-1366.png') })
+    } finally {
+      await context.close()
+    }
+  })
+
+  test('dark jobs hero (isolated context)', async ({ browser }) => {
+    const { context, page } = await openThemedCohesionPage(browser, 'dark')
+    try {
+      await page.setViewportSize({ width: 1366, height: 768 })
+      await page.goto('/jobs')
+      await expectRenderedDarkTheme(page)
+      await assertJobsPrimaryContrast(page)
+      await page.screenshot({ path: path.join(AFTER, 'jobs-dark-1366.png') })
+    } finally {
+      await context.close()
+    }
+  })
+
+  test('mobile nav and roadmap sheet (light)', async ({ browser }) => {
+    const { context, page } = await openThemedCohesionPage(browser, 'light')
+    try {
+      await page.setViewportSize({ width: 390, height: 844 })
+      await page.goto('/jobs')
+      await expectAppTheme(page, 'light')
+      await page.getByRole('button', { name: 'Open navigation' }).click()
+      await expect(page.locator('.main-navigation.mobile-open')).toBeVisible()
+      await page.screenshot({ path: path.join(AFTER, 'mobile-nav-390.png') })
+
+      await page.goto('/roadmaps/api-design')
+      await expectAppTheme(page, 'light')
+      await page.getByRole('button', { name: 'REST principles' }).first().click()
+      await expect(page.getByRole('dialog', { name: 'Topic details' })).toBeVisible()
+      await page.screenshot({ path: path.join(AFTER, 'roadmap-mobile-article-390.png') })
+    } finally {
+      await context.close()
+    }
   })
 })

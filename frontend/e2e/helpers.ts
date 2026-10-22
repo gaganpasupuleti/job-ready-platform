@@ -497,6 +497,235 @@ export function jobDetailRoot(page: Page, slug: string) {
   return page.locator(`[data-job-detail-slug="${slug}"]`)
 }
 
+const WCAG_NORMAL_TEXT_MIN = 4.5
+
+type Rgb = { r: number; g: number; b: number }
+
+function parseCssColorToRgb(raw: string): Rgb | null {
+  const color = raw.trim()
+  if (!color || color === 'transparent') return null
+  const hex = color.match(/^#([0-9a-f]{3,8})$/i)
+  if (hex) {
+    const h = hex[1]
+    if (h.length === 3) {
+      return {
+        r: parseInt(h[0] + h[0], 16),
+        g: parseInt(h[1] + h[1], 16),
+        b: parseInt(h[2] + h[2], 16),
+      }
+    }
+    if (h.length === 6) {
+      return {
+        r: parseInt(h.slice(0, 2), 16),
+        g: parseInt(h.slice(2, 4), 16),
+        b: parseInt(h.slice(4, 6), 16),
+      }
+    }
+  }
+  const rgb = color.match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i)
+  if (rgb) {
+    return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]) }
+  }
+  return null
+}
+
+function relativeLuminance({ r, g, b }: Rgb): number {
+  const channel = (c: number) => {
+    const s = c / 255
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4
+  }
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+}
+
+export function contrastRatio(fg: Rgb, bg: Rgb): number {
+  const l1 = relativeLuminance(fg)
+  const l2 = relativeLuminance(bg)
+  const lighter = Math.max(l1, l2)
+  const darker = Math.min(l1, l2)
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+function blendOver(bg: Rgb, fg: Rgb, alpha: number): Rgb {
+  return {
+    r: fg.r * alpha + bg.r * (1 - alpha),
+    g: fg.g * alpha + bg.g * (1 - alpha),
+    b: fg.b * alpha + bg.b * (1 - alpha),
+  }
+}
+
+function effectiveBackgroundRgb(el: Element): Rgb {
+  let base: Rgb = { r: 255, g: 255, b: 255 }
+  const chain: Element[] = []
+  let node: Element | null = el
+  while (node && node !== document.documentElement) {
+    chain.push(node)
+    node = node.parentElement
+  }
+  chain.push(document.documentElement)
+  for (const current of chain.reverse()) {
+    const style = getComputedStyle(current)
+    const bg = parseCssColorToRgb(style.backgroundColor)
+    if (!bg) continue
+    const alpha = Number.parseFloat(style.opacity)
+    const a = Number.isFinite(alpha) ? Math.min(1, Math.max(0, alpha)) : 1
+    if (style.backgroundColor.includes('rgba')) {
+      const m = style.backgroundColor.match(/rgba\([^)]+,\s*([\d.]+)\s*\)/)
+      const ca = m ? Number.parseFloat(m[1]) : 1
+      if (ca < 1) {
+        base = blendOver(base, bg, ca)
+        continue
+      }
+    }
+    base = bg
+    if (a < 1) base = blendOver({ r: 255, g: 255, b: 255 }, base, a)
+  }
+  return base
+}
+
+export type ContrastProbeResult = {
+  status: 'pass' | 'fail' | 'unsupported_transparency' | 'unreadable_foreground'
+  ratio: number | null
+  detail?: string
+}
+
+/** Measure contrast; flag semi-transparent stacks instead of approximating a pass. */
+export async function probeControlContrast(
+  page: Page,
+  selector: string,
+  options: { hover?: boolean; minRatio?: number } = {},
+): Promise<ContrastProbeResult> {
+  const minRatio = options.minRatio ?? WCAG_NORMAL_TEXT_MIN
+  const locator = page.locator(selector).first()
+  await expect(locator).toBeVisible()
+  if (options.hover) await locator.hover()
+  const probe = await locator.evaluate((el, min) => {
+    const parseCssColorToRgb = (raw: string) => {
+      const color = raw.trim()
+      if (!color || color === 'transparent') return null
+      const hex = color.match(/^#([0-9a-f]{3,8})$/i)
+      if (hex) {
+        const h = hex[1]
+        if (h.length === 3) {
+          return {
+            r: parseInt(h[0] + h[0], 16),
+            g: parseInt(h[1] + h[1], 16),
+            b: parseInt(h[2] + h[2], 16),
+          }
+        }
+        if (h.length === 6) {
+          return {
+            r: parseInt(h.slice(0, 2), 16),
+            g: parseInt(h.slice(2, 4), 16),
+            b: parseInt(h.slice(4, 6), 16),
+          }
+        }
+      }
+      const rgb = color.match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*([\d.]+))?\s*\)/i)
+      if (rgb) {
+        const alpha = rgb[4] !== undefined ? Number(rgb[4]) : 1
+        return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]), alpha }
+      }
+      return null
+    }
+    const relativeLuminance = (c: { r: number; g: number; b: number }) => {
+      const channel = (v: number) => {
+        const s = v / 255
+        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4
+      }
+      return 0.2126 * channel(c.r) + 0.7152 * channel(c.g) + 0.0722 * channel(c.b)
+    }
+    const contrastRatio = (fg: { r: number; g: number; b: number }, bg: { r: number; g: number; b: number }) => {
+      const l1 = relativeLuminance(fg)
+      const l2 = relativeLuminance(bg)
+      const lighter = Math.max(l1, l2)
+      const darker = Math.min(l1, l2)
+      return (lighter + 0.05) / (darker + 0.05)
+    }
+    const hasTransparencyRisk = (target: Element) => {
+      let node: Element | null = target
+      while (node) {
+        const style = getComputedStyle(node)
+        if (style.backgroundColor === 'transparent') {
+          node = node.parentElement
+          continue
+        }
+        const parsed = parseCssColorToRgb(style.backgroundColor)
+        if (parsed && 'alpha' in parsed && parsed.alpha < 0.99) return true
+        const opacity = Number.parseFloat(style.opacity)
+        if (Number.isFinite(opacity) && opacity < 0.99) return true
+        node = node.parentElement
+      }
+      return false
+    }
+    const opaqueBackgroundRgb = (target: Element) => {
+      let node: Element | null = target
+      while (node) {
+        const style = getComputedStyle(node)
+        const parsed = parseCssColorToRgb(style.backgroundColor)
+        if (parsed && (!('alpha' in parsed) || parsed.alpha >= 0.99)) {
+          return { r: parsed.r, g: parsed.g, b: parsed.b }
+        }
+        node = node.parentElement
+      }
+      const rootBg = parseCssColorToRgb(getComputedStyle(document.documentElement).backgroundColor)
+      if (rootBg && (!('alpha' in rootBg) || rootBg.alpha >= 0.99)) {
+        return { r: rootBg.r, g: rootBg.g, b: rootBg.b }
+      }
+      return null
+    }
+    if (hasTransparencyRisk(el)) {
+      return { status: 'unsupported_transparency', ratio: null, detail: 'semi-transparent ancestor stack' }
+    }
+    const style = getComputedStyle(el)
+    const fgParsed = parseCssColorToRgb(style.color)
+    if (!fgParsed || ('alpha' in fgParsed && fgParsed.alpha < 0.99)) {
+      return { status: 'unreadable_foreground', ratio: null, detail: style.color }
+    }
+    const fg = { r: fgParsed.r, g: fgParsed.g, b: fgParsed.b }
+    const bg = opaqueBackgroundRgb(el)
+    if (!bg) {
+      return { status: 'unsupported_transparency', ratio: null, detail: 'no opaque background found' }
+    }
+    const ratio = contrastRatio(fg, bg)
+    if (ratio < min) {
+      return { status: 'fail', ratio, detail: `below ${min}:1` }
+    }
+    return { status: 'pass', ratio }
+  }, minRatio)
+  return probe as ContrastProbeResult
+}
+
+/** WCAG 2.x contrast for normal-sized control text (≥ 4.5:1). */
+export async function expectControlContrast(
+  page: Page,
+  selector: string,
+  options: { hover?: boolean; minRatio?: number } = {},
+) {
+  const result = await probeControlContrast(page, selector, options)
+  if (result.status === 'unsupported_transparency') {
+    throw new Error(`${selector}: contrast unverified (${result.detail ?? 'transparency'})`)
+  }
+  if (result.status === 'unreadable_foreground') {
+    throw new Error(`${selector}: unreadable foreground (${result.detail ?? 'unknown'})`)
+  }
+  expect(result.status, `${selector} contrast ${result.ratio?.toFixed(2) ?? 'n/a'}:1`).toBe('pass')
+}
+
+export async function expectAppTheme(page: Page, theme: 'light' | 'dark') {
+  await expect
+    .poll(async () => page.evaluate(() => localStorage.getItem('jrp-theme')), { timeout: 20_000 })
+    .toBe(theme)
+  if (theme === 'dark') {
+    await expectRenderedDarkTheme(page)
+  } else {
+    await expect
+      .poll(async () => page.evaluate(() => document.documentElement.classList.contains('dark')), {
+        timeout: 20_000,
+      })
+      .toBe(false)
+  }
+}
+
 /** Persist theme the same way useTheme does (localStorage + html.dark). */
 export async function setAppTheme(page: Page, theme: 'light' | 'dark') {
   await page.evaluate((mode) => {
