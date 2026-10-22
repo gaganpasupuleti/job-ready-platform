@@ -9,6 +9,10 @@ import { jobDetailRoot, loadManifest, loginAs } from './helpers'
 const fixtures = loadManifest()
 
 test.describe('Release preview smoke (live API)', () => {
+  test.skip(
+    !process.env.E2E_SKIP_WEBSERVER,
+    'Runs only against vite preview (set E2E_SKIP_WEBSERVER=1 via scripts/run-release-smoke.ps1)',
+  )
   test.beforeEach(async ({ page }) => {
     await loginAs(page, fixtures.users.student)
   })

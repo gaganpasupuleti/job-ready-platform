@@ -2,7 +2,7 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** _(update after push — see `git rev-parse HEAD` on branch)_  
+**Candidate SHA:** `298a377` (release fixes on `00da745`)  
 **Status:** Open — not merged, not deployed.
 
 ## Root causes fixed (this pass)

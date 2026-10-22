@@ -174,10 +174,11 @@ test.describe('UI cohesion (mocked)', () => {
 
     for (const theme of ['light', 'dark'] as const) {
       await page.emulateMedia({ colorScheme: theme })
-      await setAppTheme(page, theme)
       for (const vp of viewports) {
         await page.setViewportSize({ width: vp.width, height: vp.height })
         await page.goto('/jobs')
+        await setAppTheme(page, theme)
+        await page.reload()
         await expect(page.getByRole('heading', { name: 'Jobs' })).toBeVisible()
         if (theme === 'dark') await expectRenderedDarkTheme(page)
         const primaryFg = await page.evaluate(() => {
@@ -224,8 +225,9 @@ test.describe('UI cohesion (mocked)', () => {
     await page.screenshot({ path: path.join(AFTER, 'roadmap-article-1366.png') })
 
     await page.emulateMedia({ colorScheme: 'dark' })
-    await setAppTheme(page, 'dark')
     await page.goto('/jobs')
+    await setAppTheme(page, 'dark')
+    await page.reload()
     await expectRenderedDarkTheme(page)
     await page.screenshot({ path: path.join(AFTER, 'jobs-dark-1366.png') })
 
