@@ -2,7 +2,7 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** `56172e3` (fix on `88e18dd`; CI [39834374466](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39834374466) in progress)  
+**Candidate SHA:** `0a78a21` (viewport lock + catalog budget; after `56172e3` / `88e18dd`)  
 **Status:** Open — not merged, not deployed.
 
 ## CI run 39724330440 (`88e18dd`) — five failures (investigated)
@@ -42,7 +42,8 @@
 |-----|-----|----------|---------|------------|-------|
 | [39715695335](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39715695335) | `02507f8` | pass | pass | **success** | Pre–live catalog/interaction specs |
 | [39724330440](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39724330440) | `88e18dd` | pass | pass | **134 pass, 5 fail, 6 skip** | See table above |
-| [39834374466](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39834374466) | `56172e3` | _pending_ | _pending_ | _pending_ | Current candidate |
+| [39834374466](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39834374466) | `56172e3` | pass | pass | **134 pass, 3 fail, 6 skip** | Catalog inventory fixed; unavailable slugs + viewport + flaky edge |
+| _(latest)_ | `0a78a21` | | | | E2E job timeout 60m; viewport `onViewportChange` guard |
 
 Playwright skips (~6): `release-smoke-preview` when `E2E_SKIP_WEBSERVER` unset (expected).
 
