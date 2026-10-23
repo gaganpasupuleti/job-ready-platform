@@ -2,8 +2,9 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Release candidate SHA:** `3556a7d` (green CI); follow-up test commit pending push  
-**Green CI:** https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40022619114  
+**Release candidate SHA:** `18afaec` (steps 1–6 evidence + tests)  
+**Verified green CI (Playwright + pytest):** `3556a7d` — https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40022619114  
+**CI on `18afaec`:** await branch workflow (test/doc-only delta)  
 **Status:** Open — not merged, not deployed.
 
 ---
