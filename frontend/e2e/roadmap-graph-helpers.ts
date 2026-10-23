@@ -1,7 +1,7 @@
 import { expect, type APIRequestContext, type Page } from '@playwright/test'
 
 import { apiBaseUrl, loginAccessToken } from './helpers'
-import { parseViewportTransform, viewportTransformsClose } from './roadmap-viewport'
+import { viewportTransformsClose } from './roadmap-viewport'
 
 export function parseNodeTranslate(transform: string | null) {
   if (!transform) return null
@@ -29,11 +29,11 @@ export async function edgePathD(page: Page, edgeId: string) {
 
 export type TopicEdgePick = { topicId: string; edgeId: string; targetId: string }
 
-export async function pickTopicWithOutgoingEdge(
+async function loadGraphCandidates(
   request: APIRequestContext,
   slug: string,
   credentials: { email: string; password: string },
-): Promise<TopicEdgePick> {
+) {
   const token = await loginAccessToken(request, credentials)
   const url = `${apiBaseUrl()}/roadmap/official/${slug}/graph`
   const res = await request.get(url, { headers: { Authorization: `Bearer ${token}` } })
@@ -42,20 +42,61 @@ export async function pickTopicWithOutgoingEdge(
     nodes: Array<{ id: string; type: string }>
     edges: Array<{ id: string; source: string; target: string }>
   }
-  const topic =
-    body.nodes.find(
-      (node) =>
-        node.type === 'topic' && body.edges.some((edge) => edge.source === node.id),
-    ) ??
-    body.nodes.find(
-      (node) =>
-        (node.type === 'subtopic' || node.type === 'topic') &&
-        body.edges.some((edge) => edge.source === node.id),
-    )
-  expect(topic, `no topic with outgoing edge in ${slug} graph`).toBeTruthy()
-  const edge = body.edges.find((e) => e.source === topic!.id)
-  expect(edge).toBeTruthy()
-  return { topicId: topic!.id, edgeId: edge!.id, targetId: edge!.target }
+  const candidates: TopicEdgePick[] = []
+  for (const node of body.nodes) {
+    if (node.type !== 'topic' && node.type !== 'subtopic') continue
+    const edge = body.edges.find((e) => e.source === node.id)
+    if (edge) {
+      candidates.push({ topicId: node.id, edgeId: edge.id, targetId: edge.target })
+    }
+  }
+  candidates.sort((a, b) => {
+    const aTopic = body.nodes.find((n) => n.id === a.topicId)?.type === 'topic' ? 0 : 1
+    const bTopic = body.nodes.find((n) => n.id === b.topicId)?.type === 'topic' ? 0 : 1
+    return aTopic - bTopic
+  })
+  expect(candidates.length, `no topic/subtopic with outgoing edge in ${slug} graph`).toBeGreaterThan(0)
+  return candidates
+}
+
+async function pickFromVisibleCandidates(page: Page, candidates: TopicEdgePick[]) {
+  for (const pick of candidates) {
+    const node = topicNodeLocator(page, pick.topicId)
+    if ((await node.count()) === 0) continue
+    await node.scrollIntoViewIfNeeded()
+    try {
+      await expect(node).toBeVisible({ timeout: 8_000 })
+      await expect(
+        page.locator(
+          `.ors-canvas .react-flow__edge[data-id="${pick.edgeId}"] .react-flow__edge-path`,
+        ),
+      ).toBeVisible({ timeout: 5_000 })
+      return pick
+    } catch {
+      continue
+    }
+  }
+  return null
+}
+
+/** Picks a topic+edge that exists in the DOM (onlyRenderVisibleElements). */
+export async function pickVisibleTopicWithOutgoingEdge(
+  page: Page,
+  request: APIRequestContext,
+  slug: string,
+  credentials: { email: string; password: string },
+): Promise<TopicEdgePick> {
+  const candidates = await loadGraphCandidates(request, slug, credentials)
+  let pick = await pickFromVisibleCandidates(page, candidates)
+  if (pick) return pick
+
+  await page.getByRole('button', { name: 'Fit overview' }).click()
+  await expect
+    .poll(async () => page.locator('.ors-canvas .react-flow__node').count(), { timeout: 15_000 })
+    .toBeGreaterThan(0)
+  pick = await pickFromVisibleCandidates(page, candidates)
+  expect(pick, `no visible topic+edge on ${slug} canvas after fit`).toBeTruthy()
+  return pick!
 }
 
 export function topicNodeLocator(page: Page, topicId: string) {

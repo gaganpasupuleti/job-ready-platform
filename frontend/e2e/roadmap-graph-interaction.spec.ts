@@ -8,7 +8,7 @@ import {
   edgePathD,
   expectViewportStableThroughPanelResize,
   nodeTranslate,
-  pickTopicWithOutgoingEdge,
+  pickVisibleTopicWithOutgoingEdge,
   topicNodeLocator,
   viewportTransform,
   waitForNodeTranslateChange,
@@ -29,7 +29,7 @@ test.describe('Roadmap graph interaction (live)', () => {
     await expect
       .poll(async () => page.locator('.ors-canvas .react-flow__node').count(), { timeout: 60_000 })
       .toBeGreaterThan(0)
-    const pick = await pickTopicWithOutgoingEdge(request, SAMPLE_SLUG, fixtures.users.student)
+    const pick = await pickVisibleTopicWithOutgoingEdge(page, request, SAMPLE_SLUG, fixtures.users.student)
     await expect(topicNodeLocator(page, pick.topicId)).toBeVisible({ timeout: 30_000 })
     await expect(
       page.locator(
@@ -39,7 +39,7 @@ test.describe('Roadmap graph interaction (live)', () => {
   })
 
   test('topic drag moves node and attached edge geometry', async ({ page, request }) => {
-    const pick = await pickTopicWithOutgoingEdge(request, SAMPLE_SLUG, fixtures.users.student)
+    const pick = await pickVisibleTopicWithOutgoingEdge(page, request, SAMPLE_SLUG, fixtures.users.student)
     const node = topicNodeLocator(page, pick.topicId)
     const viewportBeforeDrag = await viewportTransform(page)
     const translateBefore = await nodeTranslate(page, pick.topicId)
@@ -71,14 +71,14 @@ test.describe('Roadmap graph interaction (live)', () => {
   })
 
   test('click without drag opens article', async ({ page, request }) => {
-    const pick = await pickTopicWithOutgoingEdge(request, SAMPLE_SLUG, fixtures.users.student)
+    const pick = await pickVisibleTopicWithOutgoingEdge(page, request, SAMPLE_SLUG, fixtures.users.student)
     const node = topicNodeLocator(page, pick.topicId)
     await node.click()
     await expect(page.getByRole('heading', { level: 2 })).toBeVisible({ timeout: 20_000 })
   })
 
   test('lock layout blocks drag; reset restores layout', async ({ page, request }) => {
-    const pick = await pickTopicWithOutgoingEdge(request, SAMPLE_SLUG, fixtures.users.student)
+    const pick = await pickVisibleTopicWithOutgoingEdge(page, request, SAMPLE_SLUG, fixtures.users.student)
     const nodeId = pick.topicId
     const node = topicNodeLocator(page, nodeId)
     const translateOrig = await nodeTranslate(page, nodeId)
@@ -122,7 +122,7 @@ test.describe('Roadmap graph interaction (live)', () => {
   })
 
   test('viewport transform stable when article panel opens', async ({ page, request }) => {
-    const pick = await pickTopicWithOutgoingEdge(request, SAMPLE_SLUG, fixtures.users.student)
+    const pick = await pickVisibleTopicWithOutgoingEdge(page, request, SAMPLE_SLUG, fixtures.users.student)
     const before = await waitForRoadmapViewportSettled(page)
     expect(before).toBeTruthy()
 

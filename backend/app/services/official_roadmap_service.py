@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 _SLUG_RE = re.compile(r"^[a-z0-9-]+$")
 _NODE_KEY_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+# roadmap.sh serves r-programming.json; catalog keeps the short family_slug "r".
+_GRAPH_FETCH_SLUG_ALIASES: dict[str, str] = {"r": "r-programming"}
 _DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 _CATALOG_PATH = _DATA_DIR / "official-roadmap-catalog.json"
 _ATTRIBUTION = (
@@ -235,7 +237,8 @@ async def fetch_official_graph(slug: str) -> dict:
     if cached is not None:
         return cached
 
-    url = settings.roadmap_graph_fetch_url.format(slug=slug)
+    fetch_slug = _GRAPH_FETCH_SLUG_ALIASES.get(slug, slug)
+    url = settings.roadmap_graph_fetch_url.format(slug=fetch_slug)
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(30.0)) as client:
             response = await client.get(url)

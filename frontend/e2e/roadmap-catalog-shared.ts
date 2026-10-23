@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 import { expect, type APIRequestContext, type Page } from '@playwright/test'
 
-import { apiBaseUrl, loginAccessToken } from './helpers'
+import { apiBaseUrl } from './helpers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export const catalogPath = path.resolve(
@@ -107,9 +107,15 @@ export async function auditSlugInBrowser(
   page.on('console', onConsole)
 
   try {
-    const graphRes = await request.get(graphUrl, {
+    let graphRes = await request.get(graphUrl, {
       headers: { Authorization: `Bearer ${token}` },
     })
+    for (let attempt = 0; attempt < 2 && (graphRes.status() === 502 || graphRes.status() === 503); attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 2_000))
+      graphRes = await request.get(graphUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    }
     row.graphHttpStatus = graphRes.status()
     if (!graphRes.ok()) {
       row.status = graphRes.status() >= 500 ? 'unavailable' : 'fail'

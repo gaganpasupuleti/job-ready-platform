@@ -18,7 +18,7 @@ import {
 
 const fixtures = loadManifest()
 const titleBySlug = new Map(bundledCatalog.roadmaps.map((r) => [r.family_slug, r.title]))
-const BATCH_SIZE = 24
+const BATCH_SIZE = 18
 const batches: string[][] = []
 for (let i = 0; i < bundledSlugs.length; i += BATCH_SIZE) {
   batches.push(bundledSlugs.slice(i, i + BATCH_SIZE))
@@ -56,6 +56,7 @@ test.describe('Roadmap catalog render (live)', () => {
       page,
       request,
     }) => {
+      test.setTimeout(900_000)
       const token = await loginAccessToken(request, fixtures.users.student)
       for (const slug of slugs) {
         const title = titleBySlug.get(slug) ?? slug
