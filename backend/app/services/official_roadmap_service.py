@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import re
@@ -239,11 +240,30 @@ async def fetch_official_graph(slug: str) -> dict:
 
     fetch_slug = _GRAPH_FETCH_SLUG_ALIASES.get(slug, slug)
     url = settings.roadmap_graph_fetch_url.format(slug=fetch_slug)
+    payload: dict | None = None
     try:
-        async with httpx.AsyncClient(timeout=httpx.Timeout(30.0)) as client:
-            response = await client.get(url)
-            response.raise_for_status()
-            payload = response.json()
+        async with httpx.AsyncClient(timeout=httpx.Timeout(45.0)) as client:
+            for attempt in range(4):
+                try:
+                    response = await client.get(url)
+                    response.raise_for_status()
+                    parsed = response.json()
+                    if not isinstance(parsed, dict):
+                        raise ValueError("graph payload was not an object")
+                    payload = parsed
+                    break
+                except httpx.HTTPStatusError as exc:
+                    if exc.response.status_code == 404:
+                        raise AppException("Roadmap graph not found", status_code=404) from exc
+                    if exc.response.status_code in (429, 502, 503) and attempt < 3:
+                        await asyncio.sleep(2.0 * (attempt + 1))
+                        continue
+                    raise AppException("Could not download roadmap graph", status_code=502) from exc
+                except (httpx.HTTPError, json.JSONDecodeError, ValueError):
+                    if attempt < 3:
+                        await asyncio.sleep(2.0 * (attempt + 1))
+                        continue
+                    raise
     except httpx.HTTPStatusError as exc:
         if exc.response.status_code == 404:
             raise AppException("Roadmap graph not found", status_code=404) from exc
@@ -251,8 +271,9 @@ async def fetch_official_graph(slug: str) -> dict:
     except (httpx.HTTPError, json.JSONDecodeError, ValueError) as exc:
         raise AppException("Could not download roadmap graph", status_code=502) from exc
 
-    if not isinstance(payload, dict):
-        raise AppException("Roadmap graph response was invalid", status_code=502)
+    if payload is None:
+        raise AppException("Could not download roadmap graph", status_code=502)
+
     payload = _validate_graph_payload(payload)
 
     try:

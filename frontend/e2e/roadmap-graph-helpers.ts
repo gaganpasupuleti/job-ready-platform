@@ -5,7 +5,9 @@ import { viewportTransformsClose } from './roadmap-viewport'
 
 export function parseNodeTranslate(transform: string | null) {
   if (!transform) return null
-  const match = transform.match(/translate\(\s*([-\d.]+)px,\s*([-\d.]+)px\s*\)/)
+  const match = transform.match(
+    /translate(?:3d)?\(\s*([-\d.]+)px,\s*([-\d.]+)px(?:,\s*[-\d.]+px)?\s*\)/,
+  )
   if (!match) return null
   return { x: Number.parseFloat(match[1]), y: Number.parseFloat(match[2]) }
 }

@@ -105,11 +105,17 @@ test.describe('Roadmap graph interaction (live)', () => {
     expect(Math.abs(translateLocked.y - translateOrig.y)).toBeLessThan(2)
 
     await page.getByLabel('Lock layout').uncheck()
-    await page.mouse.move(startX, startY)
+    await expect(node).toHaveClass(/draggable/)
+    const boxUnlocked = await node.boundingBox()
+    expect(boxUnlocked).toBeTruthy()
+    if (!boxUnlocked) return
+    const dragX = boxUnlocked.x + boxUnlocked.width / 2
+    const dragY = boxUnlocked.y + boxUnlocked.height / 2
+    await page.mouse.move(dragX, dragY)
     await page.mouse.down()
-    await page.mouse.move(startX + 72, startY + 48, { steps: 12 })
+    await page.mouse.move(dragX + 96, dragY + 64, { steps: 14 })
     await page.mouse.up()
-    await waitForNodeTranslateChange(page, nodeId, translateOrig)
+    await waitForNodeTranslateChange(page, nodeId, translateOrig, 8, 15_000)
 
     await page.getByRole('button', { name: 'Reset layout to original' }).click()
     await expect

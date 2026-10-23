@@ -110,8 +110,12 @@ export async function auditSlugInBrowser(
     let graphRes = await request.get(graphUrl, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    for (let attempt = 0; attempt < 2 && (graphRes.status() === 502 || graphRes.status() === 503); attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, 2_000))
+    for (
+      let attempt = 0;
+      attempt < 4 && (graphRes.status() === 502 || graphRes.status() === 503 || graphRes.status() === 429);
+      attempt += 1
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 2_500 * (attempt + 1)))
       graphRes = await request.get(graphUrl, {
         headers: { Authorization: `Bearer ${token}` },
       })
