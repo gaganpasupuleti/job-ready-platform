@@ -1,0 +1,2056 @@
+{
+  "capturedAt": "2026-10-23T21:11:38.373Z",
+  "slugTotal": 93,
+  "totals": {
+    "clean": 85,
+    "edgeless": 1,
+    "sanitized": 7
+  },
+  "notes": {
+    "clean": "Upstream graph needed no edge normalization.",
+    "edgeless": "Valid node-only layout (zero edges); intentional independent topics — not a connectivity graph.",
+    "sanitized": "Graph renders after deterministic normalization; review edge_normalizations and removed_edges.",
+    "fail": "API or browser validation/render failure.",
+    "unavailable": "Graph HTTP 5xx or network failure after retries."
+  },
+  "consoleAllowlist": [
+    {
+      "pattern": "/favicon/i",
+      "reason": "Missing favicon in E2E static host does not affect roadmap rendering."
+    }
+  ],
+  "meta": {},
+  "rows": [
+    {
+      "slug": "ai-agents",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-agents/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/ai-agents.json",
+        "source_payload_sha256": "9943c8fc532e1bfd26c4916978eed08d76860554f190baf19b396dd0d4301895",
+        "node_count": 189,
+        "edge_count_original": 25,
+        "edge_count_retained": 25,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 189,
+      "browserNodeCount": 37
+    },
+    {
+      "slug": "ai-data-scientist",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-data-scientist/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/ai-data-scientist.json",
+        "source_payload_sha256": "f360bb19de24e633f96fea72a0dce9a41bed57148108a44252b639f453ff6fdf",
+        "node_count": 129,
+        "edge_count_original": 1,
+        "edge_count_retained": 1,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 129,
+      "browserNodeCount": 28
+    },
+    {
+      "slug": "ai-engineer",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-engineer/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/ai-engineer.json",
+        "source_payload_sha256": "328809e339c4262d9f8c3c1496128a277e236ba2658776985d8d4f37a83fbd0b",
+        "node_count": 280,
+        "edge_count_original": 41,
+        "edge_count_retained": 41,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 280,
+      "browserNodeCount": 36
+    },
+    {
+      "slug": "ai-product-builder",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-product-builder/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/ai-product-builder.json",
+        "source_payload_sha256": "321a41ae5b3ec21a1724cf5d01954839349b778cce293335c9002088c5fdb23f",
+        "node_count": 93,
+        "edge_count_original": 15,
+        "edge_count_retained": 15,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 93,
+      "browserNodeCount": 20
+    },
+    {
+      "slug": "ai-red-teaming",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-red-teaming/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/ai-red-teaming.json",
+        "source_payload_sha256": "debd544996d257ac160e35bded7e2364acc6ac113ac9e1ab9d32c245963187fd",
+        "node_count": 105,
+        "edge_count_original": 34,
+        "edge_count_retained": 34,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 105,
+      "browserNodeCount": 69
+    },
+    {
+      "slug": "android",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/android/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/android.json",
+        "source_payload_sha256": "315b6378f43bdb337ce0c91ce38144557a502465cec8e53a554a1afbd53cb18e",
+        "node_count": 157,
+        "edge_count_original": 36,
+        "edge_count_retained": 36,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 157,
+      "browserNodeCount": 105
+    },
+    {
+      "slug": "angular",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/angular/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/angular.json",
+        "source_payload_sha256": "c762c6256da87de4a9c6265130bb3c30305b16f7327445877f03a189b6e57540",
+        "node_count": 201,
+        "edge_count_original": 35,
+        "edge_count_retained": 35,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 201,
+      "browserNodeCount": 23
+    },
+    {
+      "slug": "api-design",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/api-design/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/api-design.json",
+        "source_payload_sha256": "290ece9416b95b80233668f0c0e4ffaa688a554818147fbc34a0ba08ac33eca7",
+        "node_count": 123,
+        "edge_count_original": 55,
+        "edge_count_retained": 55,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 123,
+      "browserNodeCount": 20
+    },
+    {
+      "slug": "aspnet-core",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/aspnet-core/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/aspnet-core.json",
+        "source_payload_sha256": "2ec12daadf2ee29db021c7916852fc0d62023c482c8dbbf3bb5f25229513a65c",
+        "node_count": 202,
+        "edge_count_original": 39,
+        "edge_count_retained": 39,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 202,
+      "browserNodeCount": 32
+    },
+    {
+      "slug": "aws",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/aws/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/aws.json",
+        "source_payload_sha256": "49d0e986f7693abc4ac3cc697185086ff4b6a326cd61c728526538ea5148ea4c",
+        "node_count": 131,
+        "edge_count_original": 52,
+        "edge_count_retained": 52,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 131,
+      "browserNodeCount": 63
+    },
+    {
+      "slug": "backend",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/backend/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/backend.json",
+        "source_payload_sha256": "a794e81f2cf7fbbc40e11de3eab57b023e620585d705c972c94d4163525abfb9",
+        "node_count": 225,
+        "edge_count_original": 60,
+        "edge_count_retained": 60,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 225,
+      "browserNodeCount": 18
+    },
+    {
+      "slug": "backend-beginner",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/backend-beginner/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/backend-beginner.json",
+        "source_payload_sha256": "4f8c8ade86412f2eed8355daa34746ce8a1c664c57d87bb39ea47e9426cf040b",
+        "node_count": 49,
+        "edge_count_original": 25,
+        "edge_count_retained": 25,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 49,
+      "browserNodeCount": 7
+    },
+    {
+      "slug": "bi-analyst",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/bi-analyst/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/bi-analyst.json",
+        "source_payload_sha256": "4ebcd337b4cc44bc14eb767a9830628efbc67245adcbdc4f5ebec62ce8691056",
+        "node_count": 212,
+        "edge_count_original": 126,
+        "edge_count_retained": 126,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 212,
+      "browserNodeCount": 58
+    },
+    {
+      "slug": "blockchain",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/blockchain/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/blockchain.json",
+        "source_payload_sha256": "7042f987842a8cd04e284e48d8e55028ea4effcc47f02cd1e268f0d6fdc5af6d",
+        "node_count": 172,
+        "edge_count_original": 22,
+        "edge_count_retained": 22,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 172,
+      "browserNodeCount": 18
+    },
+    {
+      "slug": "c",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/c/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/c.json",
+        "source_payload_sha256": "2d32ae076d2524fba3a948f39abff31d8d6a39e613d9ae0db39ef231fba03e61",
+        "node_count": 177,
+        "edge_count_original": 71,
+        "edge_count_retained": 71,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 177,
+      "browserNodeCount": 42
+    },
+    {
+      "slug": "claude-code",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/claude-code/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/claude-code.json",
+        "source_payload_sha256": "6df128c48f4c304305560195e8fa1019b083340323d28ce6085841e6495765ef",
+        "node_count": 145,
+        "edge_count_original": 46,
+        "edge_count_retained": 46,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 145,
+      "browserNodeCount": 26
+    },
+    {
+      "slug": "cloudflare",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cloudflare/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/cloudflare.json",
+        "source_payload_sha256": "c9d6ceea7d6cb5dd7813bf42439ec8043a2d0396d342f6738efbc55f723787d7",
+        "node_count": 127,
+        "edge_count_original": 55,
+        "edge_count_retained": 55,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 127,
+      "browserNodeCount": 35
+    },
+    {
+      "slug": "code-review",
+      "status": "edgeless",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/code-review/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "edgeless",
+        "source": "https://roadmap.sh/code-review.json",
+        "source_payload_sha256": "3c80c74a13e7547f81006f0780c06fbc136a44c9bb98790548a4d8708b6adc29",
+        "node_count": 18,
+        "edge_count_original": 0,
+        "edge_count_retained": 0,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 18,
+      "browserNodeCount": 18
+    },
+    {
+      "slug": "computer-science",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/computer-science/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/computer-science.json",
+        "source_payload_sha256": "c41144334b27f3a0ec9eac3a8af50e8558430bc1f408f46b3359590b35e8c50e",
+        "node_count": 244,
+        "edge_count_original": 45,
+        "edge_count_retained": 45,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 244,
+      "browserNodeCount": 31
+    },
+    {
+      "slug": "cpp",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cpp/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/cpp.json",
+        "source_payload_sha256": "d5bd451de9afc05069399afc4c3ac20ec10865683f22d673693ba35f6c79a96f",
+        "node_count": 164,
+        "edge_count_original": 39,
+        "edge_count_retained": 39,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 164,
+      "browserNodeCount": 22
+    },
+    {
+      "slug": "css",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/css/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/css.json",
+        "source_payload_sha256": "0506c81cccc90992ed1e580bcaa338d49ee3da8cbb056593ceade33aee0cbc23",
+        "node_count": 147,
+        "edge_count_original": 42,
+        "edge_count_retained": 42,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 147,
+      "browserNodeCount": 82
+    },
+    {
+      "slug": "cyber-security",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cyber-security/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/cyber-security.json",
+        "source_payload_sha256": "4cc0194815c6534844b4ce42509f9809bfb02aaece8442acb2224ac41b27834c",
+        "node_count": 373,
+        "edge_count_original": 18,
+        "edge_count_retained": 18,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 373,
+      "browserNodeCount": 108
+    },
+    {
+      "slug": "data-analyst",
+      "status": "sanitized",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/data-analyst/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "sanitized",
+        "source": "https://roadmap.sh/data-analyst.json",
+        "source_payload_sha256": "5946e00852855aa84e3f4701bc06d3344630350db2571c600524ea6d6d95c546",
+        "node_count": 156,
+        "edge_count_original": 41,
+        "edge_count_retained": 40,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [
+          {
+            "id": "xy-edge__aopqiF0Svmpq94g6OQBX0x2-9sIP-jpNjtA1JPCBjTf-Hz2",
+            "source": "aopqiF0Svmpq94g6OQBX0",
+            "target": "9sIP-jpNjtA1JPCBjTf-H",
+            "reason": "endpoint_missing",
+            "missing_endpoints": [
+              "aopqiF0Svmpq94g6OQBX0"
+            ]
+          }
+        ],
+        "provenance_verified": true
+      },
+      "nodeCount": 156,
+      "browserNodeCount": 7
+    },
+    {
+      "slug": "data-engineer",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/data-engineer/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/data-engineer.json",
+        "source_payload_sha256": "5f78028099140a39d09b5c7380847069da1729776180eb34369197c886a98b68",
+        "node_count": 258,
+        "edge_count_original": 73,
+        "edge_count_retained": 73,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 258,
+      "browserNodeCount": 62
+    },
+    {
+      "slug": "datastructures-and-algorithms",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/datastructures-and-algorithms/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/datastructures-and-algorithms.json",
+        "source_payload_sha256": "0407efaa99d5157d7cf5aa9692335f5db7a6b54dd3fa98d1a1c33f47c23d5a8e",
+        "node_count": 134,
+        "edge_count_original": 42,
+        "edge_count_retained": 42,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 134,
+      "browserNodeCount": 19
+    },
+    {
+      "slug": "design-system",
+      "status": "sanitized",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/design-system/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "sanitized",
+        "source": "https://roadmap.sh/design-system.json",
+        "source_payload_sha256": "383549c804e9def66373c7d7f379272f54c6eb650ddd732d53819ef21ba90bed",
+        "node_count": 173,
+        "edge_count_original": 27,
+        "edge_count_retained": 27,
+        "duplicate_edge_ids_original": [
+          "xy-edge__JfXwzkN29UGz17FYHHE3Az2-ODQ8zrHc2rsc8PN-APKvzy1"
+        ],
+        "edge_normalizations": [
+          {
+            "kind": "duplicate_id_remapped",
+            "from_id": "xy-edge__JfXwzkN29UGz17FYHHE3Az2-ODQ8zrHc2rsc8PN-APKvzy1",
+            "to_id": "xy-edge__JfXwzkN29UGz17FYHHE3Az2-ODQ8zrHc2rsc8PN-APKvzy1__jobready-dup1",
+            "source": "uvnV1IjE8RV-FKDxHntUU",
+            "target": "hauTvrBOAHgrUnO_m_kDM"
+          }
+        ],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 173,
+      "browserNodeCount": 12
+    },
+    {
+      "slug": "devops",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devops/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/devops.json",
+        "source_payload_sha256": "593988765530bd8643e8c29a5f51883ccc708d719d654bfa409dc92f665314c2",
+        "node_count": 171,
+        "edge_count_original": 60,
+        "edge_count_retained": 60,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 171,
+      "browserNodeCount": 80
+    },
+    {
+      "slug": "devops-beginner",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devops-beginner/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/devops-beginner.json",
+        "source_payload_sha256": "68abbd0fdbd7b2d2be80cdf6bb3eb6a2ab4fbbba9ca962736a27f0e5236f4f1e",
+        "node_count": 47,
+        "edge_count_original": 17,
+        "edge_count_retained": 17,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 47,
+      "browserNodeCount": 6
+    },
+    {
+      "slug": "devrel",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devrel/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/devrel.json",
+        "source_payload_sha256": "75df19c0eb300267b63008cea81000a909a38d82a8cad25cb934b4e984cd2d72",
+        "node_count": 185,
+        "edge_count_original": 70,
+        "edge_count_retained": 70,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 185,
+      "browserNodeCount": 73
+    },
+    {
+      "slug": "devsecops",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devsecops/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/devsecops.json",
+        "source_payload_sha256": "9ba4cf48b966aff0f5c4f39cb9f44238bbeaf1a86d1222b9a510c823942fce3b",
+        "node_count": 131,
+        "edge_count_original": 33,
+        "edge_count_retained": 33,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 131,
+      "browserNodeCount": 11
+    },
+    {
+      "slug": "django",
+      "status": "sanitized",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/django/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "sanitized",
+        "source": "https://roadmap.sh/django.json",
+        "source_payload_sha256": "7fe9d4161f620fa66223e9091fa20376609891a69f75ddb3badc2a5d57458eee",
+        "node_count": 160,
+        "edge_count_original": 55,
+        "edge_count_retained": 55,
+        "duplicate_edge_ids_original": [
+          "xy-edge__NBZ4_LkKZV-KGvCOkUysgx2-7O1Y9C3OwEtwKgcic18eMw1"
+        ],
+        "edge_normalizations": [
+          {
+            "kind": "duplicate_id_remapped",
+            "from_id": "xy-edge__NBZ4_LkKZV-KGvCOkUysgx2-7O1Y9C3OwEtwKgcic18eMw1",
+            "to_id": "xy-edge__NBZ4_LkKZV-KGvCOkUysgx2-7O1Y9C3OwEtwKgcic18eMw1__jobready-dup1",
+            "source": "GqMJaqBCbfav0MbsrHCpc",
+            "target": "ftFF3oFfqpKvjQhXk3bWw"
+          }
+        ],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 160,
+      "browserNodeCount": 10
+    },
+    {
+      "slug": "docker",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/docker/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/docker.json",
+        "source_payload_sha256": "11ac4bb8af9a53aeae0dd02e2ca76044932c8ef82c5597f7df5ae9a63d0a8446",
+        "node_count": 79,
+        "edge_count_original": 30,
+        "edge_count_retained": 30,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 79,
+      "browserNodeCount": 28
+    },
+    {
+      "slug": "elasticsearch",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/elasticsearch/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/elasticsearch.json",
+        "source_payload_sha256": "3ac79a4e2f6ff7b7fad0deb24ee47d09cceea2883e1092e74b25d6bedffb8d6e",
+        "node_count": 175,
+        "edge_count_original": 32,
+        "edge_count_retained": 32,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 175,
+      "browserNodeCount": 80
+    },
+    {
+      "slug": "engineering-manager",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/engineering-manager/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/engineering-manager.json",
+        "source_payload_sha256": "ccfd2bca440b89bd49c832cbffb9c71e9d2e3bb8eff44b5a0062345cf00e6d01",
+        "node_count": 227,
+        "edge_count_original": 17,
+        "edge_count_retained": 17,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 227,
+      "browserNodeCount": 23
+    },
+    {
+      "slug": "flutter",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/flutter/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/flutter.json",
+        "source_payload_sha256": "fa95700e76d86540ebee740ebc7e4c68616ce1126aca36d1e290b0f48302f3bd",
+        "node_count": 139,
+        "edge_count_original": 52,
+        "edge_count_retained": 52,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 139,
+      "browserNodeCount": 13
+    },
+    {
+      "slug": "forward-deployed-engineer",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/forward-deployed-engineer/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/forward-deployed-engineer.json",
+        "source_payload_sha256": "86274a12be4b366d4e850fb4a1dd3039b9bce7cba8a46d34d2794584dd463db7",
+        "node_count": 141,
+        "edge_count_original": 94,
+        "edge_count_retained": 94,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 141,
+      "browserNodeCount": 18
+    },
+    {
+      "slug": "frontend",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/frontend/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/frontend.json",
+        "source_payload_sha256": "9e67de6ec3c59bedb965a81681c3074f3a01fe7825c3b80191d4d56473316c9d",
+        "node_count": 156,
+        "edge_count_original": 69,
+        "edge_count_retained": 69,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 156,
+      "browserNodeCount": 56
+    },
+    {
+      "slug": "frontend-beginner",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/frontend-beginner/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/frontend-beginner.json",
+        "source_payload_sha256": "d7577fd2e45d10eb0bca51390db255cf1daa76290c6ee54a275e76a9ac4d472c",
+        "node_count": 38,
+        "edge_count_original": 12,
+        "edge_count_retained": 12,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 38,
+      "browserNodeCount": 8
+    },
+    {
+      "slug": "full-stack",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/full-stack/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/full-stack.json",
+        "source_payload_sha256": "da92767da9e780c2e7dfd85d634cd4c9afbe9dc6b411ec6fad3b9a155b414820",
+        "node_count": 79,
+        "edge_count_original": 21,
+        "edge_count_retained": 21,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 79,
+      "browserNodeCount": 16
+    },
+    {
+      "slug": "game-developer",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/game-developer/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/game-developer.json",
+        "source_payload_sha256": "a5c54b7a25d5dc2dfaf1eee47424128c54b67edd795df3a731c74eb4e9f67faf",
+        "node_count": 172,
+        "edge_count_original": 47,
+        "edge_count_retained": 47,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 172,
+      "browserNodeCount": 21
+    },
+    {
+      "slug": "git-github",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/git-github/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/git-github.json",
+        "source_payload_sha256": "d8b2d05c8c22f6cb5421fcf5d6143effd9fe2139fb0c583ff4a1fbf1d473cb08",
+        "node_count": 201,
+        "edge_count_original": 77,
+        "edge_count_retained": 77,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 201,
+      "browserNodeCount": 70
+    },
+    {
+      "slug": "git-github-beginner",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/git-github-beginner/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/git-github-beginner.json",
+        "source_payload_sha256": "230b589c8087d6bbfab1af020c87c932afbef687093d573bec8cff201d972b13",
+        "node_count": 34,
+        "edge_count_original": 8,
+        "edge_count_retained": 8,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 34,
+      "browserNodeCount": 16
+    },
+    {
+      "slug": "golang",
+      "status": "sanitized",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/golang/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "sanitized",
+        "source": "https://roadmap.sh/golang.json",
+        "source_payload_sha256": "89679afd3fd62b6aefc0dbfd06c0579929e2e57934ea3f80d96dd9a2e2d161d2",
+        "node_count": 231,
+        "edge_count_original": 77,
+        "edge_count_retained": 77,
+        "duplicate_edge_ids_original": [
+          "xy-edge__uialoSONK4CdWVZIa9LQyz2-N0EG-7sU9lGFwgidXuPkVy1",
+          "xy-edge__uvnV1IjE8RV-FKDxHntUUy2-6r9XbwlBtHmJrhviG2cTDz2"
+        ],
+        "edge_normalizations": [
+          {
+            "kind": "duplicate_id_remapped",
+            "from_id": "xy-edge__uvnV1IjE8RV-FKDxHntUUy2-6r9XbwlBtHmJrhviG2cTDz2",
+            "to_id": "xy-edge__uvnV1IjE8RV-FKDxHntUUy2-6r9XbwlBtHmJrhviG2cTDz2__jobready-dup1",
+            "source": "wRwt9JHZPmq8uapxMjn0a",
+            "target": "XLj16RmCe4-nKHW52Ebhf"
+          },
+          {
+            "kind": "duplicate_id_remapped",
+            "from_id": "xy-edge__uialoSONK4CdWVZIa9LQyz2-N0EG-7sU9lGFwgidXuPkVy1",
+            "to_id": "xy-edge__uialoSONK4CdWVZIa9LQyz2-N0EG-7sU9lGFwgidXuPkVy1__jobready-dup1",
+            "source": "o2EYfm1WSd8Eq_ZcXYreo",
+            "target": "N0EG-7sU9lGFwgidXuPkV"
+          }
+        ],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 231,
+      "browserNodeCount": 19
+    },
+    {
+      "slug": "graphql",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/graphql/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/graphql.json",
+        "source_payload_sha256": "bae6680356e45684cd6fa259ec77a551a05f20dc027fd55f93af33f286ba1922",
+        "node_count": 104,
+        "edge_count_original": 32,
+        "edge_count_retained": 32,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 104,
+      "browserNodeCount": 19
+    },
+    {
+      "slug": "html",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/html/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/html.json",
+        "source_payload_sha256": "b95510ee2b9862ccab0d37dad52d1849f1374f66b27a7d15f8442bb93ce3a2af",
+        "node_count": 111,
+        "edge_count_original": 53,
+        "edge_count_retained": 53,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 111,
+      "browserNodeCount": 13
+    },
+    {
+      "slug": "ios",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ios/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/ios.json",
+        "source_payload_sha256": "cbb9baf05e89e1ba478ad970e793e432c369bbfbb7668912a0e8f238ed37c971",
+        "node_count": 210,
+        "edge_count_original": 116,
+        "edge_count_retained": 116,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 210,
+      "browserNodeCount": 17
+    },
+    {
+      "slug": "java",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/java/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/java.json",
+        "source_payload_sha256": "3f4f2f1a822fcb23b42999e3c24a7605a32809a8182b90a2ab1003b248fdaada",
+        "node_count": 125,
+        "edge_count_original": 29,
+        "edge_count_retained": 29,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 125,
+      "browserNodeCount": 18
+    },
+    {
+      "slug": "javascript",
+      "status": "sanitized",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/javascript/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "sanitized",
+        "source": "https://roadmap.sh/javascript.json",
+        "source_payload_sha256": "3ca610e44d1e431305c50fbaca8e60c3f3aedb331cfb3c6d5704a0da8fd1115b",
+        "node_count": 165,
+        "edge_count_original": 76,
+        "edge_count_retained": 76,
+        "duplicate_edge_ids_original": [
+          "reactflow__edge-ADarwihuI2nBq1C3U7-Zrz2-RRACLQ6-aopkxImIp3Tocy1"
+        ],
+        "edge_normalizations": [
+          {
+            "kind": "duplicate_id_remapped",
+            "from_id": "reactflow__edge-ADarwihuI2nBq1C3U7-Zrz2-RRACLQ6-aopkxImIp3Tocy1",
+            "to_id": "reactflow__edge-ADarwihuI2nBq1C3U7-Zrz2-RRACLQ6-aopkxImIp3Tocy1__jobready-dup1",
+            "source": "-jbPPuEXacBR0d0CWPHgd",
+            "target": "RRACLQ6-aopkxImIp3Toc"
+          }
+        ],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 165,
+      "browserNodeCount": 81
+    },
+    {
+      "slug": "kotlin",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/kotlin/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/kotlin.json",
+        "source_payload_sha256": "168412a819954a81161530842e2835c19aaf5808759a685ee69bec7aa5362120",
+        "node_count": 191,
+        "edge_count_original": 86,
+        "edge_count_retained": 86,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 191,
+      "browserNodeCount": 61
+    },
+    {
+      "slug": "kubernetes",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/kubernetes/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/kubernetes.json",
+        "source_payload_sha256": "d04e20787909f80766b03ac2ce0e73f1e4633e0b7fbb4e4180518c2354657775",
+        "node_count": 86,
+        "edge_count_original": 29,
+        "edge_count_retained": 29,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 86,
+      "browserNodeCount": 22
+    },
+    {
+      "slug": "laravel",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/laravel/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/laravel.json",
+        "source_payload_sha256": "f0679007db4029f95ccbbd63c449d1e8658f5ad93db92f5a78b37965aed61165",
+        "node_count": 155,
+        "edge_count_original": 40,
+        "edge_count_retained": 40,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 155,
+      "browserNodeCount": 57
+    },
+    {
+      "slug": "leetcode",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/leetcode/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/leetcode.json",
+        "source_payload_sha256": "f69678de7c9d41c3e102ddbcfb224c394852b42ff5b18f37aefc018108e6517c",
+        "node_count": 151,
+        "edge_count_original": 132,
+        "edge_count_retained": 132,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 151,
+      "browserNodeCount": 22
+    },
+    {
+      "slug": "linux",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/linux/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/linux.json",
+        "source_payload_sha256": "5e2eee809c2a667dbda7e8b867de86b4faa08d7bfd78db396774a54ca37bd1c8",
+        "node_count": 121,
+        "edge_count_original": 51,
+        "edge_count_retained": 51,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 121,
+      "browserNodeCount": 59
+    },
+    {
+      "slug": "machine-learning",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/machine-learning/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/machine-learning.json",
+        "source_payload_sha256": "ea0a2faf1c05aebd92361b222281510c80bb1c5d4e0eea5d48742410160ecd51",
+        "node_count": 201,
+        "edge_count_original": 75,
+        "edge_count_retained": 75,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 201,
+      "browserNodeCount": 14
+    },
+    {
+      "slug": "mlops",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/mlops/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/mlops.json",
+        "source_payload_sha256": "60364ddc8a105c0f8d88edfc62861452dc3ec8ba5383e8590b1a2c63a15fc708",
+        "node_count": 80,
+        "edge_count_original": 40,
+        "edge_count_retained": 40,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 80,
+      "browserNodeCount": 57
+    },
+    {
+      "slug": "mongodb",
+      "status": "sanitized",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/mongodb/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "sanitized",
+        "source": "https://roadmap.sh/mongodb.json",
+        "source_payload_sha256": "1b52f17ab3120edcfbb3b5fb6e9242523dd00297def584cb662852dd31654e79",
+        "node_count": 138,
+        "edge_count_original": 42,
+        "edge_count_retained": 42,
+        "duplicate_edge_ids_original": [
+          "xy-edge__JfXwzkN29UGz17FYHHE3Az2-2rlmLn_yQQV-7DpX1qT98y1"
+        ],
+        "edge_normalizations": [
+          {
+            "kind": "duplicate_id_remapped",
+            "from_id": "xy-edge__JfXwzkN29UGz17FYHHE3Az2-2rlmLn_yQQV-7DpX1qT98y1",
+            "to_id": "xy-edge__JfXwzkN29UGz17FYHHE3Az2-2rlmLn_yQQV-7DpX1qT98y1__jobready-dup1",
+            "source": "7SGYNo3oHlgm_1cwhWfw7",
+            "target": "4h8NdcdXmNqJxLkVJqPtX"
+          }
+        ],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 138,
+      "browserNodeCount": 12
+    },
+    {
+      "slug": "network-engineer",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/network-engineer/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/network-engineer.json",
+        "source_payload_sha256": "c7acbb989e500d99f1665af41b9ebfde205d6988dacb64ae37802e8245c54a0e",
+        "node_count": 248,
+        "edge_count_original": 78,
+        "edge_count_retained": 78,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 248,
+      "browserNodeCount": 18
+    },
+    {
+      "slug": "nextjs",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/nextjs/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/nextjs.json",
+        "source_payload_sha256": "6c92a5c57be3881796ae0b72bf7f27cf984293e0a862eb73844e2976df54109b",
+        "node_count": 132,
+        "edge_count_original": 50,
+        "edge_count_retained": 50,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 132,
+      "browserNodeCount": 17
+    },
+    {
+      "slug": "nodejs",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/nodejs/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/nodejs.json",
+        "source_payload_sha256": "9af9b035951a7bd4d34b438d5a299f22c43508be36cf8dd914dfad71fffb6a59",
+        "node_count": 160,
+        "edge_count_original": 40,
+        "edge_count_retained": 40,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 160,
+      "browserNodeCount": 24
+    },
+    {
+      "slug": "openclaw",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/openclaw/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/openclaw.json",
+        "source_payload_sha256": "41da9cc12e677549ec6b54ac3ed2c2e4a4f9b277017845520b57161f855008fe",
+        "node_count": 154,
+        "edge_count_original": 28,
+        "edge_count_retained": 28,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 154,
+      "browserNodeCount": 15
+    },
+    {
+      "slug": "php",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/php/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/php.json",
+        "source_payload_sha256": "11963a1b2cfb3920d0bcbe9e20df2f9110dbd7dd19a4d4ae73277de770d0dbe5",
+        "node_count": 195,
+        "edge_count_original": 54,
+        "edge_count_retained": 54,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 195,
+      "browserNodeCount": 19
+    },
+    {
+      "slug": "postgresql-dba",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/postgresql-dba/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/postgresql-dba.json",
+        "source_payload_sha256": "099c3069b4abc90305cc4218ae018b565ac724544e47d701f692c878d0b9b081",
+        "node_count": 233,
+        "edge_count_original": 35,
+        "edge_count_retained": 35,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 233,
+      "browserNodeCount": 81
+    },
+    {
+      "slug": "power-bi",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/power-bi/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/power-bi.json",
+        "source_payload_sha256": "4869ab5a73c1d094694084201f60752274543b7252fd5264e9aed85171c9315d",
+        "node_count": 163,
+        "edge_count_original": 102,
+        "edge_count_retained": 102,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 163,
+      "browserNodeCount": 9
+    },
+    {
+      "slug": "product-design",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/product-design/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/product-design.json",
+        "source_payload_sha256": "acd2245195f67a222bd5a1819e2798d631bd2faa083a9588ff82a1cd52a1c36f",
+        "node_count": 143,
+        "edge_count_original": 116,
+        "edge_count_retained": 116,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 143,
+      "browserNodeCount": 22
+    },
+    {
+      "slug": "product-manager",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/product-manager/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/product-manager.json",
+        "source_payload_sha256": "d0295270ed20cd03a62ff69c99848bcc3869386e34ce2d3770a9fb6fcead6eba",
+        "node_count": 203,
+        "edge_count_original": 129,
+        "edge_count_retained": 129,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 203,
+      "browserNodeCount": 27
+    },
+    {
+      "slug": "prompt-engineering",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/prompt-engineering/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/prompt-engineering.json",
+        "source_payload_sha256": "00109392c52c117690b227ab0015353763293dc836f040afdb3c8b930dd80f49",
+        "node_count": 94,
+        "edge_count_original": 12,
+        "edge_count_retained": 12,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 94,
+      "browserNodeCount": 49
+    },
+    {
+      "slug": "python",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/python/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/python.json",
+        "source_payload_sha256": "409202cbe671a66e729b20ebddca6438f6d634fa74546b857eac115b7bf8a28b",
+        "node_count": 124,
+        "edge_count_original": 31,
+        "edge_count_retained": 31,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 124,
+      "browserNodeCount": 24
+    },
+    {
+      "slug": "python-data-analysis",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/python-data-analysis/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/python-data-analysis.json",
+        "source_payload_sha256": "4082cf6ce522afcbef673d61165ef333d702d64fe2ab0f779f1023bbfc5449b8",
+        "node_count": 155,
+        "edge_count_original": 68,
+        "edge_count_retained": 68,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 155,
+      "browserNodeCount": 20
+    },
+    {
+      "slug": "qa",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/qa/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/qa.json",
+        "source_payload_sha256": "1aeb475ddcab69aedaba5c51967af7ac7175123c9c3da84159dfbd9c74866248",
+        "node_count": 186,
+        "edge_count_original": 50,
+        "edge_count_retained": 50,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 186,
+      "browserNodeCount": 99
+    },
+    {
+      "slug": "r",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/r/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/r-programming.json",
+        "source_payload_sha256": "b51aad028027ce3e5b822ac07c712f8856b10b61121210ee72d5633a5876b3f4",
+        "node_count": 162,
+        "edge_count_original": 69,
+        "edge_count_retained": 69,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 162,
+      "browserNodeCount": 62
+    },
+    {
+      "slug": "r-programming",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/r-programming/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/r-programming.json",
+        "source_payload_sha256": "b51aad028027ce3e5b822ac07c712f8856b10b61121210ee72d5633a5876b3f4",
+        "node_count": 162,
+        "edge_count_original": 69,
+        "edge_count_retained": 69,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 162,
+      "browserNodeCount": 62
+    },
+    {
+      "slug": "react",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/react/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/react.json",
+        "source_payload_sha256": "4dcffd5091b815630668276d55e834fab7826a1fdaf66817eee2f8abcd343968",
+        "node_count": 112,
+        "edge_count_original": 50,
+        "edge_count_retained": 50,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 112,
+      "browserNodeCount": 22
+    },
+    {
+      "slug": "react-native",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/react-native/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/react-native.json",
+        "source_payload_sha256": "15bc00056e9a515701792c72c391e068b0218472d581f396370a16f275f2c33f",
+        "node_count": 125,
+        "edge_count_original": 51,
+        "edge_count_retained": 51,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 125,
+      "browserNodeCount": 71
+    },
+    {
+      "slug": "redis",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/redis/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/redis.json",
+        "source_payload_sha256": "9364d8924a1cf0676109c8b30c0110110a1e88cd257621bcff2ac1039c796574",
+        "node_count": 246,
+        "edge_count_original": 46,
+        "edge_count_retained": 46,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 246,
+      "browserNodeCount": 15
+    },
+    {
+      "slug": "ruby",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ruby/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/ruby.json",
+        "source_payload_sha256": "935838ba9d3fd1141bc5c3182ea74fe7e764e17c9d45b3c762743de2c42780a3",
+        "node_count": 142,
+        "edge_count_original": 42,
+        "edge_count_retained": 42,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 142,
+      "browserNodeCount": 19
+    },
+    {
+      "slug": "ruby-on-rails",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ruby-on-rails/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/ruby-on-rails.json",
+        "source_payload_sha256": "18bef0b7c6b72acd371b2cb879a0d4c936ad71ee900eff2c78a6b60933f7892f",
+        "node_count": 141,
+        "edge_count_original": 42,
+        "edge_count_retained": 42,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 141,
+      "browserNodeCount": 35
+    },
+    {
+      "slug": "rust",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/rust/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/rust.json",
+        "source_payload_sha256": "65e5e71d57b3f2b5ee072f5c65697c2ea6acf4fba352f79f53bc113faec8778a",
+        "node_count": 176,
+        "edge_count_original": 39,
+        "edge_count_retained": 39,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 176,
+      "browserNodeCount": 60
+    },
+    {
+      "slug": "scala",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/scala/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/scala.json",
+        "source_payload_sha256": "d4f8bf39e029cd2869d255404078922b7a443ba988e03d4922e169353115f4a1",
+        "node_count": 231,
+        "edge_count_original": 75,
+        "edge_count_retained": 75,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 231,
+      "browserNodeCount": 24
+    },
+    {
+      "slug": "server-side-game-developer",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/server-side-game-developer/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/server-side-game-developer.json",
+        "source_payload_sha256": "d6b532a88e38f7609290e6c096072c070d859a472cf29664d7d3f22f534b6e7b",
+        "node_count": 197,
+        "edge_count_original": 64,
+        "edge_count_retained": 64,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 197,
+      "browserNodeCount": 27
+    },
+    {
+      "slug": "shell-bash",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/shell-bash/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/shell-bash.json",
+        "source_payload_sha256": "8d62036cbbc58396448cb4d3d9c77a4fabd9ae7ab4e827b3d0a0cc2640104185",
+        "node_count": 237,
+        "edge_count_original": 46,
+        "edge_count_retained": 46,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 237,
+      "browserNodeCount": 36
+    },
+    {
+      "slug": "software-architect",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/software-architect/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/software-architect.json",
+        "source_payload_sha256": "1f02d083f064c05a2b0e853a94c5ff748cdb515fc8e0fc5c705b700a50e288e1",
+        "node_count": 146,
+        "edge_count_original": 58,
+        "edge_count_retained": 58,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 146,
+      "browserNodeCount": 84
+    },
+    {
+      "slug": "software-design-architecture",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/software-design-architecture/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/software-design-architecture.json",
+        "source_payload_sha256": "82286d27a4a02d573d887ccacdb378ab318c497827f6a93996273b0b57aa1d61",
+        "node_count": 126,
+        "edge_count_original": 31,
+        "edge_count_retained": 31,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 126,
+      "browserNodeCount": 76
+    },
+    {
+      "slug": "spring-boot",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/spring-boot/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/spring-boot.json",
+        "source_payload_sha256": "f8f89894da08aaa027821746afb7b518cdf71cb42e68303331c0e5cb8da3e70b",
+        "node_count": 57,
+        "edge_count_original": 37,
+        "edge_count_retained": 37,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 57,
+      "browserNodeCount": 22
+    },
+    {
+      "slug": "sql",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/sql/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/sql.json",
+        "source_payload_sha256": "510b53def52c5e617a22c5e7b674948d81a3e273fab56ad1d1c45fcf60c859f5",
+        "node_count": 158,
+        "edge_count_original": 33,
+        "edge_count_retained": 33,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 158,
+      "browserNodeCount": 103
+    },
+    {
+      "slug": "swift-ui",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/swift-ui/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/swift-ui.json",
+        "source_payload_sha256": "eede57b092201159d329d462969a2fe45d03208af09359bccfe9bad6f58b6495",
+        "node_count": 216,
+        "edge_count_original": 59,
+        "edge_count_retained": 59,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 216,
+      "browserNodeCount": 13
+    },
+    {
+      "slug": "system-design",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/system-design/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/system-design.json",
+        "source_payload_sha256": "2c854a3ba8162c316be5333975b0be2f443b610e27d4c35af124830a6d6c7f23",
+        "node_count": 201,
+        "edge_count_original": 42,
+        "edge_count_retained": 42,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 201,
+      "browserNodeCount": 38
+    },
+    {
+      "slug": "technical-writer",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/technical-writer/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/technical-writer.json",
+        "source_payload_sha256": "86240aa4b81f47c96ee8803ff662ef7aa353714526f706d368b91c957783a4dc",
+        "node_count": 103,
+        "edge_count_original": 41,
+        "edge_count_retained": 41,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 103,
+      "browserNodeCount": 71
+    },
+    {
+      "slug": "terraform",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/terraform/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/terraform.json",
+        "source_payload_sha256": "5be593f5fe18336fd8a97ef34804022be0b42c930c67198995b1e1571b557455",
+        "node_count": 128,
+        "edge_count_original": 79,
+        "edge_count_retained": 79,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 128,
+      "browserNodeCount": 60
+    },
+    {
+      "slug": "typescript",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/typescript/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/typescript.json",
+        "source_payload_sha256": "6bfd74ecc365192dd4787da938a8c2505d266a1b895c503c78ff47c02eecfd7f",
+        "node_count": 120,
+        "edge_count_original": 44,
+        "edge_count_retained": 44,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 120,
+      "browserNodeCount": 73
+    },
+    {
+      "slug": "ux-design",
+      "status": "sanitized",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ux-design/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "sanitized",
+        "source": "https://roadmap.sh/ux-design.json",
+        "source_payload_sha256": "b4d980523cb2070d2d0ff0e15001625d876218f16f545540a926b53efc7f3cc6",
+        "node_count": 140,
+        "edge_count_original": 27,
+        "edge_count_retained": 26,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [
+          {
+            "id": "xy-edge__dgBELpFRvRO_7ir0y0AtXx2-0vLaVNJaJSHZ_bHli6Qzsw1",
+            "source": "dgBELpFRvRO_7ir0y0AtX",
+            "target": "0vLaVNJaJSHZ_bHli6Qzs",
+            "reason": "endpoint_missing",
+            "missing_endpoints": [
+              "dgBELpFRvRO_7ir0y0AtX"
+            ]
+          }
+        ],
+        "provenance_verified": true
+      },
+      "nodeCount": 140,
+      "browserNodeCount": 71
+    },
+    {
+      "slug": "vibe-coding",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/vibe-coding/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/vibe-coding.json",
+        "source_payload_sha256": "3dacd46e2dc8b5f23ee559be451c6e8dc2a02eb03cff0293b0e13300209d722b",
+        "node_count": 93,
+        "edge_count_original": 2,
+        "edge_count_retained": 2,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 93,
+      "browserNodeCount": 10
+    },
+    {
+      "slug": "vue",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/vue/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/vue.json",
+        "source_payload_sha256": "77802ca64fc7c67f1cf5e11ab2ebf76194a00be6e8e317859779b9d9e72a481d",
+        "node_count": 115,
+        "edge_count_original": 54,
+        "edge_count_retained": 54,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 115,
+      "browserNodeCount": 25
+    },
+    {
+      "slug": "wordpress",
+      "status": "clean",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/wordpress/graph",
+      "graphHttpStatus": 200,
+      "payloadValid": true,
+      "integrity": {
+        "classification": "clean",
+        "source": "https://roadmap.sh/wordpress.json",
+        "source_payload_sha256": "57a4fcf25b9e825cdf2760e51a2e04993913af1f2fad8e394b74caa3c02d0ac5",
+        "node_count": 171,
+        "edge_count_original": 44,
+        "edge_count_retained": 44,
+        "duplicate_edge_ids_original": [],
+        "edge_normalizations": [],
+        "removed_edges": [],
+        "provenance_verified": true
+      },
+      "nodeCount": 171,
+      "browserNodeCount": 15
+    }
+  ]
+}

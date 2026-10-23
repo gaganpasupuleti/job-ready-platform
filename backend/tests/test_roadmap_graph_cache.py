@@ -6,7 +6,10 @@ from app.services.official_roadmap_service import (
     _read_graph_cache,
     _write_graph_cache,
 )
-from app.services.roadmap_graph_normalization import normalize_upstream_graph
+from app.services.roadmap_graph_normalization import (
+    graph_response_from_cache_envelope,
+    normalize_upstream_graph,
+)
 
 
 def _sample_upstream():
@@ -65,3 +68,18 @@ def test_legacy_cache_is_invalidated(tmp_path, monkeypatch):
     cache_file.write_text(json.dumps(legacy), encoding="utf-8")
     assert _read_graph_cache(slug) is None
     assert not cache_file.is_file()
+
+
+def test_malformed_cache_envelope_rejected():
+    assert graph_response_from_cache_envelope({"cache_version": 1}) is None
+    assert graph_response_from_cache_envelope({"cache_version": 2, "source_payload": {}}) is None
+    raw = _sample_upstream()
+    served, integrity = normalize_upstream_graph(raw, source="https://roadmap.sh/x.json")
+    envelope = {
+        "cache_version": 2,
+        "source": "https://roadmap.sh/x.json",
+        "source_payload": raw,
+        "served": served,
+        "integrity": {**integrity, "classification": "clean"},
+    }
+    assert graph_response_from_cache_envelope(envelope) is None

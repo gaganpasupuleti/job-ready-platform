@@ -95,6 +95,17 @@ def test_duplicate_id_order_permutations_produce_same_ids():
     assert sorted(a_ids) == sorted(b_ids)
 
 
+def test_rejects_whitespace_node_id():
+    try:
+        normalize_upstream_graph(
+            {"nodes": [{"id": "   ", "position": {"x": 0, "y": 0}}], "edges": []},
+            source="https://roadmap.sh/x.json",
+        )
+        assert False, "expected AppException"
+    except AppException:
+        pass
+
+
 def test_rejects_boolean_coordinates():
     try:
         normalize_upstream_graph(
