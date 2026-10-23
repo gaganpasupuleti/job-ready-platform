@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MutableRefObject,
+} from 'react'
 import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react'
 import {
   Background,
@@ -38,32 +46,45 @@ function roadmapOverviewFitOptions(reduceMotion: boolean, durationMs = 220): Fit
   }
 }
 
+function layoutGuardActive(
+  guard: { until: number; snapshot: Viewport } | null,
+  userNavigating: boolean,
+) {
+  return Boolean(guard && !userNavigating && Date.now() < guard.until)
+}
+
 function RoadmapViewportFit({
   graphKey,
   focusNodeId,
   reduceMotion,
   resetToken,
   articlePanelOpen,
+  layoutGuardRef,
+  userNavigatingRef,
 }: {
   graphKey: string
   focusNodeId?: string | null
   reduceMotion: boolean
   resetToken: number
   articlePanelOpen: boolean
+  layoutGuardRef: MutableRefObject<{ until: number; snapshot: Viewport } | null>
+  userNavigatingRef: MutableRefObject<boolean>
 }) {
   const { fitView, getNodes } = useReactFlow()
   const nodesInitialized = useNodesInitialized()
   const fitScopeRef = useRef('')
 
   const fitOverview = useCallback(() => {
-    if (articlePanelOpen) return
+    if (articlePanelOpen || layoutGuardActive(layoutGuardRef.current, userNavigatingRef.current)) {
+      return
+    }
     const content = contentNodesForFit(getNodes())
     if (content.length === 0) return
     fitView({
       nodes: content.map((node) => ({ id: node.id })),
       ...roadmapOverviewFitOptions(reduceMotion),
     })
-  }, [articlePanelOpen, fitView, getNodes, reduceMotion])
+  }, [articlePanelOpen, fitView, getNodes, reduceMotion, layoutGuardRef, userNavigatingRef])
 
   useEffect(() => {
     if (!nodesInitialized) return
@@ -168,7 +189,6 @@ interface RoadmapFlowCanvasProps {
   focusNodeId?: string | null
   selectedNodeId?: string | null
   articlePanelOpen?: boolean
-  freezeViewportRef?: MutableRefObject<(() => void) | null>
   onTopicSelect: (raw: import('@/services/roadmapOfficialService').OfficialRoadmapNode) => void
   onRoadmapNavigate: (path: string) => void
   layoutLocked?: boolean
@@ -182,7 +202,6 @@ export function RoadmapFlowCanvas({
   focusNodeId,
   selectedNodeId,
   articlePanelOpen = false,
-  freezeViewportRef,
   onTopicSelect,
   onRoadmapNavigate,
   layoutLocked = false,
@@ -198,39 +217,40 @@ export function RoadmapFlowCanvas({
   const containerRef = useRef<HTMLDivElement>(null)
   const dragMovedRef = useRef(false)
   const loadedKeyRef = useRef<string | null>(null)
-  const frozenViewportRef = useRef<Viewport | null>(null)
-  const preserveViewportRef = useRef(false)
+  const layoutGuardRef = useRef<{ until: number; snapshot: Viewport } | null>(null)
+  const userNavigatingRef = useRef(false)
+  const articlePanelOpenRef = useRef(articlePanelOpen)
 
-  useEffect(() => {
-    if (!freezeViewportRef) return
-    freezeViewportRef.current = () => {
-      frozenViewportRef.current = getViewport()
-      preserveViewportRef.current = true
+  const beginLayoutTransition = useCallback(() => {
+    userNavigatingRef.current = false
+    layoutGuardRef.current = {
+      until: Date.now() + 750,
+      snapshot: getViewport(),
     }
-    return () => {
-      freezeViewportRef.current = null
-    }
-  }, [freezeViewportRef, getViewport])
+  }, [getViewport])
 
-  useEffect(() => {
-    if (articlePanelOpen) return
-    preserveViewportRef.current = false
-    if (!frozenViewportRef.current) return
-    const restore = frozenViewportRef.current
-    frozenViewportRef.current = null
-    requestAnimationFrame(() => setViewport(restore))
-  }, [articlePanelOpen, setViewport])
+  useLayoutEffect(() => {
+    if (articlePanelOpenRef.current === articlePanelOpen) return
+    articlePanelOpenRef.current = articlePanelOpen
+    beginLayoutTransition()
+  }, [articlePanelOpen, beginLayoutTransition])
 
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
     const observer = new ResizeObserver(() => {
-      if (!preserveViewportRef.current || !frozenViewportRef.current) return
-      setViewport(frozenViewportRef.current)
+      const guard = layoutGuardRef.current
+      if (!layoutGuardActive(guard, userNavigatingRef.current) || !guard) return
+      setViewport(guard.snapshot)
     })
     observer.observe(el)
     return () => observer.disconnect()
   }, [setViewport])
+
+  const onMoveStart = useCallback(() => {
+    userNavigatingRef.current = true
+    layoutGuardRef.current = null
+  }, [])
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -325,12 +345,11 @@ export function RoadmapFlowCanvas({
         }
       }
       if (t === 'subtopic' || t === 'topic') {
-        frozenViewportRef.current = getViewport()
-        preserveViewportRef.current = true
+        beginLayoutTransition()
         onTopicSelect(raw)
       }
     },
-    [onTopicSelect, onRoadmapNavigate, allowedSlugs],
+    [onTopicSelect, onRoadmapNavigate, allowedSlugs, beginLayoutTransition],
   )
 
   const onNodesChangeWrapped = useCallback(
@@ -338,21 +357,6 @@ export function RoadmapFlowCanvas({
       onNodesChange(changes)
     },
     [onNodesChange],
-  )
-
-  const onViewportChange = useCallback(
-    (next: Viewport) => {
-      if (!preserveViewportRef.current || !frozenViewportRef.current) return
-      const frozen = frozenViewportRef.current
-      const moved =
-        Math.abs(next.x - frozen.x) > 1.5 ||
-        Math.abs(next.y - frozen.y) > 1.5 ||
-        Math.abs(next.zoom - frozen.zoom) > 0.02
-      if (moved) {
-        setViewport(frozen)
-      }
-    },
-    [setViewport],
   )
 
   return (
@@ -363,7 +367,7 @@ export function RoadmapFlowCanvas({
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChangeWrapped}
         onEdgesChange={onEdgesChange}
-        onViewportChange={onViewportChange}
+        onMoveStart={onMoveStart}
         onNodeClick={onNodeClick}
         onNodeDragStart={onNodeDragStart}
         onNodeDrag={onNodeDrag}
@@ -397,6 +401,8 @@ export function RoadmapFlowCanvas({
           reduceMotion={reduceMotion}
           resetToken={resetToken}
           articlePanelOpen={articlePanelOpen}
+          layoutGuardRef={layoutGuardRef}
+          userNavigatingRef={userNavigatingRef}
         />
         <RoadmapControls
           onReset={resetLayout}

@@ -261,3 +261,11 @@ jobs:
           path: frontend/e2e/artifacts/ui-cohesion/after/
           if-no-files-found: ignore
           retention-days: 14
+      - name: Upload roadmap catalog browser results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: roadmap-catalog-browser-results
+          path: frontend/e2e/artifacts/roadmap-catalog-browser-results.json
+          if-no-files-found: ignore
+          retention-days: 14
