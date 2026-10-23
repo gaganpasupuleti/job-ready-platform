@@ -2,8 +2,9 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** `fe03c7c`  
-**CI (latest):** https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40021446428  
+**Candidate SHA (code):** `fe03c7c`  
+**Docs tip:** `9dd2178`  
+**CI (latest):** https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40021707444  
 **Status:** Open — not merged, not deployed.
 
 ## Root causes and fixes (`252196d` → `fe03c7c`)
@@ -77,7 +78,8 @@ Cache regression coverage: roundtrip preserves `sanitized` counts/`removed_edges
 | Run | SHA | Result | Notes |
 |-----|-----|--------|-------|
 | [39998583379](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39998583379) | `252196d` | **fail** | See below |
-| [40021446428](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40021446428) | `fe03c7c` | **pending** | Expected to address prior Playwright failures |
+| [40021707444](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40021707444) | `9dd2178` | **in progress** | Full CI on integrity + catalog evidence fix |
+| [40021446428](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40021446428) | `fe03c7c` | cancelled | Superseded (concurrency) |
 
 ### Run 39998583379 (investigation)
 
