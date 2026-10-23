@@ -2,7 +2,7 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** _(pending push — integrity contract + duplicate-ID fix)_  
+**Candidate SHA:** `1516234`  
 **Status:** Open — not merged, not deployed.
 
 ## Graph integrity contract (`integrity` on `/roadmap/official/{slug}/graph`)
@@ -52,7 +52,7 @@ Duplicate-ID order dependency in sanitization is **fixed**: IDs checked across *
 | Run | SHA | Playwright | Notes |
 |-----|-----|------------|-------|
 | [39918003098](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39918003098) | `a50b08f` | 144 pass, 1 fail, 6 skip | 87 pass / 6×502 catalog; graph interaction green |
-| _next_ | _TBD_ | _pending_ | Integrity + catalog clean/sanitized split; warm stagger |
+| [39998481318](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39998481318) | `1516234` | _in progress_ | Integrity + catalog clean/sanitized split; warm stagger |
 
 ## Remaining release blockers
 
