@@ -41,6 +41,23 @@ def test_validate_graph_payload_requires_edges():
         pass
 
 
+def test_validate_graph_payload_drops_dangling_edges():
+    payload = _validate_graph_payload(
+        {
+            "nodes": [
+                {"id": "a", "position": {"x": 0, "y": 0}},
+                {"id": "b", "position": {"x": 1, "y": 1}},
+            ],
+            "edges": [
+                {"id": "e1", "source": "a", "target": "b"},
+                {"id": "e2", "source": "a", "target": "missing"},
+            ],
+        }
+    )
+    assert len(payload["edges"]) == 1
+    assert payload["edges"][0]["id"] == "e1"
+
+
 def test_catalog_file_matches_frontend_bundle():
     backend_path = Path(__file__).resolve().parents[1] / "app" / "data" / "official-roadmap-catalog.json"
     frontend_path = (

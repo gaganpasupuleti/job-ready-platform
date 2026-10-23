@@ -175,6 +175,7 @@ def _validate_graph_payload(payload: dict) -> dict:
         x, y = position.get("x"), position.get("y")
         if not isinstance(x, (int, float)) or not isinstance(y, (int, float)):
             raise AppException("Roadmap graph response was invalid", status_code=502)
+    sanitized_edges: list[dict] = []
     edge_ids: set[str] = set()
     for edge in edges:
         if not isinstance(edge, dict) or not isinstance(edge.get("id"), str):
@@ -182,12 +183,25 @@ def _validate_graph_payload(payload: dict) -> dict:
         edge_id = edge["id"]
         if edge_id in edge_ids:
             raise AppException("Roadmap graph response was invalid", status_code=502)
-        edge_ids.add(edge_id)
         source, target = edge.get("source"), edge.get("target")
         if not isinstance(source, str) or not isinstance(target, str):
             raise AppException("Roadmap graph response was invalid", status_code=502)
         if source not in node_ids or target not in node_ids:
-            raise AppException("Roadmap graph response was invalid", status_code=502)
+            logger.warning(
+                "Dropping roadmap edge %s (%s -> %s): endpoint missing from nodes",
+                edge_id,
+                source,
+                target,
+            )
+            continue
+        edge_ids.add(edge_id)
+        sanitized_edges.append(edge)
+
+    if not sanitized_edges:
+        raise AppException("Roadmap graph response was invalid", status_code=502)
+
+    if sanitized_edges is not edges:
+        payload = {**payload, "edges": sanitized_edges}
     return payload
 
 

@@ -2,7 +2,7 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** `929b198` (layout-transition viewport guard; catalog batches + per-slug API report; graph interaction by node/edge id)  
+**Candidate SHA:** `bd6265c` (graph cache warm in CI; lock/unlock drag fix; upstream fetch retries; builds on `929b198`/`7002aca`)  
 **Status:** Open — not merged, not deployed.
 
 ## CI run 39840247519 (`4105c38` docs on `0a78a21`) — four failures (root cause)
@@ -37,7 +37,8 @@
 | Run | SHA | Frontend | Backend | Playwright | Notes |
 |-----|-----|----------|---------|------------|-------|
 | [39840247519](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39840247519) | `4105c38` | pass | pass | **135 pass, 4 fail, 6 skip** | Pre-fix baseline |
-| [39905417205](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39905417205) | `929b198` | _pending_ | _pending_ | _pending_ | Candidate verification |
+| [39908836677](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39908836677) | `7002aca` | pass | pass | **142 pass, 2 fail, 6 skip** | Catalog 7×502 upstream; lock/unlock drag coords |
+| [39913806026](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39913806026) | `bd6265c` | _pending_ | _pending_ | _pending_ | Warm cache + retries + lock test fix |
 
 Playwright skips (~6): `release-smoke-preview` when `E2E_SKIP_WEBSERVER` unset (expected).
 
