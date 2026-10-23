@@ -4,6 +4,10 @@ function isFiniteNumber(value: unknown): boolean {
   return typeof value === 'number' && Number.isFinite(value)
 }
 
+function isNonEmptyId(value: unknown): boolean {
+  return typeof value === 'string' && value.trim().length > 0
+}
+
 export function assertValidGraphShape(
   nodes: OfficialRoadmapNode[],
   edges: OfficialRoadmapEdge[],
@@ -19,7 +23,7 @@ export function assertValidGraphShape(
   }
   const nodeIds = new Set<string>()
   for (const node of nodes) {
-    if (!node?.id || typeof node.id !== 'string') {
+    if (!isNonEmptyId(node?.id)) {
       throw new Error('Graph response had invalid nodes')
     }
     if (nodeIds.has(node.id)) {
@@ -33,14 +37,19 @@ export function assertValidGraphShape(
   }
   const edgeIds = new Set<string>()
   for (const edge of edges) {
-    if (!edge?.id || typeof edge.id !== 'string') {
+    if (!isNonEmptyId(edge?.id)) {
       throw new Error('Graph response had invalid edges')
     }
     if (edgeIds.has(edge.id)) {
       throw new Error('Graph response had duplicate edge ids')
     }
     edgeIds.add(edge.id)
-    if (!edge.source || !edge.target || !nodeIds.has(edge.source) || !nodeIds.has(edge.target)) {
+    if (
+      !isNonEmptyId(edge.source) ||
+      !isNonEmptyId(edge.target) ||
+      !nodeIds.has(edge.source) ||
+      !nodeIds.has(edge.target)
+    ) {
       throw new Error('Graph response had invalid edge references')
     }
   }

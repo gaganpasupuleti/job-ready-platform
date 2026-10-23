@@ -16,6 +16,10 @@ function isFiniteNumber(value) {
   return typeof value === 'number' && Number.isFinite(value)
 }
 
+function isNonEmptyId(value) {
+  return typeof value === 'string' && value.trim().length > 0
+}
+
 /**
  * @returns {{ ok: boolean, issues: string[], nodeCount: number, edgeCount: number }}
  */
@@ -35,7 +39,7 @@ export function validateOfficialGraph(payload) {
 
   const nodeById = new Map()
   for (const node of nodes) {
-    if (!node?.id || typeof node.id !== 'string') {
+    if (!isNonEmptyId(node?.id)) {
       issues.push('node missing string id')
       continue
     }
@@ -51,7 +55,7 @@ export function validateOfficialGraph(payload) {
 
   const edgeIds = new Set()
   for (const edge of edges) {
-    if (!edge?.id || typeof edge.id !== 'string') {
+    if (!isNonEmptyId(edge?.id)) {
       issues.push('edge missing string id')
       continue
     }
@@ -59,7 +63,7 @@ export function validateOfficialGraph(payload) {
       issues.push(`duplicate edge id ${edge.id}`)
     }
     edgeIds.add(edge.id)
-    if (!edge.source || !edge.target) {
+    if (!isNonEmptyId(edge.source) || !isNonEmptyId(edge.target)) {
       issues.push(`edge ${edge.id} missing source/target`)
       continue
     }

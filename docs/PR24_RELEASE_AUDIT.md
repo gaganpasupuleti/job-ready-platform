@@ -2,7 +2,8 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** _(set after push)_  
+**Candidate SHA:** `9d3b2a9`  
+**CI:** https://github.com/gaganpasupuleti/job-ready-platform/actions?query=branch%3Afeat%2Froadmap-ui-clean  
 **Status:** Open — not merged, not deployed.
 
 ## Graph integrity contract
@@ -56,7 +57,7 @@ Latest local run (normalization parity with API):
 | Run | SHA | Result | Notes |
 |-----|-----|--------|-------|
 | [39998583379](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39998583379) | `252196d` | fail | acceptance-shots strict mode; 6×502 graphs (pre-normalization); cache integrity loss |
-| _next_ | _TBD_ | pending | Cache v2, duplicate remap, edgeless, acceptance fix |
+| [40020811992](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40020811992) | `9d3b2a9` | pending | Cache v2, duplicate remap, edgeless, acceptance fix |
 
 **39998583379 Playwright:** ~142 passed; failures: syllabus acceptance shot; catalog (6 unavailable 502 + 1 fail socket hangup).
 

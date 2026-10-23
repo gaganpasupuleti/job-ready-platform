@@ -20,6 +20,10 @@ test('toFlowEdge maps roadmap.sh handle ids to unique React Flow handles', () =>
   assert.equal(edge.targetHandle, 'w1-t')
 })
 
+test('assertValidGraphShape accepts edgeless graphs', () => {
+  assertValidGraphShape([{ id: 'a', position: { x: 0, y: 0 } }], [])
+})
+
 test('assertValidGraphShape rejects bad edge references', () => {
   assert.throws(() =>
     assertValidGraphShape(

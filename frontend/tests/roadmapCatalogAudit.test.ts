@@ -60,6 +60,42 @@ test('classifyArticleHttpResponse maps auth and server errors', () => {
   assert.equal(classifyArticleHttpResponse(500, null).articleStatus, 'server_error')
 })
 
+test('validateOfficialGraph accepts edgeless graphs', () => {
+  const edgeless = validateOfficialGraph({
+    nodes: [{ id: 'a', type: 'topic', position: { x: 0, y: 0 } }],
+    edges: [],
+  })
+  assert.equal(edgeless.ok, true)
+  assert.equal(edgeless.edgeCount, 0)
+})
+
+test('validateOfficialGraph rejects whitespace ids and non-finite coordinates', () => {
+  const blankId = validateOfficialGraph({
+    nodes: [{ id: '   ', type: 'topic', position: { x: 0, y: 0 } }],
+    edges: [],
+  })
+  assert.equal(blankId.ok, false)
+
+  const nanCoord = validateOfficialGraph({
+    nodes: [{ id: 'a', type: 'topic', position: { x: Number.NaN, y: 0 } }],
+    edges: [],
+  })
+  assert.equal(nanCoord.ok, false)
+
+  const dupEdges = validateOfficialGraph({
+    nodes: [
+      { id: 'a', type: 'topic', position: { x: 0, y: 0 } },
+      { id: 'b', type: 'topic', position: { x: 1, y: 0 } },
+    ],
+    edges: [
+      { id: 'e1', source: 'a', target: 'b' },
+      { id: 'e1', source: 'b', target: 'a' },
+    ],
+  })
+  assert.equal(dupEdges.ok, false)
+  assert.ok(dupEdges.issues.some((line) => line.includes('duplicate edge id')))
+})
+
 test('validateOfficialGraph accepts minimal valid graph', () => {
   const ok = validateOfficialGraph({
     nodes: [
