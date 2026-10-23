@@ -27,10 +27,17 @@ async def main() -> None:
             graph = await fetch_official_graph(slug)
             ok += 1
             integrity = graph.get("integrity") if isinstance(graph, dict) else None
-            if isinstance(integrity, dict) and integrity.get("classification") == "sanitized":
-                sanitized += 1
-                removed = integrity.get("removed_edges") or []
-                print(f"ok {slug} sanitized removed={len(removed)}")
+            if isinstance(integrity, dict):
+                kind = integrity.get("classification")
+                if kind == "sanitized":
+                    sanitized += 1
+                    removed = integrity.get("removed_edges") or []
+                    norm = integrity.get("edge_normalizations") or []
+                    print(f"ok {slug} sanitized removed={len(removed)} norm={len(norm)}")
+                elif kind == "edgeless":
+                    print(f"ok {slug} edgeless")
+                else:
+                    print(f"ok {slug} clean")
             else:
                 print(f"ok {slug} clean")
         except Exception as exc:  # noqa: BLE001

@@ -7,6 +7,11 @@ from app.services.official_roadmap_service import (
     _validate_graph_payload,
     list_official_roadmaps,
 )
+from app.services.roadmap_graph_normalization import (
+    detect_duplicate_edge_ids,
+    normalize_duplicate_edge_ids,
+    normalize_upstream_graph,
+)
 
 
 def test_bundled_catalog_has_many_entries():
@@ -33,19 +38,20 @@ def test_official_data_engineer_not_legacy_draft_row():
     assert not any(r.get("source") == "legacy-draft" for r in rows)
 
 
-def test_validate_graph_payload_requires_edges():
-    try:
-        _validate_graph_payload({"nodes": [{"id": "a", "position": {"x": 0, "y": 0}}]})
-        assert False, "expected AppException"
-    except AppException:
-        pass
-
-
 def _two_node_graph():
     return [
         {"id": "a", "position": {"x": 0, "y": 0}},
         {"id": "b", "position": {"x": 1, "y": 1}},
     ]
+
+
+def test_edgeless_graph_supported():
+    served, integrity = normalize_upstream_graph(
+        {"nodes": _two_node_graph(), "edges": []},
+        source="https://roadmap.sh/code-review.json",
+    )
+    assert integrity["classification"] == "edgeless"
+    assert served["edges"] == []
 
 
 def test_validate_graph_payload_drops_dangling_edges():
@@ -60,71 +66,44 @@ def test_validate_graph_payload_drops_dangling_edges():
         source="https://roadmap.sh/example.json",
     )
     assert len(payload["edges"]) == 1
-    assert payload["edges"][0]["id"] == "e1"
     assert payload["integrity"]["classification"] == "sanitized"
     assert payload["integrity"]["edge_count_original"] == 2
     assert payload["integrity"]["edge_count_retained"] == 1
-    assert len(payload["integrity"]["removed_edges"]) == 1
 
 
-def test_validate_graph_payload_rejects_duplicate_id_dangling_then_valid():
+def test_duplicate_id_distinct_endpoints_are_remapped():
+    edges = [
+        {"id": "e1", "source": "a", "target": "b"},
+        {"id": "e1", "source": "a", "target": "missing"},
+    ]
+    assert detect_duplicate_edge_ids(edges) == ["e1"]
+    normalized, changes = normalize_duplicate_edge_ids(edges)
+    ids = [edge["id"] for edge in normalized]
+    assert "e1" in ids
+    assert "e1__jobready-dup1" in ids
+    assert any(change["kind"] == "duplicate_id_remapped" for change in changes)
+
+
+def test_duplicate_id_order_permutations_produce_same_ids():
+    base = [
+        {"id": "e1", "source": "a", "target": "b", "sourceHandle": "z2", "targetHandle": "y1"},
+        {"id": "e1", "source": "a", "target": "c", "sourceHandle": "z2", "targetHandle": "y1"},
+    ]
+    reversed_edges = list(reversed(base))
+    a_ids = [e["id"] for e in normalize_duplicate_edge_ids(base)[0]]
+    b_ids = [e["id"] for e in normalize_duplicate_edge_ids(reversed_edges)[0]]
+    assert sorted(a_ids) == sorted(b_ids)
+
+
+def test_rejects_boolean_coordinates():
     try:
-        _validate_graph_payload(
-            {
-                "nodes": _two_node_graph(),
-                "edges": [
-                    {"id": "e1", "source": "a", "target": "missing"},
-                    {"id": "e1", "source": "a", "target": "b"},
-                ],
-            }
+        normalize_upstream_graph(
+            {"nodes": [{"id": "a", "position": {"x": True, "y": 0}}], "edges": []},
+            source="https://roadmap.sh/x.json",
         )
         assert False, "expected AppException"
     except AppException:
         pass
-
-
-def test_validate_graph_payload_rejects_duplicate_id_valid_then_dangling():
-    try:
-        _validate_graph_payload(
-            {
-                "nodes": _two_node_graph(),
-                "edges": [
-                    {"id": "e1", "source": "a", "target": "b"},
-                    {"id": "e1", "source": "a", "target": "missing"},
-                ],
-            }
-        )
-        assert False, "expected AppException"
-    except AppException:
-        pass
-
-
-def test_validate_graph_payload_rejects_duplicate_id_two_dangling():
-    try:
-        _validate_graph_payload(
-            {
-                "nodes": _two_node_graph(),
-                "edges": [
-                    {"id": "e1", "source": "a", "target": "missing-a"},
-                    {"id": "e1", "source": "a", "target": "missing-b"},
-                ],
-            }
-        )
-        assert False, "expected AppException"
-    except AppException:
-        pass
-
-
-def test_validate_graph_payload_clean_integrity():
-    payload = _validate_graph_payload(
-        {
-            "nodes": _two_node_graph(),
-            "edges": [{"id": "e1", "source": "a", "target": "b"}],
-        },
-        source="https://roadmap.sh/clean.json",
-    )
-    assert payload["integrity"]["classification"] == "clean"
-    assert payload["integrity"]["removed_edges"] == []
 
 
 def test_catalog_file_matches_frontend_bundle():

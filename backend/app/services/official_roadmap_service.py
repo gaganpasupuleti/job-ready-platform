@@ -14,6 +14,11 @@ import httpx
 
 from app.core.config import settings
 from app.core.exceptions import AppException
+from app.services.roadmap_graph_normalization import (
+    graph_response_from_cache_envelope,
+    normalize_upstream_graph,
+    source_payload_hash,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -154,89 +159,12 @@ def list_official_roadmaps() -> list[dict]:
     return rows
 
 
-def _assert_unique_edge_ids(edges: list) -> None:
-    seen: set[str] = set()
-    for edge in edges:
-        if not isinstance(edge, dict) or not isinstance(edge.get("id"), str):
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-        edge_id = edge["id"]
-        if edge_id in seen:
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-        seen.add(edge_id)
-
-
 def _validate_graph_payload(payload: dict, *, source: str | None = None) -> dict:
-    nodes = payload.get("nodes")
-    edges = payload.get("edges")
-    if not isinstance(nodes, list) or not nodes:
-        raise AppException("Roadmap graph response was invalid", status_code=502)
-    if not isinstance(edges, list):
-        raise AppException("Roadmap graph response was invalid", status_code=502)
-    node_ids: set[str] = set()
-    for node in nodes:
-        if not isinstance(node, dict) or not isinstance(node.get("id"), str):
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-        node_id = node["id"]
-        if node_id in node_ids:
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-        node_ids.add(node_id)
-        position = node.get("position")
-        if not isinstance(position, dict):
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-        x, y = position.get("x"), position.get("y")
-        if not isinstance(x, (int, float)) or not isinstance(y, (int, float)):
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-
-    _assert_unique_edge_ids(edges)
-
-    sanitized_edges: list[dict] = []
-    removed_edges: list[dict] = []
-    for edge in edges:
-        if not isinstance(edge, dict) or not isinstance(edge.get("id"), str):
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-        edge_id = edge["id"]
-        source_id, target_id = edge.get("source"), edge.get("target")
-        if not isinstance(source_id, str) or not isinstance(target_id, str):
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-        missing_endpoints = [
-            endpoint
-            for endpoint in (source_id, target_id)
-            if endpoint not in node_ids
-        ]
-        if missing_endpoints:
-            removed_edges.append(
-                {
-                    "id": edge_id,
-                    "source": source_id,
-                    "target": target_id,
-                    "reason": "endpoint_missing",
-                    "missing_endpoints": missing_endpoints,
-                }
-            )
-            logger.warning(
-                "Dropping roadmap edge %s (%s -> %s): missing endpoints %s",
-                edge_id,
-                source_id,
-                target_id,
-                missing_endpoints,
-            )
-            continue
-        sanitized_edges.append(edge)
-
-    if not sanitized_edges:
-        raise AppException("Roadmap graph response was invalid", status_code=502)
-
-    classification = "sanitized" if removed_edges else "clean"
-    integrity = {
-        "classification": classification,
-        "source": source or payload.get("integrity", {}).get("source") or "unknown",
-        "node_count": len(nodes),
-        "edge_count_original": len(edges),
-        "edge_count_retained": len(sanitized_edges),
-        "removed_edges": removed_edges,
-    }
-
-    return {**payload, "edges": sanitized_edges, "integrity": integrity}
+    """Normalize upstream JSON (tests and audit scripts)."""
+    if not source:
+        source = "unknown"
+    served, _integrity = normalize_upstream_graph(payload, source=source)
+    return served
 
 
 def _read_graph_cache(slug: str) -> dict | None:
@@ -245,26 +173,24 @@ def _read_graph_cache(slug: str) -> dict | None:
         return None
     try:
         with path.open(encoding="utf-8") as handle:
-            payload = json.load(handle)
-        if isinstance(payload, dict):
-            cached_source = (
-                payload.get("integrity", {}).get("source")
-                if isinstance(payload.get("integrity"), dict)
-                else None
-            )
-            return _validate_graph_payload(payload, source=cached_source)
-    except AppException:
-        logger.warning("Ignoring invalid roadmap graph cache for %s", slug)
-        try:
+            stored = json.load(handle)
+        if not isinstance(stored, dict):
+            return None
+        if stored.get("cache_version") == 2:
+            response = graph_response_from_cache_envelope(stored)
+            if response is not None:
+                return response
+            logger.warning("Cache envelope integrity mismatch for %s; invalidating", slug)
             path.unlink(missing_ok=True)
-        except OSError:
-            pass
+            return None
+        logger.warning("Legacy roadmap cache without provenance for %s; invalidating", slug)
+        path.unlink(missing_ok=True)
     except (OSError, json.JSONDecodeError) as exc:
         logger.warning("Ignoring corrupt roadmap graph cache for %s: %s", slug, exc)
     return None
 
 
-def _write_graph_cache(slug: str, payload: dict) -> None:
+def _write_graph_cache(slug: str, envelope: dict) -> None:
     path = _graph_cache_path(slug)
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(
@@ -274,9 +200,22 @@ def _write_graph_cache(slug: str, payload: dict) -> None:
         delete=False,
         suffix=".tmp",
     ) as handle:
-        json.dump(payload, handle)
+        json.dump(envelope, handle)
         temp_name = handle.name
     Path(temp_name).replace(path)
+
+
+def _cache_envelope_from_fetch(source: str, raw_payload: dict, served: dict, integrity: dict) -> dict:
+    source_payload = {key: value for key, value in raw_payload.items() if key != "integrity"}
+    return {
+        "cache_version": 2,
+        "fetched_at": datetime.now(tz=UTC).isoformat(),
+        "source": source,
+        "source_payload_sha256": source_payload_hash(source_payload),
+        "source_payload": source_payload,
+        "served": {key: served[key] for key in served if key != "integrity"},
+        "integrity": integrity,
+    }
 
 
 async def fetch_official_graph(slug: str) -> dict:
@@ -327,14 +266,16 @@ async def fetch_official_graph(slug: str) -> dict:
     if payload is None:
         raise AppException("Could not download roadmap graph", status_code=502)
 
-    payload = _validate_graph_payload(payload, source=url)
+    raw_payload = {key: value for key, value in payload.items() if key != "integrity"}
+    served, integrity = normalize_upstream_graph(raw_payload, source=url)
+    envelope = _cache_envelope_from_fetch(url, raw_payload, served, integrity)
 
     try:
-        _write_graph_cache(slug, payload)
+        _write_graph_cache(slug, envelope)
     except OSError as exc:
         logger.warning("Could not write roadmap graph cache for %s: %s", slug, exc)
 
-    return payload
+    return served
 
 
 def _resolve_topic_file(slug: str, node_key: str) -> Path | None:

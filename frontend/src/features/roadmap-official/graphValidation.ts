@@ -14,6 +14,9 @@ export function assertValidGraphShape(
   if (!Array.isArray(edges)) {
     throw new Error('Graph response was missing edges')
   }
+  if (edges.length === 0) {
+    return
+  }
   const nodeIds = new Set<string>()
   for (const node of nodes) {
     if (!node?.id || typeof node.id !== 'string') {

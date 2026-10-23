@@ -103,7 +103,9 @@ test.describe('Acceptance shots', () => {
   test('Syllabus lesson with practice', async ({ page }) => {
     await page.goto('/learn/syllabus')
     await expect(page.getByRole('heading', { name: 'Syllabus' })).toBeVisible({ timeout: 15_000 })
-    await expect(page.getByText(/CRT \/ Aptitude/i)).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByRole('heading', { name: /CRT \/ Aptitude/i, level: 2 })).toBeVisible({
+      timeout: 30_000,
+    })
     await expect(page.getByRole('heading', { name: 'DSA Foundations' })).toBeVisible()
     await expect(page.getByText('Coming soon').first()).toBeVisible()
     await shot(page, `syllabus-index-${test.info().project.name}`)

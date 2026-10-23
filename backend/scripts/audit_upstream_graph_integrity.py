@@ -1,4 +1,4 @@
-"""Audit roadmap.sh graphs for dangling edges and duplicate edge IDs.
+"""Audit roadmap.sh graphs using the same normalization contract as the API.
 
 Run from backend root:
   python -m scripts.audit_upstream_graph_integrity
@@ -20,52 +20,11 @@ sys.path.insert(0, str(ROOT))
 
 from app.core.config import settings  # noqa: E402
 from app.core.exceptions import AppException  # noqa: E402
-from app.services.official_roadmap_service import (  # noqa: E402
-    _GRAPH_FETCH_SLUG_ALIASES,
-    _validate_graph_payload,
+from app.services.official_roadmap_service import _GRAPH_FETCH_SLUG_ALIASES  # noqa: E402
+from app.services.roadmap_graph_normalization import (  # noqa: E402
+    detect_duplicate_edge_ids,
+    normalize_upstream_graph,
 )
-
-
-def _analyze_raw(payload: dict) -> dict:
-    nodes = payload.get("nodes") or []
-    edges = payload.get("edges") or []
-    node_ids = {n.get("id") for n in nodes if isinstance(n, dict)}
-    node_by_id = {n["id"]: n for n in nodes if isinstance(n, dict) and isinstance(n.get("id"), str)}
-    removed: list[dict] = []
-    dup_ids: list[str] = []
-    seen: set[str] = set()
-    for edge in edges:
-        if not isinstance(edge, dict):
-            continue
-        eid = edge.get("id")
-        if isinstance(eid, str):
-            if eid in seen:
-                dup_ids.append(eid)
-            seen.add(eid)
-        source, target = edge.get("source"), edge.get("target")
-        missing = [
-            endpoint
-            for endpoint in (source, target)
-            if isinstance(endpoint, str) and endpoint not in node_ids
-        ]
-        if missing and isinstance(eid, str):
-            removed.append(
-                {
-                    "id": eid,
-                    "source": source,
-                    "target": target,
-                    "missing_endpoints": missing,
-                    "source_node_type": node_by_id.get(source, {}).get("type") if source in node_ids else None,
-                    "target_node_type": None,
-                }
-            )
-    return {
-        "node_count": len(nodes),
-        "edge_count_original": len(edges),
-        "dangling_edge_count": len(removed),
-        "duplicate_edge_ids": sorted(set(dup_ids)),
-        "removed_edges": removed,
-    }
 
 
 async def main() -> None:
@@ -93,31 +52,39 @@ async def main() -> None:
                     row["error"] = "payload not object"
                     report_rows.append(row)
                     continue
-                raw = _analyze_raw(payload)
-                row.update(raw)
+                edges = payload.get("edges") if isinstance(payload.get("edges"), list) else []
+                row["duplicate_edge_ids_original"] = detect_duplicate_edge_ids(edges)
                 try:
-                    validated = _validate_graph_payload(payload, source=url)
-                    integrity = validated.get("integrity", {})
-                    row["outcome"] = integrity.get("classification", "unknown")
-                    row["edge_count_retained"] = integrity.get("edge_count_retained")
+                    _served, integrity = normalize_upstream_graph(payload, source=url)
+                    row["outcome"] = integrity.get("classification", "failed")
                     row["integrity"] = integrity
-                    row["upstream_defect"] = (
-                        raw["dangling_edge_count"] > 0 or len(raw["duplicate_edge_ids"]) > 0
-                    )
-                    row["normalization_bug"] = False
+                    row["semantic_path_verified"] = False
+                    if integrity.get("classification") == "sanitized":
+                        row["upstream_defect"] = True
+                        row["requires_manual_review"] = True
+                    elif integrity.get("classification") == "edgeless":
+                        row["upstream_defect"] = False
+                        row["requires_manual_review"] = True
+                    else:
+                        row["upstream_defect"] = False
+                        row["requires_manual_review"] = False
                 except AppException as exc:
                     row["outcome"] = "failed"
                     row["error"] = str(exc)
-                    row["upstream_defect"] = len(raw["duplicate_edge_ids"]) > 0 or raw["dangling_edge_count"] > 0
+                    row["upstream_defect"] = True
             except httpx.HTTPError as exc:
                 row["error"] = str(exc)
             report_rows.append(row)
             await asyncio.sleep(0.35)
 
-    sanitized = [r for r in report_rows if r.get("outcome") == "sanitized"]
-    clean = [r for r in report_rows if r.get("outcome") == "clean"]
-    failed = [r for r in report_rows if r.get("outcome") == "failed"]
-    unavailable = [r for r in report_rows if r.get("outcome") == "unavailable"]
+    totals = {
+        "slug_total": len(slugs),
+        "clean": sum(1 for r in report_rows if r.get("outcome") == "clean"),
+        "edgeless": sum(1 for r in report_rows if r.get("outcome") == "edgeless"),
+        "sanitized": sum(1 for r in report_rows if r.get("outcome") == "sanitized"),
+        "failed": sum(1 for r in report_rows if r.get("outcome") == "failed"),
+        "unavailable": sum(1 for r in report_rows if r.get("outcome") == "unavailable"),
+    }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
@@ -125,14 +92,7 @@ async def main() -> None:
             {
                 "generated_at": __import__("datetime").datetime.now(__import__("datetime").UTC).isoformat(),
                 "source_version": settings.roadmap_graph_fetch_url,
-                "totals": {
-                    "slug_total": len(slugs),
-                    "clean": len(clean),
-                    "sanitized": len(sanitized),
-                    "failed": len(failed),
-                    "unavailable": len(unavailable),
-                },
-                "sanitized_slugs": [r["slug"] for r in sanitized],
+                "totals": totals,
                 "rows": report_rows,
             },
             indent=2,
@@ -140,7 +100,7 @@ async def main() -> None:
         encoding="utf-8",
     )
     print(f"wrote {OUT}")
-    print(json.dumps({"clean": len(clean), "sanitized": len(sanitized), "failed": len(failed), "unavailable": len(unavailable)}))
+    print(json.dumps(totals))
 
 
 if __name__ == "__main__":

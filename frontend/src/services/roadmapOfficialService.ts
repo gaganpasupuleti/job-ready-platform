@@ -5,18 +5,22 @@ import { apiEndpoints } from '@/api/config'
 import { assertValidGraphShape } from '@/features/roadmap-official/graphValidation'
 
 export interface OfficialRoadmapGraphIntegrity {
-  classification: 'clean' | 'sanitized'
+  classification: 'clean' | 'sanitized' | 'edgeless'
   source: string
+  source_payload_sha256?: string
   node_count: number
   edge_count_original: number
   edge_count_retained: number
+  duplicate_edge_ids_original?: string[]
+  edge_normalizations?: Array<Record<string, unknown>>
   removed_edges: Array<{
     id: string
     source: string
     target: string
     reason: string
-    missing_endpoints: string[]
+    missing_endpoints?: string[]
   }>
+  provenance_verified?: boolean
 }
 
 export interface OfficialRoadmapGraph {

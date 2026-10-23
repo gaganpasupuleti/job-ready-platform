@@ -2,63 +2,75 @@
 
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Candidate SHA:** `1516234`  
+**Candidate SHA:** _(set after push)_  
 **Status:** Open — not merged, not deployed.
 
-## Graph integrity contract (`integrity` on `/roadmap/official/{slug}/graph`)
+## Graph integrity contract
 
-| `integrity.classification` | Meaning |
-|----------------------------|---------|
-| `clean` | Upstream nodes/edges valid; no edges removed |
-| `sanitized` | Dangling upstream edges removed; see `removed_edges` |
-| _(API 502)_ | Validation failed (duplicate edge IDs, zero edges after sanitize, malformed payload) |
+API field `integrity` on `GET /api/v1/roadmap/official/{slug}/graph`:
 
-E2E catalog reports **`clean` / `sanitized` / `fail` / `unavailable`** separately.  
-**`clean` + `sanitized` = 93** means all maps **mount in browser**; only **`clean`** counts as upstream-valid.
+| `classification` | Meaning |
+|------------------|---------|
+| `clean` | No normalization applied |
+| `edgeless` | Valid nodes, zero edges (e.g. `code-review`) |
+| `sanitized` | Deterministic normalization (`edge_normalizations`, `removed_edges`) |
+
+**Cache v2 envelope** stores `source_payload` (raw upstream), `served` graph, and `integrity`.  
+Cache reads **recompute** integrity from `source_payload` and reject stale/legacy files (no re-classifying sanitized graphs as `clean`).
+
+E2E catalog statuses: `clean` | `edgeless` | `sanitized` | `fail` | `unavailable`.  
+**Mounted** = clean + edgeless + sanitized (93 target). **Upstream-clean only** = `clean` count.
 
 ## Upstream audit (`docs/roadmap-upstream-graph-integrity.json`)
 
-Generated: `python -m scripts.audit_upstream_graph_integrity` (roadmap.sh `https://roadmap.sh/{slug}.json`).
+Latest local run (normalization parity with API):
 
-| Totals (2026-10-23 local run) | Count |
-|---------------------------------|------:|
+| Total | Count |
+|-------|------:|
 | clean | 85 |
-| sanitized | 2 |
-| failed (validation) | 6 |
-| unavailable (HTTP) | 0 |
+| edgeless | 1 (`code-review`) |
+| sanitized | 7 |
+| failed | 0 |
+| unavailable | 0 |
 
-### Sanitized (upstream dangling edge — not a normalization bug)
+### Sanitized maps (require manual review — not upstream-clean)
 
-| Slug | Source | Nodes | Edges (orig → retained) | Removed edge | Missing endpoint | Learning-path note |
-|------|--------|------:|-------------------------|--------------|------------------|---------------------|
-| `data-analyst` | roadmap.sh/data-analyst.json | 156 | 41 → 40 | `xy-edge__aopqiF0Svmpq94g6OQBX0x2-…` | source `aopqiF0Svmpq94g6OQBX0` absent from nodes | Broken layout link only; target topic remains reachable via other edges. **Unresolved** whether removed source was a deleted spacer/topic. |
-| `ux-design` | roadmap.sh/ux-design.json | 140 | 27 → 26 | `xy-edge__dgBELpFRvRO_7ir0y0AtXx2-…` | source `dgBELpFRvRO_7ir0y0AtX` absent | Same pattern as data-analyst. **Unresolved** semantic impact. |
+| Slug | Normalization | Semantic path |
+|------|---------------|-----------------|
+| `data-analyst` | 1 dangling edge removed | **Unresolved** — missing source node `aopqiF0Svmpq94g6OQBX0`; target `9sIP-jpNjtA1JPCBjTf-H` remains without that incoming link |
+| `ux-design` | 1 dangling edge removed | **Unresolved** — missing source `dgBELpFRvRO_7ir0y0AtX` |
+| `design-system` | duplicate edge ID remapped | Distinct connections shared ID `xy-edge__JfXwzkN29UGz17FYHHE3Az2-…` |
+| `django` | duplicate edge ID remapped | Distinct endpoints under same ID |
+| `javascript` | duplicate edge ID remapped | Distinct endpoints under same ID |
+| `golang` | 2 duplicate IDs remapped | Two ID collision groups |
+| `mongodb` | duplicate edge ID remapped | Distinct endpoints under same ID |
 
-### Failed validation (do not treat as sanitized passes)
+### Edgeless
 
-| Slug | Issue | Evidence |
-|------|-------|----------|
-| `code-review` | **Zero edges**, 18 nodes | Upstream defect; API returns 502 |
-| `design-system` | **Duplicate edge ID** in upstream | `duplicate_edge_ids`: `xy-edge__JfXwzkN29UGz17FYHHE3Az2-…` |
-| `django` | Duplicate edge ID | same class |
-| `golang` | Duplicate edge ID | same class |
-| `javascript` | Duplicate edge ID | same class |
-| `mongodb` | Duplicate edge ID | same class |
+| Slug | Notes |
+|------|--------|
+| `code-review` | 18 nodes, 0 edges — supported as intentional independent layout |
 
-Duplicate-ID order dependency in sanitization is **fixed**: IDs checked across **all** input edges before dropping dangling edges (regression tests added).
+## CI
 
-## CI evidence
+| Run | SHA | Result | Notes |
+|-----|-----|--------|-------|
+| [39998583379](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39998583379) | `252196d` | fail | acceptance-shots strict mode; 6×502 graphs (pre-normalization); cache integrity loss |
+| _next_ | _TBD_ | pending | Cache v2, duplicate remap, edgeless, acceptance fix |
 
-| Run | SHA | Playwright | Notes |
-|-----|-----|------------|-------|
-| [39918003098](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39918003098) | `a50b08f` | 144 pass, 1 fail, 6 skip | 87 pass / 6×502 catalog; graph interaction green |
-| [39998481318](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39998481318) | `1516234` | _in progress_ | Integrity + catalog clean/sanitized split; warm stagger |
+**39998583379 Playwright:** ~142 passed; failures: syllabus acceptance shot; catalog (6 unavailable 502 + 1 fail socket hangup).
+
+## Tests added
+
+- `test_roadmap_graph_cache.py` — fetch → cache write → read preserves `sanitized` integrity; legacy cache invalidated
+- `test_roadmap_official.py` — duplicate-ID remapping, edgeless, dangling, boolean coords rejected
+- Normalization module: `roadmap_graph_normalization.py`
 
 ## Remaining release blockers
 
-1. **Green CI** — 6 upstream-invalid slugs still fail API validation (502); catalog cannot reach 93 mount until upstream fix or explicit product policy for edgeless/duplicate graphs.
-2. **Sanitized maps** — `data-analyst`, `ux-design` need human sign-off on removed connections (unresolved semantics).
-3. **Authenticated catalog audit** + **preview smoke** on CI-equivalent backend (local :8000 without E2E seed remains unverified).
-4. **Contrast / screenshots** — `unsupported_transparency` = unverified.
+1. **Green CI** on final SHA (full Playwright desktop).
+2. **Manual sign-off** on 7 sanitized + 1 edgeless maps (semantic path unresolved for 2 dangling-edge slugs).
+3. **Authenticated catalog graph audit** + **preview smoke** on CI-equivalent backend.
+4. **Contrast/screenshots** — unverified where `unsupported_transparency`.
 
 Do not merge or deploy until blockers are cleared.
