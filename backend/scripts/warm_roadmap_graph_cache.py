@@ -21,16 +21,25 @@ from app.services.official_roadmap_service import fetch_official_graph  # noqa: 
 async def main() -> None:
     rows = json.loads(CATALOG.read_text(encoding="utf-8")).get("roadmaps", [])
     slugs = [str(r["family_slug"]) for r in rows if r.get("family_slug")]
-    ok = fail = 0
+    ok = fail = sanitized = 0
     for slug in slugs:
         try:
-            await fetch_official_graph(slug)
+            graph = await fetch_official_graph(slug)
             ok += 1
-            print(f"ok {slug}")
+            integrity = graph.get("integrity") if isinstance(graph, dict) else None
+            if isinstance(integrity, dict) and integrity.get("classification") == "sanitized":
+                sanitized += 1
+                removed = integrity.get("removed_edges") or []
+                print(f"ok {slug} sanitized removed={len(removed)}")
+            else:
+                print(f"ok {slug} clean")
         except Exception as exc:  # noqa: BLE001
             fail += 1
             print(f"fail {slug}: {exc}")
-    print(f"done ok={ok} fail={fail} cache_dir={settings.roadmap_graph_cache_dir or 'default'}")
+        await asyncio.sleep(0.4)
+    print(
+        f"done ok={ok} fail={fail} sanitized={sanitized} cache_dir={settings.roadmap_graph_cache_dir or 'default'}"
+    )
 
 
 if __name__ == "__main__":

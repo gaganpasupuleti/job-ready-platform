@@ -23,7 +23,23 @@ export const bundledCatalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8')) a
 }
 export const bundledSlugs = bundledCatalog.roadmaps.map((r) => r.family_slug).sort()
 
-export type SlugBrowserStatus = 'pass' | 'fail' | 'unavailable' | 'unverified'
+/** clean = upstream graph needed no edge removal; sanitized = API returned removed_edges */
+export type SlugBrowserStatus = 'clean' | 'sanitized' | 'fail' | 'unavailable' | 'unverified'
+
+export type GraphIntegrity = {
+  classification?: string
+  source?: string
+  node_count?: number
+  edge_count_original?: number
+  edge_count_retained?: number
+  removed_edges?: Array<{
+    id: string
+    source: string
+    target: string
+    reason?: string
+    missing_endpoints?: string[]
+  }>
+}
 
 export type SlugBrowserRow = {
   slug: string
@@ -31,6 +47,7 @@ export type SlugBrowserRow = {
   graphUrl: string
   graphHttpStatus?: number
   payloadValid?: boolean
+  integrity?: GraphIntegrity
   nodeCount?: number
   browserNodeCount?: number
   rendererErrors?: string[]
@@ -66,6 +83,13 @@ export function writeBrowserResults(rows: SlugBrowserRow[], meta: Record<string,
         capturedAt: new Date().toISOString(),
         slugTotal: bundledSlugs.length,
         totals,
+        notes: {
+          clean: 'Upstream graph matched node endpoints; no edges removed.',
+          sanitized:
+            'Graph renders after removing dangling upstream edges; not equivalent to upstream-valid.',
+          fail: 'API or browser validation/render failure.',
+          unavailable: 'Graph HTTP 5xx or network failure after retries.',
+        },
         consoleAllowlist: CATALOG_CONSOLE_ALLOWLIST.map((e) => ({
           pattern: String(e.pattern),
           reason: e.reason,
@@ -126,7 +150,10 @@ export async function auditSlugInBrowser(
       row.error = `graph HTTP ${graphRes.status()}`
       return
     }
-    const payload = await graphRes.json()
+    const payload = (await graphRes.json()) as {
+      nodes: unknown[]
+      integrity?: GraphIntegrity
+    }
     const validation = validateGraphPayload(payload)
     row.payloadValid = validation.ok
     if (!validation.ok) {
@@ -134,7 +161,22 @@ export async function auditSlugInBrowser(
       row.error = `payload invalid: ${validation.reason}`
       return
     }
-    row.nodeCount = (payload as { nodes: unknown[] }).nodes.length
+    row.integrity = payload.integrity
+    row.nodeCount = payload.nodes.length
+    const classification = payload.integrity?.classification
+    if (classification !== 'clean' && classification !== 'sanitized') {
+      row.status = 'fail'
+      row.error = `missing or unknown integrity.classification: ${String(classification)}`
+      return
+    }
+    if (
+      classification === 'sanitized' &&
+      (!payload.integrity?.removed_edges || payload.integrity.removed_edges.length === 0)
+    ) {
+      row.status = 'fail'
+      row.error = 'sanitized classification without removed_edges evidence'
+      return
+    }
 
     await page.goto(`/roadmaps/${slug}`, { waitUntil: 'domcontentloaded' })
     await expect(page.locator('#main-content')).toBeVisible({ timeout: 20_000 })
@@ -155,7 +197,7 @@ export async function auditSlugInBrowser(
       row.status = 'fail'
       row.error = unexpected[0]?.slice(0, 300)
     } else {
-      row.status = 'pass'
+      row.status = classification === 'sanitized' ? 'sanitized' : 'clean'
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
@@ -184,8 +226,17 @@ export function assertCatalogTotals(rows: SlugBrowserRow[]) {
     },
     {} as Record<SlugBrowserStatus, number>,
   )
+  const sanitizedRows = rows.filter((r) => r.status === 'sanitized')
   expect(rows.length, 'every bundled slug must be audited').toBe(bundledSlugs.length)
   expect(totals.fail ?? 0, `catalog browser failures: ${JSON.stringify(rows.filter((r) => r.status === 'fail'))}`).toBe(0)
   expect(totals.unavailable ?? 0, `catalog unavailable: ${JSON.stringify(rows.filter((r) => r.status === 'unavailable'))}`).toBe(0)
   expect(totals.unverified ?? 0).toBe(0)
+  const mounted = (totals.clean ?? 0) + (totals.sanitized ?? 0)
+  expect(mounted, 'all slugs must mount as clean or sanitized (not upstream-valid)').toBe(bundledSlugs.length)
+  if (sanitizedRows.length > 0) {
+    expect(
+      sanitizedRows.every((r) => (r.integrity?.removed_edges?.length ?? 0) > 0),
+      `sanitized slugs missing removed_edges: ${JSON.stringify(sanitizedRows.map((r) => r.slug))}`,
+    ).toBe(true)
+  }
 }

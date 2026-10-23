@@ -154,7 +154,18 @@ def list_official_roadmaps() -> list[dict]:
     return rows
 
 
-def _validate_graph_payload(payload: dict) -> dict:
+def _assert_unique_edge_ids(edges: list) -> None:
+    seen: set[str] = set()
+    for edge in edges:
+        if not isinstance(edge, dict) or not isinstance(edge.get("id"), str):
+            raise AppException("Roadmap graph response was invalid", status_code=502)
+        edge_id = edge["id"]
+        if edge_id in seen:
+            raise AppException("Roadmap graph response was invalid", status_code=502)
+        seen.add(edge_id)
+
+
+def _validate_graph_payload(payload: dict, *, source: str | None = None) -> dict:
     nodes = payload.get("nodes")
     edges = payload.get("edges")
     if not isinstance(nodes, list) or not nodes:
@@ -175,34 +186,57 @@ def _validate_graph_payload(payload: dict) -> dict:
         x, y = position.get("x"), position.get("y")
         if not isinstance(x, (int, float)) or not isinstance(y, (int, float)):
             raise AppException("Roadmap graph response was invalid", status_code=502)
+
+    _assert_unique_edge_ids(edges)
+
     sanitized_edges: list[dict] = []
-    edge_ids: set[str] = set()
+    removed_edges: list[dict] = []
     for edge in edges:
         if not isinstance(edge, dict) or not isinstance(edge.get("id"), str):
             raise AppException("Roadmap graph response was invalid", status_code=502)
         edge_id = edge["id"]
-        if edge_id in edge_ids:
+        source_id, target_id = edge.get("source"), edge.get("target")
+        if not isinstance(source_id, str) or not isinstance(target_id, str):
             raise AppException("Roadmap graph response was invalid", status_code=502)
-        source, target = edge.get("source"), edge.get("target")
-        if not isinstance(source, str) or not isinstance(target, str):
-            raise AppException("Roadmap graph response was invalid", status_code=502)
-        if source not in node_ids or target not in node_ids:
+        missing_endpoints = [
+            endpoint
+            for endpoint in (source_id, target_id)
+            if endpoint not in node_ids
+        ]
+        if missing_endpoints:
+            removed_edges.append(
+                {
+                    "id": edge_id,
+                    "source": source_id,
+                    "target": target_id,
+                    "reason": "endpoint_missing",
+                    "missing_endpoints": missing_endpoints,
+                }
+            )
             logger.warning(
-                "Dropping roadmap edge %s (%s -> %s): endpoint missing from nodes",
+                "Dropping roadmap edge %s (%s -> %s): missing endpoints %s",
                 edge_id,
-                source,
-                target,
+                source_id,
+                target_id,
+                missing_endpoints,
             )
             continue
-        edge_ids.add(edge_id)
         sanitized_edges.append(edge)
 
     if not sanitized_edges:
         raise AppException("Roadmap graph response was invalid", status_code=502)
 
-    if sanitized_edges is not edges:
-        payload = {**payload, "edges": sanitized_edges}
-    return payload
+    classification = "sanitized" if removed_edges else "clean"
+    integrity = {
+        "classification": classification,
+        "source": source or payload.get("integrity", {}).get("source") or "unknown",
+        "node_count": len(nodes),
+        "edge_count_original": len(edges),
+        "edge_count_retained": len(sanitized_edges),
+        "removed_edges": removed_edges,
+    }
+
+    return {**payload, "edges": sanitized_edges, "integrity": integrity}
 
 
 def _read_graph_cache(slug: str) -> dict | None:
@@ -213,7 +247,12 @@ def _read_graph_cache(slug: str) -> dict | None:
         with path.open(encoding="utf-8") as handle:
             payload = json.load(handle)
         if isinstance(payload, dict):
-            return _validate_graph_payload(payload)
+            cached_source = (
+                payload.get("integrity", {}).get("source")
+                if isinstance(payload.get("integrity"), dict)
+                else None
+            )
+            return _validate_graph_payload(payload, source=cached_source)
     except AppException:
         logger.warning("Ignoring invalid roadmap graph cache for %s", slug)
         try:
@@ -288,7 +327,7 @@ async def fetch_official_graph(slug: str) -> dict:
     if payload is None:
         raise AppException("Could not download roadmap graph", status_code=502)
 
-    payload = _validate_graph_payload(payload)
+    payload = _validate_graph_payload(payload, source=url)
 
     try:
         _write_graph_cache(slug, payload)

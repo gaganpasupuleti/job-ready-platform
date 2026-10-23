@@ -4,6 +4,21 @@ import { apiClient } from '@/api/client'
 import { apiEndpoints } from '@/api/config'
 import { assertValidGraphShape } from '@/features/roadmap-official/graphValidation'
 
+export interface OfficialRoadmapGraphIntegrity {
+  classification: 'clean' | 'sanitized'
+  source: string
+  node_count: number
+  edge_count_original: number
+  edge_count_retained: number
+  removed_edges: Array<{
+    id: string
+    source: string
+    target: string
+    reason: string
+    missing_endpoints: string[]
+  }>
+}
+
 export interface OfficialRoadmapGraph {
   slug: string
   title?: { card?: string; page?: string }
@@ -11,6 +26,7 @@ export interface OfficialRoadmapGraph {
   nodes: OfficialRoadmapNode[]
   edges: OfficialRoadmapEdge[]
   dimensions?: { width: number; height: number }
+  integrity?: OfficialRoadmapGraphIntegrity
 }
 
 export interface OfficialRoadmapNode {

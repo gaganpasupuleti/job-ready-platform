@@ -41,21 +41,90 @@ def test_validate_graph_payload_requires_edges():
         pass
 
 
+def _two_node_graph():
+    return [
+        {"id": "a", "position": {"x": 0, "y": 0}},
+        {"id": "b", "position": {"x": 1, "y": 1}},
+    ]
+
+
 def test_validate_graph_payload_drops_dangling_edges():
     payload = _validate_graph_payload(
         {
-            "nodes": [
-                {"id": "a", "position": {"x": 0, "y": 0}},
-                {"id": "b", "position": {"x": 1, "y": 1}},
-            ],
+            "nodes": _two_node_graph(),
             "edges": [
                 {"id": "e1", "source": "a", "target": "b"},
                 {"id": "e2", "source": "a", "target": "missing"},
             ],
-        }
+        },
+        source="https://roadmap.sh/example.json",
     )
     assert len(payload["edges"]) == 1
     assert payload["edges"][0]["id"] == "e1"
+    assert payload["integrity"]["classification"] == "sanitized"
+    assert payload["integrity"]["edge_count_original"] == 2
+    assert payload["integrity"]["edge_count_retained"] == 1
+    assert len(payload["integrity"]["removed_edges"]) == 1
+
+
+def test_validate_graph_payload_rejects_duplicate_id_dangling_then_valid():
+    try:
+        _validate_graph_payload(
+            {
+                "nodes": _two_node_graph(),
+                "edges": [
+                    {"id": "e1", "source": "a", "target": "missing"},
+                    {"id": "e1", "source": "a", "target": "b"},
+                ],
+            }
+        )
+        assert False, "expected AppException"
+    except AppException:
+        pass
+
+
+def test_validate_graph_payload_rejects_duplicate_id_valid_then_dangling():
+    try:
+        _validate_graph_payload(
+            {
+                "nodes": _two_node_graph(),
+                "edges": [
+                    {"id": "e1", "source": "a", "target": "b"},
+                    {"id": "e1", "source": "a", "target": "missing"},
+                ],
+            }
+        )
+        assert False, "expected AppException"
+    except AppException:
+        pass
+
+
+def test_validate_graph_payload_rejects_duplicate_id_two_dangling():
+    try:
+        _validate_graph_payload(
+            {
+                "nodes": _two_node_graph(),
+                "edges": [
+                    {"id": "e1", "source": "a", "target": "missing-a"},
+                    {"id": "e1", "source": "a", "target": "missing-b"},
+                ],
+            }
+        )
+        assert False, "expected AppException"
+    except AppException:
+        pass
+
+
+def test_validate_graph_payload_clean_integrity():
+    payload = _validate_graph_payload(
+        {
+            "nodes": _two_node_graph(),
+            "edges": [{"id": "e1", "source": "a", "target": "b"}],
+        },
+        source="https://roadmap.sh/clean.json",
+    )
+    assert payload["integrity"]["classification"] == "clean"
+    assert payload["integrity"]["removed_edges"] == []
 
 
 def test_catalog_file_matches_frontend_bundle():
