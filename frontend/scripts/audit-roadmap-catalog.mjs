@@ -133,15 +133,32 @@ async function fetchGraphRow(slug, authHeaders) {
 
   const errors = [...validation.issues]
   if (!validation.ok) {
-    errors.unshift('graph validation failed')
+    errors.unshift('graph validation failed (handle/structural audit)')
   }
+
+  const classification = payload?.integrity?.classification
+  const integrityOk =
+    classification === 'clean' ||
+    classification === 'edgeless' ||
+    classification === 'sanitized'
+  let integrityEvidenceOk = integrityOk
+  if (classification === 'sanitized') {
+    const norm = payload?.integrity?.edge_normalizations ?? []
+    const removed = payload?.integrity?.removed_edges ?? []
+    integrityEvidenceOk = norm.length > 0 || removed.length > 0
+    if (!integrityEvidenceOk) {
+      errors.unshift('sanitized classification without normalization evidence')
+    }
+  }
+  const graphOk = integrityOk && integrityEvidenceOk
 
   return {
     slug,
     graphUrl,
-    graphStatus: validation.ok ? 'ok' : 'fail',
+    graphStatus: graphOk ? 'ok' : 'fail',
+    integrityClassification: classification,
     httpStatus: res.status,
-    graphAvailable: validation.ok,
+    graphAvailable: graphOk,
     nodeCount: validation.nodeCount,
     edgeCount: validation.edgeCount,
     articleInventory,

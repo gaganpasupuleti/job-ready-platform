@@ -1,114 +1,32 @@
-# PR #24 release audit — roadmap / UI only
+# PR #24 release verification (truthful status)
 
-**Branch:** `feat/roadmap-ui-clean`  
+**Candidate SHA:** `1ebbd48`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Release candidate SHA:** `18afaec` (steps 1–6 evidence + tests)  
-**Verified green CI (Playwright + pytest):** `3556a7d` — https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40022619114  
-**CI on `18afaec`:** await branch workflow (test/doc-only delta)  
-**Status:** Open — not merged, not deployed.
+**Green CI:** https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40028398164  
+**Not merged / not deployed.**
 
----
+Implementation work for cache integrity, normalization, and catalog E2E is **done on this SHA**. Release sign-off items below are **completed or pending** per evidence — nothing is marked complete without its acceptance check.
 
-## Steps 1–6 completion (release engineering)
+## Verification matrix (`1ebbd48`)
 
-### 1. Cache integrity (done)
+| # | Check | Status | Evidence |
+|---|--------|--------|----------|
+| 1 | **CI on HEAD** | **Completed** | Run [40028398164](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40028398164): Frontend lint/unit/build ✓; Backend **345 passed**, 10 skipped; Playwright **145 passed**, 6 skipped, 0 failed |
+| 2 | **Eight special-case maps** | **Completed** | `docs/ci-evidence/special-roadmap-maps-1ebbd48.json` (live upstream fetch + normalization). **ux-design:** resolved — dangling edge targeted paragraph chrome, not topic path. **data-analyst:** **unresolved** — subtopic “VLOOKUP / HLOOKUP” has no topic/subtopic incoming edges after sanitize. Dup-ID + **code-review** edgeless: deterministic remap / supported layout. CI browser: 85 clean + 1 edgeless + 7 sanitized (`docs/ci-evidence/roadmap-catalog-browser-40022619114.json` — same contract; re-validated on green CI run artifact from 40028398164 catalog upload) |
+| 3 | **Authenticated article audit** | **Partial** | Graph: **93/93** integrity pass locally after audit CLI aligned with E2E (`frontend/scripts/audit-roadmap-catalog.mjs`). Articles: **0/93** sampled OK — all `missing` (no `ROADMAP_CONTENT_ROOT`). Summary: `docs/ci-evidence/article-audit-1ebbd48-local-summary.json`; rows: `article-audit-1ebbd48-local.json`. **Sampled:** 93 slugs × 1 node; **unchecked:** 10,375 / 10,468 readable topic nodes |
+| 4 | **Preview build + release smoke** | **Partial** | Production `npm run build` + vite preview @4173 against local API (cache warmed): **2/3** pass — `docs/ci-evidence/release-smoke-preview-1ebbd48-local.json`. **Fail:** live roadmap article markdown (same content-root blocker) |
+| 5 | **Screenshots + contrast** | **Partial** | CI artifact `ui-cohesion-after` on run 40028398164 (screenshots + `contrast-report.json`). **42/42** probes `unsupported_transparency` (semi-transparent stacks) — **no WCAG pass/fail ratio claimed**. Manual visual sign-off **pending** |
+| 6 | **Local SQL test failures explained** | **Completed** | `docs/ci-evidence/local-sql-test-failures.json` — both fail without **:5433 SQL sandbox**; **pass in CI** with Docker services |
 
-- **Cache v2** (`cache_version: 2`): `source_payload`, `served`, `integrity`, `source`, `source_payload_sha256`, `fetched_at`.
-- **Read path:** `graph_response_from_cache_envelope()` recomputes from `source_payload`; mismatch → cache miss / refetch.
-- **Legacy:** flat v1 files deleted on read.
-- **Tests:** `test_roadmap_graph_cache.py` — sanitized roundtrip, repeated read, legacy invalidation, **malformed envelope rejected**.
+## Reused evidence (unchanged code path)
 
-### 2. Validation parity (done)
+- Cache integrity regression: `backend/tests/test_roadmap_graph_cache.py` (13 tests on HEAD).
+- Upstream CLI audit: 93 slugs in `docs/roadmap-upstream-graph-integrity.json`.
+- Prior green catalog browser JSON remains valid for integrity totals; CI run **40028398164** re-uploaded catalog results with same 93/93 mounted classification.
 
-| Layer | Strict on upstream fetch | On served API graph |
-|-------|--------------------------|---------------------|
-| Backend `roadmap_graph_normalization.py` | whitespace IDs, dup node IDs, bool/NaN/inf coords, dup edge IDs (pre-remap), dangling drop | N/A (already normalized) |
-| Frontend `graphValidation.ts` | — | non-empty IDs, finite coords, unique IDs, valid endpoints |
-| CLI `roadmapGraphAudit.mjs` | — | same as frontend + handle rules |
-| E2E `roadmap-catalog-shared.ts` | — | integrity contract + sanitized evidence |
+## Remaining release blockers
 
-**Tests:** backend `test_roadmap_official.py` (edgeless, dangling, dup remap, bool/whitespace coords, order permutations); frontend unit (edgeless, whitespace, dup edges).
-
-### 3. Six formerly rejected maps (done)
-
-| Slug | Upstream issue | Classification | Connections preserved |
-|------|----------------|----------------|----------------------|
-| `code-review` | 18 nodes, 0 edges | **edgeless** | N/A — intentional node-only layout |
-| `design-system` | 1 duplicate edge ID, distinct endpoints | **sanitized** | Both edges kept; second ID `…__jobready-dup1` |
-| `django` | duplicate edge ID | **sanitized** | remapped |
-| `javascript` | duplicate edge ID | **sanitized** | remapped |
-| `golang` | 2 duplicate edge ID groups | **sanitized** | 2 remaps; 77/77 edges retained |
-| `mongodb` | duplicate edge ID | **sanitized** | remapped |
-
-Duplicate records were **not** identical — conflicting endpoints under the same ID. No silent drops except exact duplicate signatures.
-
-### 4. Dangling-edge maps (done — semantic review)
-
-| Slug | Removed | Render (CI E2E) | Learning path |
-|------|---------|-----------------|---------------|
-| `data-analyst` | 1 edge; missing source `aopqiF0Svmpq94g6OQBX0` → target `9sIP-jpNjtA1JPCBjTf-H` | **Mounts**; 40→browser nodes (viewport subset) | **Unresolved** — removed link was layout connector; alternate path **not** proven |
-| `ux-design` | 1 edge; missing source `dgBELpFRvRO_7ir0y0AtX` → target `0vLaVNJaJSHZ_bHli6Qzs` | **Mounts** | **Unresolved** — no replacement edge added |
-
-### 5. Audit consistency (done)
-
-**Single contract:** `integrity.classification` ∈ `clean` | `edgeless` | `sanitized` | (failure = HTTP/validation error).
-
-| Channel | Artifact / behavior |
-|---------|---------------------|
-| Upstream CLI | `docs/roadmap-upstream-graph-integrity.json` — **93 rows**, no early exit |
-| API | `integrity` on graph response; cache hit recomputes from `source_payload` |
-| E2E catalog | `docs/ci-evidence/roadmap-catalog-browser-40022619114.json` |
-| Warm cache | logs clean / edgeless / sanitized counts |
-
-**Catalog totals (upstream CLI + CI browser, aligned):**
-
-| clean | edgeless | sanitized | fail | unavailable |
-|------:|---------:|----------:|-----:|------------:|
-| 85 | 1 (`code-review`) | 7 | 0 | 0 |
-| **93** | | | | |
-
-**Sanitized slugs (not upstream-clean):** `data-analyst`, `design-system`, `django`, `golang`, `javascript`, `mongodb`, `ux-design`.
-
-### 6. CI investigation (done)
-
-| Run | SHA | Result | Notes |
-|-----|-----|--------|-------|
-| [39998583379](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/39998583379) | `252196d` | **fail** | acceptance-shots strict mode; catalog 6×502 + mongodb hang; **pre** cache v2 / normalization |
-| [40022619114](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40022619114) | `3556a7d` | **success** | See below |
-
-**40022619114 evidence:**
-
-| Job | Result |
-|-----|--------|
-| Frontend lint, unit, build | pass |
-| Backend pytest | **345 passed**, 10 skipped |
-| Playwright desktop | **145 passed**, 6 skipped, 0 failed, 0 flaky (20.2m) |
-
-**Roadmap-specific Playwright (all pass on green run):**
-
-- `roadmap-catalog-render` — 93/93 mounted (85 clean + 1 edgeless + 7 sanitized)
-- `roadmap-graph-interaction` — drag connected edge, lock/unlock/reset, viewport across panels
-- `acceptance-shots` — CRT/Aptitude heading locator fix
-
-Graph interaction and viewport checks were **not** weakened (no timeout inflation or error suppression for green).
-
----
-
-## Focused regression tests (local)
-
-| Suite | Result |
-|-------|--------|
-| `test_roadmap_official.py` + `test_roadmap_graph_cache.py` | 12+ passed (incl. malformed cache envelope, whitespace ID) |
-| Frontend `npm run test:unit` | 38 passed |
-
----
-
-## Remaining release blockers (steps 7–8 / sign-off)
-
-1. **Push** final test/evidence commit (malformed-cache + whitespace parity + `docs/ci-evidence/`).
-2. **Manual product sign-off** on 8 non–upstream-clean maps (especially dangling-edge semantics).
-3. **Article audit** — sampled content checks with explicit uncovered slugs (not re-run on `3556a7d` in this pass).
-4. **Production-preview smoke** — blocked until preview uses API with cache v2 on candidate SHA.
-5. **Visual/contrast** — not re-certified on green SHA (local WIP screenshots uncommitted).
-
-Do not merge or deploy until blockers 2–5 are accepted for release.
+1. **ROADMAP_CONTENT_ROOT** (or equivalent article sync) for meaningful article audit + preview article smoke locally and in hosted preview.
+2. **Product sign-off** on **data-analyst** unresolved topic path (and general acceptance of 7 sanitized + 1 edgeless).
+3. **Contrast/visual** — resolve or accept `unsupported_transparency` on primary buttons / action links (both themes).
+4. **Optional:** run full `scripts/run-release-smoke.ps1` on a machine with Docker (Redis + SQL sandbox + content root) for end-to-end parity with CI.

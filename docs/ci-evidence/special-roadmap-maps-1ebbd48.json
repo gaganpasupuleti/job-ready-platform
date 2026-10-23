@@ -1,0 +1,200 @@
+{
+  "candidate_sha": "1ebbd48",
+  "maps": [
+    {
+      "slug": "code-review",
+      "classification": "edgeless",
+      "node_count": 18,
+      "edge_count_original": 0,
+      "edge_count_retained": 0,
+      "duplicate_edge_ids_original": [],
+      "edge_normalizations": [],
+      "removed_edges": [],
+      "note": "Zero-edge layout; topics are independent nodes (no graph path to verify)."
+    },
+    {
+      "slug": "data-analyst",
+      "classification": "sanitized",
+      "node_count": 156,
+      "edge_count_original": 41,
+      "edge_count_retained": 40,
+      "duplicate_edge_ids_original": [],
+      "edge_normalizations": [],
+      "removed_edges": [
+        {
+          "id": "xy-edge__aopqiF0Svmpq94g6OQBX0x2-9sIP-jpNjtA1JPCBjTf-Hz2",
+          "source": "aopqiF0Svmpq94g6OQBX0",
+          "target": "9sIP-jpNjtA1JPCBjTf-H",
+          "reason": "endpoint_missing",
+          "missing_endpoints": [
+            "aopqiF0Svmpq94g6OQBX0"
+          ]
+        }
+      ],
+      "semantic_review": {
+        "slug": "data-analyst",
+        "classification": "sanitized",
+        "dangling": [
+          {
+            "removed_edge_id": "xy-edge__aopqiF0Svmpq94g6OQBX0x2-9sIP-jpNjtA1JPCBjTf-Hz2",
+            "missing_source": [
+              "aopqiF0Svmpq94g6OQBX0"
+            ],
+            "target_id": "9sIP-jpNjtA1JPCBjTf-H",
+            "target_label": "VLOOKUP / HLOOKUP",
+            "target_type": "subtopic",
+            "incoming_topic_edges_after_sanitize": [],
+            "semantic_verdict": "unresolved_topic_path",
+            "resolution": "Subtopic 'VLOOKUP / HLOOKUP' has zero incoming edges from topic/subtopic nodes after sanitize; removed edge was the only connector referencing missing layout node — prerequisite chain through that link cannot be established."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "ux-design",
+      "classification": "sanitized",
+      "node_count": 140,
+      "edge_count_original": 27,
+      "edge_count_retained": 26,
+      "duplicate_edge_ids_original": [],
+      "edge_normalizations": [],
+      "removed_edges": [
+        {
+          "id": "xy-edge__dgBELpFRvRO_7ir0y0AtXx2-0vLaVNJaJSHZ_bHli6Qzsw1",
+          "source": "dgBELpFRvRO_7ir0y0AtX",
+          "target": "0vLaVNJaJSHZ_bHli6Qzs",
+          "reason": "endpoint_missing",
+          "missing_endpoints": [
+            "dgBELpFRvRO_7ir0y0AtX"
+          ]
+        }
+      ],
+      "semantic_review": {
+        "slug": "ux-design",
+        "classification": "sanitized",
+        "dangling": [
+          {
+            "removed_edge_id": "xy-edge__dgBELpFRvRO_7ir0y0AtXx2-0vLaVNJaJSHZ_bHli6Qzsw1",
+            "missing_source": [
+              "dgBELpFRvRO_7ir0y0AtX"
+            ],
+            "target_id": "0vLaVNJaJSHZ_bHli6Qzs",
+            "target_label": "Continue Learning with following relevant tracks",
+            "target_type": "paragraph",
+            "incoming_topic_edges_after_sanitize": [],
+            "semantic_verdict": "resolved_non_topic_chrome",
+            "resolution": "Removed edge targeted a paragraph ('Continue Learning…') from a missing layout node — not a topic/subtopic prerequisite; topic learning graph unchanged."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "design-system",
+      "classification": "sanitized",
+      "node_count": 173,
+      "edge_count_original": 27,
+      "edge_count_retained": 27,
+      "duplicate_edge_ids_original": [
+        "xy-edge__JfXwzkN29UGz17FYHHE3Az2-ODQ8zrHc2rsc8PN-APKvzy1"
+      ],
+      "edge_normalizations": [
+        {
+          "kind": "duplicate_id_remapped",
+          "from_id": "xy-edge__JfXwzkN29UGz17FYHHE3Az2-ODQ8zrHc2rsc8PN-APKvzy1",
+          "to_id": "xy-edge__JfXwzkN29UGz17FYHHE3Az2-ODQ8zrHc2rsc8PN-APKvzy1__jobready-dup1",
+          "source": "uvnV1IjE8RV-FKDxHntUU",
+          "target": "hauTvrBOAHgrUnO_m_kDM"
+        }
+      ],
+      "removed_edges": []
+    },
+    {
+      "slug": "django",
+      "classification": "sanitized",
+      "node_count": 160,
+      "edge_count_original": 55,
+      "edge_count_retained": 55,
+      "duplicate_edge_ids_original": [
+        "xy-edge__NBZ4_LkKZV-KGvCOkUysgx2-7O1Y9C3OwEtwKgcic18eMw1"
+      ],
+      "edge_normalizations": [
+        {
+          "kind": "duplicate_id_remapped",
+          "from_id": "xy-edge__NBZ4_LkKZV-KGvCOkUysgx2-7O1Y9C3OwEtwKgcic18eMw1",
+          "to_id": "xy-edge__NBZ4_LkKZV-KGvCOkUysgx2-7O1Y9C3OwEtwKgcic18eMw1__jobready-dup1",
+          "source": "GqMJaqBCbfav0MbsrHCpc",
+          "target": "ftFF3oFfqpKvjQhXk3bWw"
+        }
+      ],
+      "removed_edges": []
+    },
+    {
+      "slug": "javascript",
+      "classification": "sanitized",
+      "node_count": 165,
+      "edge_count_original": 76,
+      "edge_count_retained": 76,
+      "duplicate_edge_ids_original": [
+        "reactflow__edge-ADarwihuI2nBq1C3U7-Zrz2-RRACLQ6-aopkxImIp3Tocy1"
+      ],
+      "edge_normalizations": [
+        {
+          "kind": "duplicate_id_remapped",
+          "from_id": "reactflow__edge-ADarwihuI2nBq1C3U7-Zrz2-RRACLQ6-aopkxImIp3Tocy1",
+          "to_id": "reactflow__edge-ADarwihuI2nBq1C3U7-Zrz2-RRACLQ6-aopkxImIp3Tocy1__jobready-dup1",
+          "source": "-jbPPuEXacBR0d0CWPHgd",
+          "target": "RRACLQ6-aopkxImIp3Toc"
+        }
+      ],
+      "removed_edges": []
+    },
+    {
+      "slug": "golang",
+      "classification": "sanitized",
+      "node_count": 231,
+      "edge_count_original": 77,
+      "edge_count_retained": 77,
+      "duplicate_edge_ids_original": [
+        "xy-edge__uialoSONK4CdWVZIa9LQyz2-N0EG-7sU9lGFwgidXuPkVy1",
+        "xy-edge__uvnV1IjE8RV-FKDxHntUUy2-6r9XbwlBtHmJrhviG2cTDz2"
+      ],
+      "edge_normalizations": [
+        {
+          "kind": "duplicate_id_remapped",
+          "from_id": "xy-edge__uvnV1IjE8RV-FKDxHntUUy2-6r9XbwlBtHmJrhviG2cTDz2",
+          "to_id": "xy-edge__uvnV1IjE8RV-FKDxHntUUy2-6r9XbwlBtHmJrhviG2cTDz2__jobready-dup1",
+          "source": "wRwt9JHZPmq8uapxMjn0a",
+          "target": "XLj16RmCe4-nKHW52Ebhf"
+        },
+        {
+          "kind": "duplicate_id_remapped",
+          "from_id": "xy-edge__uialoSONK4CdWVZIa9LQyz2-N0EG-7sU9lGFwgidXuPkVy1",
+          "to_id": "xy-edge__uialoSONK4CdWVZIa9LQyz2-N0EG-7sU9lGFwgidXuPkVy1__jobready-dup1",
+          "source": "o2EYfm1WSd8Eq_ZcXYreo",
+          "target": "N0EG-7sU9lGFwgidXuPkV"
+        }
+      ],
+      "removed_edges": []
+    },
+    {
+      "slug": "mongodb",
+      "classification": "sanitized",
+      "node_count": 138,
+      "edge_count_original": 42,
+      "edge_count_retained": 42,
+      "duplicate_edge_ids_original": [
+        "xy-edge__JfXwzkN29UGz17FYHHE3Az2-2rlmLn_yQQV-7DpX1qT98y1"
+      ],
+      "edge_normalizations": [
+        {
+          "kind": "duplicate_id_remapped",
+          "from_id": "xy-edge__JfXwzkN29UGz17FYHHE3Az2-2rlmLn_yQQV-7DpX1qT98y1",
+          "to_id": "xy-edge__JfXwzkN29UGz17FYHHE3Az2-2rlmLn_yQQV-7DpX1qT98y1__jobready-dup1",
+          "source": "7SGYNo3oHlgm_1cwhWfw7",
+          "target": "4h8NdcdXmNqJxLkVJqPtX"
+        }
+      ],
+      "removed_edges": []
+    }
+  ]
+}

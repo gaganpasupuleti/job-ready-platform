@@ -1,0 +1,9 @@
+{
+  "ci_run": "40028398164",
+  "candidate_sha": "1ebbd48",
+  "artifact": "ui-cohesion-after",
+  "probe_count": 42,
+  "by_status": { "unsupported_transparency": 42 },
+  "note": "Probes on .jr-btn[data-variant=primary] and .jr-action-link across jobs/library/projects light+dark viewports; semi-transparent ancestor stacks prevent automated WCAG ratio.",
+  "screenshots": "GitHub Actions artifact ui-cohesion-after (not committed; local copy under frontend/e2e/artifacts/ci-40028398164-ui/)"
+}

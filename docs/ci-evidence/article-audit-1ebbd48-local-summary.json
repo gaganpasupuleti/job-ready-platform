@@ -1,0 +1,12 @@
+{
+  "candidate_sha": "1ebbd48",
+  "api": "http://127.0.0.1:8000",
+  "auth": "e2e.student@jobready.dev (post seed)",
+  "graph_integrity_contract": "93/93 pass (aligned with E2E catalog)",
+  "article_sampling": "1 readable topic/subtopic node per slug (93 samples)",
+  "article_status_counts": { "missing": 93 },
+  "readable_topic_nodes_total": 10468,
+  "unchecked_readable_nodes_total": 10375,
+  "coverage_statement": "0/93 sampled articles returned markdown ≥48 chars. 10375/10468 readable nodes unchecked. Full per-slug rows: article-audit-1ebbd48-local.json",
+  "blocker": "ROADMAP_CONTENT_ROOT not configured locally; get_topic_content resolves bundled markdown only (see backend official_roadmap_service._resolve_topic_file). CI E2E article UI test uses node heading visibility; does not assert API markdown body."
+}
