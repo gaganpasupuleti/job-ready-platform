@@ -45,6 +45,7 @@ export type GraphIntegrity = {
     reason?: string
     missing_endpoints?: string[]
   }>
+  edge_normalizations?: Array<Record<string, unknown>>
 }
 
 export type SlugBrowserRow = {
@@ -259,9 +260,14 @@ export function assertCatalogTotals(rows: SlugBrowserRow[]) {
     `only ${upstreamCleanOnly} slugs are upstream-clean; sanitized/edgeless require review`,
   ).toBeLessThanOrEqual(bundledSlugs.length)
   if (sanitizedRows.length > 0) {
+    const missingEvidence = sanitizedRows.filter((r) => {
+      const norm = r.integrity?.edge_normalizations ?? []
+      const removed = r.integrity?.removed_edges ?? []
+      return norm.length === 0 && removed.length === 0
+    })
     expect(
-      sanitizedRows.every((r) => (r.integrity?.removed_edges?.length ?? 0) > 0),
-      `sanitized slugs missing removed_edges: ${JSON.stringify(sanitizedRows.map((r) => r.slug))}`,
-    ).toBe(true)
+      missingEvidence.length,
+      `sanitized slugs missing normalization evidence: ${JSON.stringify(missingEvidence.map((r) => r.slug))}`,
+    ).toBe(0)
   }
 }
