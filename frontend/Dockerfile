@@ -7,14 +7,15 @@ RUN npm ci
 
 COPY . .
 
-ARG VITE_API_BASE_URL=
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-ARG VITE_ENABLE_DEV_LOGIN=false
-ENV VITE_ENABLE_DEV_LOGIN=$VITE_ENABLE_DEV_LOGIN
-ARG VITE_GOOGLE_CLIENT_ID=
-ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
-
-RUN npm run build
+# Optional overrides; otherwise Vite loads .env.production (do not ENV empty values).
+ARG VITE_API_BASE_URL
+ARG VITE_ENABLE_DEV_LOGIN
+ARG VITE_GOOGLE_CLIENT_ID
+RUN set -e; \
+  if [ -n "${VITE_API_BASE_URL}" ]; then export VITE_API_BASE_URL="${VITE_API_BASE_URL}"; fi; \
+  if [ -n "${VITE_ENABLE_DEV_LOGIN}" ]; then export VITE_ENABLE_DEV_LOGIN="${VITE_ENABLE_DEV_LOGIN}"; fi; \
+  if [ -n "${VITE_GOOGLE_CLIENT_ID}" ]; then export VITE_GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID}"; fi; \
+  npm run build
 
 FROM node:20-alpine
 
