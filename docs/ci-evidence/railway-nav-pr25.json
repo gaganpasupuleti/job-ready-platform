@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-10-24T09:45:00Z",
+  "commit_sha": "d119081",
+  "pr": 25,
+  "project_id": "1bd632d6-32a3-49a0-b1cf-79c764e0e1bb",
+  "environment_id": "6d2e03da-6e5f-48c8-872b-71a325d863a8",
+  "frontend_service_id": "302d5f6c-f174-4169-b30e-87ef8d004500",
+  "rollback_deployment_id": "c13a01ec-bf91-4f13-b4da-ce25502dac98",
+  "new_deployment_id": "a7079e1f-5cba-461d-81a1-a3e64bf8f9a6",
+  "frontend_url": "https://frontend-production-f65c0.up.railway.app",
+  "rollback": "Railway dashboard → frontend service → Deployments → Redeploy rollback_deployment_id"
+}
