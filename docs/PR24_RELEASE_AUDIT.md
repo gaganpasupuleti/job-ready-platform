@@ -1,40 +1,37 @@
-# PR #24 release verification (truthful status)
+# PR #24 release verification and pilot deploy
 
-**Candidate SHA:** `dd289ff`  
+**Release code SHA:** `53363b8` (pending CI [40075071754](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40075071754))  
+**Prior syllabus SHA:** `dd289ff` — CI [40070858460](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40070858460)  
 **Branch:** `feat/roadmap-ui-clean`  
 **PR:** https://github.com/gaganpasupuleti/job-ready-platform/pull/24  
-**Green CI (prior):** https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40032697907 (`67940fd`)  
-**Green CI (this candidate):** https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40070858460 (`dd289ff`)  
-**Not merged / not deployed.**
+
+## Pilot limitations (accepted for release)
+
+1. **data-analyst:** “VLOOKUP / HLOOKUP” subtopic has **no incoming canvas edge** after upstream sanitize; reachable via **topic search + article**. No invented edge. **Follow-up:** optional curated graph correction.
+2. **code-review articles:** upstream markdown not keyed by `*@{nodeId}.md`; sampled audit **missing** for one node. UI shows truthful unavailable content. **Follow-up:** mapping or upstream alignment.
+3. **Article coverage:** one readable node sampled per slug only — **not** full corpus coverage (**10 375** nodes unchecked by sampling).
 
 ## Verification matrix
 
 | # | Check | Status | Evidence |
 |---|--------|--------|----------|
-| 1 | **CI on HEAD** | **Completed** | Run [40070858460](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40070858460): Frontend lint/unit/build ✓; Backend tests ✓ (includes syllabus coverage verify); Playwright ✓ (includes new special-map + data-analyst specs) |
-| 2 | **Eight special-case maps** | **Completed (semantic) / product pending (data-analyst)** | Upstream + normalization: `docs/ci-evidence/special-roadmap-maps-1ebbd48.json`. **ux-design:** dangling edge targeted paragraph chrome. **data-analyst:** sanitized away layout-only edge from missing node `aopqiF0Svmpq94g6OQBX0` → subtopic `9sIP-jpNjtA1JPCBjTf-H` (“VLOOKUP / HLOOKUP”) — **no justified replacement edge**. Learner can still open topic via toolbar search + article API (`frontend/e2e/roadmap-data-analyst-semantic.spec.ts`; screenshots under `frontend/e2e/artifacts/special-roadmap-maps/`). **Product decision:** accept orphan subtopic on canvas vs. invest in curated edge correction. |
-| 3 | **Authenticated article audit** | **Completed (sampled)** | Bundled syllabus from [developer-roadmap](https://github.com/kamranahmedse/developer-roadmap) @ `e906c5f60c2e72623a73cce4bea51153b319c0d8` — see `docs/ROADMAP_SYLLABUS_CONTENT.md` + `ROADMAP_SYLLABUS_MANIFEST.json`. Local audit: **93/93** graphs OK; **92/93** sampled articles OK; **1** missing (`code-review` — upstream files not keyed by node id). Summary: `docs/ci-evidence/article-audit-post-syllabus-summary.json`; rows: `frontend/e2e/artifacts/roadmap-catalog-audit.json`. File coverage: **10 454 / 10 468** readable nodes with `*@{id}.md` (`docs/ci-evidence/roadmap-article-file-coverage.json`). **Unchecked by sampling:** 10 375 readable nodes (one sample per slug). |
-| 4 | **Preview build + release smoke** | **Completed (local live)** | `docs/ci-evidence/release-smoke-preview-post-syllabus-local.json` — production build + preview @4173, API @8000: **3/3** pass including **live roadmap article** (`release-smoke-preview.spec.ts`). |
-| 5 | **Screenshots + contrast** | **Completed (mocked UI)** | `frontend/e2e/ui-cohesion.spec.ts` — artifacts `frontend/e2e/artifacts/ui-cohesion/after/` (Jobs, Library, Projects, header More/Account, roadmap catalog/article, mobile nav/sheet). **Contrast:** 42/42 probes **pass** ≥4.5:1 via alpha compositing (`docs/ci-evidence/contrast-local-compositing-summary.json`, `contrast-report.json`). Eight special maps: `frontend/e2e/artifacts/special-roadmap-maps/*-{desktop-1366,mobile-390}.png` (`roadmap-special-maps-screenshots.spec.ts`). |
-| 6 | **Local SQL test failures explained** | **Completed** | `docs/ci-evidence/local-sql-test-failures.json` — requires SQL sandbox **:5433**; passes in CI with Docker services |
+| 1 | **CI on release SHA** | **In progress** | Run [40075071754](https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40075071754) for `53363b8` |
+| 2 | **Special maps + data-analyst** | **Completed** | `docs/ci-evidence/special-roadmap-maps-1ebbd48.json`; e2e `roadmap-data-analyst-semantic.spec.ts`; screenshots `frontend/e2e/artifacts/special-roadmap-maps/` |
+| 3 | **Article audit (sampled)** | **Completed** | `docs/ci-evidence/article-audit-post-syllabus-summary.json` — **92/93** OK, **1** missing (`code-review`) |
+| 4 | **Preview surface smoke** | **Completed** | `docs/ci-evidence/release-smoke-preview-post-syllabus-local.json` — **3/3** |
+| 5 | **Preview AUTH-01 (registration closed)** | **Completed** | `docs/ci-evidence/release-smoke-preview-auth-local.json` — pre-provisioned accounts + production bundle; fixes prior full-script failure on closed registration |
+| 6 | **Contrast / UI** | **Completed** | `docs/ci-evidence/contrast-local-compositing-summary.json`; `frontend/e2e/artifacts/ui-cohesion/after/` |
+| 7 | **Syllabus bundle** | **Completed** | `docs/ROADMAP_SYLLABUS_CONTENT.md`; default root `backend/app/data/roadmap-syllabus/roadmaps` |
 
-## Release decision
-
-| Gate | Decision | Notes |
-|------|----------|--------|
-| Graph integrity + catalog E2E | **Ready** | Reused from `67940fd` / green CI 40032697907 where code unchanged; new commits add syllabus + contrast probe only |
-| Article content | **Ready for pilot** | Bundled syllabus + reproducible import; truthful **code-review** gap documented |
-| Preview smoke | **Ready** | Live article on preview with bundled content |
-| Visual / contrast | **Ready** | Measured ratios on primary button + action link (both themes, hover) |
-| data-analyst topic path | **Blocked on product** | No invented edge; navigation + article verified; canvas lacks incoming topic edge |
-
-**Overall:** **Ship candidate after green CI on `dd289ff`**, with explicit **product sign-off** on data-analyst orphan subtopic (or defer merge until decided). Do **not** treat single-sample article audit as full corpus coverage.
-
-## Smoke identifiers (local verification)
+## Railway (production)
 
 | Item | Value |
 |------|--------|
-| Backend API | `http://127.0.0.1:8000` |
-| Preview | `http://127.0.0.1:4173` |
-| Syllabus commit | `e906c5f60c2e72623a73cce4bea51153b319c0d8` |
-| Content root | `backend/app/data/roadmap-syllabus/roadmaps` (default when `ROADMAP_CONTENT_ROOT` unset) |
+| Frontend URL | https://frontend-production-f65c0.up.railway.app |
+| Backend URL | https://backend-production-a0c9.up.railway.app |
+| Build | `VITE_API_BASE_URL` → backend origin; syllabus in backend image; `ROADMAP_CONTENT_ROOT` unset → bundled default |
+| Rollback | Redeploy prior Railway deployment IDs for frontend + backend services (record before deploy) |
+
+## Post-merge live verification
+
+_To be filled after deploy:_ deployment IDs, merge SHA, smoke results.
