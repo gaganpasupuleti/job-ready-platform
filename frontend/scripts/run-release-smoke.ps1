@@ -85,9 +85,10 @@ try {
   $env:E2E_BASE_URL = $previewUrl
   $env:E2E_SKIP_WEBSERVER = "1"
   $env:E2E_API_URL = $ApiBase
+  $env:E2E_ALLOW_SEED = "1"
 
   $specs = @(
-    @{ Label = "AUTH-01"; Args = @("e2e/auth.spec.ts", "-g", "AUTH-01", "--project=desktop") },
+    @{ Label = "AUTH-01 (preview, registration closed path)"; Args = @("e2e/auth.spec.ts", "-g", "AUTH-01", "--project=desktop") },
     @{ Label = "More menu keyboard"; Args = @("e2e/phase5-mock.spec.ts", "-g", "More menu", "--project=desktop") },
     @{ Label = "roadmap mock UI"; Args = @("e2e/roadmap-mock.spec.ts", "--project=desktop") },
     @{ Label = "roadmap catalog live"; Args = @("e2e/roadmap-catalog-render.spec.ts", "--project=desktop") },

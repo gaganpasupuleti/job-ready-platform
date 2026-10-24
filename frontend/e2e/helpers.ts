@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -301,6 +302,21 @@ export async function createIsolatedE2EJob(
   return created.json()
 }
 
+export async function expectAuthenticatedStudentLanding(page: Page) {
+  await expect(page).not.toHaveURL(/\/login/)
+  await expect
+    .poll(
+      async () => {
+        const account = await page.getByRole('button', { name: /account menu/i }).count()
+        const jobs = await page.getByRole('heading', { name: /^jobs$/i }).count()
+        const prefs = await page.getByRole('heading', { name: /job preferences/i }).count()
+        return account + jobs + prefs
+      },
+      { timeout: 20_000 },
+    )
+    .toBeGreaterThan(0)
+}
+
 export async function loginAs(
   page: Page,
   user: { email: string; password: string },
@@ -311,6 +327,27 @@ export async function loginAs(
   await page.getByLabel('Password').fill(user.password)
   await page.getByRole('button', { name: /sign in/i }).click()
   await expect(page).not.toHaveURL(/\/login/)
+}
+
+export async function fetchRegistrationOpen(request: APIRequestContext): Promise<boolean> {
+  const res = await request.get(`${apiBaseUrl()}/auth/config`)
+  if (!res.ok()) return false
+  const body = await res.json()
+  return Boolean(body.public_registration_enabled)
+}
+
+/** Create AUTH-01 users in the DB when /register is closed (dev/test only). */
+export function provisionAuth01Users(suffix: string) {
+  const backendRoot = path.join(__dirname, '..', '..', 'backend')
+  const py = process.env.PYTHON ?? 'python'
+  execSync(`${py} -m scripts.provision_auth01_users --suffix ${suffix}`, {
+    cwd: backendRoot,
+    stdio: 'pipe',
+    env: {
+      ...process.env,
+      E2E_ALLOW_SEED: process.env.E2E_ALLOW_SEED ?? '1',
+    },
+  })
 }
 
 export async function registerUser(
@@ -423,6 +460,7 @@ export async function loginInApp(
   page: Page,
   user: { email: string; password: string },
 ) {
+  await attachApiProxy(page.context())
   await expect(page).toHaveURL(/\/login/)
   await page.getByLabel('Email').fill(user.email)
   await page.getByLabel('Password').fill(user.password)
