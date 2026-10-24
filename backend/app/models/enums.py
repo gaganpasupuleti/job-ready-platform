@@ -36,3 +36,14 @@ class SessionStatus(StrEnum):
     ACTIVE = "active"
     COMPLETED = "completed"
     ABANDONED = "abandoned"
+
+
+class McqImportMode(StrEnum):
+    ADD_UPDATE = "add_update"
+    REPLACE_BANK = "replace_bank"
+
+
+class McqPublicationStatus(StrEnum):
+    DRAFT = "draft"
+    PUBLISHED = "published"
+    ARCHIVED = "archived"

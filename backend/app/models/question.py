@@ -18,6 +18,10 @@ class Question(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     )
     title: Mapped[str | None] = mapped_column(String(255), nullable=True)
     content_key: Mapped[str | None] = mapped_column(String(160), unique=True, index=True, nullable=True)
+    bank_key: Mapped[str | None] = mapped_column(String(80), index=True, nullable=True)
+    hint: Mapped[str | None] = mapped_column(Text, nullable=True)
+    revision: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    publication_status: Mapped[str | None] = mapped_column(String(20), nullable=True)
     question_text: Mapped[str] = mapped_column(Text, nullable=False)
     explanation: Mapped[str | None] = mapped_column(Text, nullable=True)
     difficulty: Mapped[Difficulty] = mapped_column(
@@ -58,6 +62,7 @@ class QuestionOption(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         UUID(as_uuid=True), ForeignKey("questions.id", ondelete="CASCADE"), index=True
     )
     option_text: Mapped[str] = mapped_column(Text, nullable=False)
+    explanation: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_correct: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 

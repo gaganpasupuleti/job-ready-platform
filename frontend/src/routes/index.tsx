@@ -13,6 +13,7 @@ import { AdminSqlProblemsPage } from '@/pages/admin/AdminSqlProblemsPage'
 import { AdminTaxonomyPage } from '@/pages/admin/AdminTaxonomyPage'
 import { AdminContentBatchPage } from '@/pages/admin/AdminContentBatchPage'
 import { AdminContentPage } from '@/pages/admin/AdminContentPage'
+import { AdminMcqBankPage } from '@/pages/admin/AdminMcqBankPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { EmailUnsubscribePage } from '@/pages/EmailUnsubscribePage'
@@ -397,6 +398,14 @@ export function AppRoutes() {
           element={
             <AdminRoute>
               <AdminContentPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/mcq-bank"
+          element={
+            <AdminRoute>
+              <AdminMcqBankPage />
             </AdminRoute>
           }
         />

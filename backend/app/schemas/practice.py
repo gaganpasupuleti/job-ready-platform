@@ -124,6 +124,8 @@ class AnswerOptionFeedback(BaseModel):
     id: UUID
     option_text: str
     is_correct: bool
+    explanation: str | None = None
+    selected: bool = False
 
 
 class AnswerFeedback(BaseModel):
@@ -131,6 +133,9 @@ class AnswerFeedback(BaseModel):
     marks_awarded: float
     correct_option_ids: list[UUID]
     selected_option_ids: list[UUID]
+    selected_option_texts: list[str] = Field(default_factory=list)
+    correct_option_texts: list[str] = Field(default_factory=list)
+    selected_option_explanation: str | None = None
     explanation: str | None = None
     options: list[AnswerOptionFeedback] = Field(default_factory=list)
     topic_name: str | None = None

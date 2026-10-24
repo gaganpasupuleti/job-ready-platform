@@ -93,6 +93,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   { label: 'Cybersecurity', path: '/admin/cybersecurity' },
                   { label: 'Scenarios', path: '/admin/scenarios' },
                   { label: 'Content Factory', path: '/admin/content' },
+                  { label: 'MCQ Excel bank', path: '/admin/mcq-bank' },
                   { label: 'Practice Paths', path: '/admin/practice-paths' },
                   { label: 'Courses', path: '/admin/courses' },
                   { label: 'Projects', path: '/admin/projects' },

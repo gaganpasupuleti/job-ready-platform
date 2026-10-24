@@ -23,8 +23,18 @@ from app.schemas.practice_tracker import PracticeTrackerResponse
 from app.services.catalog_service import CatalogService
 from app.services.practice_service import PracticeService
 from app.services.practice_tracker_service import PracticeTrackerService
+from app.services.mcq_bank_service import McqBankService
 
 router = APIRouter(prefix="/practice")
+
+
+@router.get("/content-version")
+async def get_content_version(
+    _current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, int]:
+    version = await McqBankService(db).get_content_version()
+    return {"version": version}
 
 
 @router.get("/catalog", response_model=CatalogResponse)

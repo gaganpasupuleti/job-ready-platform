@@ -1,0 +1,5319 @@
+{
+  "aptitude_mcq_source": {
+    "source": "phase11_aptitude_mcq",
+    "total": 110,
+    "by_topic_difficulty": {
+      "charts/easy": 4,
+      "charts/hard": 2,
+      "charts/medium": 5,
+      "grammar/easy": 4,
+      "grammar/hard": 2,
+      "grammar/medium": 5,
+      "percentages/easy": 5,
+      "percentages/hard": 2,
+      "percentages/medium": 4,
+      "probability/easy": 5,
+      "probability/hard": 2,
+      "probability/medium": 4,
+      "profit-and-loss/easy": 5,
+      "profit-and-loss/hard": 2,
+      "profit-and-loss/medium": 4,
+      "series/easy": 4,
+      "series/hard": 3,
+      "series/medium": 4,
+      "syllogisms/easy": 4,
+      "syllogisms/hard": 2,
+      "syllogisms/medium": 5,
+      "tables/easy": 4,
+      "tables/hard": 2,
+      "tables/medium": 5,
+      "time-and-work/easy": 5,
+      "time-and-work/hard": 2,
+      "time-and-work/medium": 4,
+      "vocabulary/easy": 4,
+      "vocabulary/hard": 3,
+      "vocabulary/medium": 4
+    },
+    "by_difficulty": {
+      "easy": 44,
+      "medium": 44,
+      "hard": 22
+    }
+  },
+  "technical_mcq_source": {
+    "source": "phase11_technical_mcq",
+    "total": 110,
+    "by_topic_difficulty": {
+      "aggregations/easy": 5,
+      "aggregations/hard": 2,
+      "aggregations/medium": 4,
+      "arrays/easy": 4,
+      "arrays/hard": 2,
+      "arrays/medium": 5,
+      "basics/easy": 4,
+      "basics/hard": 2,
+      "basics/medium": 5,
+      "concepts/easy": 4,
+      "concepts/hard": 3,
+      "concepts/medium": 4,
+      "core-concepts/easy": 4,
+      "core-concepts/hard": 2,
+      "core-concepts/medium": 5,
+      "fundamentals/easy": 9,
+      "fundamentals/hard": 4,
+      "fundamentals/medium": 9,
+      "joins/easy": 5,
+      "joins/hard": 2,
+      "joins/medium": 4,
+      "principles/easy": 4,
+      "principles/hard": 3,
+      "principles/medium": 4,
+      "sql-fundamentals/easy": 5,
+      "sql-fundamentals/hard": 2,
+      "sql-fundamentals/medium": 4
+    },
+    "by_difficulty": {
+      "easy": 44,
+      "medium": 44,
+      "hard": 22
+    }
+  },
+  "coding_source": {
+    "source": "problems_bank.PROBLEM_BANK",
+    "total": 21,
+    "by_topic": {
+      "basics": 2,
+      "strings": 2,
+      "arrays": 3,
+      "hash-maps": 1,
+      "stack": 1,
+      "queue": 1,
+      "searching": 1,
+      "sorting": 1,
+      "recursion": 1,
+      "linked-lists": 1,
+      "trees": 1,
+      "two-pointers": 1,
+      "sliding-window": 1,
+      "binary-search": 1,
+      "dynamic-programming": 3
+    },
+    "by_difficulty": {
+      "easy": 10,
+      "medium": 8,
+      "hard": 3
+    }
+  },
+  "live": {
+    "source": "database",
+    "rows": [
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "jobs",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "containers-vs-vms",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "secure-coding",
+        "topic": "coding-secrets",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-d1ac6aa0",
+        "category": "c3-subject-d1ac6aa0",
+        "topic": "c3-topic-d1ac6aa0",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "scaling",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "federation",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "s3",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-44d3c15e",
+        "category": "qb-subject-44d3c15e",
+        "topic": "qb-topic-44d3c15e",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-e6ca4d33",
+        "category": "c3-subject-e6ca4d33",
+        "topic": "c3-topic-e6ca4d33",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "high-availability",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-6727a180",
+        "category": "c3-subject-6727a180",
+        "topic": "c3-topic-6727a180",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "cia-triad",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-f7f6ea3b",
+        "category": "c3-subject-f7f6ea3b",
+        "topic": "c3-topic-f7f6ea3b",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-26c6a486",
+        "category": "c3-subject-26c6a486",
+        "topic": "c3-topic-26c6a486",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "threat-risk",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "grafana",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-security",
+        "topic": "network-controls",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-fbcf89f5",
+        "category": "c3-subject-fbcf89f5",
+        "topic": "c3-topic-fbcf89f5",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "jobready-studio",
+        "category": "studio-practice",
+        "topic": "studio-saturday-001",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 54
+      },
+      {
+        "domain": "c4-dom-08efdc99",
+        "category": "c4-sub-08efdc99",
+        "topic": "c4-top-08efdc99",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "replica-set",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "incident-response",
+        "topic": "evidence-handling",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "gcp-logging",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-d1ac6aa0",
+        "category": "c3-subject-d1ac6aa0",
+        "topic": "c3-topic-d1ac6aa0",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-205fb218",
+        "category": "c3-subject-205fb218",
+        "topic": "c3-topic-205fb218",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "incident-response",
+        "topic": "identification",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "subnets",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "api-security",
+        "topic": "api-gateways",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "obs-logs",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-cd1e59a1",
+        "category": "c3-subject-cd1e59a1",
+        "topic": "c3-topic-cd1e59a1",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "agent-fundamentals",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "azure-sql",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "series",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-057924f1",
+        "category": "c3-subject-057924f1",
+        "topic": "c3-topic-057924f1",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-9be0ad39",
+        "category": "c3-subject-9be0ad39",
+        "topic": "c3-topic-9be0ad39",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "cron",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-6727a180",
+        "category": "c3-subject-6727a180",
+        "topic": "c3-topic-6727a180",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "gcp-iam",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "conflicts",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "probes",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "rollback",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-4895325b",
+        "category": "c3-subject-4895325b",
+        "topic": "c3-topic-4895325b",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "compose",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-fde2f71b",
+        "category": "c3-subject-fde2f71b",
+        "topic": "c3-topic-fde2f71b",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-76b3124e",
+        "category": "c3-subject-76b3124e",
+        "topic": "c3-topic-76b3124e",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 32
+      },
+      {
+        "domain": "technical",
+        "category": "data-analytics",
+        "topic": "fundamentals",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-67ceecd0",
+        "category": "qb-subject-67ceecd0",
+        "topic": "qb-topic-67ceecd0",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "vector-databases",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "devops",
+        "category": "sre",
+        "topic": "postmortems",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "api-security",
+        "topic": "excessive-data-exposure",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "grep",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-c6697fd7",
+        "category": "c3-subject-c6697fd7",
+        "topic": "c3-topic-c6697fd7",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "incident-response",
+        "topic": "containment",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "azure-security",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-c207b032",
+        "category": "qb-subject-c207b032",
+        "topic": "qb-topic-c207b032",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-bf2d2c39",
+        "category": "c3-subject-bf2d2c39",
+        "topic": "c3-topic-bf2d2c39",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "cloud-sql",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "secure-coding",
+        "topic": "input-validation",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "state-security",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "authorization",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-90e1a0cc",
+        "category": "aptitude-90e1a0cc",
+        "topic": "tsd-90e1a0cc",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "logging-auditing",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "pvc",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-17a06d6a",
+        "category": "c3-subject-17a06d6a",
+        "topic": "c3-topic-17a06d6a",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "mcp-fundamentals",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "agent-loops",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "ratio-and-proportion",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-38f51401",
+        "category": "aptitude-38f51401",
+        "topic": "tsd-38f51401",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "gcp-security",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "llm-evaluation",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "technical",
+        "category": "computer-networks",
+        "topic": "fundamentals",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "regions",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "c3-domain-5f09e5c6",
+        "category": "c3-subject-5f09e5c6",
+        "topic": "c3-topic-5f09e5c6",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "vector-databases",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-c5903cbe",
+        "category": "aptitude-c5903cbe",
+        "topic": "tsd-c5903cbe",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-24632c9d",
+        "category": "c3-subject-24632c9d",
+        "topic": "c3-topic-24632c9d",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "approvals",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "ports",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "nacl",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "requests-limits",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "technical",
+        "category": "linux",
+        "topic": "commands",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-6a418108",
+        "category": "c3-subject-6a418108",
+        "topic": "c3-topic-6a418108",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "jenkins",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "vector-databases",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "c3-domain-52464e58",
+        "category": "c3-subject-52464e58",
+        "topic": "c3-topic-52464e58",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-4a20e085",
+        "category": "c3-subject-4a20e085",
+        "topic": "c3-topic-4a20e085",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "gcp-architecture",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-50bb5888",
+        "category": "c3-subject-50bb5888",
+        "topic": "c3-topic-50bb5888",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 32
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "ha-web-app",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "api-security",
+        "topic": "object-level-authorization",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "tool-calling",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "context-engineering",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "rag",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 9
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "azure-load-balancer",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "cryptography",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-99a7fde1",
+        "category": "c3-subject-99a7fde1",
+        "topic": "c3-topic-99a7fde1",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "backup",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "soc-siem",
+        "topic": "escalation",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "aks",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "cloud-networking",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-21ae1643",
+        "category": "qb-subject-21ae1643",
+        "topic": "qb-topic-21ae1643",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-17a06d6a",
+        "category": "c3-subject-17a06d6a",
+        "topic": "c3-topic-17a06d6a",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "insecure-design",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-594e9d07",
+        "category": "c3-subject-594e9d07",
+        "topic": "c3-topic-594e9d07",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "paas",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-046de75a",
+        "category": "c3-subject-046de75a",
+        "topic": "c3-topic-046de75a",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-c6697fd7",
+        "category": "c3-subject-c6697fd7",
+        "topic": "c3-topic-c6697fd7",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-67ceecd0",
+        "category": "qb-subject-67ceecd0",
+        "topic": "qb-topic-67ceecd0",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "retrieval",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "ai-security",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "resources",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "sre",
+        "topic": "toil",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c4-dom-fc95512c",
+        "category": "c4-sub-fc95512c",
+        "topic": "c4-top-fc95512c",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "shared-responsibility",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-47f85913",
+        "category": "c3-subject-47f85913",
+        "topic": "c3-topic-47f85913",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-c6697fd7",
+        "category": "c3-subject-c6697fd7",
+        "topic": "c3-topic-c6697fd7",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-d0ac0e3e",
+        "category": "c3-subject-d0ac0e3e",
+        "topic": "c3-topic-d0ac0e3e",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "secure-coding",
+        "topic": "output-encoding",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "docker-networks",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-47f85913",
+        "category": "c3-subject-47f85913",
+        "topic": "c3-topic-47f85913",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "technical",
+        "category": "operating-systems",
+        "topic": "core-concepts",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-e6ca4d33",
+        "category": "c3-subject-e6ca4d33",
+        "topic": "c3-topic-e6ca4d33",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "misconfiguration",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "grammar",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "capex-opex",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "private-networking",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "simple-interest",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-05f3fca1",
+        "category": "qb-subject-05f3fca1",
+        "topic": "qb-topic-05f3fca1",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "agent-fundamentals",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-def78030",
+        "category": "c3-subject-def78030",
+        "topic": "c3-topic-def78030",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "init-clone",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-e0cf20a5",
+        "category": "qb-subject-e0cf20a5",
+        "topic": "qb-topic-e0cf20a5",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-aeffa725",
+        "category": "qb-subject-aeffa725",
+        "topic": "qb-topic-aeffa725",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-11f4cdeb",
+        "category": "c3-subject-11f4cdeb",
+        "topic": "c3-topic-11f4cdeb",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-5f09e5c6",
+        "category": "c3-subject-5f09e5c6",
+        "topic": "c3-topic-5f09e5c6",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-05f3fca1",
+        "category": "qb-subject-05f3fca1",
+        "topic": "qb-topic-05f3fca1",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "security-groups",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "git-workflows",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "cluster-node",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "sli-slo-sla",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-a9e4f5a0",
+        "category": "c3-subject-a9e4f5a0",
+        "topic": "c3-topic-a9e4f5a0",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "deployment-patterns",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "event-grid",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-78a3821b",
+        "category": "c3-subject-78a3821b",
+        "topic": "c3-topic-78a3821b",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 32
+      },
+      {
+        "domain": "qb-domain-aeffa725",
+        "category": "qb-subject-aeffa725",
+        "topic": "qb-topic-aeffa725",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "metrics",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "cost-optimization",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "route-tables",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "processes",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "cloudtrail",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "rolling-update",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "privileged-access",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "authentication",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "nsgs",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "sso",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-76b3124e",
+        "category": "c3-subject-76b3124e",
+        "topic": "c3-topic-76b3124e",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "pull-requests",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-11f4cdeb",
+        "category": "c3-subject-11f4cdeb",
+        "topic": "c3-topic-11f4cdeb",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-3df74df2",
+        "category": "qb-subject-3df74df2",
+        "topic": "qb-topic-3df74df2",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "qb-domain-67ceecd0",
+        "category": "qb-subject-67ceecd0",
+        "topic": "qb-topic-67ceecd0",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-12636938",
+        "category": "c3-subject-12636938",
+        "topic": "c3-topic-12636938",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 32
+      },
+      {
+        "domain": "c3-domain-27191ca9",
+        "category": "c3-subject-27191ca9",
+        "topic": "c3-topic-27191ca9",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "azure-monitor",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-fe4ee741",
+        "category": "qb-subject-fe4ee741",
+        "topic": "qb-topic-fe4ee741",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-52464e58",
+        "category": "c3-subject-52464e58",
+        "topic": "c3-topic-52464e58",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-98c79e1f",
+        "category": "c3-subject-98c79e1f",
+        "topic": "c3-topic-98c79e1f",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-594e9d07",
+        "category": "c3-subject-594e9d07",
+        "topic": "c3-topic-594e9d07",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "agent-loops",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 3
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "transformers",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "cherry-pick",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-78a3821b",
+        "category": "c3-subject-78a3821b",
+        "topic": "c3-topic-78a3821b",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "jobready-studio",
+        "category": "studio-practice",
+        "topic": "studio-saturday-001",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 40
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "rds",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-efdf3e4f",
+        "category": "aptitude-efdf3e4f",
+        "topic": "tsd-efdf3e4f",
+        "difficulty": "easy",
+        "is_active": false,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-3df74df2",
+        "category": "qb-subject-3df74df2",
+        "topic": "qb-topic-3df74df2",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-a73ad376",
+        "category": "c3-subject-a73ad376",
+        "topic": "c3-topic-a73ad376",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "ai-system-design",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "fault-tolerance",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "golden-signals",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-fdb1da15",
+        "category": "qb-subject-fdb1da15",
+        "topic": "qb-topic-fdb1da15",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "iaas",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-cd1e59a1",
+        "category": "c3-subject-cd1e59a1",
+        "topic": "c3-topic-cd1e59a1",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-50bb5888",
+        "category": "c3-subject-50bb5888",
+        "topic": "c3-topic-50bb5888",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "c3-domain-a58a2b4c",
+        "category": "c3-subject-a58a2b4c",
+        "topic": "c3-topic-a58a2b4c",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "cloudwatch",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-f9cb8b72",
+        "category": "qb-subject-f9cb8b72",
+        "topic": "qb-topic-f9cb8b72",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "aws-architecture",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "mcp-fundamentals",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 3
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "zero-shot",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-e5b658b2",
+        "category": "c3-subject-e5b658b2",
+        "topic": "c3-topic-e5b658b2",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-9be0ad39",
+        "category": "c3-subject-9be0ad39",
+        "topic": "c3-topic-9be0ad39",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c4-dom-b961f8e8",
+        "category": "c4-sub-b961f8e8",
+        "topic": "c4-top-b961f8e8",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "package-management",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-441e98db",
+        "category": "c3-subject-441e98db",
+        "topic": "c3-topic-441e98db",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "vpc",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-5ce3707c",
+        "category": "c3-subject-5ce3707c",
+        "topic": "c3-topic-5ce3707c",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "networking-commands",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "tls",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-bf2d2c39",
+        "category": "c3-subject-bf2d2c39",
+        "topic": "c3-topic-bf2d2c39",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-faa7354c",
+        "category": "c3-subject-faa7354c",
+        "topic": "c3-topic-faa7354c",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-52464e58",
+        "category": "c3-subject-52464e58",
+        "topic": "c3-topic-52464e58",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-441e98db",
+        "category": "c3-subject-441e98db",
+        "topic": "c3-topic-441e98db",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "api-gateway",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "virtual-machines",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-057924f1",
+        "category": "c3-subject-057924f1",
+        "topic": "c3-topic-057924f1",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-security",
+        "topic": "cloud-least-privilege",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-22b0c0f6",
+        "category": "c3-subject-22b0c0f6",
+        "topic": "c3-topic-22b0c0f6",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "rbac",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "transformers",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 4
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "llm-fundamentals",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 6
+      },
+      {
+        "domain": "c4-dom-09da817d",
+        "category": "c4-sub-09da817d",
+        "topic": "c4-top-09da817d",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "vulnerability-management",
+        "topic": "exceptions",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-a9e4f5a0",
+        "category": "c3-subject-a9e4f5a0",
+        "topic": "c3-topic-a9e4f5a0",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-2ce2f56a",
+        "category": "c3-subject-2ce2f56a",
+        "topic": "c3-topic-2ce2f56a",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "pull-fetch-push",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "revert",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "mcp-fundamentals",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 3
+      },
+      {
+        "domain": "qb-domain-21ae1643",
+        "category": "qb-subject-21ae1643",
+        "topic": "qb-topic-21ae1643",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "pipeline-stages",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "load-balancing",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-c207b032",
+        "category": "qb-subject-c207b032",
+        "topic": "qb-topic-c207b032",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-d1ac6aa0",
+        "category": "c3-subject-d1ac6aa0",
+        "topic": "c3-topic-d1ac6aa0",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "multi-stage",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-441e98db",
+        "category": "c3-subject-441e98db",
+        "topic": "c3-topic-441e98db",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "dynamodb",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-c207b032",
+        "category": "qb-subject-c207b032",
+        "topic": "qb-topic-c207b032",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "bigquery",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "technical",
+        "category": "dbms",
+        "topic": "concepts",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-2ce2f56a",
+        "category": "c3-subject-2ce2f56a",
+        "topic": "c3-topic-2ce2f56a",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "azure-architecture",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "deployment",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-05bb60e7",
+        "category": "c3-subject-05bb60e7",
+        "topic": "c3-topic-05bb60e7",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "soc-siem",
+        "topic": "false-positives",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "serverless-concepts",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "secure-coding",
+        "topic": "dependency-security",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-31b51803",
+        "category": "c3-subject-31b51803",
+        "topic": "c3-topic-31b51803",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "build-test",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-2ce2f56a",
+        "category": "c3-subject-2ce2f56a",
+        "topic": "c3-topic-2ce2f56a",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-046de75a",
+        "category": "c3-subject-046de75a",
+        "topic": "c3-topic-046de75a",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-58377b79",
+        "category": "c3-subject-58377b79",
+        "topic": "c3-topic-58377b79",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-05bb60e7",
+        "category": "c3-subject-05bb60e7",
+        "topic": "c3-topic-05bb60e7",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-6a418108",
+        "category": "c3-subject-6a418108",
+        "topic": "c3-topic-6a418108",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "merge",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-faa7354c",
+        "category": "c3-subject-faa7354c",
+        "topic": "c3-topic-faa7354c",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "api-backend",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "log-analytics",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-aa87268f",
+        "category": "qb-subject-aa87268f",
+        "topic": "qb-topic-aa87268f",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-9be0ad39",
+        "category": "c3-subject-9be0ad39",
+        "topic": "c3-topic-9be0ad39",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-f7f6ea3b",
+        "category": "c3-subject-f7f6ea3b",
+        "topic": "c3-topic-f7f6ea3b",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "dockerfile",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "images",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "technical",
+        "category": "git",
+        "topic": "workflow",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "service",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "shell-basics",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-be0125bc",
+        "category": "c3-subject-be0125bc",
+        "topic": "c3-topic-be0125bc",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-fdb1da15",
+        "category": "qb-subject-fdb1da15",
+        "topic": "qb-topic-fdb1da15",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "cicd-secrets",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-4895325b",
+        "category": "c3-subject-4895325b",
+        "topic": "c3-topic-4895325b",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "disaster-recovery",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-security",
+        "topic": "cloud-logging",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "cloud-models",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-1086320e",
+        "category": "c3-subject-1086320e",
+        "topic": "c3-topic-1086320e",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "cyber-cloud-security",
+        "topic": "public-storage",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-12636938",
+        "category": "c3-subject-12636938",
+        "topic": "c3-topic-12636938",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "k8s-secrets",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c4-dom-e29082a2",
+        "category": "c4-sub-e29082a2",
+        "topic": "c4-top-e29082a2",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "incident-response",
+        "topic": "preparation",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-e0cf20a5",
+        "category": "qb-subject-e0cf20a5",
+        "topic": "qb-topic-e0cf20a5",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "secrets",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "rebase",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "compute-engine",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-6727a180",
+        "category": "c3-subject-6727a180",
+        "topic": "c3-topic-6727a180",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "docker-troubleshooting",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-security",
+        "topic": "data-protection",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "elasticity",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-6301201f",
+        "category": "c3-subject-6301201f",
+        "topic": "c3-topic-6301201f",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "qb-domain-aa87268f",
+        "category": "qb-subject-aa87268f",
+        "topic": "qb-topic-aa87268f",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "application-gateway",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "soc-siem",
+        "topic": "playbooks",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-24632c9d",
+        "category": "c3-subject-24632c9d",
+        "topic": "c3-topic-24632c9d",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-98c79e1f",
+        "category": "c3-subject-98c79e1f",
+        "topic": "c3-topic-98c79e1f",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-046de75a",
+        "category": "c3-subject-046de75a",
+        "topic": "c3-topic-046de75a",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "transformers",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 4
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "secrets-management",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "vulnerability-management",
+        "topic": "discovery",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-f7f6ea3b",
+        "category": "c3-subject-f7f6ea3b",
+        "topic": "c3-topic-f7f6ea3b",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "managed-services",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "github-actions",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "architecture-monitoring",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-fe4ee741",
+        "category": "qb-subject-fe4ee741",
+        "topic": "qb-topic-fe4ee741",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-aa87268f",
+        "category": "qb-subject-aa87268f",
+        "topic": "qb-topic-aa87268f",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "vulnerability-management",
+        "topic": "remediation",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-security",
+        "topic": "cloud-identity",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-a58a2b4c",
+        "category": "c3-subject-a58a2b4c",
+        "topic": "c3-topic-a58a2b4c",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "branching-strategy",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "api-security",
+        "topic": "schema-enforcement",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-566761a0",
+        "category": "c3-subject-566761a0",
+        "topic": "c3-topic-566761a0",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 32
+      },
+      {
+        "domain": "technical",
+        "category": "oop",
+        "topic": "principles",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "sre",
+        "topic": "incident-management",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "add-commit",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "variables-outputs",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "service-identities",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-719a5826",
+        "category": "qb-subject-719a5826",
+        "topic": "qb-topic-719a5826",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "alerting",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-fbcf89f5",
+        "category": "c3-subject-fbcf89f5",
+        "topic": "c3-topic-fbcf89f5",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "llm-fundamentals",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 7
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "gcp-vpc",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "rbac",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-5f59f42e",
+        "category": "c3-subject-5f59f42e",
+        "topic": "c3-topic-5f59f42e",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-fba3ae84",
+        "category": "c3-subject-fba3ae84",
+        "topic": "c3-topic-fba3ae84",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c4-dom-a05127ef",
+        "category": "c4-sub-a05127ef",
+        "topic": "c4-top-a05127ef",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "destroy",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "devops-core",
+        "topic": "ci-cd",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-15725bc3",
+        "category": "c3-subject-15725bc3",
+        "topic": "c3-topic-15725bc3",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "iac",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "logs",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "ports",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "technical",
+        "category": "python",
+        "topic": "fundamentals",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-205fb218",
+        "category": "c3-subject-205fb218",
+        "topic": "c3-topic-205fb218",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-44d3c15e",
+        "category": "qb-subject-44d3c15e",
+        "topic": "qb-topic-44d3c15e",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-ce5eb597",
+        "category": "c3-subject-ce5eb597",
+        "topic": "c3-topic-ce5eb597",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "saas",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-a23d15d5",
+        "category": "c3-subject-a23d15d5",
+        "topic": "c3-topic-a23d15d5",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "lambda",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-f9cb8b72",
+        "category": "qb-subject-f9cb8b72",
+        "topic": "qb-topic-f9cb8b72",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "dns",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "agent-fundamentals",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-5f59f42e",
+        "category": "c3-subject-5f59f42e",
+        "topic": "c3-topic-5f59f42e",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "app-service",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-fde2f71b",
+        "category": "c3-subject-fde2f71b",
+        "topic": "c3-topic-fde2f71b",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "qb-domain-00243b4b",
+        "category": "qb-subject-00243b4b",
+        "topic": "qb-topic-00243b4b",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-be0125bc",
+        "category": "c3-subject-be0125bc",
+        "topic": "c3-topic-be0125bc",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-11f4cdeb",
+        "category": "c3-subject-11f4cdeb",
+        "topic": "c3-topic-11f4cdeb",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "multi-agent-systems",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "layers",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "virtualization",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-99a7fde1",
+        "category": "c3-subject-99a7fde1",
+        "topic": "c3-topic-99a7fde1",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "api-security",
+        "topic": "rate-limiting",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "remote-state",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-764d7bfd",
+        "category": "aptitude-764d7bfd",
+        "topic": "tsd-764d7bfd",
+        "difficulty": "easy",
+        "is_active": false,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-a73ad376",
+        "category": "c3-subject-a73ad376",
+        "topic": "c3-topic-a73ad376",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "ssrf-concepts",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "azure-functions",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-f9cb8b72",
+        "category": "qb-subject-f9cb8b72",
+        "topic": "qb-topic-f9cb8b72",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-a58a2b4c",
+        "category": "c3-subject-a58a2b4c",
+        "topic": "c3-topic-a58a2b4c",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "zz-c1-2218b08b",
+        "category": "aptitude-2218b08b",
+        "topic": "tsd-2218b08b",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "opentelemetry",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-4895325b",
+        "category": "c3-subject-4895325b",
+        "topic": "c3-topic-4895325b",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "incident-response",
+        "topic": "lessons-learned",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "branch",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "ecs",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "environments",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-1086320e",
+        "category": "c3-subject-1086320e",
+        "topic": "c3-topic-1086320e",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-58377b79",
+        "category": "c3-subject-58377b79",
+        "topic": "c3-topic-58377b79",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "sql-injection",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "structured-outputs",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "soc-siem",
+        "topic": "events-alerts",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "ai-system-design",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-5f59f42e",
+        "category": "c3-subject-5f59f42e",
+        "topic": "c3-topic-5f59f42e",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-be0125bc",
+        "category": "c3-subject-be0125bc",
+        "topic": "c3-topic-be0125bc",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-f3bc5d12",
+        "category": "c3-subject-f3bc5d12",
+        "topic": "c3-topic-f3bc5d12",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "tool-calling",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 3
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "environment-variables",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "percentages",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "build-run",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-26c6a486",
+        "category": "c3-subject-26c6a486",
+        "topic": "c3-topic-26c6a486",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c4-dom-18a49c1c",
+        "category": "c4-sub-18a49c1c",
+        "topic": "c4-top-18a49c1c",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-f3bc5d12",
+        "category": "c3-subject-f3bc5d12",
+        "topic": "c3-topic-f3bc5d12",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "availability-zones",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "compound-interest",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "syllogisms",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "route-53",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "retrieval",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "health-checks",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-15725bc3",
+        "category": "c3-subject-15725bc3",
+        "topic": "c3-topic-15725bc3",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-1086320e",
+        "category": "c3-subject-1086320e",
+        "topic": "c3-topic-1086320e",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "sns",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "vulnerability-management",
+        "topic": "prioritization",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "http-https",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-566761a0",
+        "category": "c3-subject-566761a0",
+        "topic": "c3-topic-566761a0",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "qb-domain-fdb1da15",
+        "category": "qb-subject-fdb1da15",
+        "topic": "qb-topic-fdb1da15",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "entra-id",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c4-dom-e79d969c",
+        "category": "c4-sub-e79d969c",
+        "topic": "c4-top-e79d969c",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-17a06d6a",
+        "category": "c3-subject-17a06d6a",
+        "topic": "c3-topic-17a06d6a",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-cb3778b6",
+        "category": "qb-subject-cb3778b6",
+        "topic": "qb-topic-cb3778b6",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "storage-types",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "file-upload",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "soc-siem",
+        "topic": "soc-roles",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-4a20e085",
+        "category": "c3-subject-4a20e085",
+        "topic": "c3-topic-4a20e085",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "api-security",
+        "topic": "tokens",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "aws-security",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "owasp",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "llm-fundamentals",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "tool-calling",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "c3-domain-5f09e5c6",
+        "category": "c3-subject-5f09e5c6",
+        "topic": "c3-topic-5f09e5c6",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "soc-siem",
+        "topic": "siem",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "rag",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 4
+      },
+      {
+        "domain": "qb-domain-719a5826",
+        "category": "qb-subject-719a5826",
+        "topic": "qb-topic-719a5826",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "vpn",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "k8s-troubleshooting",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "cyber-cloud-security",
+        "topic": "cyber-cloud-identity",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "zero-trust",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-031d723b",
+        "category": "aptitude-031d723b",
+        "topic": "tsd-031d723b",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "virtual-networks",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "k8s-rbac",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-6301201f",
+        "category": "c3-subject-6301201f",
+        "topic": "c3-topic-6301201f",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "modules",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "permissions",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-5b95fb86",
+        "category": "c3-subject-5b95fb86",
+        "topic": "c3-topic-5b95fb86",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "database-selection",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-4a20e085",
+        "category": "c3-subject-4a20e085",
+        "topic": "c3-topic-4a20e085",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "service-bus",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "soc-siem",
+        "topic": "detection-rules",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-78a3821b",
+        "category": "c3-subject-78a3821b",
+        "topic": "c3-topic-78a3821b",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "defense-in-depth",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "embeddings",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "users-groups",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "embeddings",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 3
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "attack-surface",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c4-dom-ab40cef8",
+        "category": "c4-sub-ab40cef8",
+        "topic": "c4-top-ab40cef8",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "services",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-03158f9a",
+        "category": "aptitude-03158f9a",
+        "topic": "tsd-03158f9a",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "cosmos-db",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c4-dom-a842a246",
+        "category": "c4-sub-a842a246",
+        "topic": "c4-top-a842a246",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-faa7354c",
+        "category": "c3-subject-faa7354c",
+        "topic": "c3-topic-faa7354c",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "s3",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "time-and-work",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-aeffa725",
+        "category": "qb-subject-aeffa725",
+        "topic": "qb-topic-aeffa725",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "qb-domain-cb3778b6",
+        "category": "qb-subject-cb3778b6",
+        "topic": "qb-topic-cb3778b6",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "ingress",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-205fb218",
+        "category": "c3-subject-205fb218",
+        "topic": "c3-topic-205fb218",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "iam",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-b88aaea1",
+        "category": "c3-subject-b88aaea1",
+        "topic": "c3-topic-b88aaea1",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "mfa",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-3df74df2",
+        "category": "qb-subject-3df74df2",
+        "topic": "qb-topic-3df74df2",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "zz-c1-fin-8bf0c6f7",
+        "category": "aptitude-fin-8bf0c6f7",
+        "topic": "tsd-fin-8bf0c6f7",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-a73ad376",
+        "category": "c3-subject-a73ad376",
+        "topic": "c3-topic-a73ad376",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "storage-accounts",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "gcp-functions",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-00243b4b",
+        "category": "qb-subject-00243b4b",
+        "topic": "qb-topic-00243b4b",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "state",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-def78030",
+        "category": "c3-subject-def78030",
+        "topic": "c3-topic-def78030",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-86fb61d8",
+        "category": "c3-subject-86fb61d8",
+        "topic": "c3-topic-86fb61d8",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "volumes",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "least-privilege",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "instruction-design",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-99a7fde1",
+        "category": "c3-subject-99a7fde1",
+        "topic": "c3-topic-99a7fde1",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "cloud-run",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-bf2d2c39",
+        "category": "c3-subject-bf2d2c39",
+        "topic": "c3-topic-bf2d2c39",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "container-security",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-22b0c0f6",
+        "category": "c3-subject-22b0c0f6",
+        "topic": "c3-topic-22b0c0f6",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-44d3c15e",
+        "category": "qb-subject-44d3c15e",
+        "topic": "qb-topic-44d3c15e",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "jobready-studio",
+        "category": "studio-practice",
+        "topic": "studio-saturday-001",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 12
+      },
+      {
+        "domain": "c3-domain-b88aaea1",
+        "category": "c3-subject-b88aaea1",
+        "topic": "c3-topic-b88aaea1",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "secret-manager",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c4-dom-8d88c583",
+        "category": "c4-sub-8d88c583",
+        "topic": "c4-top-8d88c583",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "api-security",
+        "topic": "api-authentication",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "firewalls",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "sre",
+        "topic": "resilience",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "sre",
+        "topic": "reliability",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-a9e4f5a0",
+        "category": "c3-subject-a9e4f5a0",
+        "topic": "c3-topic-a9e4f5a0",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-21ae1643",
+        "category": "qb-subject-21ae1643",
+        "topic": "qb-topic-21ae1643",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "blob-storage",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "secure-coding",
+        "topic": "deserialization",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "few-shot",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "auto-scaling",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-26c6a486",
+        "category": "c3-subject-26c6a486",
+        "topic": "c3-topic-26c6a486",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-15725bc3",
+        "category": "c3-subject-15725bc3",
+        "topic": "c3-topic-15725bc3",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "azure-cost",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-31b51803",
+        "category": "c3-subject-31b51803",
+        "topic": "c3-topic-31b51803",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 32
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "access-control",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-22b0c0f6",
+        "category": "c3-subject-22b0c0f6",
+        "topic": "c3-topic-22b0c0f6",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "pubsub",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-057924f1",
+        "category": "c3-subject-057924f1",
+        "topic": "c3-topic-057924f1",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "ec2",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "incident-response",
+        "topic": "eradication",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-00243b4b",
+        "category": "qb-subject-00243b4b",
+        "topic": "qb-topic-00243b4b",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-76b3124e",
+        "category": "c3-subject-76b3124e",
+        "topic": "c3-topic-76b3124e",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "technical",
+        "category": "sql",
+        "topic": "queries",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "analytics-pipeline",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "event-processing",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "xss-concepts",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-50bb5888",
+        "category": "c3-subject-50bb5888",
+        "topic": "c3-topic-50bb5888",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "security-fundamentals",
+        "topic": "security-controls",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "docker",
+        "topic": "image-optimization",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-cd1e59a1",
+        "category": "c3-subject-cd1e59a1",
+        "topic": "c3-topic-cd1e59a1",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "sre",
+        "topic": "capacity",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "auth-failures",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "nat",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "sre",
+        "topic": "error-budgets",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "ai-agents",
+        "topic": "multi-agent-systems",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "traces",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "instruction-design",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "structured-outputs",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-ce5eb597",
+        "category": "c3-subject-ce5eb597",
+        "topic": "c3-topic-ce5eb597",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-fundamentals",
+        "topic": "scalability",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "pipes",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "autoscaling",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "secure-coding",
+        "topic": "parameterized-queries",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "ai-security",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 5
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "pod",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "ai-system-design",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 3
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "cloud-storage",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-05bb60e7",
+        "category": "c3-subject-05bb60e7",
+        "topic": "c3-topic-05bb60e7",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "soc-siem",
+        "topic": "triage",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-6301201f",
+        "category": "c3-subject-6301201f",
+        "topic": "c3-topic-6301201f",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "few-shot",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-fba3ae84",
+        "category": "c3-subject-fba3ae84",
+        "topic": "c3-topic-fba3ae84",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "artifacts",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-47f85913",
+        "category": "c3-subject-47f85913",
+        "topic": "c3-topic-47f85913",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "secure-coding",
+        "topic": "error-handling",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "drift",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "cicd",
+        "topic": "gitlab-ci",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "technical",
+        "category": "machine-learning",
+        "topic": "fundamentals",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "find",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "ids-ips",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "prompt-evaluation",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "incident-response",
+        "topic": "recovery",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "azure",
+        "topic": "key-vault",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-e5b658b2",
+        "category": "c3-subject-e5b658b2",
+        "topic": "c3-topic-e5b658b2",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-98c79e1f",
+        "category": "c3-subject-98c79e1f",
+        "topic": "c3-topic-98c79e1f",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "configmap",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "tcp-ip",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "plan-apply",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "terraform",
+        "topic": "providers",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-fin-05bf9ec3",
+        "category": "aptitude-fin-05bf9ec3",
+        "topic": "tsd-fin-05bf9ec3",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-58377b79",
+        "category": "c3-subject-58377b79",
+        "topic": "c3-topic-58377b79",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "directions",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "git",
+        "topic": "reset",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "abac",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "ai-security",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 3
+      },
+      {
+        "domain": "qb-domain-719a5826",
+        "category": "qb-subject-719a5826",
+        "topic": "qb-topic-719a5826",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-def78030",
+        "category": "c3-subject-def78030",
+        "topic": "c3-topic-def78030",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-24632c9d",
+        "category": "c3-subject-24632c9d",
+        "topic": "c3-topic-24632c9d",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "eks",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "injection-concepts",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "sqs",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "iam",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "observability",
+        "topic": "prometheus",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "linux",
+        "topic": "filesystem",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "zz-c1-fin-8e755c82",
+        "category": "aptitude-fin-8e755c82",
+        "topic": "tsd-fin-8e755c82",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "placement",
+        "category": "aptitude",
+        "topic": "probability",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "gcp-monitoring",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "segmentation",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-fde2f71b",
+        "category": "c3-subject-fde2f71b",
+        "topic": "c3-topic-fde2f71b",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-ce5eb597",
+        "category": "c3-subject-ce5eb597",
+        "topic": "c3-topic-ce5eb597",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "c3-domain-fbcf89f5",
+        "category": "c3-subject-fbcf89f5",
+        "topic": "c3-topic-fbcf89f5",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "vulnerability-management",
+        "topic": "cvss",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "llm-evaluation",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "cloud",
+        "category": "cloud-architecture",
+        "topic": "serverless-workload",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "kms",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "qb-domain-e0cf20a5",
+        "category": "qb-subject-e0cf20a5",
+        "topic": "qb-topic-e0cf20a5",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-e6ca4d33",
+        "category": "c3-subject-e6ca4d33",
+        "topic": "c3-topic-e6ca4d33",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "qb-domain-05f3fca1",
+        "category": "qb-subject-05f3fca1",
+        "topic": "qb-topic-05f3fca1",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "qb-domain-cb3778b6",
+        "category": "qb-subject-cb3778b6",
+        "topic": "qb-topic-cb3778b6",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "web-security",
+        "topic": "vulnerable-components",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "cyber-cloud-security",
+        "topic": "key-management",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-594e9d07",
+        "category": "c3-subject-594e9d07",
+        "topic": "c3-topic-594e9d07",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c3-domain-f3bc5d12",
+        "category": "c3-subject-f3bc5d12",
+        "topic": "c3-topic-f3bc5d12",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "network-security",
+        "topic": "waf",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cybersecurity",
+        "category": "iam",
+        "topic": "credential-rotation",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "event-driven",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-31b51803",
+        "category": "c3-subject-31b51803",
+        "topic": "c3-topic-31b51803",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "llm-evaluation",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 2
+      },
+      {
+        "domain": "c3-domain-e5b658b2",
+        "category": "c3-subject-e5b658b2",
+        "topic": "c3-topic-e5b658b2",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "efs",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-566761a0",
+        "category": "c3-subject-566761a0",
+        "topic": "c3-topic-566761a0",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "c3-domain-6a418108",
+        "category": "c3-subject-6a418108",
+        "topic": "c3-topic-6a418108",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "c4-dom-9c31c785",
+        "category": "c4-sub-9c31c785",
+        "topic": "c4-top-9c31c785",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-b88aaea1",
+        "category": "c3-subject-b88aaea1",
+        "topic": "c3-topic-b88aaea1",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": false,
+        "count": 17
+      },
+      {
+        "domain": "qb-domain-fe4ee741",
+        "category": "qb-subject-fe4ee741",
+        "topic": "qb-topic-fe4ee741",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "cloud",
+        "category": "aws",
+        "topic": "ebs",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "devops",
+        "category": "kubernetes",
+        "topic": "namespace",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "c3-domain-fba3ae84",
+        "category": "c3-subject-fba3ae84",
+        "topic": "c3-topic-fba3ae84",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": false,
+        "count": 16
+      },
+      {
+        "domain": "ai",
+        "category": "generative-ai",
+        "topic": "rag",
+        "difficulty": "easy",
+        "is_active": true,
+        "is_sample": true,
+        "count": 5
+      },
+      {
+        "domain": "c3-domain-12636938",
+        "category": "c3-subject-12636938",
+        "topic": "c3-topic-12636938",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": false,
+        "count": 34
+      },
+      {
+        "domain": "cloud",
+        "category": "gcp",
+        "topic": "gke",
+        "difficulty": "medium",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      },
+      {
+        "domain": "ai",
+        "category": "prompt-engineering",
+        "topic": "prompt-injection",
+        "difficulty": "hard",
+        "is_active": true,
+        "is_sample": true,
+        "count": 1
+      }
+    ]
+  },
+  "notes": [
+    "Aptitude/technical MCQs share the practice Question engine.",
+    "DSA theory items live in technical MCQ seeds; DSA coding uses CodingProblem.",
+    "Learning Studio quizzes use separate studio Question links \u2014 not this Excel bank."
+  ]
+}

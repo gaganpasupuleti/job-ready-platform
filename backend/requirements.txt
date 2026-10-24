@@ -16,6 +16,7 @@ passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 python-multipart==0.0.20
 sqlglot==26.16.2
+openpyxl==3.1.5
 
 # Dev / test
 pytest==8.3.4

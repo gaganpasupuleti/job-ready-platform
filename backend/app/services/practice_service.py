@@ -15,6 +15,7 @@ class _SnapOption:
         self.option_text = data["option_text"]
         self.is_correct = bool(data["is_correct"])
         self.sort_order = data.get("sort_order", 0)
+        self.explanation = data.get("explanation")
 
 
 class _SnapQuestion:
@@ -45,6 +46,7 @@ def question_snapshot(question) -> dict:
                 "option_text": opt.option_text,
                 "is_correct": opt.is_correct,
                 "sort_order": opt.sort_order,
+                "explanation": getattr(opt, "explanation", None),
             }
             for opt in question.options
         ],
@@ -284,17 +286,27 @@ class PracticeService:
         if session.mode == PracticeMode.PRACTICE:
             topic_name = await self.question_repo.get_topic_name(question.topic_id)
             skills = await self.question_repo.get_skill_names(question.id)
+            correct_opts = [opt for opt in question.options if opt.is_correct]
+            selected_set = {str(option_id) for option_id in payload.selected_option_ids}
+            selected_opts = [opt for opt in question.options if str(opt.id) in selected_set]
             feedback = AnswerFeedback(
                 is_correct=is_correct,
                 marks_awarded=marks_awarded,
-                correct_option_ids=[opt.id for opt in question.options if opt.is_correct],
+                correct_option_ids=[opt.id for opt in correct_opts],
                 selected_option_ids=payload.selected_option_ids,
+                selected_option_texts=[opt.option_text for opt in selected_opts],
+                correct_option_texts=[opt.option_text for opt in correct_opts],
+                selected_option_explanation=(
+                    selected_opts[0].explanation if selected_opts else None
+                ),
                 explanation=question.explanation,
                 options=[
                     AnswerOptionFeedback(
                         id=opt.id,
                         option_text=opt.option_text,
                         is_correct=opt.is_correct,
+                        explanation=getattr(opt, "explanation", None),
+                        selected=str(opt.id) in selected_set,
                     )
                     for opt in question.options
                 ],

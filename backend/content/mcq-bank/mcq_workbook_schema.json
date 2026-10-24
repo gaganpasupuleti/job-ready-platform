@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jobready.dev/schemas/mcq-workbook-row-v1.json",
+  "title": "JobReady MCQ_Questions row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "content_key",
+    "bank_key",
+    "domain_slug",
+    "category_slug",
+    "topic_slug",
+    "difficulty",
+    "question_type",
+    "question_text",
+    "option_a",
+    "option_b",
+    "option_c",
+    "option_d",
+    "correct_option",
+    "explanation_a",
+    "explanation_b",
+    "explanation_c",
+    "explanation_d",
+    "solution_explanation",
+    "marks",
+    "negative_marks",
+    "estimated_time_seconds",
+    "status"
+  ],
+  "properties": {
+    "content_key": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,159}$" },
+    "bank_key": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,79}$" },
+    "domain_slug": { "type": "string", "minLength": 1 },
+    "category_slug": { "type": "string", "minLength": 1 },
+    "topic_slug": { "type": "string", "minLength": 1 },
+    "difficulty": { "enum": ["easy", "medium", "hard"] },
+    "question_type": { "const": "single_choice" },
+    "question_text": { "type": "string", "minLength": 1 },
+    "option_a": { "type": "string", "minLength": 1 },
+    "option_b": { "type": "string", "minLength": 1 },
+    "option_c": { "type": "string", "minLength": 1 },
+    "option_d": { "type": "string", "minLength": 1 },
+    "correct_option": { "enum": ["A", "B", "C", "D"] },
+    "explanation_a": { "type": "string" },
+    "explanation_b": { "type": "string" },
+    "explanation_c": { "type": "string" },
+    "explanation_d": { "type": "string" },
+    "solution_explanation": { "type": "string" },
+    "hint": { "type": "string" },
+    "marks": { "type": "number", "minimum": 0, "maximum": 100 },
+    "negative_marks": { "type": "number", "minimum": 0, "maximum": 100 },
+    "estimated_time_seconds": { "type": "integer", "minimum": 5, "maximum": 3600 },
+    "status": { "enum": ["draft", "published", "archived"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "published" } } },
+      "then": {
+        "properties": {
+          "explanation_a": { "minLength": 1 },
+          "explanation_b": { "minLength": 1 },
+          "explanation_c": { "minLength": 1 },
+          "explanation_d": { "minLength": 1 },
+          "solution_explanation": { "minLength": 1 }
+        }
+      }
+    }
+  ]
+}

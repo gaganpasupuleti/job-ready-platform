@@ -13,6 +13,7 @@ from app.api.v1 import (
     ai,
     admin_jobs,
     admin_library,
+    admin_mcq_bank,
     applications,
     assignments,
     auth,
@@ -62,6 +63,7 @@ api_router.include_router(admin_infra.router, tags=["admin-infra"])
 api_router.include_router(admin_content.router, tags=["admin-content"])
 api_router.include_router(admin_interviews.router, tags=["admin-interviews"])
 api_router.include_router(admin_jobs.router, tags=["admin-jobs"])
+api_router.include_router(admin_mcq_bank.router, tags=["admin-mcq-bank"])
 api_router.include_router(admin_library.router, tags=["admin-library"])
 api_router.include_router(admin_assignments.router, tags=["admin-assignments"])
 api_router.include_router(admin_support.router, tags=["admin-support"])

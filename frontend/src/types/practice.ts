@@ -117,8 +117,17 @@ export interface AnswerFeedback {
   marks_awarded: number
   correct_option_ids: string[]
   selected_option_ids: string[]
+  selected_option_texts?: string[]
+  correct_option_texts?: string[]
+  selected_option_explanation?: string | null
   explanation?: string | null
-  options: Array<{ id: string; option_text: string; is_correct: boolean }>
+  options: Array<{
+    id: string
+    option_text: string
+    is_correct: boolean
+    explanation?: string | null
+    selected?: boolean
+  }>
   topic_name?: string | null
   difficulty?: Difficulty | null
   skills: string[]

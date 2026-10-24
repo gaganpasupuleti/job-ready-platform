@@ -80,6 +80,7 @@ from app.models.studio import (
     LearningMaterialRead,
     LearningSyllabusEntry,
 )
+from app.models.mcq_bank import McqBankRegistry, McqImportRun, McqQuestionRevision
 from app.models.question import Question, QuestionOption
 from app.models.sql_practice import (
     SqlExpectedResult,
