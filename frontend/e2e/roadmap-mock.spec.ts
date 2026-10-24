@@ -155,7 +155,7 @@ test.describe('roadmap mock UI', () => {
 
     await page.setViewportSize({ width: 1366, height: 900 })
     await page.goto('/roadmaps')
-    await expect(page.getByRole('heading', { name: 'Career roadmaps' })).toBeVisible()
+    await expect(page.locator('#main-content').getByRole('heading', { name: 'Career roadmaps' })).toBeVisible()
     await page.screenshot({ path: path.join(SHOTS, 'catalog-light-1366.png'), fullPage: true })
 
     await page.goto('/roadmaps/api-design')
