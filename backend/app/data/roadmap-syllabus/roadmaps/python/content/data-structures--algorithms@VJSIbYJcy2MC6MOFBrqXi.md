@@ -1,0 +1,10 @@
+# Data Structures and Algorithms
+
+A data structure is a named location that can be used to store and organize data. And, an algorithm is a collection of steps to solve a particular problem. Learning data structures and algorithms allow us to write efficient and optimized computer programs.
+
+Visit the following resources to learn more:
+
+- [@roadmap@Visit Dedicated DSA Roadmap](https://roadmap.sh/datastructures-and-algorithms)
+- [@article@Hashmaps in Python: Master Implementation and Use Cases](https://roadmap.sh/python/hashmap)
+- [@article@Binary search in Python 101: Implementation and use cases](https://roadmap.sh/python/binary-search)
+- [@video@Data Structures Illustrated](https://www.youtube.com/playlist?list=PLkZYeFmDuaN2-KUIv-mvbjfKszIGJ4FaY)

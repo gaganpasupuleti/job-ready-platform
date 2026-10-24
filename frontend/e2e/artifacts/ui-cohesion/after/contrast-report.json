@@ -1,0 +1,254 @@
+[
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.01283315116291,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.722410784954462,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.01283315116291,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.722410784954462,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.01283315116291,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.722410784954462,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.01283315116291,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.722410784954462,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.01283315116291,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.792866597734846,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.722410784954462,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.703709875608487,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 10.831659956167055,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 7.916907352334414,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.703709875608487,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 10.831659956167055,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.703709875608487,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 10.831659956167055,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.703709875608487,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 10.831659956167055,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.703709875608487,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link"
+  },
+  {
+    "status": "pass",
+    "ratio": 10.831659956167055,
+    "selector": ".jr-action-link",
+    "surface": "library-action-link (hover)"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.317946827727747,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary"
+  },
+  {
+    "status": "pass",
+    "ratio": 8.703709875608487,
+    "selector": ".jr-btn[data-variant=\"primary\"]",
+    "surface": "jobs-primary (hover)"
+  }
+]

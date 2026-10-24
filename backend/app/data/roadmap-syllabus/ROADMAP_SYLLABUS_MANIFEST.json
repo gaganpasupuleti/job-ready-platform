@@ -1,0 +1,566 @@
+{
+  "source_repo": "kamranahmedse/developer-roadmap",
+  "source_commit": "e906c5f60c2e72623a73cce4bea51153b319c0d8",
+  "import_method": "sparse_git_clone",
+  "dest": "backend/app/data/roadmap-syllabus/roadmaps",
+  "slugs": [
+    {
+      "catalog_slug": "ai-agents",
+      "repo_slug": "ai-agents",
+      "files": 101,
+      "missing": false
+    },
+    {
+      "catalog_slug": "ai-data-scientist",
+      "repo_slug": "ai-data-scientist",
+      "files": 9,
+      "missing": false
+    },
+    {
+      "catalog_slug": "ai-engineer",
+      "repo_slug": "ai-engineer",
+      "files": 197,
+      "missing": false
+    },
+    {
+      "catalog_slug": "ai-product-builder",
+      "repo_slug": "ai-product-builder",
+      "files": 53,
+      "missing": false
+    },
+    {
+      "catalog_slug": "ai-red-teaming",
+      "repo_slug": "ai-red-teaming",
+      "files": 64,
+      "missing": false
+    },
+    {
+      "catalog_slug": "android",
+      "repo_slug": "android",
+      "files": 114,
+      "missing": false
+    },
+    {
+      "catalog_slug": "angular",
+      "repo_slug": "angular",
+      "files": 159,
+      "missing": false
+    },
+    {
+      "catalog_slug": "api-design",
+      "repo_slug": "api-design",
+      "files": 99,
+      "missing": false
+    },
+    {
+      "catalog_slug": "aspnet-core",
+      "repo_slug": "aspnet-core",
+      "files": 147,
+      "missing": false
+    },
+    {
+      "catalog_slug": "aws",
+      "repo_slug": "aws",
+      "files": 101,
+      "missing": false
+    },
+    {
+      "catalog_slug": "backend",
+      "repo_slug": "backend",
+      "files": 156,
+      "missing": false
+    },
+    {
+      "catalog_slug": "backend-beginner",
+      "repo_slug": "backend-beginner",
+      "files": 27,
+      "missing": false
+    },
+    {
+      "catalog_slug": "bi-analyst",
+      "repo_slug": "bi-analyst",
+      "files": 203,
+      "missing": false
+    },
+    {
+      "catalog_slug": "blockchain",
+      "repo_slug": "blockchain",
+      "files": 127,
+      "missing": false
+    },
+    {
+      "catalog_slug": "c",
+      "repo_slug": "c",
+      "files": 147,
+      "missing": false
+    },
+    {
+      "catalog_slug": "claude-code",
+      "repo_slug": "claude-code",
+      "files": 117,
+      "missing": false
+    },
+    {
+      "catalog_slug": "cloudflare",
+      "repo_slug": "cloudflare",
+      "files": 98,
+      "missing": false
+    },
+    {
+      "catalog_slug": "code-review",
+      "repo_slug": "code-review",
+      "files": 6,
+      "missing": false
+    },
+    {
+      "catalog_slug": "computer-science",
+      "repo_slug": "computer-science",
+      "files": 188,
+      "missing": false
+    },
+    {
+      "catalog_slug": "cpp",
+      "repo_slug": "cpp",
+      "files": 128,
+      "missing": false
+    },
+    {
+      "catalog_slug": "css",
+      "repo_slug": "css",
+      "files": 104,
+      "missing": false
+    },
+    {
+      "catalog_slug": "cyber-security",
+      "repo_slug": "cyber-security",
+      "files": 302,
+      "missing": false
+    },
+    {
+      "catalog_slug": "data-analyst",
+      "repo_slug": "data-analyst",
+      "files": 102,
+      "missing": false
+    },
+    {
+      "catalog_slug": "data-engineer",
+      "repo_slug": "data-engineer",
+      "files": 190,
+      "missing": false
+    },
+    {
+      "catalog_slug": "datastructures-and-algorithms",
+      "repo_slug": "datastructures-and-algorithms",
+      "files": 107,
+      "missing": false
+    },
+    {
+      "catalog_slug": "design-system",
+      "repo_slug": "design-system",
+      "files": 124,
+      "missing": false
+    },
+    {
+      "catalog_slug": "devops",
+      "repo_slug": "devops",
+      "files": 140,
+      "missing": false
+    },
+    {
+      "catalog_slug": "devops-beginner",
+      "repo_slug": "devops-beginner",
+      "files": 13,
+      "missing": false
+    },
+    {
+      "catalog_slug": "devrel",
+      "repo_slug": "devrel",
+      "files": 142,
+      "missing": false
+    },
+    {
+      "catalog_slug": "devsecops",
+      "repo_slug": "devsecops",
+      "files": 94,
+      "missing": false
+    },
+    {
+      "catalog_slug": "django",
+      "repo_slug": "django",
+      "files": 113,
+      "missing": false
+    },
+    {
+      "catalog_slug": "docker",
+      "repo_slug": "docker",
+      "files": 56,
+      "missing": false
+    },
+    {
+      "catalog_slug": "elasticsearch",
+      "repo_slug": "elasticsearch",
+      "files": 113,
+      "missing": false
+    },
+    {
+      "catalog_slug": "engineering-manager",
+      "repo_slug": "engineering-manager",
+      "files": 133,
+      "missing": false
+    },
+    {
+      "catalog_slug": "flutter",
+      "repo_slug": "flutter",
+      "files": 108,
+      "missing": false
+    },
+    {
+      "catalog_slug": "forward-deployed-engineer",
+      "repo_slug": "forward-deployed-engineer",
+      "files": 97,
+      "missing": false
+    },
+    {
+      "catalog_slug": "frontend",
+      "repo_slug": "frontend",
+      "files": 121,
+      "missing": false
+    },
+    {
+      "catalog_slug": "frontend-beginner",
+      "repo_slug": "frontend-beginner",
+      "files": 9,
+      "missing": false
+    },
+    {
+      "catalog_slug": "full-stack",
+      "repo_slug": "full-stack",
+      "files": 37,
+      "missing": false
+    },
+    {
+      "catalog_slug": "game-developer",
+      "repo_slug": "game-developer",
+      "files": 144,
+      "missing": false
+    },
+    {
+      "catalog_slug": "git-github",
+      "repo_slug": "git-github",
+      "files": 155,
+      "missing": false
+    },
+    {
+      "catalog_slug": "git-github-beginner",
+      "repo_slug": "git-github-beginner",
+      "files": 5,
+      "missing": false
+    },
+    {
+      "catalog_slug": "golang",
+      "repo_slug": "golang",
+      "files": 172,
+      "missing": false
+    },
+    {
+      "catalog_slug": "graphql",
+      "repo_slug": "graphql",
+      "files": 66,
+      "missing": false
+    },
+    {
+      "catalog_slug": "html",
+      "repo_slug": "html",
+      "files": 88,
+      "missing": false
+    },
+    {
+      "catalog_slug": "ios",
+      "repo_slug": "ios",
+      "files": 170,
+      "missing": false
+    },
+    {
+      "catalog_slug": "java",
+      "repo_slug": "java",
+      "files": 88,
+      "missing": false
+    },
+    {
+      "catalog_slug": "javascript",
+      "repo_slug": "javascript",
+      "files": 126,
+      "missing": false
+    },
+    {
+      "catalog_slug": "kotlin",
+      "repo_slug": "kotlin",
+      "files": 153,
+      "missing": false
+    },
+    {
+      "catalog_slug": "kubernetes",
+      "repo_slug": "kubernetes",
+      "files": 67,
+      "missing": false
+    },
+    {
+      "catalog_slug": "laravel",
+      "repo_slug": "laravel",
+      "files": 104,
+      "missing": false
+    },
+    {
+      "catalog_slug": "leetcode",
+      "repo_slug": "leetcode",
+      "files": 156,
+      "missing": false
+    },
+    {
+      "catalog_slug": "linux",
+      "repo_slug": "linux",
+      "files": 102,
+      "missing": false
+    },
+    {
+      "catalog_slug": "machine-learning",
+      "repo_slug": "machine-learning",
+      "files": 150,
+      "missing": false
+    },
+    {
+      "catalog_slug": "mlops",
+      "repo_slug": "mlops",
+      "files": 62,
+      "missing": false
+    },
+    {
+      "catalog_slug": "mongodb",
+      "repo_slug": "mongodb",
+      "files": 106,
+      "missing": false
+    },
+    {
+      "catalog_slug": "network-engineer",
+      "repo_slug": "network-engineer",
+      "files": 202,
+      "missing": false
+    },
+    {
+      "catalog_slug": "nextjs",
+      "repo_slug": "nextjs",
+      "files": 94,
+      "missing": false
+    },
+    {
+      "catalog_slug": "nodejs",
+      "repo_slug": "nodejs",
+      "files": 113,
+      "missing": false
+    },
+    {
+      "catalog_slug": "openclaw",
+      "repo_slug": "openclaw",
+      "files": 122,
+      "missing": false
+    },
+    {
+      "catalog_slug": "php",
+      "repo_slug": "php",
+      "files": 121,
+      "missing": false
+    },
+    {
+      "catalog_slug": "postgresql-dba",
+      "repo_slug": "postgresql-dba",
+      "files": 170,
+      "missing": false
+    },
+    {
+      "catalog_slug": "power-bi",
+      "repo_slug": "power-bi",
+      "files": 149,
+      "missing": false
+    },
+    {
+      "catalog_slug": "product-design",
+      "repo_slug": "product-design",
+      "files": 118,
+      "missing": false
+    },
+    {
+      "catalog_slug": "product-manager",
+      "repo_slug": "product-manager",
+      "files": 172,
+      "missing": false
+    },
+    {
+      "catalog_slug": "prompt-engineering",
+      "repo_slug": "prompt-engineering",
+      "files": 46,
+      "missing": false
+    },
+    {
+      "catalog_slug": "python",
+      "repo_slug": "python",
+      "files": 87,
+      "missing": false
+    },
+    {
+      "catalog_slug": "python-data-analysis",
+      "repo_slug": "python-data-analysis",
+      "files": 113,
+      "missing": false
+    },
+    {
+      "catalog_slug": "qa",
+      "repo_slug": "qa",
+      "files": 146,
+      "missing": false
+    },
+    {
+      "catalog_slug": "r",
+      "repo_slug": "r-programming",
+      "files": 129,
+      "missing": false
+    },
+    {
+      "catalog_slug": "r-programming",
+      "repo_slug": "r-programming",
+      "files": 129,
+      "missing": false
+    },
+    {
+      "catalog_slug": "react",
+      "repo_slug": "react",
+      "files": 83,
+      "missing": false
+    },
+    {
+      "catalog_slug": "react-native",
+      "repo_slug": "react-native",
+      "files": 95,
+      "missing": false
+    },
+    {
+      "catalog_slug": "redis",
+      "repo_slug": "redis",
+      "files": 162,
+      "missing": false
+    },
+    {
+      "catalog_slug": "ruby",
+      "repo_slug": "ruby",
+      "files": 112,
+      "missing": false
+    },
+    {
+      "catalog_slug": "ruby-on-rails",
+      "repo_slug": "ruby-on-rails",
+      "files": 109,
+      "missing": false
+    },
+    {
+      "catalog_slug": "rust",
+      "repo_slug": "rust",
+      "files": 122,
+      "missing": false
+    },
+    {
+      "catalog_slug": "scala",
+      "repo_slug": "scala",
+      "files": 165,
+      "missing": false
+    },
+    {
+      "catalog_slug": "server-side-game-developer",
+      "repo_slug": "server-side-game-developer",
+      "files": 156,
+      "missing": false
+    },
+    {
+      "catalog_slug": "shell-bash",
+      "repo_slug": "shell-bash",
+      "files": 174,
+      "missing": false
+    },
+    {
+      "catalog_slug": "software-architect",
+      "repo_slug": "software-architect",
+      "files": 112,
+      "missing": false
+    },
+    {
+      "catalog_slug": "software-design-architecture",
+      "repo_slug": "software-design-architecture",
+      "files": 94,
+      "missing": false
+    },
+    {
+      "catalog_slug": "spring-boot",
+      "repo_slug": "spring-boot",
+      "files": 46,
+      "missing": false
+    },
+    {
+      "catalog_slug": "sql",
+      "repo_slug": "sql",
+      "files": 112,
+      "missing": false
+    },
+    {
+      "catalog_slug": "swift-ui",
+      "repo_slug": "swift-ui",
+      "files": 156,
+      "missing": false
+    },
+    {
+      "catalog_slug": "system-design",
+      "repo_slug": "system-design",
+      "files": 147,
+      "missing": false
+    },
+    {
+      "catalog_slug": "technical-writer",
+      "repo_slug": "technical-writer",
+      "files": 84,
+      "missing": false
+    },
+    {
+      "catalog_slug": "terraform",
+      "repo_slug": "terraform",
+      "files": 110,
+      "missing": false
+    },
+    {
+      "catalog_slug": "typescript",
+      "repo_slug": "typescript",
+      "files": 93,
+      "missing": false
+    },
+    {
+      "catalog_slug": "ux-design",
+      "repo_slug": "ux-design",
+      "files": 94,
+      "missing": false
+    },
+    {
+      "catalog_slug": "vibe-coding",
+      "repo_slug": "vibe-coding",
+      "files": 58,
+      "missing": false
+    },
+    {
+      "catalog_slug": "vue",
+      "repo_slug": "vue",
+      "files": 84,
+      "missing": false
+    },
+    {
+      "catalog_slug": "wordpress",
+      "repo_slug": "wordpress",
+      "files": 115,
+      "missing": false
+    }
+  ]
+}

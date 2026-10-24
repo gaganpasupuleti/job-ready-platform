@@ -1,0 +1,3 @@
+# Functional Colors
+
+Functional colors are tokens that communicate a specific meaning or state, such as red for error, green for success, yellow for warning, and blue for informational messages. They are distinct from a brand's primary palette because their purpose is to convey status consistently rather than express brand identity. Design systems document functional colors separately so every component uses the same color for the same type of feedback.

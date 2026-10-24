@@ -224,6 +224,9 @@ jobs:
           python -m app.seed.e2e ../frontend/e2e/fixtures/manifest.json
           python scripts/content_batch.py --batch content/batches/2026-09-19-saturday-001 --apply --target local
           python scripts/content_batch.py --batch content/batches/2026-09-14-syllabus-001 --apply --target local
+      - name: Verify bundled roadmap syllabus content
+        working-directory: backend
+        run: python -m scripts.verify_roadmap_article_coverage
       - name: Warm official roadmap graph cache
         working-directory: backend
         run: python -m scripts.warm_roadmap_graph_cache

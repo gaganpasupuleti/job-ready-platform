@@ -1,0 +1,33 @@
+{
+  "sha": "67940fd880fe914d397b0878b80a461a10b628d5",
+  "theme": "separate browser contexts per theme (single jrp-theme init each)",
+  "data": "mocked API",
+  "viewports": [
+    {
+      "name": "390",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "768",
+      "width": 768,
+      "height": 900
+    },
+    {
+      "name": "1280",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "1366",
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "name": "1920",
+      "width": 1920,
+      "height": 900
+    }
+  ],
+  "capturedAt": "2026-10-24T06:24:35.964Z"
+}

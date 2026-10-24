@@ -1,0 +1,682 @@
+{
+  "content_root": "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\jobready-roadmap-ui-clean\\backend\\app\\data\\roadmap-syllabus\\roadmaps",
+  "readable_nodes_total": 10468,
+  "resolved_files_total": 10454,
+  "slugs": [
+    {
+      "slug": "ai-agents",
+      "readable_nodes": 101,
+      "resolved_files": 101,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "ai-data-scientist",
+      "readable_nodes": 10,
+      "resolved_files": 9,
+      "missing_files": 1,
+      "sample_missing": [
+        "ILGi2zpuyTGfkyZjua9jv"
+      ]
+    },
+    {
+      "slug": "ai-engineer",
+      "readable_nodes": 190,
+      "resolved_files": 190,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "ai-product-builder",
+      "readable_nodes": 52,
+      "resolved_files": 51,
+      "missing_files": 1,
+      "sample_missing": [
+        "Z6x8QhsYOO9LB6fHGMTLL"
+      ]
+    },
+    {
+      "slug": "ai-red-teaming",
+      "readable_nodes": 64,
+      "resolved_files": 64,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "android",
+      "readable_nodes": 113,
+      "resolved_files": 113,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "angular",
+      "readable_nodes": 158,
+      "resolved_files": 158,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "api-design",
+      "readable_nodes": 97,
+      "resolved_files": 97,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "aspnet-core",
+      "readable_nodes": 146,
+      "resolved_files": 146,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "aws",
+      "readable_nodes": 101,
+      "resolved_files": 101,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "backend",
+      "readable_nodes": 155,
+      "resolved_files": 155,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "backend-beginner",
+      "readable_nodes": 26,
+      "resolved_files": 26,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "bi-analyst",
+      "readable_nodes": 178,
+      "resolved_files": 178,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "blockchain",
+      "readable_nodes": 127,
+      "resolved_files": 127,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "c",
+      "readable_nodes": 141,
+      "resolved_files": 141,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "claude-code",
+      "readable_nodes": 113,
+      "resolved_files": 113,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "cloudflare",
+      "readable_nodes": 97,
+      "resolved_files": 97,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "code-review",
+      "readable_nodes": 5,
+      "resolved_files": 0,
+      "missing_files": 5,
+      "sample_missing": [
+        "ANbBMKHS6CtWDDY0tpiSh",
+        "UDHO5T8xijJUCoX0CCvZD",
+        "NpsaEW0R2Q70E9sDWkb5u",
+        "PRgkDV4rFasYnHItL5ubS",
+        "-VG9gkmIG2V6r7er-sYjY"
+      ]
+    },
+    {
+      "slug": "computer-science",
+      "readable_nodes": 188,
+      "resolved_files": 188,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "cpp",
+      "readable_nodes": 127,
+      "resolved_files": 127,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "css",
+      "readable_nodes": 104,
+      "resolved_files": 104,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "cyber-security",
+      "readable_nodes": 301,
+      "resolved_files": 301,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "data-analyst",
+      "readable_nodes": 99,
+      "resolved_files": 99,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "data-engineer",
+      "readable_nodes": 184,
+      "resolved_files": 184,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "datastructures-and-algorithms",
+      "readable_nodes": 107,
+      "resolved_files": 107,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "design-system",
+      "readable_nodes": 124,
+      "resolved_files": 124,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "devops",
+      "readable_nodes": 139,
+      "resolved_files": 139,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "devops-beginner",
+      "readable_nodes": 13,
+      "resolved_files": 13,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "devrel",
+      "readable_nodes": 142,
+      "resolved_files": 142,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "devsecops",
+      "readable_nodes": 93,
+      "resolved_files": 93,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "django",
+      "readable_nodes": 113,
+      "resolved_files": 113,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "docker",
+      "readable_nodes": 57,
+      "resolved_files": 56,
+      "missing_files": 1,
+      "sample_missing": [
+        "9NuHwfytnUTpeVmnMpZZC"
+      ]
+    },
+    {
+      "slug": "elasticsearch",
+      "readable_nodes": 113,
+      "resolved_files": 113,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "engineering-manager",
+      "readable_nodes": 133,
+      "resolved_files": 133,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "flutter",
+      "readable_nodes": 108,
+      "resolved_files": 108,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "forward-deployed-engineer",
+      "readable_nodes": 94,
+      "resolved_files": 94,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "frontend",
+      "readable_nodes": 120,
+      "resolved_files": 120,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "frontend-beginner",
+      "readable_nodes": 9,
+      "resolved_files": 9,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "full-stack",
+      "readable_nodes": 37,
+      "resolved_files": 37,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "game-developer",
+      "readable_nodes": 144,
+      "resolved_files": 144,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "git-github",
+      "readable_nodes": 156,
+      "resolved_files": 155,
+      "missing_files": 1,
+      "sample_missing": [
+        "drH2zoKnSjZczE32msVv1"
+      ]
+    },
+    {
+      "slug": "git-github-beginner",
+      "readable_nodes": 5,
+      "resolved_files": 5,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "golang",
+      "readable_nodes": 172,
+      "resolved_files": 172,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "graphql",
+      "readable_nodes": 66,
+      "resolved_files": 66,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "html",
+      "readable_nodes": 88,
+      "resolved_files": 88,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "ios",
+      "readable_nodes": 169,
+      "resolved_files": 169,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "java",
+      "readable_nodes": 88,
+      "resolved_files": 88,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "javascript",
+      "readable_nodes": 126,
+      "resolved_files": 126,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "kotlin",
+      "readable_nodes": 153,
+      "resolved_files": 153,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "kubernetes",
+      "readable_nodes": 67,
+      "resolved_files": 66,
+      "missing_files": 1,
+      "sample_missing": [
+        "rgHgNU_aLUibLhl_Cyw3F"
+      ]
+    },
+    {
+      "slug": "laravel",
+      "readable_nodes": 104,
+      "resolved_files": 104,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "leetcode",
+      "readable_nodes": 137,
+      "resolved_files": 137,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "linux",
+      "readable_nodes": 102,
+      "resolved_files": 102,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "machine-learning",
+      "readable_nodes": 150,
+      "resolved_files": 150,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "mlops",
+      "readable_nodes": 62,
+      "resolved_files": 62,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "mongodb",
+      "readable_nodes": 106,
+      "resolved_files": 106,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "network-engineer",
+      "readable_nodes": 196,
+      "resolved_files": 196,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "nextjs",
+      "readable_nodes": 94,
+      "resolved_files": 94,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "nodejs",
+      "readable_nodes": 113,
+      "resolved_files": 113,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "openclaw",
+      "readable_nodes": 107,
+      "resolved_files": 107,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "php",
+      "readable_nodes": 120,
+      "resolved_files": 120,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "postgresql-dba",
+      "readable_nodes": 170,
+      "resolved_files": 170,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "power-bi",
+      "readable_nodes": 131,
+      "resolved_files": 131,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "product-design",
+      "readable_nodes": 117,
+      "resolved_files": 117,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "product-manager",
+      "readable_nodes": 172,
+      "resolved_files": 172,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "prompt-engineering",
+      "readable_nodes": 47,
+      "resolved_files": 46,
+      "missing_files": 1,
+      "sample_missing": [
+        "VjuUq6nEz3Wyx5NJWNaxr"
+      ]
+    },
+    {
+      "slug": "python",
+      "readable_nodes": 87,
+      "resolved_files": 87,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "python-data-analysis",
+      "readable_nodes": 112,
+      "resolved_files": 112,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "qa",
+      "readable_nodes": 147,
+      "resolved_files": 147,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "r",
+      "readable_nodes": 129,
+      "resolved_files": 129,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "r-programming",
+      "readable_nodes": 129,
+      "resolved_files": 129,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "react",
+      "readable_nodes": 82,
+      "resolved_files": 81,
+      "missing_files": 1,
+      "sample_missing": [
+        "wuwnktmNGfmvIbZhe8YCB"
+      ]
+    },
+    {
+      "slug": "react-native",
+      "readable_nodes": 95,
+      "resolved_files": 95,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "redis",
+      "readable_nodes": 162,
+      "resolved_files": 162,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "ruby",
+      "readable_nodes": 102,
+      "resolved_files": 102,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "ruby-on-rails",
+      "readable_nodes": 98,
+      "resolved_files": 98,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "rust",
+      "readable_nodes": 122,
+      "resolved_files": 122,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "scala",
+      "readable_nodes": 166,
+      "resolved_files": 165,
+      "missing_files": 1,
+      "sample_missing": [
+        "-I2xIkYxxMhrTaajRQmG3"
+      ]
+    },
+    {
+      "slug": "server-side-game-developer",
+      "readable_nodes": 156,
+      "resolved_files": 156,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "shell-bash",
+      "readable_nodes": 174,
+      "resolved_files": 174,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "software-architect",
+      "readable_nodes": 113,
+      "resolved_files": 113,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "software-design-architecture",
+      "readable_nodes": 94,
+      "resolved_files": 94,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "spring-boot",
+      "readable_nodes": 46,
+      "resolved_files": 46,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "sql",
+      "readable_nodes": 113,
+      "resolved_files": 112,
+      "missing_files": 1,
+      "sample_missing": [
+        "Xp6G2Us7Y6LeKoYQh_AKl"
+      ]
+    },
+    {
+      "slug": "swift-ui",
+      "readable_nodes": 156,
+      "resolved_files": 156,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "system-design",
+      "readable_nodes": 147,
+      "resolved_files": 147,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "technical-writer",
+      "readable_nodes": 84,
+      "resolved_files": 84,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "terraform",
+      "readable_nodes": 110,
+      "resolved_files": 110,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "typescript",
+      "readable_nodes": 93,
+      "resolved_files": 93,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "ux-design",
+      "readable_nodes": 93,
+      "resolved_files": 93,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "vibe-coding",
+      "readable_nodes": 18,
+      "resolved_files": 18,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "vue",
+      "readable_nodes": 84,
+      "resolved_files": 84,
+      "missing_files": 0,
+      "sample_missing": []
+    },
+    {
+      "slug": "wordpress",
+      "readable_nodes": 115,
+      "resolved_files": 115,
+      "missing_files": 0,
+      "sample_missing": []
+    }
+  ]
+}

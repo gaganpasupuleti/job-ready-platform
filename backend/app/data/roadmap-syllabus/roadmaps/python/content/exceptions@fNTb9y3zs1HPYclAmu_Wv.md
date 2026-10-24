@@ -1,0 +1,10 @@
+# Exceptions
+
+Exceptions are runtime errors that occur during program execution in Python. Instead of immediately stopping the program, Python allows developers to handle these errors using `try`, `except`, `else`, and `finally` blocks. Proper exception handling helps manage unexpected situations such as invalid input, missing files, or network failures, improving program reliability and allowing applications to fail gracefully.
+
+Visit the following resources to learn more:
+
+- [@official@Exceptions Documentation](https://docs.python.org/3/tutorial/errors.html#exceptions)
+- [@article@Python KeyError Exceptions: Causes and Fixes Explained](https://roadmap.sh/python/keyerror)
+- [@article@Fix "Invalid Syntax" in Python (8 Common Causes)](https://roadmap.sh/python/invalid-syntax)
+- [@video@Exception Handling in Python](https://www.youtube.com/watch?v=V_NXT2-QIlE)

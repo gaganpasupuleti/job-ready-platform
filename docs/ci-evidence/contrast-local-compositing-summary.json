@@ -1,0 +1,22 @@
+{
+  "method": "alpha-composite foreground and ancestor background stacks in probeControlContrast (frontend/e2e/helpers.ts)",
+  "min_ratio_normal_text": 4.5,
+  "themes": ["light", "dark"],
+  "states": ["normal", "hover"],
+  "selectors": [
+    ".jr-btn[data-variant=\"primary\"]",
+    ".jr-action-link"
+  ],
+  "spec": "frontend/e2e/ui-cohesion.spec.ts",
+  "artifact": "frontend/e2e/artifacts/ui-cohesion/after/contrast-report.json",
+  "probes": 42,
+  "pass": 42,
+  "fail": 0,
+  "unsupported_transparency": 0,
+  "sample_ratios": {
+    "jobs_primary_light": 7.79,
+    "jobs_primary_hover_light": 8.01,
+    "library_action_link_light": 7.79,
+    "library_action_link_hover_light": 8.72
+  }
+}

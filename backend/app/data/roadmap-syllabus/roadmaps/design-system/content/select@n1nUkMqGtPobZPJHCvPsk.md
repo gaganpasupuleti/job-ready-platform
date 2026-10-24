@@ -1,0 +1,3 @@
+# Select
+
+A select component is an interface element that allows users to choose one or more options from a predefined list. It typically appears as a dropdown menu that remains collapsed to save screen space until the user clicks or taps on it. Once activated, the component expands to display the available choices, making it an efficient way to handle long lists of data while maintaining a clean and organized layout.

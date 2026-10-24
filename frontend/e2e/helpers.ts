@@ -612,51 +612,62 @@ export async function probeControlContrast(
       const darker = Math.min(l1, l2)
       return (lighter + 0.05) / (darker + 0.05)
     }
-    const hasTransparencyRisk = (target: Element) => {
+    const blend = (
+      bg: { r: number; g: number; b: number },
+      fg: { r: number; g: number; b: number; alpha: number },
+    ) => ({
+      r: fg.r * fg.alpha + bg.r * (1 - fg.alpha),
+      g: fg.g * fg.alpha + bg.g * (1 - fg.alpha),
+      b: fg.b * fg.alpha + bg.b * (1 - fg.alpha),
+    })
+    const canvasBase = () => {
+      const html = getComputedStyle(document.documentElement)
+      const body = getComputedStyle(document.body)
+      const parsed = parseCssColorToRgb(body.backgroundColor) || parseCssColorToRgb(html.backgroundColor)
+      if (parsed) {
+        const alpha = 'alpha' in parsed ? parsed.alpha : 1
+        return { r: parsed.r, g: parsed.g, b: parsed.b, alpha }
+      }
+      return { r: 255, g: 255, b: 255, alpha: 1 }
+    }
+    const compositeBackground = (target: Element) => {
+      let stack = canvasBase()
+      const chain: Element[] = []
       let node: Element | null = target
       while (node) {
-        const style = getComputedStyle(node)
-        if (style.backgroundColor === 'transparent') {
-          node = node.parentElement
-          continue
-        }
-        const parsed = parseCssColorToRgb(style.backgroundColor)
-        if (parsed && 'alpha' in parsed && parsed.alpha < 0.99) return true
-        const opacity = Number.parseFloat(style.opacity)
-        if (Number.isFinite(opacity) && opacity < 0.99) return true
+        chain.unshift(node)
         node = node.parentElement
       }
-      return false
-    }
-    const opaqueBackgroundRgb = (target: Element) => {
-      let node: Element | null = target
-      while (node) {
-        const style = getComputedStyle(node)
+      for (const layer of chain) {
+        const style = getComputedStyle(layer)
+        const layerOpacity = Number.parseFloat(style.opacity)
+        const opacity = Number.isFinite(layerOpacity) ? layerOpacity : 1
         const parsed = parseCssColorToRgb(style.backgroundColor)
-        if (parsed && (!('alpha' in parsed) || parsed.alpha >= 0.99)) {
-          return { r: parsed.r, g: parsed.g, b: parsed.b }
-        }
-        node = node.parentElement
+        if (!parsed || style.backgroundColor === 'transparent') continue
+        const alpha = ('alpha' in parsed ? parsed.alpha : 1) * opacity
+        if (alpha <= 0) continue
+        stack = blend(stack, { r: parsed.r, g: parsed.g, b: parsed.b, alpha })
       }
-      const rootBg = parseCssColorToRgb(getComputedStyle(document.documentElement).backgroundColor)
-      if (rootBg && (!('alpha' in rootBg) || rootBg.alpha >= 0.99)) {
-        return { r: rootBg.r, g: rootBg.g, b: rootBg.b }
-      }
-      return null
+      return { r: stack.r, g: stack.g, b: stack.b }
     }
-    if (hasTransparencyRisk(el)) {
-      return { status: 'unsupported_transparency', ratio: null, detail: 'semi-transparent ancestor stack' }
+    const compositeForeground = (target: Element) => {
+      const style = getComputedStyle(target)
+      const parsed = parseCssColorToRgb(style.color)
+      if (!parsed) return null
+      const alpha = 'alpha' in parsed ? parsed.alpha : 1
+      const bg = compositeBackground(target)
+      return blend(bg, { r: parsed.r, g: parsed.g, b: parsed.b, alpha })
     }
     const style = getComputedStyle(el)
     const fgParsed = parseCssColorToRgb(style.color)
-    if (!fgParsed || ('alpha' in fgParsed && fgParsed.alpha < 0.99)) {
+    if (!fgParsed) {
       return { status: 'unreadable_foreground', ratio: null, detail: style.color }
     }
-    const fg = { r: fgParsed.r, g: fgParsed.g, b: fgParsed.b }
-    const bg = opaqueBackgroundRgb(el)
-    if (!bg) {
-      return { status: 'unsupported_transparency', ratio: null, detail: 'no opaque background found' }
+    const fg = compositeForeground(el)
+    if (!fg) {
+      return { status: 'unreadable_foreground', ratio: null, detail: style.color }
     }
+    const bg = compositeBackground(el)
     const ratio = contrastRatio(fg, bg)
     if (ratio < min) {
       return { status: 'fail', ratio, detail: `below ${min}:1` }

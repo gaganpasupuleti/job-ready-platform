@@ -1,0 +1,8 @@
+# Vision
+
+Brand vision serves as the foundation for design system decisions, providing purpose and direction. An effective vision should articulate organizational purpose, identify core values, visualize future success, prioritize user needs, clarify brand uniqueness, account for cultural considerations, and connect to measurable goals.
+
+Visit the following resources to learn more:
+
+- [@article@Creating Brand Vision](https://www.interaction-design.org/literature/article/branding-in-ux)
+- [@article@Vision-Driven Design Systems](https://bradfrost.com/blog/post/the-design-system-ecosystem/)

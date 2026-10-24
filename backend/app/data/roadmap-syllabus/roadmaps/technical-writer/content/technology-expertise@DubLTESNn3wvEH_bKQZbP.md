@@ -1,0 +1,3 @@
+# Technology Expertise
+
+Technology expertise is the writer's ability to understand the products and systems they document. This does not always require deep engineering knowledge, but writers need enough technical grounding to follow developer conversations, test features, and evaluate the accuracy of their own content. Specializations often develop around domains like cloud infrastructure, APIs, or hardware.
