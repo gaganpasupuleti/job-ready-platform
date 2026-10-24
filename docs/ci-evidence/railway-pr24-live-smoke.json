@@ -1,0 +1,47 @@
+{
+  "deployed_at": "2026-10-24T08:53:00Z",
+  "merge_sha": "ecc8d5176cf1085bc20b1402b865a92d0f3efcb0",
+  "local_upload_sha": "b130131",
+  "project_id": "1bd632d6-32a3-49a0-b1cf-79c764e0e1bb",
+  "environment": "production",
+  "deployments": {
+    "backend": {
+      "service_id": "fe101a42-050a-4acd-bdad-dea95f339e00",
+      "deployment_id": "776521fb-a980-4a4b-8699-768db6aeb237",
+      "image_digest": "sha256:3c64b13dfa6fdd6469fa756a6f0fd65f22ba333e3cb0238c8bfd7aa6a68b8cdc",
+      "url": "https://backend-production-a0c9.up.railway.app"
+    },
+    "frontend": {
+      "service_id": "302d5f6c-f174-4169-b30e-87ef8d004500",
+      "deployment_id": "c13a01ec-bf91-4f13-b4da-ce25502dac98",
+      "image_digest": "sha256:99759f22c9680e9652d888806847363b7803c64ea3ad5bfad4e2dcceef43d618",
+      "bundle": "assets/index-x_CrOwds.js",
+      "url": "https://frontend-production-f65c0.up.railway.app"
+    }
+  },
+  "rollback_previous": {
+    "backend": "23e4d69c-857c-4087-9997-5d5e1128648a",
+    "frontend": "14d82b8a-5052-4062-ab71-95ef35442006"
+  },
+  "config_verified": {
+    "VITE_API_BASE_URL": "https://backend-production-a0c9.up.railway.app",
+    "VITE_ENABLE_DEV_LOGIN": "false",
+    "CORS_ORIGINS": "https://frontend-production-f65c0.up.railway.app",
+    "PUBLIC_REGISTRATION_ENABLED": "false",
+    "syllabus_on_disk": "verified via railway ssh (api-design/content/*.md present)"
+  },
+  "live_smoke": {
+    "api_scripts_smoke": "PASSED",
+    "roadmap_routes_unauthenticated": "401 (not 404)",
+    "frontend_bundle_has_roadmap_ui": true,
+    "authenticated_account": "demo.student@jobready.dev (PASSWORD_LOGIN_EMAILS)",
+    "catalog_roadmaps": 93,
+    "sample_graph": "api-design clean, 123 nodes",
+    "sample_article_chars": 752,
+    "jobs_total": 2160,
+    "ui_roadmaps_catalog": "pass — Search roadmaps, 93 cards",
+    "ui_login": "pass",
+    "ui_api_design_graph_outline": "pass — zoom/lock/reset controls present",
+    "ui_live_article": "pass — REST Principles markdown + developer-roadmap attribution"
+  }
+}

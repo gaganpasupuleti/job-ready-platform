@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-10-24T08:52:00Z",
+  "project_id": "1bd632d6-32a3-49a0-b1cf-79c764e0e1bb",
+  "environment_id": "6d2e03da-6e5f-48c8-872b-71a325d863a8",
+  "pre_pr24_deployments": {
+    "backend": {
+      "service_id": "fe101a42-050a-4acd-bdad-dea95f339e00",
+      "deployment_id": "23e4d69c-857c-4087-9997-5d5e1128648a",
+      "url": "https://backend-production-a0c9.up.railway.app",
+      "deployed_at": "2026-10-19T04:36:39.740Z"
+    },
+    "frontend": {
+      "service_id": "302d5f6c-f174-4169-b30e-87ef8d004500",
+      "deployment_id": "14d82b8a-5052-4062-ab71-95ef35442006",
+      "url": "https://frontend-production-f65c0.up.railway.app",
+      "deployed_at": "2026-10-19T05:11:07.720Z"
+    }
+  },
+  "rollback": "Railway dashboard → service → Deployments → Redeploy the deployment_id above"
+}
