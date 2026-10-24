@@ -7,13 +7,13 @@ RUN npm ci
 
 COPY . .
 
-# VITE_API_BASE_URL is baked in at build time
-ARG VITE_API_BASE_URL=
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-ARG VITE_ENABLE_DEV_LOGIN=false
-ENV VITE_ENABLE_DEV_LOGIN=$VITE_ENABLE_DEV_LOGIN
-
-RUN npm run build
+# Optional overrides; otherwise Vite loads frontend/.env.production (do not ENV empty values).
+ARG VITE_API_BASE_URL
+ARG VITE_ENABLE_DEV_LOGIN
+RUN set -e; \
+  if [ -n "${VITE_API_BASE_URL}" ]; then export VITE_API_BASE_URL="${VITE_API_BASE_URL}"; fi; \
+  if [ -n "${VITE_ENABLE_DEV_LOGIN}" ]; then export VITE_ENABLE_DEV_LOGIN="${VITE_ENABLE_DEV_LOGIN}"; fi; \
+  npm run build
 
 FROM node:20-alpine
 
