@@ -1,0 +1,17 @@
+{
+  "preview_url": "http://127.0.0.1:4173",
+  "api_url": "http://127.0.0.1:8000",
+  "build": "npm run build (production)",
+  "spec": "frontend/e2e/release-smoke-preview.spec.ts",
+  "results": [
+    { "name": "core student surfaces render on preview build", "status": "pass" },
+    { "name": "jobs save and unsave on preview", "status": "pass" },
+    {
+      "name": "live roadmap article opens on preview",
+      "status": "pass",
+      "note": "api-design topic panel .ors-markdown > 80 chars with bundled syllabus"
+    }
+  ],
+  "passed": 3,
+  "failed": 0
+}

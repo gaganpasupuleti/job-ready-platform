@@ -1,0 +1,30 @@
+{
+  "apiBase": "http://127.0.0.1:8000",
+  "authenticated": true,
+  "content_source": {
+    "repo": "kamranahmedse/developer-roadmap",
+    "commit": "e906c5f60c2e72623a73cce4bea51153b319c0d8",
+    "bundled_root": "backend/app/data/roadmap-syllabus/roadmaps"
+  },
+  "graph": { "sampled_slugs": 93, "pass": 93, "fail": 0 },
+  "articles": {
+    "sampled_slugs": 93,
+    "sampling": "one_readable_topic_node_per_slug",
+    "ok": 92,
+    "missing": 1,
+    "empty": 0,
+    "error": 0,
+    "unchecked_readable_nodes": 10375,
+    "readable_nodes_total": 10468
+  },
+  "investigated_failures": [
+    {
+      "slug": "code-review",
+      "sampled_node": "ANbBMKHS6CtWDDY0tpiSh",
+      "articleStatus": "missing",
+      "reason": "Upstream syllabus files use non–title@nodeId.md names (e.g. code-style.md); id-based lookup returns 404. Truthful missing content — not a provisioning gap for other slugs."
+    }
+  ],
+  "detail_rows": "frontend/e2e/artifacts/roadmap-catalog-audit.json",
+  "file_coverage": "docs/ci-evidence/roadmap-article-file-coverage.json"
+}

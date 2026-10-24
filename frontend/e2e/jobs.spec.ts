@@ -3,6 +3,8 @@ import { expect, request as playwrightRequest, test } from '@playwright/test'
 import {
   archiveAdminJobs,
   createIsolatedE2EJob,
+  jobDetailRoot,
+  jobHubCard,
   loadManifest,
   loginAs,
 } from './helpers'
@@ -39,17 +41,57 @@ test.describe('Jobs portal', () => {
   })
 
   test('save unsave and saved page', async ({ page }) => {
-    await page.goto('/jobs/data-engineer-remote-infosys')
+    const slug = 'data-engineer-remote-infosys'
+    await page.goto(`/jobs/${slug}`)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 20_000 })
-    const saveBtn = page.getByRole('button', { name: /save job|^saved$/i })
+    const detail = jobDetailRoot(page, slug)
+    const saveBtn = detail.getByRole('button', { name: /save job|^saved$/i })
     await expect(saveBtn).toBeVisible({ timeout: 15_000 })
-    if (/save job/i.test((await saveBtn.textContent()) || '')) {
+    const label = (await saveBtn.textContent())?.trim() ?? ''
+    if (/save job/i.test(label)) {
       await saveBtn.click()
-      await expect(page.getByRole('button', { name: /^saved$/i })).toBeVisible()
+      await expect(detail.getByRole('button', { name: /^saved$/i })).toBeVisible()
     }
+    await page.reload()
+    await expect(detail.getByRole('button', { name: /^saved$/i })).toBeVisible({ timeout: 15_000 })
+
     await page.goto('/jobs/saved')
     await expect(page.getByRole('heading', { name: /saved jobs/i })).toBeVisible()
-    await expect(page.getByText(/data engineer/i).first()).toBeVisible({ timeout: 15_000 })
+    await expect(jobHubCard(page, slug).getByRole('link', { name: /data engineer/i })).toBeVisible({
+      timeout: 15_000,
+    })
+
+    await page.goto(`/jobs/${slug}`)
+    await detail.getByRole('button', { name: /^saved$/i }).click()
+    await expect(detail.getByRole('button', { name: /save job/i })).toBeVisible()
+    await page.reload()
+    await expect(detail.getByRole('button', { name: /save job/i })).toBeVisible({ timeout: 15_000 })
+  })
+
+  test('jobs hub save persists and scopes cards by slug', async ({ page, request }) => {
+    const target = await createIsolatedE2EJob(request)
+    createdJobIds.push(target.id)
+    try {
+      await page.goto('/jobs')
+      await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible({ timeout: 20_000 })
+      await page.getByPlaceholder('Keywords').fill(target.title.slice(0, 24))
+      await page.getByRole('button', { name: /^search$/i }).click()
+      const card = jobHubCard(page, target.slug)
+      await expect(card).toBeVisible({ timeout: 15_000 })
+      const saveBtn = card.getByRole('button', { name: 'Save job' })
+      await saveBtn.click()
+      await expect(card.getByRole('button', { name: 'Remove from saved' })).toBeVisible()
+      await page.reload()
+      await expect(card.getByRole('button', { name: 'Remove from saved' })).toBeVisible({
+        timeout: 15_000,
+      })
+      await card.getByRole('button', { name: 'Remove from saved' }).click()
+      await expect(card.getByRole('button', { name: 'Save job' })).toBeVisible()
+    } finally {
+      await archiveAdminJobs(request, [target.id])
+      const idx = createdJobIds.indexOf(target.id)
+      if (idx >= 0) createdJobIds.splice(idx, 1)
+    }
   })
 
   test('mark applied and application detail', async ({ page, request }) => {
@@ -130,9 +172,11 @@ test.describe('Jobs-first student journey', () => {
     await jobLink.click()
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 
-    const saveBtn = page.getByRole('button', { name: /save job/i })
+    const slug = 'data-engineer-remote-infosys'
+    const detail = jobDetailRoot(page, slug)
+    const saveBtn = detail.getByRole('button', { name: /save job/i })
     await saveBtn.click()
-    await expect(page.getByRole('button', { name: /^saved$/i })).toBeVisible()
+    await expect(detail.getByRole('button', { name: /^saved$/i })).toBeVisible()
 
     const applyLink = page.getByRole('link', { name: /apply externally/i })
     if (await applyLink.count()) {
@@ -163,8 +207,11 @@ test.describe('Jobs-first student journey', () => {
     await expect(page.getByRole('heading', { name: /^jobs$/i })).toBeVisible({ timeout: 20_000 })
     await page.getByRole('button', { name: /open navigation/i }).click()
     await expect(page.getByRole('navigation', { name: /main navigation/i }).getByRole('link', { name: /^jobs$/i })).toBeVisible()
-    await page.goto('/jobs/data-engineer-remote-infosys')
-    await expect(page.getByRole('button', { name: /save job|^saved$/i })).toBeVisible()
+    const slug = 'data-engineer-remote-infosys'
+    await page.goto(`/jobs/${slug}`)
+    await expect(
+      jobDetailRoot(page, slug).getByRole('button', { name: /save job|^saved$/i }),
+    ).toBeVisible()
     await expect(page.getByRole('button', { name: /mark applied|view application/i })).toBeVisible()
   })
 })

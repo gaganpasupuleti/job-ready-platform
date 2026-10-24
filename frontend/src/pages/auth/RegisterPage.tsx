@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton'
 import { Button } from '@/components/common/Button'
-import { Card } from '@/components/common/Card'
 import { JOBS_HOME, JOBS_ONBOARDING_KEY, JOBS_PREFERENCES } from '@/components/navigation/navConfig'
 import { useAuth } from '@/hooks/useAuth'
 import { useRegistrationOpen } from '@/hooks/useRegistrationOpen'
@@ -65,32 +64,36 @@ export function RegisterPage() {
 
   if (registration.pending || !registration.open) {
     return (
-      <div className="flex min-h-full items-center justify-center bg-[var(--color-surface-muted)] p-4">
-        <Card className="w-full max-w-md" padding="lg">
-          <h1 className="text-xl font-semibold text-[var(--color-text)]">
+      <div className="auth-shell">
+        <section className="auth-shell-card">
+          <h2 className="text-xl font-semibold text-[var(--color-text)]">
             {registration.pending ? 'Checking registration' : 'Registration is closed'}
-          </h1>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-            {registration.pending ? 'Loading...' : 'Account creation is unavailable. Contact your instructor.'}
+          </h2>
+          <p className="auth-lead">
+            {registration.pending ? 'Loading…' : 'Account creation is unavailable. Contact your instructor.'}
           </p>
-          <p className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
-            <Link to="/login" className="text-[var(--color-accent)] hover:underline">
-              Sign in
-            </Link>
+          <p className="auth-footer-link">
+            <Link to="/login">Sign in</Link>
           </p>
-        </Card>
+        </section>
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-[var(--color-surface-muted)] p-4">
-      <Card className="w-full max-w-md" padding="lg">
-        <h1 className="text-xl font-semibold text-[var(--color-text)]">Create account</h1>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Start your job preparation journey</p>
-        <div className="mt-6">
-          <GoogleSignInButton disabled={loading} onCredential={handleGoogle} />
-        </div>
+    <div className="auth-shell">
+      <div className="auth-shell-inner">
+        <aside className="auth-shell-aside">
+          <h1>Join JobReady</h1>
+          <p>Set up your account once, then pick up practice and job search where you left off.</p>
+        </aside>
+        <section className="auth-shell-card">
+          <h2>Create account</h2>
+          <p className="auth-lead">Start your job preparation journey.</p>
+          <div className="mt-5">
+            <GoogleSignInButton disabled={loading} onCredential={handleGoogle} />
+          </div>
+          <p className="auth-divider" aria-hidden>or email</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           {(Object.keys(FIELD_META) as Array<keyof typeof FIELD_META>).map((field) => {
             const meta = FIELD_META[field]
@@ -117,13 +120,11 @@ export function RegisterPage() {
             {loading ? 'Creating account...' : 'Register'}
           </Button>
         </form>
-        <p className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
-          Already have an account?{' '}
-          <Link to="/login" className="text-[var(--color-accent)] hover:underline">
-            Sign in
-          </Link>
+        <p className="auth-footer-link">
+          Already have an account? <Link to="/login">Sign in</Link>
         </p>
-      </Card>
+        </section>
+      </div>
     </div>
   )
 }

@@ -1,0 +1,17 @@
+{
+  "candidate_sha": "1ebbd48",
+  "ran_at": "2026-10-23T22:18:00Z",
+  "frontend": "vite production build",
+  "api": "http://127.0.0.1:8000 (cache-v2 warmed, SQL_EXECUTION_ENABLED=false)",
+  "preview": "http://127.0.0.1:4173",
+  "spec": "e2e/release-smoke-preview.spec.ts",
+  "results": {
+    "passed": 2,
+    "failed": 1,
+    "tests": [
+      { "name": "core student surfaces render on preview build", "status": "pass" },
+      { "name": "jobs save and unsave on preview", "status": "pass" },
+      { "name": "live roadmap article opens on preview", "status": "fail", "reason": "`.ors-markdown` never populated — topic API 404 without ROADMAP_CONTENT_ROOT (same as article audit)" }
+    ]
+  }
+}

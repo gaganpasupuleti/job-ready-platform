@@ -9,10 +9,11 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variants = {
-  default: 'bg-[var(--color-surface-muted)] text-[var(--color-text-muted)]',
-  accent: 'bg-[var(--color-accent-muted)] text-[var(--color-accent)]',
-  success: 'bg-[#e7efe9] text-[var(--color-success)] dark:bg-[#243028] dark:text-[#c5ddd0]',
-  warning: 'bg-[#f3eee4] text-[var(--color-warning)] dark:bg-[#322c22] dark:text-[#e4d3b0]',
+  default:
+    'border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-text-muted)]',
+  accent: 'border border-transparent bg-[var(--color-accent-muted)] text-[var(--color-accent)]',
+  success: 'border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-success)]',
+  warning: 'border border-[var(--color-border)] bg-[var(--color-surface-muted)] text-[var(--color-warning)]',
 }
 
 export function Badge({ children, variant = 'default', className, ...rest }: BadgeProps) {

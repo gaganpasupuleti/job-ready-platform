@@ -1,0 +1,20 @@
+{
+  "candidate_sha": "1ebbd48",
+  "environment": "Windows local, Postgres :5432 up, Redis :6379 down, SQL sandbox :5433 down, Docker CLI unavailable",
+  "ci_reference": "https://github.com/gaganpasupuleti/job-ready-platform/actions/runs/40028398164 — 345 passed, 10 skipped (includes both tests)",
+  "failures": [
+    {
+      "test": "tests/test_acceptance_verification.py::test_real_executor_empty_metadata_overflow_and_set_ops",
+      "assertion": "empty.error is None",
+      "actual": "SQL sandbox is unavailable. Please try again later.",
+      "cause": "SqlSandboxExecutor.execute() cannot reach postgres SQL sandbox on localhost:5433 (no Docker/services). CI job bootstraps sandbox role on :5433 before pytest."
+    },
+    {
+      "test": "tests/test_sql_content_version.py::test_sql_version_changes_grading_without_rewriting_history",
+      "assertion": "POST /sql/problems/{id}/run returns 200",
+      "actual": "502 detail: SQL sandbox is unavailable",
+      "cause": "Same missing :5433 sandbox; test exercises live SQL run/submit through API, not mocks."
+    }
+  ],
+  "reproduction": "cd backend && python -m pytest <test> -v (default sql_execution_enabled=true, no sandbox listener)"
+}

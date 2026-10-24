@@ -422,13 +422,16 @@ class JobService:
         total = int(await self.db.scalar(select(func.count()).select_from(ids)) or 0)
 
         if sort == "oldest":
-            stmt = stmt.order_by(Job.posted_at.asc().nullslast(), Job.created_at.asc())
+            stmt = stmt.order_by(Job.first_seen_at.asc().nullslast(), Job.created_at.asc())
         elif sort == "company":
             stmt = stmt.order_by(Job.company_name_raw.asc().nullslast(), Job.title.asc())
         elif sort == "title":
             stmt = stmt.order_by(Job.title.asc())
-        else:
+        elif sort == "posted":
             stmt = stmt.order_by(Job.posted_at.desc().nullslast(), Job.created_at.desc())
+        else:
+            # Default browse: newest portal ingestion (JobReady added), not employer post date.
+            stmt = stmt.order_by(Job.first_seen_at.desc().nullslast(), Job.created_at.desc())
 
         stmt = stmt.offset((page - 1) * limit).limit(limit)
         jobs = (await self.db.execute(stmt)).scalars().unique().all()

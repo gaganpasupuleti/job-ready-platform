@@ -1,0 +1,10 @@
+# Array
+
+An array is a collection of elements stored in contiguous memory locations, accessed by index. It supports constant-time reads and writes by position but requires shifting elements when inserting or deleting in the middle. Arrays are one of the most widely used data structures because of their simplicity and cache efficiency.
+
+Visit the following resources to learn more:
+
+- [@video@Arrays in Python](https://www.youtube.com/watch?v=gDqQf4Ekr2A&ab_channel=codebasics)
+- [@video@Arrays in Java](https://www.youtube.com/watch?v=ei_4Nt7XWOw&ab_channel=BroCode)
+- [@video@Arrays in Javascript](https://www.youtube.com/watch?v=yQ1fz8LY354)
+- [@video@Arrays in GoLang](https://www.youtube.com/watch?v=e-oBn806Pzc&pp=ygUIYXJyYXkgZ28%3D)

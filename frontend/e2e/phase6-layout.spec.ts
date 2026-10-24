@@ -67,6 +67,9 @@ async function install(page: Page) {
         roles: [{ slug: 'data-analyst', name: 'Data Analyst' }],
       })
     }
+    if (path === '/api/v1/assignments') {
+      return json(route, 200, [])
+    }
     if (path === '/api/v1/applications') {
       return json(route, 200, [
         {
@@ -130,7 +133,7 @@ async function install(page: Page) {
           estimated_minutes: 40,
           task_count: 3,
           progress_percent: 0,
-          href: '/projects/bookstore',
+          href: '/practice/projects/bookstore',
         },
       ])
     }
@@ -259,8 +262,10 @@ test('representative layouts stay within the page at intermediate widths', async
   for (const width of [430, 768, 1024, 1280]) {
     await page.setViewportSize({ width, height: 900 })
     for (const path of ['/jobs', '/learn', '/practice/projects', '/practice/sql', '/jobs/applications']) {
-      await page.goto(path, { waitUntil: 'domcontentloaded' })
-      await expect(page.locator('main')).toBeVisible()
+      await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 20_000 })
+      await expect(page.locator('#main-content'), `${path} at ${width}`).toBeVisible({
+        timeout: 20_000,
+      })
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       )

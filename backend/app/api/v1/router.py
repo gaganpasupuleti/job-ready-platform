@@ -29,6 +29,7 @@ from app.api.v1 import (
     notifications,
     practice,
     readiness,
+    roadmap,
     sql_playground,
     sql_practice,
     studio,
@@ -48,6 +49,7 @@ api_router.include_router(interviews.router, tags=["interviews"])
 api_router.include_router(jobs.router, tags=["jobs"])
 api_router.include_router(applications.router, tags=["applications"])
 api_router.include_router(readiness.router, tags=["readiness"])
+api_router.include_router(roadmap.router, tags=["roadmap"])
 api_router.include_router(mistakes.router, tags=["mistakes"])
 api_router.include_router(assignments.router, tags=["assignments"])
 api_router.include_router(learn.router, tags=["learn"])

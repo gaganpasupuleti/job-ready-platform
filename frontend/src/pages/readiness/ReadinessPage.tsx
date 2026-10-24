@@ -77,13 +77,16 @@ export function ReadinessPage() {
             <p className="text-xs text-[var(--color-text-muted)]">Core skill coverage</p>
           </div>
         </div>
-        {!data.target_role && (
-          <p className="mt-4">
+        <p className="mt-4 flex flex-wrap gap-3">
+          <Link to="/roadmaps">
+            <Button variant="secondary">Open career roadmap</Button>
+          </Link>
+          {!data.target_role ? (
             <Link to="/jobs/preferences">
               <Button>Set a target role</Button>
             </Link>
-          </p>
-        )}
+          ) : null}
+        </p>
         <button
           type="button"
           className="mt-4 text-sm text-[var(--color-accent)] hover:underline"

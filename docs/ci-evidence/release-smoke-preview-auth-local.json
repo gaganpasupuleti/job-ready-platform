@@ -1,0 +1,10 @@
+{
+  "preview_url": "http://127.0.0.1:4173",
+  "api_url": "http://127.0.0.1:8000",
+  "registration_open": false,
+  "provisioning": "backend/scripts/provision_auth01_users.py (E2E_ALLOW_SEED=1)",
+  "spec": "frontend/e2e/auth.spec.ts (AUTH-01)",
+  "build": "production npm run build with VITE_API_BASE_URL=http://127.0.0.1:8000, VITE_ENABLE_DEV_LOGIN=false",
+  "result": "pass",
+  "note": "Separate from release-smoke-preview.spec.ts (3/3). Earlier full-script failure was registration-closed / production bundle without pre-provision + dev-only __jobReadyApiClient; both addressed."
+}

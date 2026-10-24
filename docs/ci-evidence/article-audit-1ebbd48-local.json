@@ -1,0 +1,2746 @@
+{
+  "apiBase": "http://127.0.0.1:8000",
+  "authenticated": true,
+  "at": "2026-10-23T22:14:35.334Z",
+  "totals": {
+    "slugs": 93,
+    "graphPass": 93,
+    "graphFail": 0,
+    "graphAuth": 0,
+    "articleSampleOk": 0,
+    "articleSampleFail": 93,
+    "articleUnverified": 0
+  },
+  "rows": [
+    {
+      "slug": "ai-agents",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-agents/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 189,
+      "edgeCount": 25,
+      "articleInventory": {
+        "readableTopicNodes": 101,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 100,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-agents/topics/VPI89s-m885r2YrXjYxdd",
+        "sampledNodeId": "VPI89s-m885r2YrXjYxdd",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__Ji35JsKgUQXN4DJGEgTACx2-imzXXZPt8wNny1oe3-MeNw1 source Ji35JsKgUQXN4DJGEgTAC type title cannot emit handles",
+        "edge xy-edge__Y8EqzFx3qxtrSh7bWbbV8x2-v-zVQKH6XEMCI4Np-Q3Jow1 target v-zVQKH6XEMCI4Np-Q3Jo type section cannot receive handles",
+        "edge xy-edge__1B0IqRNYdtbHDi1jHSXuIx2-K2ueUkBcV5ASMhHUUZH-Aw2 target K2ueUkBcV5ASMhHUUZH-A type section cannot receive handles",
+        "edge xy-edge__1NXIN-Hbjl5rPy_mqxQYWx2-qLO_DcIM2OY_i8njSIt1qw1 target qLO_DcIM2OY_i8njSIt1q type section cannot receive handles",
+        "edge xy-edge__T2vksVGCRajcwy_WRe2Yfz2-SU8HwGaDiRCho5I_pBl3Ny1 source T2vksVGCRajcwy_WRe2Yf type section cannot emit handles",
+        "edge xy-edge__SU8HwGaDiRCho5I_pBl3Nx2--MLEtjuRq9y1HpZeKJCtsw1 target -MLEtjuRq9y1HpZeKJCts type section cannot receive handles",
+        "edge xy-edge__MeOebqpbLZkPbj0iWRjP2x2-aafZxtjxiwzJH1lwHBODiw1 source MeOebqpbLZkPbj0iWRjP2 type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "ai-data-scientist",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-data-scientist/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 129,
+      "edgeCount": 1,
+      "articleInventory": {
+        "readableTopicNodes": 10,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 9,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-data-scientist/topics/aStaDENn5PhEa-cFvNzXa",
+        "sampledNodeId": "aStaDENn5PhEa-cFvNzXa",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": []
+    },
+    {
+      "slug": "ai-engineer",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-engineer/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 280,
+      "edgeCount": 41,
+      "articleInventory": {
+        "readableTopicNodes": 190,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 189,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-engineer/topics/v99C5Bml2a6148LCJ9gy9",
+        "sampledNodeId": "v99C5Bml2a6148LCJ9gy9",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge XX0I26JoVMVXIe_7bVMix source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "ai-product-builder",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-product-builder/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 93,
+      "edgeCount": 15,
+      "articleInventory": {
+        "readableTopicNodes": 52,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 51,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-product-builder/topics/4dxljr8BtYkJDXbLeE0gW",
+        "sampledNodeId": "4dxljr8BtYkJDXbLeE0gW",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__ZKrR9v-1eztsbcpNJrokix2-COeXWV8fCTHXPZnErXcGZw1 source ZKrR9v-1eztsbcpNJroki type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "ai-red-teaming",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-red-teaming/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 105,
+      "edgeCount": 34,
+      "articleInventory": {
+        "readableTopicNodes": 64,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 63,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ai-red-teaming/topics/R9DQNc0AyAQ2HLpP4HOk6",
+        "sampledNodeId": "R9DQNc0AyAQ2HLpP4HOk6",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-nhUKKWyBH80nyKfGT8ErCw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "android",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/android/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 157,
+      "edgeCount": 36,
+      "articleInventory": {
+        "readableTopicNodes": 113,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 112,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/android/topics/Suws-7f_6Z1ChpfcnxX2M",
+        "sampledNodeId": "Suws-7f_6Z1ChpfcnxX2M",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-5Z9o-b3vBA-ITFg86zzYMx2-Suws-7f_6Z1ChpfcnxX2Mw1 source 5Z9o-b3vBA-ITFg86zzYM type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "angular",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/angular/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 201,
+      "edgeCount": 35,
+      "articleInventory": {
+        "readableTopicNodes": 158,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 157,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/angular/topics/KDd40JOAvZ8O1mfhTYB3K",
+        "sampledNodeId": "KDd40JOAvZ8O1mfhTYB3K",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-DAwKHBng7Tytlcd2_8GORw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "api-design",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/api-design/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 123,
+      "edgeCount": 55,
+      "articleInventory": {
+        "readableTopicNodes": 97,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 96,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/api-design/topics/duKkpzPjUU_-8kyJGHqRX",
+        "sampledNodeId": "duKkpzPjUU_-8kyJGHqRX",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge 1a_QvZPscaIyRxhKH7p-K source AZoEY2N7PqAQgUl04E3KF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "aspnet-core",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/aspnet-core/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 202,
+      "edgeCount": 39,
+      "articleInventory": {
+        "readableTopicNodes": 146,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 145,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/aspnet-core/topics/NEnna_8DstfYH4T9qrP3-",
+        "sampledNodeId": "NEnna_8DstfYH4T9qrP3-",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": []
+    },
+    {
+      "slug": "aws",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/aws/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 131,
+      "edgeCount": 52,
+      "articleInventory": {
+        "readableTopicNodes": 101,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 100,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/aws/topics/Py9nst2FDJ1_hoXeX_qSF",
+        "sampledNodeId": "Py9nst2FDJ1_hoXeX_qSF",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__Ji35JsKgUQXN4DJGEgTACx2-jrH1qE6EnFXL4fTyYU8gRw1 source Ji35JsKgUQXN4DJGEgTAC type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "backend",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/backend/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 225,
+      "edgeCount": 60,
+      "articleInventory": {
+        "readableTopicNodes": 155,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 154,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/backend/topics/9cD5ag1L0GqHx4_zxc5JX",
+        "sampledNodeId": "9cD5ag1L0GqHx4_zxc5JX",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-NVSQ4OtmvRp7p4cOEvKh7w1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge xy-edge__STQQbPa7PE3gbjMdL6P-tx2-TcfbKmrUwzOwl13Pthm8zw1 target TcfbKmrUwzOwl13Pthm8z type section cannot receive handles",
+        "edge xy-edge__TcfbKmrUwzOwl13Pthm8zz2-nJ5FpFgGCRaALcWmAKBKTy2 source TcfbKmrUwzOwl13Pthm8z type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "backend-beginner",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/backend-beginner/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 49,
+      "edgeCount": 25,
+      "articleInventory": {
+        "readableTopicNodes": 26,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 25,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/backend-beginner/topics/EwvLPSI6AlZ4TnNIJTZA4",
+        "sampledNodeId": "EwvLPSI6AlZ4TnNIJTZA4",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-2f0ZO6GJElfZ2Eis28Hzgw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "bi-analyst",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/bi-analyst/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 212,
+      "edgeCount": 126,
+      "articleInventory": {
+        "readableTopicNodes": 178,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 177,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/bi-analyst/topics/jVXwlHRGgVpcoWCYzSB5W",
+        "sampledNodeId": "jVXwlHRGgVpcoWCYzSB5W",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__kTMXaNS4W8X2g1qtMUEOOx2-PxOEfMSQYA2jy3zrMZXjZw2 source kTMXaNS4W8X2g1qtMUEOO type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "blockchain",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/blockchain/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 172,
+      "edgeCount": 22,
+      "articleInventory": {
+        "readableTopicNodes": 127,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 126,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/blockchain/topics/MvpHHpbS-EksUfuOKILOq",
+        "sampledNodeId": "MvpHHpbS-EksUfuOKILOq",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-k5lpqM1IIUSgtyUcR4t7ux2-MvpHHpbS-EksUfuOKILOqw1 source k5lpqM1IIUSgtyUcR4t7u type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "c",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/c/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 177,
+      "edgeCount": 71,
+      "articleInventory": {
+        "readableTopicNodes": 141,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 140,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/c/topics/0jSjJfj-xvSsrmjrKscuq",
+        "sampledNodeId": "0jSjJfj-xvSsrmjrKscuq",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge TSJKpLi1BnLel9d0360ND source LCqEcozu1CA4mSBxaYxtY type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "claude-code",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/claude-code/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 145,
+      "edgeCount": 46,
+      "articleInventory": {
+        "readableTopicNodes": 113,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 112,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/claude-code/topics/SKkeuO_5B18AbxlNGeazN",
+        "sampledNodeId": "SKkeuO_5B18AbxlNGeazN",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge ySKlXkr-YavZA2SDk6s4V source IUSgamqbfkB1SaffnTRAa type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "cloudflare",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cloudflare/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 127,
+      "edgeCount": 55,
+      "articleInventory": {
+        "readableTopicNodes": 97,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 96,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cloudflare/topics/PcYnYAAkKMbzoiCnBfjqO",
+        "sampledNodeId": "PcYnYAAkKMbzoiCnBfjqO",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-IubwhdnyWtjpejkGOfnPyz2-kJXPzUulKPhawgbEK7n9ly1 target kJXPzUulKPhawgbEK7n9l type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "code-review",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/code-review/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "edgeless",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 18,
+      "edgeCount": 0,
+      "articleInventory": {
+        "readableTopicNodes": 5,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 4,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/code-review/topics/ANbBMKHS6CtWDDY0tpiSh",
+        "sampledNodeId": "ANbBMKHS6CtWDDY0tpiSh",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": []
+    },
+    {
+      "slug": "cpp",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cpp/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 164,
+      "edgeCount": 39,
+      "articleInventory": {
+        "readableTopicNodes": 127,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 126,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cpp/topics/ofwdZm05AUqCIWmfgGHk8",
+        "sampledNodeId": "ofwdZm05AUqCIWmfgGHk8",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-4kkX5g_-plX9zVqr0ZoiRx2-I1aDakZmYpe7pKczou0qCw1 target I1aDakZmYpe7pKczou0qC type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "computer-science",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/computer-science/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 244,
+      "edgeCount": 45,
+      "articleInventory": {
+        "readableTopicNodes": 188,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 187,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/computer-science/topics/tU4Umtnfu01t9gLlnlK6b",
+        "sampledNodeId": "tU4Umtnfu01t9gLlnlK6b",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-tU4Umtnfu01t9gLlnlK6bw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "css",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/css/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 147,
+      "edgeCount": 42,
+      "articleInventory": {
+        "readableTopicNodes": 104,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 103,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/css/topics/eR9zEKc2xQtOPNjOgke4_",
+        "sampledNodeId": "eR9zEKc2xQtOPNjOgke4_",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge pnDZh7BYk9U_aXDHpqQU5 source oohtAP903vNNLJlr05j5d type title cannot emit handles",
+        "edge xy-edge__tlYeQAVMXlyev1GIgRUq6x2-R-rnVeB73Ehhxrl1pcFXqw1 source tlYeQAVMXlyev1GIgRUq6 type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "cyber-security",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cyber-security/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 373,
+      "edgeCount": 18,
+      "articleInventory": {
+        "readableTopicNodes": 301,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 300,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/cyber-security/topics/oimYzZYFXKjgvc7D4c-2u",
+        "sampledNodeId": "oimYzZYFXKjgvc7D4c-2u",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-_hYN0gEi9BL24nptEtXWUw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-M2J4wsTcEo3IcULZDRNyMz2-_hYN0gEi9BL24nptEtXWUy1 source M2J4wsTcEo3IcULZDRNyM type section cannot emit handles",
+        "edge reactflow__edge-vVaBQ5VtsE_ZeXbCOF8uxx2-FNyo1X9BP0v8GnBhPYXDRw1 target FNyo1X9BP0v8GnBhPYXDR type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "data-analyst",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/data-analyst/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "sanitized",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 156,
+      "edgeCount": 40,
+      "articleInventory": {
+        "readableTopicNodes": 99,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 98,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/data-analyst/topics/3xp2fogAVmwXQhdzhZDWR",
+        "sampledNodeId": "3xp2fogAVmwXQhdzhZDWR",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-NVSQ4OtmvRp7p4cOEvKh7w1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "data-engineer",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/data-engineer/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 258,
+      "edgeCount": 73,
+      "articleInventory": {
+        "readableTopicNodes": 184,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 183,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/data-engineer/topics/WSYIFni7G2C9Jr0pwuami",
+        "sampledNodeId": "WSYIFni7G2C9Jr0pwuami",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__7aSscXd-UMNWOX7A_vxYhx2-fY8LEcCRTKUVEqLH1Qlc0w1 source 7aSscXd-UMNWOX7A_vxYh type title cannot emit handles",
+        "edge xy-edge__03BHmPhYkZrJwRvQdmxxrz2-SEpxm5INSkSQc07C4uyPty1 target SEpxm5INSkSQc07C4uyPt type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "datastructures-and-algorithms",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/datastructures-and-algorithms/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 134,
+      "edgeCount": 42,
+      "articleInventory": {
+        "readableTopicNodes": 107,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 106,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/datastructures-and-algorithms/topics/Z4uVzAoNzcAkyjd-lp3_M",
+        "sampledNodeId": "Z4uVzAoNzcAkyjd-lp3_M",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__5jNTeoLONIHWlT68poo7bx2-j_r1tB16bA7R3yDAWN7Ojw1 source 5jNTeoLONIHWlT68poo7b type title cannot emit handles",
+        "edge xy-edge__j_r1tB16bA7R3yDAWN7Ojx2-A3lFT7bB2T_uM3EGlMnV4w1 target A3lFT7bB2T_uM3EGlMnV4 type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "design-system",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/design-system/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "sanitized",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 173,
+      "edgeCount": 27,
+      "articleInventory": {
+        "readableTopicNodes": 124,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 123,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/design-system/topics/uvnV1IjE8RV-FKDxHntUU",
+        "sampledNodeId": "uvnV1IjE8RV-FKDxHntUU",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-08qKtgnhJ3tlb5JKfTDf5w1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__TWx2jJqOyI3CXCOTQ106_y2-JfXwzkN29UGz17FYHHE3Az2 source TWx2jJqOyI3CXCOTQ106_ type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "devops",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devops/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 171,
+      "edgeCount": 60,
+      "articleInventory": {
+        "readableTopicNodes": 139,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 138,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devops/topics/v5FGKQc-_7NYEsWjmTEuq",
+        "sampledNodeId": "v5FGKQc-_7NYEsWjmTEuq",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-fqBgeJj5fan4TT7K2E6c7x2-43OZ35TemharSqfrst0Pvw1 source fqBgeJj5fan4TT7K2E6c7 type title cannot emit handles",
+        "edge reactflow__edge-jCWrnQNgjHKyhzd9dwOHzx2-PsbYeHGMd9E1UNqcaFQOzw1 target PsbYeHGMd9E1UNqcaFQOz type section cannot receive handles",
+        "edge reactflow__edge-w5d24Sf8GDkLDLGUPxzS9y2-7crPw2SKw-TlsSe9kpZFQz1 target 7crPw2SKw-TlsSe9kpZFQ type section cannot receive handles",
+        "edge reactflow__edge-JizyX8jse920gpWcmoSEDx2-1oYvpFG8LKT1JD6a_9J0mw1 source JizyX8jse920gpWcmoSED type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "devops-beginner",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devops-beginner/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 47,
+      "edgeCount": 17,
+      "articleInventory": {
+        "readableTopicNodes": 13,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 12,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devops-beginner/topics/v5FGKQc-_7NYEsWjmTEuq",
+        "sampledNodeId": "v5FGKQc-_7NYEsWjmTEuq",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-jJebnKe4JftMXZ1lCsipqx2-v5FGKQc-_7NYEsWjmTEuqw1 source jJebnKe4JftMXZ1lCsipq type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "devrel",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devrel/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 185,
+      "edgeCount": 70,
+      "articleInventory": {
+        "readableTopicNodes": 142,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 141,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devrel/topics/SiYUdtYMDImRPmV2_XPkH",
+        "sampledNodeId": "SiYUdtYMDImRPmV2_XPkH",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-SiYUdtYMDImRPmV2_XPkHw2 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-71BBFjaON1NJi4rOHKW6Kw2-ioEUqMXOt-mn_6zB2xIBxx2 target ioEUqMXOt-mn_6zB2xIBx type section cannot receive handles",
+        "edge reactflow__edge-71BBFjaON1NJi4rOHKW6Kx2-7jS0tkU5hNdpA8DsxlsVlw1 target 7jS0tkU5hNdpA8DsxlsVl type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "devsecops",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devsecops/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 131,
+      "edgeCount": 33,
+      "articleInventory": {
+        "readableTopicNodes": 93,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 92,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/devsecops/topics/-X3GTFpg3kzm0cELAngjb",
+        "sampledNodeId": "-X3GTFpg3kzm0cELAngjb",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__KezQ_GFRImc9gZ-6GTCsAx2-7MavDAydyrt0tOJ6a6xRQw2 source KezQ_GFRImc9gZ-6GTCsA type title cannot emit handles",
+        "edge xy-edge__cwJAv_ywRKpD-dD9-bImYz2-vgVdMoqONLUkeBaXaudYHy1 target vgVdMoqONLUkeBaXaudYH type section cannot receive handles",
+        "edge xy-edge__ut5vSmzC4jQkuUYfcLHa6z2-WQyCNUfcQRIlD_N_KRZxWy1 target WQyCNUfcQRIlD_N_KRZxW type section cannot receive handles",
+        "edge xy-edge__YGBr0X46s0FizqyBx9RYLx2-7PqpCoTeA0Xwd3JN-oNLkw2 source YGBr0X46s0FizqyBx9RYL type section cannot emit handles",
+        "edge xy-edge__vgVdMoqONLUkeBaXaudYHx2-V5eQcby9FNcGv68KPj5rHw1 source vgVdMoqONLUkeBaXaudYH type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "django",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/django/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "sanitized",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 160,
+      "edgeCount": 55,
+      "articleInventory": {
+        "readableTopicNodes": 113,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 112,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/django/topics/xdxitF1Foo6W9Pj6-2Be1",
+        "sampledNodeId": "xdxitF1Foo6W9Pj6-2Be1",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__xAGTajVXYVvgHaQbcuW7Xx2-S5K2LZZmxYKF7uMeBJR9yw1 source xAGTajVXYVvgHaQbcuW7X type title cannot emit handles",
+        "edge xy-edge__yRaVL7FoWcHb2A8uz5TV8y2-zRrhp04EE_sxFjcvRU13qz2 target zRrhp04EE_sxFjcvRU13q type section cannot receive handles",
+        "edge xy-edge__GQqNJQ3FkO-kBM8WYVBmnx2-AJcBrhuUNpgx6RWF8tGFww2 target AJcBrhuUNpgx6RWF8tGFw type section cannot receive handles",
+        "edge xy-edge__d0JBAP2Sot-u4diwqDYIqx2-dOFwWP4UnBRwU8WI3ZAy7w1 target dOFwWP4UnBRwU8WI3ZAy7 type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "docker",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/docker/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 79,
+      "edgeCount": 30,
+      "articleInventory": {
+        "readableTopicNodes": 57,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 56,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/docker/topics/Py9nst2FDJ1_hoXeX_qSF",
+        "sampledNodeId": "Py9nst2FDJ1_hoXeX_qSF",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__Ji35JsKgUQXN4DJGEgTACx2-jrH1qE6EnFXL4fTyYU8gRw1 source Ji35JsKgUQXN4DJGEgTAC type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "elasticsearch",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/elasticsearch/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 175,
+      "edgeCount": 32,
+      "articleInventory": {
+        "readableTopicNodes": 113,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 112,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/elasticsearch/topics/rWriosjh7LzGZbj8k_wih",
+        "sampledNodeId": "rWriosjh7LzGZbj8k_wih",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__iq76EQXUQ4WwqEM_vOSjvx2-rWriosjh7LzGZbj8k_wihw2 source iq76EQXUQ4WwqEM_vOSjv type title cannot emit handles",
+        "edge xy-edge__rWriosjh7LzGZbj8k_wihz2-Yj1vaSKIBbDU8GFaWaq8Iy1 target Yj1vaSKIBbDU8GFaWaq8I type section cannot receive handles",
+        "edge xy-edge__s2Egde765C5w0Yj7opnpUz2-NT7YuiYuLF80AWMsaZzzWy1 target NT7YuiYuLF80AWMsaZzzW type section cannot receive handles",
+        "edge xy-edge__U2NT_DNSji1aEDdZLnyquz2-LhvRwqvPxhXm65tC1Z6dSy1 target LhvRwqvPxhXm65tC1Z6dS type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "engineering-manager",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/engineering-manager/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 227,
+      "edgeCount": 17,
+      "articleInventory": {
+        "readableTopicNodes": 133,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 132,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/engineering-manager/topics/_hYN0gEi9BL24nptEtXWU",
+        "sampledNodeId": "_hYN0gEi9BL24nptEtXWU",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-_hYN0gEi9BL24nptEtXWUw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-X_nhWY6Veipg2OWISeJEax2-kOOzXG97rv2heF-i6CudZw1 target kOOzXG97rv2heF-i6CudZ type section cannot receive handles",
+        "edge reactflow__edge-X8b4Mang8X69ZL54MUp_Yx2-6shGmkSVDCch9z6rspSRCw2 source X8b4Mang8X69ZL54MUp_Y type section cannot emit handles",
+        "edge reactflow__edge-6shGmkSVDCch9z6rspSRCy2-fQbBVljA0ECDGOlxO0GmQz1 target fQbBVljA0ECDGOlxO0GmQ type section cannot receive handles",
+        "edge reactflow__edge-fQbBVljA0ECDGOlxO0GmQy2-ad29W87dmCPd4pATKchVkz1 source fQbBVljA0ECDGOlxO0GmQ type section cannot emit handles",
+        "edge reactflow__edge-fQbBVljA0ECDGOlxO0GmQy2-ad29W87dmCPd4pATKchVkz1 target ad29W87dmCPd4pATKchVk type section cannot receive handles",
+        "edge reactflow__edge-ad29W87dmCPd4pATKchVkx2-JCjb-qZuoQqGWrHpTw4tDw1 source ad29W87dmCPd4pATKchVk type section cannot emit handles",
+        "edge reactflow__edge-ad29W87dmCPd4pATKchVkx2-JCjb-qZuoQqGWrHpTw4tDw1 target JCjb-qZuoQqGWrHpTw4tD type section cannot receive handles",
+        "edge reactflow__edge-6shGmkSVDCch9z6rspSRCz2-vpfqQSOhBDHvhTGmDjYyiy1 target vpfqQSOhBDHvhTGmDjYyi type section cannot receive handles",
+        "edge reactflow__edge-vpfqQSOhBDHvhTGmDjYyix2-3GHnbaEa6iE9ixxAYyUa0w1 source vpfqQSOhBDHvhTGmDjYyi type section cannot emit handles",
+        "edge reactflow__edge-vpfqQSOhBDHvhTGmDjYyix2-3GHnbaEa6iE9ixxAYyUa0w1 target 3GHnbaEa6iE9ixxAYyUa0 type section cannot receive handles",
+        "edge reactflow__edge-UoHPKOKUHF2avXFUT5Vz4x2-iAsUXmTDnwvZTlH1_TKv0w1 target iAsUXmTDnwvZTlH1_TKv0 type section cannot receive handles",
+        "edge reactflow__edge-bZ81ie09XsQw-YD17nBQ_x2-7vahmZfyKoHFz9Yq-Vb4Cw1 target 7vahmZfyKoHFz9Yq-Vb4C type section cannot receive handles",
+        "edge reactflow__edge-bLx0NI1XEqYnuLhGOyWaix2-xKFDpqkzQ6EvTDixM0_hiw1 source bLx0NI1XEqYnuLhGOyWai type section cannot emit handles",
+        "edge reactflow__edge-BY5rqe9DC0iZoE2JpfCqzx2-7sz1w4O4pKfoTBgTwpm9Pw1 source BY5rqe9DC0iZoE2JpfCqz type section cannot emit handles",
+        "edge reactflow__edge-BY5rqe9DC0iZoE2JpfCqzx2-7sz1w4O4pKfoTBgTwpm9Pw1 target 7sz1w4O4pKfoTBgTwpm9P type section cannot receive handles",
+        "edge reactflow__edge-_RF_sIeR2YhGf7g4htNV6x2-MGkl-UZPEMJ7e7HzVfYyLw1 target MGkl-UZPEMJ7e7HzVfYyL type section cannot receive handles",
+        "edge reactflow__edge-gjz97vjZ1mrnWNm5gO4pPx2-X_nhWY6Veipg2OWISeJEaw2 source gjz97vjZ1mrnWNm5gO4pP type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "flutter",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/flutter/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 139,
+      "edgeCount": 52,
+      "articleInventory": {
+        "readableTopicNodes": 108,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 107,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/flutter/topics/AubSeLi2nwNTUA-L3Kfn4",
+        "sampledNodeId": "AubSeLi2nwNTUA-L3Kfn4",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-08qKtgnhJ3tlb5JKfTDf5w1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__z50iixpcCMe9sTh-gwTI3y2-2mGGqg3ycxw4Rd7blYE-Yz1 target 2mGGqg3ycxw4Rd7blYE-Y type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "forward-deployed-engineer",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/forward-deployed-engineer/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 141,
+      "edgeCount": 94,
+      "articleInventory": {
+        "readableTopicNodes": 94,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 93,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/forward-deployed-engineer/topics/s4Kooj99igkE02P-D-dAU",
+        "sampledNodeId": "s4Kooj99igkE02P-D-dAU",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__9yG3qY_gwr77Uz2XN5wQOx2-LRBwP7EQj4byox7yKdPAjw1 source 9yG3qY_gwr77Uz2XN5wQO type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "frontend",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/frontend/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 156,
+      "edgeCount": 69,
+      "articleInventory": {
+        "readableTopicNodes": 120,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 119,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/frontend/topics/VlNNwIEDWqQXtqkHWJYzC",
+        "sampledNodeId": "VlNNwIEDWqQXtqkHWJYzC",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge tNkdpQjYu72eFK9f_W0RO source jJebnKe4JftMXZ1lCsipq type title cannot emit handles",
+        "edge xy-edge__Cxspmb14_0i1tfw-ZLxEuy2-a8oOlkyM_C8vHuHqeiOAKz1 target a8oOlkyM_C8vHuHqeiOAK type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "frontend-beginner",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/frontend-beginner/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 38,
+      "edgeCount": 12,
+      "articleInventory": {
+        "readableTopicNodes": 9,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 8,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/frontend-beginner/topics/yWG2VUkaF5IJVVut6AiSy",
+        "sampledNodeId": "yWG2VUkaF5IJVVut6AiSy",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-jJebnKe4JftMXZ1lCsipqx2-yWG2VUkaF5IJVVut6AiSyw1 source jJebnKe4JftMXZ1lCsipq type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "full-stack",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/full-stack/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 79,
+      "edgeCount": 21,
+      "articleInventory": {
+        "readableTopicNodes": 37,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 36,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/full-stack/topics/B0kARTODvCBi0iOF8iiqI",
+        "sampledNodeId": "B0kARTODvCBi0iOF8iiqI",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-mGgx_QTEPmVKf6AijX9fiy2 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "game-developer",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/game-developer/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 172,
+      "edgeCount": 47,
+      "articleInventory": {
+        "readableTopicNodes": 144,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 143,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/game-developer/topics/rQArtuVKGVgLn_fw9yO3b",
+        "sampledNodeId": "rQArtuVKGVgLn_fw9yO3b",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-rQArtuVKGVgLn_fw9yO3bw2 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "git-github",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/git-github/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 201,
+      "edgeCount": 77,
+      "articleInventory": {
+        "readableTopicNodes": 156,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 155,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/git-github/topics/HlUUGj3dOZ68t4gIjerXh",
+        "sampledNodeId": "HlUUGj3dOZ68t4gIjerXh",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-5Z9o-b3vBA-ITFg86zzYMx2-HlUUGj3dOZ68t4gIjerXhw1 source 5Z9o-b3vBA-ITFg86zzYM type title cannot emit handles",
+        "edge reactflow__edge-sFf1PdFfmEdQxsEntfeFqw2-e5O8lUSSEOEFR-dlZV5wNx1 target e5O8lUSSEOEFR-dlZV5wN type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "git-github-beginner",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/git-github-beginner/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 34,
+      "edgeCount": 8,
+      "articleInventory": {
+        "readableTopicNodes": 5,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 4,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/git-github-beginner/topics/HlUUGj3dOZ68t4gIjerXh",
+        "sampledNodeId": "HlUUGj3dOZ68t4gIjerXh",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-5Z9o-b3vBA-ITFg86zzYMx2-HlUUGj3dOZ68t4gIjerXhw1 source 5Z9o-b3vBA-ITFg86zzYM type title cannot emit handles",
+        "edge reactflow__edge-HlUUGj3dOZ68t4gIjerXhz2-S7HjbouTnYhMlJ763X3Cyy1 target S7HjbouTnYhMlJ763X3Cy type section cannot receive handles",
+        "edge reactflow__edge-sti_TAgZvSpuFWtygAsKcz2-PKX9zjS8bRMMpKBgdc2mIy2 target PKX9zjS8bRMMpKBgdc2mI type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "golang",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/golang/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "sanitized",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 231,
+      "edgeCount": 77,
+      "articleInventory": {
+        "readableTopicNodes": 172,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 171,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/golang/topics/WwLLyHL5psm0GOI9bmOne",
+        "sampledNodeId": "WwLLyHL5psm0GOI9bmOne",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-08qKtgnhJ3tlb5JKfTDf5w1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__RVshe30fpsFPGDejc1Gxhx2-IhzXThqAkvzqGS2rnGpBOw1 target IhzXThqAkvzqGS2rnGpBO type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "graphql",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/graphql/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 104,
+      "edgeCount": 32,
+      "articleInventory": {
+        "readableTopicNodes": 66,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 65,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/graphql/topics/JfXwzkN29UGz17FYHHE3A",
+        "sampledNodeId": "JfXwzkN29UGz17FYHHE3A",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-08qKtgnhJ3tlb5JKfTDf5w1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__BVXPP2J15hss2hF85urjNz2-WFO_AwmbUJPAFj0tFClJgy1 source BVXPP2J15hss2hF85urjN type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "html",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/html/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 111,
+      "edgeCount": 53,
+      "articleInventory": {
+        "readableTopicNodes": 88,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 87,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/html/topics/4gst44L8-ps9YFMHzucfN",
+        "sampledNodeId": "4gst44L8-ps9YFMHzucfN",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge tC13Xz7K5kOsxhU4asWny source -oXkzllb88bN17OY5LQrP type title cannot emit handles",
+        "edge xy-edge__5Ze6iqSnZLpQWnhUSGQOEy2-DMXMZPWZlKgJAfhL2yDckz1 target DMXMZPWZlKgJAfhL2yDck type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "ios",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ios/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 210,
+      "edgeCount": 116,
+      "articleInventory": {
+        "readableTopicNodes": 169,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 168,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ios/topics/KJ7fM-V0_azY_lzmhjJAN",
+        "sampledNodeId": "KJ7fM-V0_azY_lzmhjJAN",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge--PDYmhSQlGbLLFBJQ-Fo3x2-MrdIb9F-wSEbUz7KRnH3tw1 source -PDYmhSQlGbLLFBJQ-Fo3 type title cannot emit handles",
+        "edge reactflow__edge-28HMXXBJWd3n-ZPgeQRDaz2-W6gdCIkqSFo70guQ6cKCTy1 target W6gdCIkqSFo70guQ6cKCT type section cannot receive handles",
+        "edge reactflow__edge-28HMXXBJWd3n-ZPgeQRDaz2-WaoIITgpj3XEyqDKw6cG_y2 target WaoIITgpj3XEyqDKw6cG_ type section cannot receive handles",
+        "edge reactflow__edge-knDbJw2PEIMyr0TpZLsLMz2-28HMXXBJWd3n-ZPgeQRDay1 source knDbJw2PEIMyr0TpZLsLM type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "java",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/java/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 125,
+      "edgeCount": 29,
+      "articleInventory": {
+        "readableTopicNodes": 88,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 87,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/java/topics/2TGq1y2QthnxxN-FfToSe",
+        "sampledNodeId": "2TGq1y2QthnxxN-FfToSe",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-hp15XdmPlKKTbYnrYfCBlx2-Rhk7BrJqNEXQT3LGlGLM6w1 source hp15XdmPlKKTbYnrYfCBl type title cannot emit handles",
+        "edge reactflow__edge-zNHDLv26Xn3oMrDVSAP1Zx2-FyTlaUqrK5h3e5mWwkvVgw1 target FyTlaUqrK5h3e5mWwkvVg type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "javascript",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/javascript/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "sanitized",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 165,
+      "edgeCount": 76,
+      "articleInventory": {
+        "readableTopicNodes": 126,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 125,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/javascript/topics/6khAD6mzZ9S96JJuC5_j6",
+        "sampledNodeId": "6khAD6mzZ9S96JJuC5_j6",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-ADarwihuI2nBq1C3U7-Zrw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-ADarwihuI2nBq1C3U7-Zry2-SSqBPOJROQpX5poMFSJtJz1 target SSqBPOJROQpX5poMFSJtJ type section cannot receive handles",
+        "edge reactflow__edge-YD-2l_amfqqqCdtc_Zdzoy2-iZjl6qe9LGLFqXyopMUFXz1 target iZjl6qe9LGLFqXyopMUFX type section cannot receive handles",
+        "edge reactflow__edge-YD-2l_amfqqqCdtc_Zdzox2-JM16NHhFVOwwbwqCubmYww1 target JM16NHhFVOwwbwqCubmYw type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "kotlin",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/kotlin/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 191,
+      "edgeCount": 86,
+      "articleInventory": {
+        "readableTopicNodes": 153,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 152,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/kotlin/topics/Lod4cyZLuaCMmQ3-GkH8Z",
+        "sampledNodeId": "Lod4cyZLuaCMmQ3-GkH8Z",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-08qKtgnhJ3tlb5JKfTDf5w1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__0K0aFQPi3CnB8BAAA2pIsz2-QpZsfeARvWVKmQlVm15zAy1 target QpZsfeARvWVKmQlVm15zA type section cannot receive handles",
+        "edge xy-edge__G_4qkm1cSGm-Q1KELBOdsx2-3RnZYzNI_QXM_uY-9WV9aw1 target 3RnZYzNI_QXM_uY-9WV9a type section cannot receive handles",
+        "edge xy-edge__rOpgM--1Q1mBYmK5AlYAYx2-k2_QAZC6dz9Dk33Tm3FpZw1 target k2_QAZC6dz9Dk33Tm3FpZ type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "kubernetes",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/kubernetes/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 86,
+      "edgeCount": 29,
+      "articleInventory": {
+        "readableTopicNodes": 67,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 66,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/kubernetes/topics/y7KjVfSI6CAduyHd4mBFT",
+        "sampledNodeId": "y7KjVfSI6CAduyHd4mBFT",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-t8SJbGVXsUDECxePLDk_ww1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "laravel",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/laravel/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 155,
+      "edgeCount": 40,
+      "articleInventory": {
+        "readableTopicNodes": 104,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 103,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/laravel/topics/Kee5SXZbkwmoxAF8O6Y2f",
+        "sampledNodeId": "Kee5SXZbkwmoxAF8O6Y2f",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__PWAlppGP7HNMD7y4I6LnJx2-oGDxiqekYj52KyMF9zZYXw1 target oGDxiqekYj52KyMF9zZYX type section cannot receive handles",
+        "edge xy-edge__IBS_S2EFIE2wygViIzriSx2-S5K2LZZmxYKF7uMeBJR9yw1 source IBS_S2EFIE2wygViIzriS type title cannot emit handles",
+        "edge xy-edge__nNFGTPDGmI7bcUwnClRgQw2-lQUIF_jhRgBRG7hHpWQnax1 target lQUIF_jhRgBRG7hHpWQna type section cannot receive handles",
+        "edge xy-edge__OnNjO3zDIYNHesUxr8qdtw2-NcgOltUze3TkP-8c_ohLqx1 target NcgOltUze3TkP-8c_ohLq type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "leetcode",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/leetcode/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 151,
+      "edgeCount": 132,
+      "articleInventory": {
+        "readableTopicNodes": 137,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 136,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/leetcode/topics/DUZWC157r-xhcJZ__p8wQ",
+        "sampledNodeId": "DUZWC157r-xhcJZ__p8wQ",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge egvJpkOHFR6E59yvauUpa source FvkMdMIJV0D7iuVbnrhU0 type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "linux",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/linux/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 121,
+      "edgeCount": 51,
+      "articleInventory": {
+        "readableTopicNodes": 102,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 101,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/linux/topics/y7KjVfSI6CAduyHd4mBFT",
+        "sampledNodeId": "y7KjVfSI6CAduyHd4mBFT",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-t8SJbGVXsUDECxePLDk_ww1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__u2K2QU5WxT9sSe9FCB-CAx2-3OpGaQhyNtk1n1MLp-tlbw1 source u2K2QU5WxT9sSe9FCB-CA type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "machine-learning",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/machine-learning/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 201,
+      "edgeCount": 75,
+      "articleInventory": {
+        "readableTopicNodes": 150,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 149,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/machine-learning/topics/MEL6y3vwiqwAV6FQihF34",
+        "sampledNodeId": "MEL6y3vwiqwAV6FQihF34",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__7aSscXd-UMNWOX7A_vxYhx2-fY8LEcCRTKUVEqLH1Qlc0w1 source 7aSscXd-UMNWOX7A_vxYh type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "mlops",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/mlops/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 80,
+      "edgeCount": 40,
+      "articleInventory": {
+        "readableTopicNodes": 62,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 61,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/mlops/topics/_7uvOebQUI4xaSwtMjpEd",
+        "sampledNodeId": "_7uvOebQUI4xaSwtMjpEd",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__iogwMmOvub2ZF4zgg6WyFx2-tDsrzHWGai4RrP5Dz79yJw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "mongodb",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/mongodb/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "sanitized",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 138,
+      "edgeCount": 42,
+      "articleInventory": {
+        "readableTopicNodes": 106,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 105,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/mongodb/topics/z50iixpcCMe9sTh-gwTI3",
+        "sampledNodeId": "z50iixpcCMe9sTh-gwTI3",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-08qKtgnhJ3tlb5JKfTDf5w1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__LC923iJhfiUDIs_0-9rc7x2-I4nV_ht5zBjcmqPR2vTLzw1 target I4nV_ht5zBjcmqPR2vTLz type section cannot receive handles",
+        "edge xy-edge__3Ws8Y34nbhyYTD7T3HnAdx2-A9W2LsivDc0ialLp83fYPw2 source 3Ws8Y34nbhyYTD7T3HnAd type section cannot emit handles",
+        "edge xy-edge__1HBTZGBuT2cKNmwgFkGOFz2-6H2MMnEfS6uHGS-6pFo8uy1 source 1HBTZGBuT2cKNmwgFkGOF type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "network-engineer",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/network-engineer/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 248,
+      "edgeCount": 78,
+      "articleInventory": {
+        "readableTopicNodes": 196,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 195,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/network-engineer/topics/_OZl6uYkb61iQ_Wb0Q70Q",
+        "sampledNodeId": "_OZl6uYkb61iQ_Wb0Q70Q",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__Rpz6zGfvVYWNuE7dJTTovx2-_OZl6uYkb61iQ_Wb0Q70Qw1 source Rpz6zGfvVYWNuE7dJTTov type title cannot emit handles",
+        "edge xy-edge__0BPBSnyYnEAScnqZ8q5ZXz2-Ed0rAx2EJ_9C793Za8T_wy1 target Ed0rAx2EJ_9C793Za8T_w type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "nextjs",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/nextjs/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 132,
+      "edgeCount": 50,
+      "articleInventory": {
+        "readableTopicNodes": 94,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 93,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/nextjs/topics/DlUQkDRPUcjC3pO4P5zCQ",
+        "sampledNodeId": "DlUQkDRPUcjC3pO4P5zCQ",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-tcDL4OEbZplbjNa8VTLpvw1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__siGnXWFqy2ZMkv7Wi1UVGz2-2Jnj0GxjwGcNdwJcUNSnZy1 target 2Jnj0GxjwGcNdwJcUNSnZ type section cannot receive handles",
+        "edge xy-edge__YP34tozqTte5s52QBnrKDx2-_BCC4r0kAPPHQ_1ToVSJdw1 target _BCC4r0kAPPHQ_1ToVSJd type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "nodejs",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/nodejs/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 160,
+      "edgeCount": 40,
+      "articleInventory": {
+        "readableTopicNodes": 113,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 112,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/nodejs/topics/KDd40JOAvZ8O1mfhTYB3K",
+        "sampledNodeId": "KDd40JOAvZ8O1mfhTYB3K",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-DAwKHBng7Tytlcd2_8GORw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "openclaw",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/openclaw/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 154,
+      "edgeCount": 28,
+      "articleInventory": {
+        "readableTopicNodes": 107,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 106,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/openclaw/topics/4u53an-SHGNCAh87GTd7C",
+        "sampledNodeId": "4u53an-SHGNCAh87GTd7C",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge M1arD1UdXwicC3M_q785l source 4WN7z6NnQKXdanHl-C_vD type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "php",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/php/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 195,
+      "edgeCount": 54,
+      "articleInventory": {
+        "readableTopicNodes": 120,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 119,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/php/topics/_hYN0gEi9BL24nptEtXWU",
+        "sampledNodeId": "_hYN0gEi9BL24nptEtXWU",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-_hYN0gEi9BL24nptEtXWUw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-BxU_vv4FsalsT1Hq0qRRKy2-usBwcXnWuUlaN71q1nbEDz1 source BxU_vv4FsalsT1Hq0qRRK type section cannot emit handles",
+        "edge reactflow__edge-usBwcXnWuUlaN71q1nbEDy2-bN07oOEWH_UrXKfpp8MB0z1 target bN07oOEWH_UrXKfpp8MB0 type section cannot receive handles",
+        "edge reactflow__edge-fBym6pkzRkNh0LWyCg3Bvx2-hitsVjqeIuzCP0VUZRXkSw1 target hitsVjqeIuzCP0VUZRXkS type section cannot receive handles",
+        "edge reactflow__edge-_V2EY4z-CTE4g-HtjU_ovw2-dv4WVzUCQ6d95AfBqdqQVx1 target dv4WVzUCQ6d95AfBqdqQV type section cannot receive handles",
+        "edge reactflow__edge-77uKH6zwzzEycoZkGotpKy2-1mXQQdSdlKkWfjlT47nE0w2 target 1mXQQdSdlKkWfjlT47nE0 type section cannot receive handles",
+        "edge reactflow__edge-oAED9Fd5FFTB2Dm7Vi2JFx2-nWYHpcvp1RT1gSqs1Dqcsw1 target nWYHpcvp1RT1gSqs1Dqcs type section cannot receive handles",
+        "edge reactflow__edge-okaY9JLgjz8JRaVAgz9Drx2-gn5qNP3VTmmQE2tT6o-vSw1 target gn5qNP3VTmmQE2tT6o-vS type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "postgresql-dba",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/postgresql-dba/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 233,
+      "edgeCount": 35,
+      "articleInventory": {
+        "readableTopicNodes": 170,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 169,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/postgresql-dba/topics/lDIy56RyC1XM7IfORsSLD",
+        "sampledNodeId": "lDIy56RyC1XM7IfORsSLD",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-lDIy56RyC1XM7IfORsSLDw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-xi5uZ_VOH4rVNu_0ZLAX9x2-ctKJI9oHts6Agrg4eFfjyw2 source xi5uZ_VOH4rVNu_0ZLAX9 type section cannot emit handles",
+        "edge reactflow__edge-QfyHG6cVuKQ3iqdEtoFSUx2-xOLVCPum_oCJo00obtZfJw1 source QfyHG6cVuKQ3iqdEtoFSU type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "power-bi",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/power-bi/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 163,
+      "edgeCount": 102,
+      "articleInventory": {
+        "readableTopicNodes": 131,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 130,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/power-bi/topics/aItdGZ817gzRevj1bZnQz",
+        "sampledNodeId": "aItdGZ817gzRevj1bZnQz",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__gasHpisC3Zsugprbk2ED0x2-2QB2qNbr8IHv4YbB-hYqfw1 source gasHpisC3Zsugprbk2ED0 type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "product-design",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/product-design/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 143,
+      "edgeCount": 116,
+      "articleInventory": {
+        "readableTopicNodes": 117,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 116,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/product-design/topics/iDc14ni7C6YGpVeze3Cqo",
+        "sampledNodeId": "iDc14ni7C6YGpVeze3Cqo",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__IOHQba0OPL8su9ZV1-RbNx2-q4yfZZ0MTANpDfx3U7uPPw1 source IOHQba0OPL8su9ZV1-RbN type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "product-manager",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/product-manager/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 203,
+      "edgeCount": 129,
+      "articleInventory": {
+        "readableTopicNodes": 172,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 171,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/product-manager/topics/luk1vnpy0duneVjen8WzO",
+        "sampledNodeId": "luk1vnpy0duneVjen8WzO",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-m46lX4dUHik_BSHQwaU2lx2-NG6ks4yOlokMVJ38DyaUPw2 target NG6ks4yOlokMVJ38DyaUP type section cannot receive handles",
+        "edge reactflow__edge-0MnqK2-pI7EkwsGy1j1shz2-DoJCeL_vEXv3aVrLt7P_Ry1 source 0MnqK2-pI7EkwsGy1j1sh type section cannot emit handles",
+        "edge reactflow__edge-2r-NPGcROFmw-pd4rvsAJw2-Y5p9Vi4tGPw4aDEJy8xXMx1 target Y5p9Vi4tGPw4aDEJy8xXM type section cannot receive handles",
+        "edge reactflow__edge-53XS2zKdK6IDdOP07yiT7w2-JrcZ404QjGsPn-VW1ktrhx1 target JrcZ404QjGsPn-VW1ktrh type section cannot receive handles",
+        "edge reactflow__edge-i288W9vF02QOKgPxjDqQhy2-h10DphS6mi7ZwbyHppPsbz1 source i288W9vF02QOKgPxjDqQh type section cannot emit handles",
+        "edge reactflow__edge-5-4MXlRjH-4PlF2giZpVLy2-a9Q5Dbr58rhyVublQ1a58z1 target a9Q5Dbr58rhyVublQ1a58 type section cannot receive handles",
+        "edge reactflow__edge-5-4MXlRjH-4PlF2giZpVLz2-dHtY_ibI0uJBL2Jknbczry1 target dHtY_ibI0uJBL2Jknbczr type section cannot receive handles",
+        "edge reactflow__edge-jIsN1OBs039cLtxTqyptdx2-9vy4uIoykk2zSSyIok4_Sw1 source jIsN1OBs039cLtxTqyptd type title cannot emit handles",
+        "edge reactflow__edge-9vy4uIoykk2zSSyIok4_Sz2-l6NjkNch2LH4BDhxXUoDKy1 target l6NjkNch2LH4BDhxXUoDK type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "prompt-engineering",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/prompt-engineering/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 94,
+      "edgeCount": 12,
+      "articleInventory": {
+        "readableTopicNodes": 47,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 46,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/prompt-engineering/topics/jrH1qE6EnFXL4fTyYU8gR",
+        "sampledNodeId": "jrH1qE6EnFXL4fTyYU8gR",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__Ji35JsKgUQXN4DJGEgTACx2-jrH1qE6EnFXL4fTyYU8gRw1 source Ji35JsKgUQXN4DJGEgTAC type title cannot emit handles",
+        "edge xy-edge__a3s4_DxtLGo6v-GPpQSXpx2-6A6v4832QCVhaYfvKmdf0w1 target 6A6v4832QCVhaYfvKmdf0 type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "python",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/python/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 124,
+      "edgeCount": 31,
+      "articleInventory": {
+        "readableTopicNodes": 87,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 86,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/python/topics/GISOFMKvnBys0O0IMpz2J",
+        "sampledNodeId": "GISOFMKvnBys0O0IMpz2J",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-VJSIbYJcy2MC6MOFBrqXiw2 source hIQe_B-68ENL-GFg6GmnD type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "python-data-analysis",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/python-data-analysis/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 155,
+      "edgeCount": 68,
+      "articleInventory": {
+        "readableTopicNodes": 112,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 111,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/python-data-analysis/topics/AAxvIAas2Sdkz9-2uNHXq",
+        "sampledNodeId": "AAxvIAas2Sdkz9-2uNHXq",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__GISOFMKvnBys0O0IMpz2Jw2-9nosir4wZSRzQDCnMp5xOx2 target 9nosir4wZSRzQDCnMp5xO type title cannot receive handles",
+        "edge xy-edge__GISOFMKvnBys0O0IMpz2Jy2-yFw0XKQ_008-RYEs8riBWz1 target yFw0XKQ_008-RYEs8riBW type section cannot receive handles",
+        "edge xy-edge__K53X-NB1S9XXSF6j8q1quy2-ZSyG2VEqralQ9ua80-EXMz1 target ZSyG2VEqralQ9ua80-EXM type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "qa",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/qa/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 186,
+      "edgeCount": 50,
+      "articleInventory": {
+        "readableTopicNodes": 147,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 146,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/qa/topics/m1wX27XBWKXZcTMH2U1xp",
+        "sampledNodeId": "m1wX27XBWKXZcTMH2U1xp",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-wruw4qef0bf74oiA5JqHow1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-a4N9onrJn6bey5bVwCRAOx2-wsJXMvRbOTh_VXKhmhPmQz1 source a4N9onrJn6bey5bVwCRAO type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "r",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/r/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 162,
+      "edgeCount": 69,
+      "articleInventory": {
+        "readableTopicNodes": 129,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 128,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/r/topics/O3lbX70fDeKsv9fkJJtYv",
+        "sampledNodeId": "O3lbX70fDeKsv9fkJJtYv",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__zbBqIzaPoZEAKa0YNJxYGx2-QUzLkB8iKfUBtyAfKc8LCw2 source zbBqIzaPoZEAKa0YNJxYG type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "r-programming",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/r-programming/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 162,
+      "edgeCount": 69,
+      "articleInventory": {
+        "readableTopicNodes": 129,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 128,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/r-programming/topics/O3lbX70fDeKsv9fkJJtYv",
+        "sampledNodeId": "O3lbX70fDeKsv9fkJJtYv",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__zbBqIzaPoZEAKa0YNJxYGx2-QUzLkB8iKfUBtyAfKc8LCw2 source zbBqIzaPoZEAKa0YNJxYG type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "react",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/react/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 112,
+      "edgeCount": 50,
+      "articleInventory": {
+        "readableTopicNodes": 82,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 81,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/react/topics/tU4Umtnfu01t9gLlnlK6b",
+        "sampledNodeId": "tU4Umtnfu01t9gLlnlK6b",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-XDvH2t3AJGevS17uM8TO6w1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "react-native",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/react-native/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 125,
+      "edgeCount": 51,
+      "articleInventory": {
+        "readableTopicNodes": 95,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 94,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/react-native/topics/JfXwzkN29UGz17FYHHE3A",
+        "sampledNodeId": "JfXwzkN29UGz17FYHHE3A",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-08qKtgnhJ3tlb5JKfTDf5w1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles",
+        "edge xy-edge__4U-HZQGH7kaWCB94Xy8Mhz2-tR7FOWmBDYg6bn5d4YHzdy1 target tR7FOWmBDYg6bn5d4YHzd type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "redis",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/redis/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 246,
+      "edgeCount": 46,
+      "articleInventory": {
+        "readableTopicNodes": 162,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 161,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/redis/topics/-3pADOHMDQ0H6ZKNjURyn",
+        "sampledNodeId": "-3pADOHMDQ0H6ZKNjURyn",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-L191VgfCbX3ibSIKySpsNx2--3pADOHMDQ0H6ZKNjURynw1 source L191VgfCbX3ibSIKySpsN type title cannot emit handles",
+        "edge reactflow__edge-gw04IG5uImCHxcFnOAAwyx2-zxoi09oW1HbXNwvc14w9Uw1 target zxoi09oW1HbXNwvc14w9U type section cannot receive handles",
+        "edge reactflow__edge-80UujPXPhvKIJMSM67pwlx2-GjKw6hbNV57I2sxuLfkQww1 source 80UujPXPhvKIJMSM67pwl type section cannot emit handles",
+        "edge reactflow__edge-Wl23Jh-ASJOQ850yjaTIUz2-Ljjl_kSEevtaBALxRh2Byy1 target Ljjl_kSEevtaBALxRh2By type section cannot receive handles",
+        "edge reactflow__edge-wY46Qj5Inw_ClBNI9PB_2x2-u2TdoI7ILaxYgUUni9W_ww1 target u2TdoI7ILaxYgUUni9W_w type section cannot receive handles",
+        "edge reactflow__edge-8gyVwKg3Ctt2w15X7xZgCx2-Kjkc8rNezN_LBD5WMrBbEw1 target Kjkc8rNezN_LBD5WMrBbE type section cannot receive handles",
+        "edge reactflow__edge-Kjkc8rNezN_LBD5WMrBbEz2-jrgaoDnt_RxTu79hk4hCDy2 source Kjkc8rNezN_LBD5WMrBbE type section cannot emit handles",
+        "edge reactflow__edge-cszjT3YK8oyhGpqLTQzwXy2-CxiHaw63xmItCGdhpcsizz1 target CxiHaw63xmItCGdhpcsiz type section cannot receive handles",
+        "edge reactflow__edge-ifAV_64bREZrJkxFnf7Cyz2-cszjT3YK8oyhGpqLTQzwXy1 source ifAV_64bREZrJkxFnf7Cy type section cannot emit handles",
+        "edge reactflow__edge-zXs_9n2yEb_eVi0WuOQKHw2-S16vO5EHvxaylsnFzs4Kxx1 target S16vO5EHvxaylsnFzs4Kx type section cannot receive handles",
+        "edge reactflow__edge-9W_jaK1DSEZHRKdPcUM7hw2-4fIp9_ii_gYgEMFFk__BGx1 target 4fIp9_ii_gYgEMFFk__BG type section cannot receive handles",
+        "edge reactflow__edge-9W_jaK1DSEZHRKdPcUM7hx2-VJosvi5KwlePkGxBzmxSHw1 target VJosvi5KwlePkGxBzmxSH type section cannot receive handles",
+        "edge reactflow__edge-YHbWlKrQqptUDbaQVy0_Ax2-Mpt_WSLngBqt131nAm3Nsw1 target Mpt_WSLngBqt131nAm3Ns type section cannot receive handles",
+        "edge reactflow__edge-Veb30QrPYNjUn13dtGbUrx2-PXWvq1ezVBU5UJVN887Esw2 target PXWvq1ezVBU5UJVN887Es type section cannot receive handles",
+        "edge reactflow__edge-k9HeweEN4enuboEppbJiPx2-7ETrwXaK2xR1AoS7tTyzWw2 target 7ETrwXaK2xR1AoS7tTyzW type section cannot receive handles",
+        "edge reactflow__edge-8lyXDuZJ-KHl4v2_8Ew1hx2-H3njQtlasgGo0-IFiFZqLw1 target H3njQtlasgGo0-IFiFZqL type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "ruby",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ruby/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 142,
+      "edgeCount": 42,
+      "articleInventory": {
+        "readableTopicNodes": 102,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 101,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ruby/topics/FfM3pPbyP1VsvWousb3YK",
+        "sampledNodeId": "FfM3pPbyP1VsvWousb3YK",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__bFLmHZdlQzx62pFJNF7uFx2-m7Kg5TS5_WySre40i2DKbw1 source bFLmHZdlQzx62pFJNF7uF type title cannot emit handles",
+        "edge xy-edge__sNo1TWRBQopdwuUrE-mEWx2-ufLdyKM3iya8zuMD1_sIjw1 source sNo1TWRBQopdwuUrE-mEW type section cannot emit handles",
+        "edge xy-edge__o1pYnU17AGEyKT01m569sx2-kdDQd_xz-6walimAN89wYw1 target kdDQd_xz-6walimAN89wY type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "ruby-on-rails",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ruby-on-rails/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 141,
+      "edgeCount": 42,
+      "articleInventory": {
+        "readableTopicNodes": 98,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 97,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ruby-on-rails/topics/BiVYxjVr2OhmnglHz_kVZ",
+        "sampledNodeId": "BiVYxjVr2OhmnglHz_kVZ",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__bFLmHZdlQzx62pFJNF7uFx2-B5db8IexkXkLvoMMTCkS6w1 source bFLmHZdlQzx62pFJNF7uF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "rust",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/rust/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 176,
+      "edgeCount": 39,
+      "articleInventory": {
+        "readableTopicNodes": 122,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 121,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/rust/topics/4U-HZQGH7kaWCB94Xy8Mh",
+        "sampledNodeId": "4U-HZQGH7kaWCB94Xy8Mh",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-08qKtgnhJ3tlb5JKfTDf5w1 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "scala",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/scala/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 231,
+      "edgeCount": 75,
+      "articleInventory": {
+        "readableTopicNodes": 166,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 165,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/scala/topics/ojvTMCBlgUf6ywgsgCQM1",
+        "sampledNodeId": "ojvTMCBlgUf6ywgsgCQM1",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__IUSgamqbfkB1SaffnTRAax2-D5djqvuGs8v__c9DrfOITw1 source IUSgamqbfkB1SaffnTRAa type title cannot emit handles",
+        "edge xy-edge__kRdh-HUAWJi7d8gdynGUSx2-Gbsj4SxcOBz6RiVtT7jwGw1 target Gbsj4SxcOBz6RiVtT7jwG type section cannot receive handles",
+        "edge xy-edge__Gbsj4SxcOBz6RiVtT7jwGx2-votWwsha27Bt9i5GhHRvAw1 source Gbsj4SxcOBz6RiVtT7jwG type section cannot emit handles",
+        "edge xy-edge__MAsfpdZSMpl9P3ulQbl4iy2-cW2_cxTFj4acsBFtmjq11z1 target cW2_cxTFj4acsBFtmjq11 type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "server-side-game-developer",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/server-side-game-developer/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 197,
+      "edgeCount": 64,
+      "articleInventory": {
+        "readableTopicNodes": 156,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 155,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/server-side-game-developer/topics/rQArtuVKGVgLn_fw9yO3b",
+        "sampledNodeId": "rQArtuVKGVgLn_fw9yO3b",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-rQArtuVKGVgLn_fw9yO3bw2 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-4UzHjUtWQExUbCApQZrb1z2-7YNaELVcoV7DV1Fa06USiy1 source 4UzHjUtWQExUbCApQZrb1 type section cannot emit handles",
+        "edge reactflow__edge-4UzHjUtWQExUbCApQZrb1z2-ayeezKxQkXAPJMTShsOBUy2 source 4UzHjUtWQExUbCApQZrb1 type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "shell-bash",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/shell-bash/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 237,
+      "edgeCount": 46,
+      "articleInventory": {
+        "readableTopicNodes": 174,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 173,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/shell-bash/topics/86QR-PVqgvvyvJvgTIer-",
+        "sampledNodeId": "86QR-PVqgvvyvJvgTIer-",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge AIYZcwq0BE-I8ettlO77F source gbaBiNdufToHyF2Z2ENtc type title cannot emit handles",
+        "edge xy-edge__NMy6-nD3jAkUVcOj0TthUy2-eY3Ue94oS99GX2JHGwhTQz1 source NMy6-nD3jAkUVcOj0TthU type section cannot emit handles",
+        "edge xy-edge__dj3KiBtPjRK2DF5HeuoYZx2-RdH9oRDP2urFyvbeEiWzmw1 target RdH9oRDP2urFyvbeEiWzm type section cannot receive handles",
+        "edge xy-edge__NfmdNOTpvfKIIut642Q6Ex2-tEaYnBeI5tO8NT-a1PG3Bw1 source NfmdNOTpvfKIIut642Q6E type section cannot emit handles",
+        "edge xy-edge__eY3Ue94oS99GX2JHGwhTQx2-GhQcZ769W04wlLlFLXxsuw1 target GhQcZ769W04wlLlFLXxsu type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "software-architect",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/software-architect/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 146,
+      "edgeCount": 58,
+      "articleInventory": {
+        "readableTopicNodes": 113,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 112,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/software-architect/topics/4zicbh7Wg2lmKSRhb6E-L",
+        "sampledNodeId": "4zicbh7Wg2lmKSRhb6E-L",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-tbmunGk2lG74hVWv_W8lNx2-4zicbh7Wg2lmKSRhb6E-Lw2 source tbmunGk2lG74hVWv_W8lN type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "software-design-architecture",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/software-design-architecture/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 126,
+      "edgeCount": 31,
+      "articleInventory": {
+        "readableTopicNodes": 94,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 93,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/software-design-architecture/topics/TJZgsxpfOmltUUChMzlEM",
+        "sampledNodeId": "TJZgsxpfOmltUUChMzlEM",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-JS5a5FraWCwfgwt8GAyc7w2 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "spring-boot",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/spring-boot/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 57,
+      "edgeCount": 37,
+      "articleInventory": {
+        "readableTopicNodes": 46,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 45,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/spring-boot/topics/jy2heDVZuM6ASCXlI1TDn",
+        "sampledNodeId": "jy2heDVZuM6ASCXlI1TDn",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__HU7wZWiES3m3xl1-NYP6Fx2-WJtVLmJLvKk_vvqhFItZ2w2 source HU7wZWiES3m3xl1-NYP6F type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "sql",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/sql/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 158,
+      "edgeCount": 33,
+      "articleInventory": {
+        "readableTopicNodes": 113,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 112,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/sql/topics/R9DQNc0AyAQ2HLpP4HOk6",
+        "sampledNodeId": "R9DQNc0AyAQ2HLpP4HOk6",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-nhUKKWyBH80nyKfGT8ErCw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-vTMd0bqz4eTgLnhfgY61hz2-6FdHTzqQwJqR4czP5qXAYy1 target 6FdHTzqQwJqR4czP5qXAY type section cannot receive handles",
+        "edge reactflow__edge-WigElh37ztiRYRstQR9NEz2-zEWmq0Y1LFPMQelpucrphy1 source WigElh37ztiRYRstQR9NE type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "swift-ui",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/swift-ui/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 216,
+      "edgeCount": 59,
+      "articleInventory": {
+        "readableTopicNodes": 156,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 155,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/swift-ui/topics/Kih96pA1xsogmvrmbIFX6",
+        "sampledNodeId": "Kih96pA1xsogmvrmbIFX6",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__4Y4ddYSu7qy36Zi7GupoNx2-aQK7_hv4iGB_0E6UCBsVkw1 source 4Y4ddYSu7qy36Zi7GupoN type section cannot emit handles",
+        "edge xy-edge__nkXaoMWBSSYxELuA9lJD8x2-BcmVEuR2anO98E4gP5KAww1 target BcmVEuR2anO98E4gP5KAw type section cannot receive handles",
+        "edge xy-edge__sSLgdwypDslpOm4bVCIpKx2-l8BWjmxhHaO0uDmFFFBoIw2 source sSLgdwypDslpOm4bVCIpK type title cannot emit handles",
+        "edge xy-edge___uO1_qHfBkN6YQ02zEFdWx2-qTrQk13tylPz88Fu9IV3hw1 target qTrQk13tylPz88Fu9IV3h type title cannot receive handles",
+        "edge xy-edge__qTrQk13tylPz88Fu9IV3hx2-jRbmmPKkJ2xHbUL18A8oew2 source qTrQk13tylPz88Fu9IV3h type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "system-design",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/system-design/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 201,
+      "edgeCount": 42,
+      "articleInventory": {
+        "readableTopicNodes": 147,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 146,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/system-design/topics/_hYN0gEi9BL24nptEtXWU",
+        "sampledNodeId": "_hYN0gEi9BL24nptEtXWU",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge XX0I26JoVMVXIe_7bVMix source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "technical-writer",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/technical-writer/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 103,
+      "edgeCount": 41,
+      "articleInventory": {
+        "readableTopicNodes": 84,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 83,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/technical-writer/topics/HlUUGj3dOZ68t4gIjerXh",
+        "sampledNodeId": "HlUUGj3dOZ68t4gIjerXh",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-5Z9o-b3vBA-ITFg86zzYMx2-HlUUGj3dOZ68t4gIjerXhw1 source 5Z9o-b3vBA-ITFg86zzYM type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "terraform",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/terraform/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 128,
+      "edgeCount": 79,
+      "articleInventory": {
+        "readableTopicNodes": 110,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 109,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/terraform/topics/h6qRrUe-bn25s0UkxU600",
+        "sampledNodeId": "h6qRrUe-bn25s0UkxU600",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge--PDYmhSQlGbLLFBJQ-Fo3x2-UlH9oNKGD37RPAapiPe19w1 source -PDYmhSQlGbLLFBJQ-Fo3 type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "typescript",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/typescript/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 120,
+      "edgeCount": 44,
+      "articleInventory": {
+        "readableTopicNodes": 93,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 92,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/typescript/topics/KDd40JOAvZ8O1mfhTYB3K",
+        "sampledNodeId": "KDd40JOAvZ8O1mfhTYB3K",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-DAwKHBng7Tytlcd2_8GORw1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-qcrGApxNzkGYxgcd7o45dx2-_4my3Mfk5lxztykcJQ66sw1 target _4my3Mfk5lxztykcJQ66s type section cannot receive handles"
+      ]
+    },
+    {
+      "slug": "ux-design",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ux-design/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "sanitized",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 140,
+      "edgeCount": 26,
+      "articleInventory": {
+        "readableTopicNodes": 93,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 92,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/ux-design/topics/liUKYf7UghuPk25xMPPYj",
+        "sampledNodeId": "liUKYf7UghuPk25xMPPYj",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-YvybHSbUUnnhcpSvBWkZhx2-GgBazWfF2OvOqkuo3DO2Lw1 source YvybHSbUUnnhcpSvBWkZh type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "vibe-coding",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/vibe-coding/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 93,
+      "edgeCount": 2,
+      "articleInventory": {
+        "readableTopicNodes": 18,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 17,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/vibe-coding/topics/lzHnwx_3gftRZbstk6INB",
+        "sampledNodeId": "lzHnwx_3gftRZbstk6INB",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__hJTqFZ1Ot21tzcUzmnOxox2-lzHnwx_3gftRZbstk6INBw1 source hJTqFZ1Ot21tzcUzmnOxo type title cannot emit handles"
+      ]
+    },
+    {
+      "slug": "vue",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/vue/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 115,
+      "edgeCount": 54,
+      "articleInventory": {
+        "readableTopicNodes": 84,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 83,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/vue/topics/0EevuyZiyty3X3Jzpjl4y",
+        "sampledNodeId": "0EevuyZiyty3X3Jzpjl4y",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge reactflow__edge-iogwMmOvub2ZF4zgg6WyFx2-XDvH2t3AJGevS17uM8TO6w1 source iogwMmOvub2ZF4zgg6WyF type title cannot emit handles",
+        "edge reactflow__edge-CGdw3PqLRb9OqFU5SqmE1x2-aIYgUc_hEIZx_2P3OhCNhw1 target aIYgUc_hEIZx_2P3OhCNh type section cannot receive handles",
+        "edge reactflow__edge-Cm6mqXYp-G4mGfPxuU73_x2-sg9IjWWorT2lLEnUek-q5w2 target sg9IjWWorT2lLEnUek-q5 type section cannot receive handles",
+        "edge reactflow__edge-q1PayNkcJHU43QCdChAXtz2-3RwIO-S8-xOYKNmfwk0pfy1 source q1PayNkcJHU43QCdChAXt type section cannot emit handles"
+      ]
+    },
+    {
+      "slug": "wordpress",
+      "graphUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/wordpress/graph",
+      "graphStatus": "ok",
+      "integrityClassification": "clean",
+      "httpStatus": 200,
+      "graphAvailable": true,
+      "nodeCount": 171,
+      "edgeCount": 44,
+      "articleInventory": {
+        "readableTopicNodes": 115,
+        "sampledNodes": 1,
+        "uncheckedReadableNodes": 114,
+        "note": "Article audit samples one readable node per slug; full topic coverage is not claimed."
+      },
+      "article": {
+        "articleStatus": "missing",
+        "httpStatus": 404,
+        "reason": "topic article not found",
+        "articleUrl": "http://127.0.0.1:8000/api/v1/roadmap/official/wordpress/topics/r1_DTSDTbijMxtUEqpEm2",
+        "sampledNodeId": "r1_DTSDTbijMxtUEqpEm2",
+        "sampling": "one_topic_per_slug"
+      },
+      "errors": [
+        "graph validation failed (handle/structural audit)",
+        "edge xy-edge__hTlGnyRljCAkKdUJOZYH7x2-moyU0BmFtCW6IVq_wKKGow1 source hTlGnyRljCAkKdUJOZYH7 type title cannot emit handles",
+        "edge xy-edge__oT5yJrNY2Q5IjqpFiTUW5x2-xSQB3bGq-WR1ivKiwBPIbw1 target xSQB3bGq-WR1ivKiwBPIb type section cannot receive handles",
+        "edge xy-edge__0X6ry0jNhMwd9ksFSlFYxz2-Qr5nT9fuolldwnO2JgJ-ry2 target Qr5nT9fuolldwnO2JgJ-r type section cannot receive handles",
+        "edge xy-edge__G-1edWzGdT4Aoxfd55TEGx2-CLqqdBm5yQ85UabxPvlPww1 source G-1edWzGdT4Aoxfd55TEG type section cannot emit handles"
+      ]
+    }
+  ]
+}

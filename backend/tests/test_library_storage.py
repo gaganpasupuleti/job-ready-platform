@@ -283,6 +283,7 @@ async def test_missing_object_and_production_without_r2(client, admin_auth, stud
     assert blocked.json()["detail"] == "PDF storage is not configured."
     assert key not in blocked.text
 
+    monkeypatch.setattr(settings, "app_env", "development")
     suffix = uuid.uuid4().hex[:8]
     other = await client.post(
         "/api/v1/auth/register",
@@ -294,7 +295,6 @@ async def test_missing_object_and_production_without_r2(client, admin_auth, stud
         },
     )
     assert other.status_code == 200, other.text
-    monkeypatch.setattr(settings, "app_env", "development")
     (tmp_path / key).write_bytes(PDF)
     owner_page = await client.put(
         f"/api/v1/library/books/{book_id}/progress",

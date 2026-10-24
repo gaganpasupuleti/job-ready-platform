@@ -1,0 +1,3 @@
+# Grid Relation
+
+Grid relation describes how typography or iconography sizes align to the underlying layout grid, ensuring that line heights and icon dimensions land on consistent grid units. Keeping these elements aligned to the grid avoids visual misalignment when text or icons sit next to other grid-based components. This relationship is usually checked when defining the base sizes for type scales and icon sets.

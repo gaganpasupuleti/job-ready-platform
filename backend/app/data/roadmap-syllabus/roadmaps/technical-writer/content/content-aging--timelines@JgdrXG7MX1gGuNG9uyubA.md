@@ -1,0 +1,3 @@
+# Content Aging  and Timelines
+
+Content aging refers to the process by which documentation becomes outdated as products evolve, technologies change, or information becomes inaccurate. Managing content aging means establishing review cycles, tracking when pages were last updated, and flagging content that has drifted from current reality. A content timeline helps teams plan audits and prioritize updates before documentation becomes misleading.

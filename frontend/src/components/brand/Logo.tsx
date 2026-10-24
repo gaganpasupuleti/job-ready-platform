@@ -1,3 +1,4 @@
+import { BRAND_NAME } from '@/lib/brand'
 import { cn } from '@/utils/cn'
 
 /** JobReady JR monogram from design-reference/jobready-v4. */
@@ -31,11 +32,7 @@ export function Logo({
   return (
     <>
       <LogoMark className={className} />
-      {showWordmark ? (
-        <span>
-          jobready<span className="brand-period">.</span>
-        </span>
-      ) : null}
+      {showWordmark ? <span className="brand-wordmark">{BRAND_NAME}</span> : null}
     </>
   )
 }

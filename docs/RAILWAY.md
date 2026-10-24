@@ -19,6 +19,7 @@ Required:
 
 Recommended:
 
+- Official roadmap articles ship in the backend image under `backend/app/data/roadmap-syllabus/roadmaps` (see `docs/ROADMAP_SYLLABUS_CONTENT.md`). Override only with `ROADMAP_CONTENT_ROOT` when that path is populated on disk.
 - `REDIS_URL` (optional; app degrades without Redis)
 - `SQL_EXECUTION_ENABLED=true` with sandbox URLs when SQL practice is on
 - `SQL_SANDBOX_ADMIN_DATABASE_URL`

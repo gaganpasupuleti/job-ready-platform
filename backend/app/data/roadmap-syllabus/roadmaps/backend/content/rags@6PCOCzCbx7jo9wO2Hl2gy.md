@@ -1,0 +1,9 @@
+# RAGs
+
+Retrieval-Augmented Generation (RAG) is an AI approach that combines information retrieval with language generation to create more accurate, contextually relevant outputs. It works by first retrieving relevant data from a knowledge base or external source, then using a language model to generate a response based on that information. This method enhances the accuracy of generative models by grounding their outputs in real-world data, making RAG ideal for tasks like question answering, summarization, and chatbots that require reliable, up-to-date information.
+
+Visit the following resources to learn more:
+
+- [@article@What is Retrieval-Augmented Generation? - Google](https://cloud.google.com/use-cases/retrieval-augmented-generation)
+- [@article@The Ultimate Guide to RAGs – Each Component Dissected](https://towardsdatascience.com/the-ultimate-guide-to-rags-each-component-dissected-3cd51c4c0212/)
+- [@video@What is Retrieval-Augmented Generation? - IBM](https://www.youtube.com/watch?v=T-D1OfcDW1M)

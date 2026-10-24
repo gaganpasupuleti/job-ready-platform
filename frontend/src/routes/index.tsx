@@ -75,6 +75,9 @@ import { JobsRecommendedPage } from '@/pages/jobs/JobsRecommendedPage'
 import { JobsSavedPage } from '@/pages/jobs/JobsSavedPage'
 import { ReadinessPage } from '@/pages/readiness/ReadinessPage'
 import { ReadinessSkillsPage } from '@/pages/readiness/ReadinessSkillsPage'
+import { RoadmapFamilyPage } from '@/pages/roadmaps/RoadmapFamilyPage'
+import { RoadmapsPage } from '@/pages/roadmaps/RoadmapsPage'
+import { RoadmapPreviewPage } from '@/features/roadmap/RoadmapPreviewPage'
 import { MistakesPage } from '@/pages/mistakes/MistakesPage'
 import { PracticeHubPage } from '@/pages/practice/PracticeHubPage'
 import { PracticePathPage } from '@/pages/practice/PracticePathPage'
@@ -272,6 +275,11 @@ export function AppRoutes() {
 
         <Route path="readiness" element={<ReadinessPage />} />
         <Route path="readiness/skills" element={<ReadinessSkillsPage />} />
+        <Route path="roadmaps" element={<RoadmapsPage />} />
+        <Route path="roadmaps/:familySlug" element={<RoadmapFamilyPage />} />
+        {import.meta.env.DEV ? (
+          <Route path="dev/roadmap-preview" element={<RoadmapPreviewPage />} />
+        ) : null}
         <Route path="mistakes" element={<MistakesPage />} />
 
         {placeholderRoutes.map((module) => (

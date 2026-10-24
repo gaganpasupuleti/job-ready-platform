@@ -145,17 +145,18 @@ function BookDetail({
       {book.description ? <p className="mb-4 break-words text-sm text-[var(--color-text)]">{book.description}</p> : null}
       <div className="mb-5 flex flex-wrap gap-2">
         {book.available && book.has_file ? (
-          <Link to={`/library/${book.id}/read`}>
-            <Button type="button" variant="primary" size="sm">
-              {book.last_page ? `Resume at page ${book.last_page}` : 'Read PDF'}
-            </Button>
+          <Link to={`/library/${book.id}/read`} className="jr-action-link">
+            {book.last_page ? `Resume at page ${book.last_page}` : 'Read PDF'}
           </Link>
         ) : null}
         {book.available && book.external_url ? (
-          <a href={book.external_url} target="_blank" rel="noopener noreferrer">
-            <Button type="button" variant="secondary" size="sm">
-              <ExternalLink size={14} /> External link
-            </Button>
+          <a
+            href={book.external_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="jr-action-link jr-action-link--secondary inline-flex gap-1"
+          >
+            <ExternalLink size={14} aria-hidden /> External link
           </a>
         ) : null}
         <Button type="button" variant="secondary" size="sm" onClick={onBookmark}>

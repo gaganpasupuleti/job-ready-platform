@@ -2,10 +2,14 @@ import { expect, test } from '@playwright/test'
 
 import {
   attachConsoleGuard,
+  expectAuthenticatedStudentLanding,
+  fetchRegistrationOpen,
   loadManifest,
   loginAs,
+  loginInApp,
   logout,
   openPrimaryNav,
+  provisionAuth01Users,
   registerUser,
   registerUserInApp,
   seedPrivateApplicationNote,
@@ -100,7 +104,7 @@ test.describe('Auth', () => {
     await expect(page).toHaveURL(/\/login/, { timeout: 15_000 })
   })
 
-  test('AUTH-01 account switch does not leak prior private records', async ({ page }) => {
+  test('AUTH-01 account switch does not leak prior private records', async ({ page, request }) => {
     const suffix = Date.now().toString(36).slice(-6)
     const markerA = `PRIVATE_MARKER_A_${suffix}`
     const userA = {
@@ -116,10 +120,14 @@ test.describe('Auth', () => {
       fullName: 'Cache User B',
     }
 
-    await registerUser(page, userA)
-    await expect(page.getByRole('heading', { name: /job preferences/i })).toBeVisible({
-      timeout: 20_000,
-    })
+    const registrationOpen = await fetchRegistrationOpen(request)
+    if (!registrationOpen) {
+      provisionAuth01Users(suffix)
+      await loginAs(page, userA)
+    } else {
+      await registerUser(page, userA)
+    }
+    await expectAuthenticatedStudentLanding(page)
 
     const seeded = await seedPrivateApplicationNote(page, markerA)
     expect(seeded.applicationId).toBeTruthy()
@@ -234,29 +242,27 @@ test.describe('Auth', () => {
       await route.continue()
     })
 
-    // Detached axios probes survive logout's queryClient.clear(); Authorization is A.
+    // Detached fetch probes survive logout's queryClient.clear(); Authorization is A.
     await page.evaluate(() => {
-      const w = window as unknown as {
-        __jobReadyApiClient?: {
-          get: (url: string, cfg?: object) => Promise<unknown>
-        }
-        __auth01Probes?: Promise<unknown>[]
-      }
-      const client = w.__jobReadyApiClient
-      if (!client) throw new Error('missing __jobReadyApiClient for AUTH-01 probes')
+      const token = localStorage.getItem('jrp_access_token')
+      if (!token) throw new Error('missing auth token for AUTH-01 probes')
+      const headers = { Authorization: `Bearer ${token}` }
+      const w = window as unknown as { __auth01Probes?: Promise<unknown>[] }
       w.__auth01Probes = [
-        client.get('/api/v1/applications', { params: { auth01_probe: '1' } }),
-        client.get('/api/v1/mistakes/summary', { params: { auth01_probe: '1' } }),
+        fetch('/api/v1/applications?auth01_probe=1', { headers }),
+        fetch('/api/v1/mistakes/summary?auth01_probe=1', { headers }),
       ]
     })
     await expect.poll(() => applicationsProbeParked && summaryProbeParked).toBe(true)
 
-    // Same-document switch: logout → register B (no page.goto / reload / new context).
+    // Same-document switch: logout → sign in as B (no page.goto / reload / new context).
     await logout(page)
-    await registerUserInApp(page, userB)
-    await expect(page.getByRole('heading', { name: /job preferences/i })).toBeVisible({
-      timeout: 20_000,
-    })
+    if (registrationOpen) {
+      await registerUserInApp(page, userB)
+    } else {
+      await loginInApp(page, userB)
+    }
+    await expectAuthenticatedStudentLanding(page)
 
     const tokenB = await page.evaluate(() => localStorage.getItem('jrp_access_token'))
     expect(tokenB).toBeTruthy()
@@ -289,7 +295,17 @@ test.describe('Auth', () => {
     await expect(page.getByText(markerA)).toHaveCount(0)
   })
 
-  test('register creates a student account', async ({ page }) => {
+  test('registration closed shows unavailable state', async ({ page, request }) => {
+    const registrationOpen = await fetchRegistrationOpen(request)
+    test.skip(registrationOpen, 'Only applies when public registration is disabled')
+    await page.goto('/register')
+    await expect(page.getByRole('heading', { name: /registration is closed/i })).toBeVisible()
+    await expect(page.getByLabel('Full name')).toHaveCount(0)
+  })
+
+  test('register creates a student account', async ({ page, request }) => {
+    const registrationOpen = await fetchRegistrationOpen(request)
+    test.skip(!registrationOpen, 'Registration disabled for this environment')
     const suffix = Date.now().toString(36).slice(-6)
     await registerUser(page, {
       email: `e2e.new.${suffix}@jobready.dev`,
