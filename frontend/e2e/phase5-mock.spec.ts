@@ -218,3 +218,25 @@ test('More menu moves focus inside and Escape returns it', async ({ page }) => {
   await page.keyboard.press('Escape')
   await expect(page.getByRole('button', { name: 'More' })).toBeFocused()
 })
+
+test('More Career roadmaps opens catalog (desktop)', async ({ page }) => {
+  await install(page)
+  await page.setViewportSize({ width: 1366, height: 768 })
+  await page.goto('/jobs')
+  await page.getByRole('button', { name: 'More' }).click()
+  await expect(page.locator('#more-mega-panel')).toBeVisible()
+  await page.getByRole('link', { name: 'Career roadmaps' }).click()
+  await expect(page).toHaveURL(/\/roadmaps$/)
+  await expect(page.locator('#main-content').getByRole('heading', { name: 'Career roadmaps' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'More' })).toHaveClass(/is-route-active/)
+})
+
+test('mobile drawer Career roadmaps opens catalog', async ({ page }) => {
+  await install(page)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/jobs')
+  await page.getByRole('button', { name: 'Open navigation' }).click()
+  await page.getByRole('link', { name: 'Career roadmaps' }).click()
+  await expect(page).toHaveURL(/\/roadmaps$/)
+  await expect(page.locator('#main-content').getByRole('heading', { name: 'Career roadmaps' })).toBeVisible()
+})
